@@ -1,0 +1,55 @@
+# Windows generated files
+[Bb]inaries/
+[Bb]uild/
+[Dd]erivedDataCache/
+[Ss]aved/
+
+# Visual Studio files
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.suo
+*.user
+*.userosscache
+*.aps
+*.pch
+*.[Oo]bj
+*.[Bb]ak
+*.[Cc]ache
+*.[Tt]log
+*.[Ll]astbuildstate
+*.[Vv]spscc
+*.ncb
+*.sdf
+*.opensdf
+*.cachefile
+*.VC.db
+
+# Xcode files
+xcuserdata/
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+*.xcuserstate
+*.xcworkspacedata
+*.xccheckout
+*.xcscheme
+*.xctiming
+*.IPA
+
+# Unreal Engine specific ignores
+/Binaries/
+/Intermediate/
+/Saved/
+/*.opensdf
+/*.sln
+/*.suo
+/*.xcodeproj
+*.DS_Store
+
+#忽略Plugins目录下Developer的临时内容
+/Plugins/*/Binaries/
+/Plugins/*/Intermediate/
