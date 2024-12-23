@@ -1,12 +1,12 @@
-#include "Controller/MWTargetSelector.h"
+#include "Character/MWTargetSelector.h"
 #include "Gameplay/MWGameplayUtility.h"
 #include "Subsystem/MWBattleSystem.h"
 
-FMWTargetSelector::FMWTargetSelector(APlayerController* Controller)
-	:bSelectTarget(false)
+FMWTargetSelector::FMWTargetSelector(AController* InController)
 {
 	ensure(Controller != nullptr);
-	PlayerController = Controller;
+	Controller = InController;
+	OwnerType = Controller.IsA(APlayerController::StaticClass()) ? MWTargetSelector::Player : MWTargetSelector::Npc;
 }
 
 void FMWTargetSelector::SwitchToLeft()
@@ -27,7 +27,7 @@ void FMWTargetSelector::CancelSelect()
 	}
 
 	SelectedTarget.Reset();
-	if (UMWBattleSystem* mwbs = PlayerController->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
 		if (mwbs->OnTargetCancelSelected.IsBound())
 		{
@@ -43,14 +43,23 @@ void FMWTargetSelector::LockTarget()
 	//	return;
 	//}
 
-	if (!PlayerController)
+	if (!Controller)
 	{
 		return;
 	}
 
 	if (!SelectedTarget.IsValid())
 	{
-		UWMGameplayUtility::SearchSelectableTargets(PlayerController, FindTargets);
+		if (OwnerType == MWTargetSelector::Player)
+		{
+			TArray<AActor*> ignoreActors;
+			ignoreActors.Emplace(Controller->GetPawn());
+			UWMGameplayUtility::SearchSelectableTargets(Cast<APlayerController>(Controller), FindTargets, ignoreActors);
+		}
+		else
+		{
+			// TODO : when owner is npc, how to search target
+		}
 
 		// if no targets found, then do nothing
 		if (FindTargets.Num() == 0)
@@ -70,7 +79,7 @@ void FMWTargetSelector::LockTarget()
 	LockedTarget = SelectedTarget;
 
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = PlayerController->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
 		if (mwbs->OnTargetLocked.IsBound())
 		{
@@ -81,7 +90,7 @@ void FMWTargetSelector::LockTarget()
 
 void FMWTargetSelector::UnlockTarget()
 {
-	if (!PlayerController)
+	if (!Controller)
 	{
 		return;
 	}
@@ -91,7 +100,7 @@ void FMWTargetSelector::UnlockTarget()
 		LockedTarget.Reset();
 		
 		// broadcast unlock target event
-		if (UMWBattleSystem* mwbs = PlayerController->GetWorld()->GetSubsystem<UMWBattleSystem>())
+		if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
 		{
 			if (mwbs->OnTargetUnlocked.IsBound())
 			{
@@ -103,12 +112,21 @@ void FMWTargetSelector::UnlockTarget()
 
 void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 {
-	if (!PlayerController)
+	if (!Controller)
 	{
 		return;
 	}
 
-	UWMGameplayUtility::SearchSelectableTargets(PlayerController, FindTargets);
+	if (OwnerType == MWTargetSelector::Player)
+	{
+		TArray<AActor*> ignoreActors;
+		ignoreActors.Emplace(Controller->GetPawn());
+		UWMGameplayUtility::SearchSelectableTargets(Cast<APlayerController>(Controller), FindTargets, ignoreActors);
+	}
+	else
+	{
+		// TODO : when owner is npc, how to search target
+	}
 
 	// if no targets found, then do nothing
 	if (FindTargets.Num() == 0)
@@ -143,7 +161,7 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 		return;
 	}
 
-	if (UMWBattleSystem* mwbs = PlayerController->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
 		if (mwbs->OnTargetSelected.IsBound())
 		{
@@ -152,17 +170,17 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 	}
 }
 
-FMWActorInfo FMWTargetSelector::GetNearestTarget(TArray<FMWActorInfo>& Targets)
+FMWFoundActorInfo FMWTargetSelector::GetNearestTarget(TArray<FMWFoundActorInfo>& Targets)
 {
-	Targets.Sort([](const FMWActorInfo& lhs, const FMWActorInfo& rhs) {
+	Targets.Sort([](const FMWFoundActorInfo& lhs, const FMWFoundActorInfo& rhs) {
 		return lhs.bLeft == rhs.bLeft ? lhs.Angle < rhs.Angle : lhs.bLeft;
 		});
 	return Targets[0];
 }
 
-FMWActorInfo FMWTargetSelector::GetTargetNextToSelectedTarget(TArray<FMWActorInfo>& Targets, bool bLeft)
+FMWFoundActorInfo FMWTargetSelector::GetTargetNextToSelectedTarget(TArray<FMWFoundActorInfo>& Targets, bool bLeft)
 {
-	Targets.Sort([](const FMWActorInfo& lhs, const FMWActorInfo& rhs) {
+	Targets.Sort([](const FMWFoundActorInfo& lhs, const FMWFoundActorInfo& rhs) {
 		return lhs.bLeft == rhs.bLeft ? lhs.Angle < rhs.Angle : lhs.bLeft;
 		});
 	int32 id = Targets.IndexOfByKey(SelectedTarget);
@@ -194,7 +212,7 @@ FMWActorInfo FMWTargetSelector::GetTargetNextToSelectedTarget(TArray<FMWActorInf
 	return Targets[id];
 }
 
-void FMWTargetSelector::ForceLockIfNoTarget(const FMWActorInfo& Target)
+void FMWTargetSelector::ForceLockIfNoTarget(const FMWFoundActorInfo& Target)
 {
 	if (LockedTarget.IsValid())
 	{
@@ -203,7 +221,7 @@ void FMWTargetSelector::ForceLockIfNoTarget(const FMWActorInfo& Target)
 
 	LockedTarget = Target;
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = PlayerController->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
 		if (mwbs->OnTargetLocked.IsBound())
 		{
@@ -212,7 +230,7 @@ void FMWTargetSelector::ForceLockIfNoTarget(const FMWActorInfo& Target)
 	}
 }
 
-void FMWTargetSelector::OnTargetNotExisted(const FMWActorInfo& Target)
+void FMWTargetSelector::OnTargetNotExisted(const FMWFoundActorInfo& Target)
 {
 	if (Target == LockedTarget)
 	{
@@ -223,4 +241,20 @@ void FMWTargetSelector::OnTargetNotExisted(const FMWActorInfo& Target)
 	{
 		CancelSelect();
 	}
+}
+
+void FMWTargetSelector::ChangeOwnerController(AController* NewController)
+{
+	Controller = NewController;
+	OwnerType = Controller.IsA(APlayerController::StaticClass()) ? MWTargetSelector::Player : MWTargetSelector::Npc;
+}
+
+bool FMWTargetSelector::HasSelectedTarget() const
+{
+	return SelectedTarget.IsValid();
+}
+
+bool FMWTargetSelector::HasLockedTarget() const
+{
+	return LockedTarget.IsValid();
 }

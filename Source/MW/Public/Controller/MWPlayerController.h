@@ -13,7 +13,11 @@ class AMWPlayerController : public APlayerController
 public:
 	AMWPlayerController();
 
+protected:
+	class AMWCharacter* GetMWCharacter() const;
+
 #pragma region Select Target
+public:
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
 	void SwitchToLeft();
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
@@ -25,12 +29,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
 	void UnlockTarget();
 #pragma endregion
-private:
+
+
 #pragma region Battle
+private:
 	UFUNCTION()
-	void NotifyPlayerAttackted(FMWActorInfo Attacker, FMWActorInfo Attackee);
+	void NotifyPlayerAttackted(FMWFoundActorInfo Attacker, FMWFoundActorInfo Attackee);
 	UFUNCTION()
-	void OnOtherCharacterDied(FMWActorInfo InCharacter);
+	void OnOtherCharacterDied(FMWFoundActorInfo InCharacter);
 #pragma endregion
 
 	virtual void BeginPlay() override;
@@ -39,6 +45,5 @@ private:
 	void BindDelegates();
 
 private:
-	TSharedPtr<FMWTargetSelector> TargetSearcher;
 
 };

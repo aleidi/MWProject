@@ -10,6 +10,10 @@ public class MWTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
-		ExtraModuleNames.Add("MW");
-	}
+		ExtraModuleNames.AddRange( new string[] 
+		{
+			"MW" ,
+			"MWGraph"
+		});
+    }
 }

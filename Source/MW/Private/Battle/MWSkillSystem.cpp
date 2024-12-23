@@ -1,5 +1,5 @@
 #include "Battle/MWSkillSystem.h"
-#include "Battle/MWBattleDefines.h"
+#include "Battle/MWBattleTypes.h"
 #include "Subsystem/MWBattleSystem.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMWSkill, All, All)

@@ -2,8 +2,10 @@
 
 #include "MWGameplayTypes.generated.h"
 
+#define DT_CHARACTERINFO TEXT("/Game/Datatable/Character/DT_CharacterInfo.DT_CharacterInfo")
+
 USTRUCT(BlueprintType)
-struct FMWActorInfo
+struct FMWFoundActorInfo
 {
 	GENERATED_BODY()
 
@@ -16,7 +18,7 @@ struct FMWActorInfo
 	UPROPERTY(BlueprintReadWrite)
 	float Angle;
 
-	bool operator==(const FMWActorInfo& Rhs)
+	bool operator==(const FMWFoundActorInfo& Rhs)
 	{
 		return Name == Rhs.Name;
 	}
@@ -26,7 +28,7 @@ struct FMWActorInfo
 	FORCEINLINE bool IsValid() const { return Name != TEXT("NULL"); }
 };
 
-bool operator==(const FMWActorInfo& Lhs, const FMWActorInfo& Rhs)
+FORCEINLINE bool operator==(const FMWFoundActorInfo& Lhs, const FMWFoundActorInfo& Rhs)
 {
 	return Lhs.Name == Rhs.Name;
 }

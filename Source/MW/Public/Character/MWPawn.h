@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "AbilitySystemInterface.h"
-#include "Gameplay/MWSelectableInterface.h"
+#include "Interface/MWSelectableInterface.h"
 #include "MWPawn.generated.h"
 
 UCLASS()

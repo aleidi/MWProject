@@ -2,7 +2,7 @@
 #include "Gameplay/MWGameplayTypes.h"
 #include "Subsystem/MWBattleSystem.h"
 
-void UMWCheatManager::TargetSelctedTest(const FMWActorInfo& TargetInfo)
+void UMWCheatManager::TargetSelctedTest(const FMWFoundActorInfo& TargetInfo)
 {
 	if (UMWBattleSystem* mwbs = GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{

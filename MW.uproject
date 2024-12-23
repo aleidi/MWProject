@@ -12,6 +12,16 @@
 				"UMG",
 				"CommonUI"
 			]
+		},
+		{
+			"Name": "MWEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "MWGraph",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

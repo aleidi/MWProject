@@ -1,6 +1,6 @@
 #include "Gameplay/MWGameplayTypes.h"
 
-void FMWActorInfo::Reset()
+void FMWFoundActorInfo::Reset()
 {
 	Name = TEXT("NULL");
 }

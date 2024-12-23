@@ -1,84 +1,118 @@
 #include "Controller/MWPlayerController.h"
 #include "Subsystem/MWBattleSystem.h"
-#include "Controller/MWTargetSelector.h"
+#include "Character/MWTargetSelector.h"
+#include "GameFramework/Character.h"
+#include "Character/MWCharacter.h"
 
 AMWPlayerController::AMWPlayerController()
 {
 
 }
 
+AMWCharacter* AMWPlayerController::GetMWCharacter() const
+{
+	return Cast<AMWCharacter>(GetPawn());
+}
+
 void AMWPlayerController::SwitchToLeft()
 {
-	if (TargetSearcher)
+	if (auto* character = GetMWCharacter())
 	{
-		TargetSearcher->SwitchToLeft();
+		auto selector = character->GetTargetSelector();
+		if (selector.IsValid())
+		{
+			selector.Pin()->SwitchToLeft();
+		}
 	}
 }
 
 void AMWPlayerController::SwitchToRight()
 {
-	if (TargetSearcher)
+	if (auto* character = GetMWCharacter())
 	{
-		TargetSearcher->SwitchToRight();
+		auto selector = character->GetTargetSelector();
+		if (selector.IsValid())
+		{
+			selector.Pin()->SwitchToRight();
+		}
 	}
 }
 
 void AMWPlayerController::CancelSelect()
 {
-	if (TargetSearcher)
+	if (auto* character = GetMWCharacter())
 	{
-		TargetSearcher->CancelSelect();
+		auto selector = character->GetTargetSelector();
+		if (selector.IsValid())
+		{
+			selector.Pin()->CancelSelect();
+		}
 	}
 }
 
 void AMWPlayerController::LockTarget()
 {
-	if (TargetSearcher)
+	if (auto* character = GetMWCharacter())
 	{
-		TargetSearcher->LockTarget();
+		auto selector = character->GetTargetSelector();
+		if (selector.IsValid())
+		{
+			selector.Pin()->LockTarget();
+		}
 	}
 }
 
 void AMWPlayerController::UnlockTarget()
 {
-	if (TargetSearcher)
+	if (auto* character = GetMWCharacter())
 	{
-		TargetSearcher->UnlockTarget();
+		auto selector = character->GetTargetSelector();
+		if (selector.IsValid())
+		{
+			selector.Pin()->UnlockTarget();
+		}
 	}
 }
 
-void AMWPlayerController::NotifyPlayerAttackted(FMWActorInfo Attacker, FMWActorInfo Attackee)
-{
-	if (TargetSearcher && Attackee.Name == GetPawn()->GetName())
-	{
 
-		TargetSearcher->ForceLockIfNoTarget(Attacker);
+void AMWPlayerController::NotifyPlayerAttackted(FMWFoundActorInfo Attacker, FMWFoundActorInfo Attackee)
+{
+	if (Attackee.Name == GetPawn()->GetName())
+	{
+		if (auto* character = GetMWCharacter())
+		{
+			auto selector = character->GetTargetSelector();
+			if (selector.IsValid())
+			{
+				selector.Pin()->ForceLockIfNoTarget(Attacker);
+			}
+		}
 	}
 }
 
-void AMWPlayerController::OnOtherCharacterDied(FMWActorInfo InCharacter)
+void AMWPlayerController::OnOtherCharacterDied(FMWFoundActorInfo InCharacter)
 {
-	if (TargetSearcher && InCharacter.IsValid() && InCharacter.Name != GetCharacter()->GetName())
+	if (InCharacter.IsValid() && InCharacter.Name != GetCharacter()->GetName())
 	{
-
-		TargetSearcher->OnTargetNotExisted(InCharacter);
+		if (auto* character = GetMWCharacter())
+		{
+			auto selector = character->GetTargetSelector();
+			if (selector.IsValid())
+			{
+				selector.Pin()->OnTargetNotExisted(InCharacter);
+			}
+		}
 	}
 }
 
 void AMWPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TargetSearcher = MakeShared<FMWTargetSelector>(this);
-
-	
 }
 
 void AMWPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-
-	TargetSearcher.Reset();
 }
 
 void AMWPlayerController::BindDelegates()

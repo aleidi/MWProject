@@ -17,6 +17,7 @@ public class MW : ModuleRules
 			"GameplayTags",
 			"GameplayAbilities",
 			"GameplayTasks",
+			"BlueprintGraph"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

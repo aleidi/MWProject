@@ -6,7 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "Delegates/Delegate.h"
 #include "Gameplay/MWGameplayTypes.h"
-#include "MWBattleDefines.generated.h"
+#include "MWBattleTypes.generated.h"
 
 //------------------ Macro ------------------//
 #pragma region Skill
@@ -39,13 +39,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkillTriggered, int32, SkillId);
 #pragma endregion
 
 #pragma region Target Select
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetSelcted, FMWActorInfo, TargetInfo);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetCancelSelcted, FMWActorInfo, TargetInfo);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttack, FMWActorInfo, Attacker, FMWActorInfo, Attackee);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetLocked, FMWActorInfo, Target);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetUnlocked, FMWActorInfo, Target);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetSelcted, FMWFoundActorInfo, TargetInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetCancelSelcted, FMWFoundActorInfo, TargetInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttack, FMWFoundActorInfo, Attacker, FMWFoundActorInfo, Attackee);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetLocked, FMWFoundActorInfo, Target);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetUnlocked, FMWFoundActorInfo, Target);
 #pragma endregion
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDied, FMWActorInfo, TargetInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDied, FMWFoundActorInfo, TargetInfo);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyUpdate, FPartyInfo, Info);

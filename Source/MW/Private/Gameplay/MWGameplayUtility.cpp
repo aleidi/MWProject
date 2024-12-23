@@ -1,13 +1,14 @@
 #include "Gameplay/MWGameplayUtility.h"
 #include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "Runtime/Engine/Public/EngineUtils.h"
-#include "Gameplay/MWSelectableInterface.h"
+#include "Interface/MWSelectableInterface.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Gameplay/MWGameplayTypes.h"
 #include "Runtime/Engine/Classes/GameFramework/Pawn.h"
 #include "Subsystem/MWGameplaySubsystem.h"
+#include "Subsystem/MWBattleSystem.h"
 
-void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWActorInfo>& FindTargets)
+void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
 {
 	if (!PC || !PC->PlayerCameraManager)
 	{
@@ -15,7 +16,6 @@ void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<F
 	}
 
 	FindTargets.Reset();
-
 
 	for (TActorIterator<APawn> It(PC->GetWorld()); It; ++It)
 	{
@@ -40,8 +40,11 @@ void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<F
 
 		if (FMath::IsWithinInclusive(angleXY, 0.f, 80.f) && FMath::IsWithinInclusive(angleZ, 0.f, GetZRangeAccordingToXY(angleXY)))
 		{
+			// filter ignored actor
+			if(ActorsToIgnore.Contains(target)) continue;
+
 			const bool bLeft = FVector::CrossProduct(PC->PlayerCameraManager->GetCameraRotation().Vector().GetUnsafeNormal2D(), angleVec.GetUnsafeNormal2D()).Z > 0;
-			FMWActorInfo info;
+			FMWFoundActorInfo info;
 			info.Name = target->GetName();
 			info.bLeft = bLeft;
 			info.Angle = angleXY;
@@ -73,4 +76,20 @@ UMWGameplaySubsystem* UWMGameplayUtility::GetGameplaySubsystem(const UObject* Wo
 	}
 
 	return nullptr;
+}
+
+void UWMGameplayUtility::SaveConfig(UObject* WorldContextObject)
+{
+	if (WorldContextObject)
+	{
+		WorldContextObject->SaveConfig();
+	}
+}
+
+void UWMGameplayUtility::LoadConfig(UObject* WorldContextObject)
+{
+	if (WorldContextObject)
+	{
+		WorldContextObject->LoadConfig();
+	}
 }

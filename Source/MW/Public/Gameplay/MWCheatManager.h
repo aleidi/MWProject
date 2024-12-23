@@ -12,5 +12,5 @@ class MW_API UMWCheatManager : public UCheatManager
 
 public:
 	UFUNCTION(exec,BlueprintCallable,Category="Cheat Manager")
-	void TargetSelctedTest(const FMWActorInfo& TargetInfo);
+	void TargetSelctedTest(const FMWFoundActorInfo& TargetInfo);
 };
