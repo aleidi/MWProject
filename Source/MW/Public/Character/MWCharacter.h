@@ -9,7 +9,6 @@
 #include "MWCharacter.generated.h"
 
 class FMWTargetSelector;
-class FMWCameraComponent;
 
 UCLASS()
 class MW_API AMWCharacter : public ACharacter,
@@ -76,7 +75,12 @@ protected:
 #pragma endregion
 	
 #pragma region Camera
-	TSharedPtr<FMWCameraComponent> CameraComponent;
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(Category= Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 #pragma endregion
 
 protected:
