@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{F88C018B-4320-DBCC-79AD-08971BDF613C}",
+	"EngineAssociation": "{2A213506-4157-A5E9-7DA6-3CB26DFF6E96}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -16,11 +16,6 @@
 		{
 			"Name": "MWEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "MWGraph",
-			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	],
@@ -42,6 +37,14 @@
 		},
 		{
 			"Name": "ModelViewViewModel",
+			"Enabled": true
+		},
+		{
+			"Name": "GameFeatures",
+			"Enabled": true
+		},
+		{
+			"Name": "ModularGameplay",
 			"Enabled": true
 		}
 	]

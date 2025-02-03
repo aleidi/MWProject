@@ -4,6 +4,10 @@
 #include "Character/MWTargetSelector.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
+#include "Character/MWHeroComponent.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "Character/MWPawnExtensionComponent.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UMWCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -17,30 +21,24 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UMWAbilitySystemComponent>(this, TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	HeroComp = CreateDefaultSubobject<UMWHeroComponent>(TEXT("HeroComponent"));
+
+	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 }
 
-UAbilitySystemComponent* AMWCharacter::K2_GetAbilitySystemComponent() const
+UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
-}
-
-void AMWCharacter::InitStartupAbilities()
-{
-
 }
 
 void AMWCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	if (!TargetSelector.IsValid())
-	{
-		TargetSelector = MakeShared<FMWTargetSelector>(NewController);
-	}
-	else
-	{
-		TargetSelector->ChangeOwnerController(NewController);
-	}
 }
 
 void AMWCharacter::UnPossessed()
@@ -48,25 +46,19 @@ void AMWCharacter::UnPossessed()
 	Super::UnPossessed();
 }
 
+void AMWCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (HeroComp)
+	{
+		HeroComp->InitializePlayerInput(PlayerInputComponent);
+	}
+}
+
 void AMWCharacter::ChangeBattleState(MWBehaviorState::EBehaviorState NewState)
 {
 	BehaviorState = NewState;
-}
-
-bool AMWCharacter::CastSkill()
-{
-	/*if (HasLockedTarget() && IsTargetInRange())
-	{
-		USkeletalMeshComponent* mesh = GetMesh();
-		UAnimInstance* animInst = mesh ? mesh->GetAnimInstance() : nullptr;
-		
-	}*/
-	return false;
-}
-
-TWeakPtr<FMWTargetSelector> AMWCharacter::GetTargetSelector() const
-{
-	return TargetSelector->AsWeak();
 }
 
 float AMWCharacter::BP_GetNormalizedVelocity() const
@@ -96,23 +88,25 @@ bool AMWCharacter::GetIsMoving() const
 
 bool AMWCharacter::GetCanNormalAtk() const
 {
-	if (TargetSelector.IsValid())
-	{
-		TargetSelector->HasLockedTarget();
-	}
-
 	return false;
 }
 
 void AMWCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void AMWCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+}
 
-	TargetSelector.Reset();
+void AMWCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+UAbilitySystemComponent* AMWCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }

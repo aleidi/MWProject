@@ -12,8 +12,7 @@ public class MWTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		ExtraModuleNames.AddRange( new string[] 
 		{
-			"MW" ,
-			"MWGraph"
+			"MW"
 		});
     }
 }

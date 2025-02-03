@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class MW : ModuleRules
 {
@@ -17,8 +18,12 @@ public class MW : ModuleRules
 			"GameplayTags",
 			"GameplayAbilities",
 			"GameplayTasks",
-			"BlueprintGraph"
-		});
+            "EnhancedInput",
+            "GameFeatures",
+            "ModularGameplay",
+            "CommonInput",
+            //"ModularGameplayActors",
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

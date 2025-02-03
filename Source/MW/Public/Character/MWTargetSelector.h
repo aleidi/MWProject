@@ -16,7 +16,7 @@ class FMWTargetSelector : public TSharedFromThis<FMWTargetSelector>
 {
 public:
 	FMWTargetSelector() = delete;
-	FMWTargetSelector(AController* InController);
+	FMWTargetSelector(const AController* InController);
 
 	void SwitchToLeft();
 	void SwitchToRight();
@@ -25,7 +25,7 @@ public:
 	void UnlockTarget();
 	void ForceLockIfNoTarget(const FMWFoundActorInfo& Target);
 	void OnTargetNotExisted(const FMWFoundActorInfo& Target);
-	void ChangeOwnerController(AController* NewController);
+	void ChangeOwnerController(const AController* NewController);
 
 	bool HasSelectedTarget() const;
 	bool HasLockedTarget() const;
@@ -37,7 +37,7 @@ private:
 	FMWFoundActorInfo GetTargetNextToSelectedTarget(TArray<FMWFoundActorInfo>& Targets, bool bLeft);
 
 private:
-	TObjectPtr<AController> Controller;
+	TObjectPtr<const AController> Controller;
 	TArray<FMWFoundActorInfo> FindTargets;
 	FMWFoundActorInfo SelectedTarget;
 	FMWFoundActorInfo LockedTarget;

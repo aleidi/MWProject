@@ -9,6 +9,11 @@
 #include "MWCharacter.generated.h"
 
 class FMWTargetSelector;
+class USpringArmComponent;
+class UCameraComponent;
+class UMWHeroComponent;
+class UMWPawnExtensionComponent;
+class UAbilitySystemComponent;
 
 UCLASS()
 class MW_API AMWCharacter : public ACharacter,
@@ -22,28 +27,25 @@ public:
 	AMWCharacter(const FObjectInitializer& ObjectInitializer);
 	
 #pragma region GAS
-protected:
-	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
-	UPROPERTY()
-	class UAbilitySystemComponent* AbilitySystemComponent;
-
-	// Reference to the AttributeSetBase. It will live on the PlayerState or here if the character doesn't have a PlayerState.
-	//UPROPERTY()
-	//class UXXAttributeSetBase* AttributeSetBase;
-
 public:
-	inline virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
-	UFUNCTION(Blueprintpure, Category = "MWCharacter|GAS", meta = (DisplayName = "GetAbilitySystemComponent"))
-	UAbilitySystemComponent* K2_GetAbilitySystemComponent() const;
-	void InitStartupAbilities();
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UFUNCTION(Blueprintpure, Category = "MWCharacter|GAS")
+	UMWAbilitySystemComponent* GetMWAbilitySystemComponent() const;
 
 	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
+#pragma region Input
+public:
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+#pragma endregion
+
 protected:
-	//UPROPERTY(EditAnywhere, Category = "NWCharacter|GAS")
-	//TObjectPtr<class UXXGameplayAbilitySet> StartupAbillities;
+	// The ability system component sub-object used by player characters.
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UMWAbilitySystemComponent* AbilitySystemComponent;
 #pragma endregion 
 
 #pragma region Battle
@@ -51,10 +53,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Battle")
 	void ChangeBattleState(MWBehaviorState::EBehaviorState NewState);
 
-	UFUNCTION(BlueprintCallable, Category="Battle|Skill")
-	bool CastSkill();
-
-	virtual TWeakPtr<FMWTargetSelector> GetTargetSelector() const override;
 protected:
 
 	UFUNCTION(BlueprintPure)
@@ -70,20 +68,28 @@ protected:
 	bool bAttackTarget;
 	UPROPERTY(BlueprintReadOnly, Category="Character|Battle")
 	bool bAttackTargetInRange;
-
-	TSharedPtr<FMWTargetSelector> TargetSelector;
 #pragma endregion
 	
 #pragma region Camera
+protected:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(Category= Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> FollowCamera;
+
 #pragma endregion
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Hero, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UMWHeroComponent> HeroComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Hero, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
+protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitializeComponents() override;
+
 };

@@ -1,85 +1,109 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/Object.h"
-#include "GameplayTagContainer.h"
+#include "GameplayAbility/MWGameplayAbility.h"
+#include "UObject/NoExportTypes.h"
 #include "MWSkillSystem.generated.h"
 
 USTRUCT(BlueprintType)
-struct FMWSkill
+struct MW_API FSkillGroupNo
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	int32 Id = -1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 GroupNo;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillNo;
+
+	FString ToString() const { return FString::Printf(TEXT("[%d, %d]"), GroupNo, SkillNo); }
+
+	bool operator==(const FSkillGroupNo& Rhs)
+	{
+		return GroupNo == Rhs.GroupNo && SkillNo == Rhs.SkillNo;
+	}
+
+	friend inline bool operator==(const FSkillGroupNo& Lhs, const FSkillGroupNo& Rhs)
+	{
+		return Lhs.GroupNo == Rhs.GroupNo && Lhs.SkillNo == Rhs.SkillNo;
+	}
+
+	friend inline uint32 GetTypeHash(const FSkillGroupNo& In)
+	{
+		return HashCombine(GetTypeHash(In.GroupNo), GetTypeHash(In.SkillNo));
+	}
+};
+
+USTRUCT(BlueprintType)
+struct MW_API FSkillSpec
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName DisplayName;
 
-	UPROPERTY()
-	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UMWSkillBase> SkillAbility;
 
-	UPROPERTY()
-	FGameplayTag Tag;
+	FString ToString() const { return FString::Printf(TEXT("%d,%s"), ID, *DisplayName.ToString()); }
 
-	UPROPERTY()
-	int32 Cost;
+	bool operator==(const FSkillSpec& Rhs)
+	{
+		return ID == Rhs.ID;
+	}
 
-	FORCEINLINE bool IsValid() const { return Id != -1; }
+	bool operator!=(const FSkillSpec& Rhs)
+	{
+		return ID != Rhs.ID;
+	}
+
+	friend inline bool operator==(const FSkillSpec& Lhs, const FSkillSpec& Rhs)
+	{
+		return Lhs.ID == Rhs.ID;
+	}
 };
 
-USTRUCT(BlueprintType)
-struct FMWFinishSkill : public FMWSkill
+/* UMWSkillSystem
+* 
+*  This ability is responsible for the skill management. 
+*  It should be instanced by per actor.
+*  Only one instance is allowed.
+*/
+UCLASS()
+class MW_API UMWSkillSystem : public UMWGameplayAbility
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 CoolDown;
-
-	/* unrecoverable time of ap */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 PenaltyDuration;
-};
-
-USTRUCT(BlueprintType)
-struct FMWSkillGroup
-{
-	GENERATED_BODY()
-	
-	UPROPERTY()
-	TArray<FMWSkill> Skills;
-
-	FMWSkillGroup();
-};
-
-/**
- * 
- */
-class MW_API TMWSkillSystem : public TSharedFromThis<TMWSkillSystem>
-{
 
 public:
-	TMWSkillSystem();
+	UMWSkillSystem(const FObjectInitializer& ObjectInitializer);
 
-	TMWSkillSystem(AActor* InOwner);
+protected:
+	/* This class will never be activated. */
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+public:
+	/* The skill that is achieved. */
+	void GrantSkill(const FSkillSpec& SkillSpec);
+	const TArray<FSkillSpec>& GetGrantedSkill() const;
 	
-	/* GroupId - which group of skill to use
-	*  SkillId - the index of a skill in a skill group
-	*  RealTriggerFunc - the function that actually triggers the skill
-	*/
-	bool TriggerSkill(int32 GroupId, int32 SkillId, TFunction<bool(const FGameplayTag&)> RealTriggerFunc);
+	/* Pair the skill and skill group. Skill should be within OwnedSkill. */
+	void EquipSkill(const FSkillGroupNo& No, const FSkillSpec& NewSkillSpec);
+	const TMap<FSkillGroupNo, FSkillSpec>& GetSetSkill() const;
 
-	/* GroupId - which group of skill to use
-	*  SkillId - the index of a skill in a skill group
-	*/
-	bool SetSkill(int32 GroupId, int32 SkillId, const FMWSkill& NewSkill);
+	/* After the skill is equipped, cast skill by group number. */
+	void CastSkill(const FSkillGroupNo& No);
+	/* This is used for skill that is not equipped but the skill should be owned. */
+	void CastSkill(const FSkillSpec& Skill);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability|Skill")
+	void CastSkill(const FSkillGroupNo& No, const FSkillSpec& Skill, bool bForce = true);
 
 private:
-	/* Ensure GroupId and SkillId is in the range of setting */
-	bool IsSkillIdValid(int32 GroupdId, int32 SkillId) const;
+	UPROPERTY(EditAnywhere)
+	TMap<FSkillGroupNo, FSkillSpec> EquippedSkill;
 
-private:
-	TArray<FMWSkillGroup> SkillGroups;
-	
-	TObjectPtr<AActor> Owner;
+	UPROPERTY(EditAnywhere)
+	TArray<FSkillSpec> OwnedSkill;
 };

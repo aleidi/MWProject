@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Battle/MWSkillSystem.h"
 #include "MWBattleComponent.generated.h"
 
 /**
@@ -27,6 +26,5 @@ public:
 	bool CanCombo() const;
 
 private:
-	TSharedPtr<TMWSkillSystem> SysSkill;
 #pragma endregion
 };

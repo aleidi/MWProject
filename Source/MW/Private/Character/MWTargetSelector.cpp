@@ -2,9 +2,8 @@
 #include "Gameplay/MWGameplayUtility.h"
 #include "Subsystem/MWBattleSystem.h"
 
-FMWTargetSelector::FMWTargetSelector(AController* InController)
+FMWTargetSelector::FMWTargetSelector(const AController* InController)
 {
-	ensure(Controller != nullptr);
 	Controller = InController;
 	OwnerType = Controller.IsA(APlayerController::StaticClass()) ? MWTargetSelector::Player : MWTargetSelector::Npc;
 }
@@ -243,7 +242,7 @@ void FMWTargetSelector::OnTargetNotExisted(const FMWFoundActorInfo& Target)
 	}
 }
 
-void FMWTargetSelector::ChangeOwnerController(AController* NewController)
+void FMWTargetSelector::ChangeOwnerController(const AController* NewController)
 {
 	Controller = NewController;
 	OwnerType = Controller.IsA(APlayerController::StaticClass()) ? MWTargetSelector::Player : MWTargetSelector::Npc;

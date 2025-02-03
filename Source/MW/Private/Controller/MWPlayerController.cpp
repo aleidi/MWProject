@@ -3,6 +3,8 @@
 #include "Character/MWTargetSelector.h"
 #include "GameFramework/Character.h"
 #include "Character/MWCharacter.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "Character/MWPawnExtensionComponent.h"
 
 AMWPlayerController::AMWPlayerController()
 {
@@ -14,78 +16,53 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
-void AMWPlayerController::SwitchToLeft()
+void AMWPlayerController::SwitchToLeftTarget()
 {
-	if (auto* character = GetMWCharacter())
+	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 	{
-		auto selector = character->GetTargetSelector();
-		if (selector.IsValid())
-		{
-			selector.Pin()->SwitchToLeft();
-		}
+		comp->SwitchToLeftTarget();
 	}
 }
 
-void AMWPlayerController::SwitchToRight()
+void AMWPlayerController::SwitchToRightTarget()
 {
-	if (auto* character = GetMWCharacter())
+	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 	{
-		auto selector = character->GetTargetSelector();
-		if (selector.IsValid())
-		{
-			selector.Pin()->SwitchToRight();
-		}
+		comp->SwitchToRightTarget();
 	}
 }
 
 void AMWPlayerController::CancelSelect()
 {
-	if (auto* character = GetMWCharacter())
+	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 	{
-		auto selector = character->GetTargetSelector();
-		if (selector.IsValid())
-		{
-			selector.Pin()->CancelSelect();
-		}
+		comp->CancelSelect();
 	}
 }
 
 void AMWPlayerController::LockTarget()
 {
-	if (auto* character = GetMWCharacter())
+	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 	{
-		auto selector = character->GetTargetSelector();
-		if (selector.IsValid())
-		{
-			selector.Pin()->LockTarget();
-		}
+		comp->LockTarget();
 	}
 }
 
 void AMWPlayerController::UnlockTarget()
 {
-	if (auto* character = GetMWCharacter())
+	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 	{
-		auto selector = character->GetTargetSelector();
-		if (selector.IsValid())
-		{
-			selector.Pin()->UnlockTarget();
-		}
+		comp->UnlockTarget();
 	}
 }
-
 
 void AMWPlayerController::NotifyPlayerAttackted(FMWFoundActorInfo Attacker, FMWFoundActorInfo Attackee)
 {
 	if (Attackee.Name == GetPawn()->GetName())
 	{
-		if (auto* character = GetMWCharacter())
+		if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 		{
-			auto selector = character->GetTargetSelector();
-			if (selector.IsValid())
-			{
-				selector.Pin()->ForceLockIfNoTarget(Attacker);
-			}
+			comp->ForceLockIfNoTarget(Attacker);
 		}
 	}
 }
@@ -94,13 +71,9 @@ void AMWPlayerController::OnOtherCharacterDied(FMWFoundActorInfo InCharacter)
 {
 	if (InCharacter.IsValid() && InCharacter.Name != GetCharacter()->GetName())
 	{
-		if (auto* character = GetMWCharacter())
+		if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
 		{
-			auto selector = character->GetTargetSelector();
-			if (selector.IsValid())
-			{
-				selector.Pin()->OnTargetNotExisted(InCharacter);
-			}
+			comp->OnTargetNotExisted(InCharacter);
 		}
 	}
 }
@@ -115,6 +88,16 @@ void AMWPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+void AMWPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
+{
+	Super::PostProcessInput(DeltaTime, bGamePaused);
+
+	if (UMWAbilitySystemComponent* asc = GetMWAbilitySystemComponent())
+	{
+		asc->ProcessAbilityInput(DeltaTime, bGamePaused);
+	}
+}
+
 void AMWPlayerController::BindDelegates()
 {
 	if (UMWBattleSystem* mwbs = GetWorld()->GetSubsystem<UMWBattleSystem>())
@@ -122,4 +105,15 @@ void AMWPlayerController::BindDelegates()
 		mwbs->OnAttack.AddDynamic(this, &AMWPlayerController::NotifyPlayerAttackted);
 		mwbs->OnCharacterDied.AddDynamic(this, &AMWPlayerController::OnOtherCharacterDied);
 	}
+}
+
+UAbilitySystemComponent* AMWPlayerController::GetAbilitySystemComponent() const
+{
+	const IAbilitySystemInterface* asi = Cast<IAbilitySystemInterface>(GetPawn());
+	return asi ? asi->GetAbilitySystemComponent() : nullptr;
+}
+
+UMWAbilitySystemComponent* AMWPlayerController::GetMWAbilitySystemComponent() const
+{
+	return Cast<UMWAbilitySystemComponent>(GetAbilitySystemComponent());
 }

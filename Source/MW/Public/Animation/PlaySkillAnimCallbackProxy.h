@@ -8,30 +8,31 @@
 #include "Animation/AnimInstance.h"
 #include "PlaySkillAnimCallbackProxy.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMontagePlayDelegate, FName, NotifyName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMWMontagePlayDelegate, FName, NotifyName);
 
 UCLASS(MinimalAPI)
 class UPlaySkillAnimCallbackProxy : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
+public:
 	// Called when Montage finished playing and wasn't interrupted
 	UPROPERTY(BlueprintAssignable)
-	FOnMontagePlayDelegate OnCompleted;
+	FOnMWMontagePlayDelegate OnCompleted;
 
 	// Called when Montage starts blending out and is not interrupted
 	UPROPERTY(BlueprintAssignable)
-	FOnMontagePlayDelegate OnBlendOut;
+	FOnMWMontagePlayDelegate OnBlendOut;
 
 	// Called when Montage has been interrupted (or failed to play)
 	UPROPERTY(BlueprintAssignable)
-	FOnMontagePlayDelegate OnInterrupted;
+	FOnMWMontagePlayDelegate OnInterrupted;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnMontagePlayDelegate OnNotifyBegin;
+	FOnMWMontagePlayDelegate OnNotifyBegin;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnMontagePlayDelegate OnNotifyEnd;
+	FOnMWMontagePlayDelegate OnNotifyEnd;
 
 	// Called to perform the query internally
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))

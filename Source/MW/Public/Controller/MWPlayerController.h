@@ -4,6 +4,8 @@
 #include "MWPlayerController.generated.h"
 
 class FMWTargetSelector;
+class UAbilitySystemComponent;
+class UMWAbilitySystemComponent;
 
 UCLASS()
 class AMWPlayerController : public APlayerController
@@ -19,9 +21,9 @@ protected:
 #pragma region Select Target
 public:
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void SwitchToLeft();
+	void SwitchToLeftTarget();
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void SwitchToRight();
+	void SwitchToRightTarget();
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
 	void CancelSelect();
 	UFUNCTION(BlueprintCallable, Category="TargetSelect")
@@ -41,9 +43,14 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 
 	void BindDelegates();
 
-private:
+public:
+	UFUNCTION(BlueprintPure, Category = "Ability")
+	UAbilitySystemComponent* GetAbilitySystemComponent() const;
 
+	UFUNCTION(BlueprintPure, Category = "Ability")
+	UMWAbilitySystemComponent* GetMWAbilitySystemComponent() const;
 };
