@@ -1,3 +1,11 @@
+/*
+!Config/
+!Content/
+!Document/
+!Plugins/
+!Source/
+!*.uproject
+
 # Windows generated files
 [Bb]inaries/
 [Bb]uild/
@@ -49,6 +57,7 @@ xcuserdata/
 /*.suo
 /*.xcodeproj
 *.DS_Store
+
 
 #忽略Plugins目录下Developer的临时内容
 /Plugins/*/Binaries/
