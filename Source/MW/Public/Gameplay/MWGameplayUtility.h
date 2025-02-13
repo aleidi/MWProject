@@ -12,22 +12,22 @@ class MW_API UWMGameplayUtility : public UGameplayStatics
 
 public:
 	/* Find selectable targets in front of the center within distance. */
-	UFUNCTION(BlueprintCallable, Category="Gameplay")
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	static void SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore);
 
 	/* Quick to get Battle Subsystem. */
-	UFUNCTION(BlueprintCallable, Category="Gameplay", meta=(WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta=(WorldContext = "WorldContextObject"))
 	static UMWBattleSystem* GetBattleSubSystem(const UObject* WorldContextObject);
 
 	/* Quick to get Battle Subsystem. */
-	UFUNCTION(BlueprintCallable, Category="Gameplay", meta=(WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta=(WorldContext = "WorldContextObject"))
 	static UMWGameplaySubsystem* GetGameplaySubsystem(const UObject* WorldContextObject);
 
 	/* Access to save config in blueprint.*/
-	UFUNCTION(BlueprintCallable, Category="Gameplay", meta = (WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void SaveConfig(UObject* WorldContextObject);
 
 	/* Access to load config in blueprint.*/
-	UFUNCTION(BlueprintCallable, Category="Gameplay", meta = (WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void LoadConfig(UObject* WorldContextObject);
 };

@@ -8,6 +8,7 @@
 #include "Character/MWHeroComponent.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Character/MWPawnExtensionComponent.h"
+#include "GameplayAbility/Attribute/MWBattleSet.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UMWCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -29,6 +30,8 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	HeroComp = CreateDefaultSubobject<UMWHeroComponent>(TEXT("HeroComponent"));
 
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
+
+	BattleSet = CreateDefaultSubobject<UMWBattleSet>(TEXT("MWBattleSet"));
 }
 
 UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const

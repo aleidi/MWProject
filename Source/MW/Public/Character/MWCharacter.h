@@ -14,6 +14,7 @@ class UCameraComponent;
 class UMWHeroComponent;
 class UMWPawnExtensionComponent;
 class UAbilitySystemComponent;
+class UMWBattleSet;
 
 UCLASS()
 class MW_API AMWCharacter : public ACharacter,
@@ -44,7 +45,7 @@ public:
 
 protected:
 	// The ability system component sub-object used by player characters.
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
 #pragma endregion 
 
@@ -73,20 +74,30 @@ protected:
 #pragma region Camera
 protected:
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 #pragma endregion
 
+#pragma region Ability
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Hero, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Ability")
+	TObjectPtr<UMWBattleSet> BattleSet;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability")
+	int32 Level;
+#pragma endregion
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Hero")
 	TObjectPtr<UMWHeroComponent> HeroComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Hero, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Hero")
 	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
