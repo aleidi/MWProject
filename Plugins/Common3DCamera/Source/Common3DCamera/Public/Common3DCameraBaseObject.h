@@ -1,0 +1,68 @@
+// Copyright 2021 Alexander Shumeyko. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+
+#include "Common3DCameraBaseObject.generated.h"
+
+class UC3DCameraComponent;
+
+/** 
+* Base object for all camera objects in this plugin 
+* All K2(blueprint) functions are called from native functions(example: K2Tick from Tick)
+*/
+UCLASS(classGroup = "C3DCamera", Blueprintable, BlueprintType)
+class COMMON3DCAMERA_API UC3DCameraBaseObject : public UObject
+{
+	GENERATED_BODY()
+public:
+	//~ Begin UObject Interface
+#if WITH_ENGINE
+	virtual class UWorld* GetWorld() const override;
+#endif //WITH_ENGINE
+	//~ End UObject Interface
+
+	virtual void Tick(float DeltaTime);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Tick"))
+	void K2_Tick(float DeltaTime);
+
+	/** Validate params in object */
+	UFUNCTION(BlueprintCallable, Category = "C3D")
+	virtual void Validate(bool bWithInterpolation);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Validate"))
+	void K2_Validate(bool bWithInterpolation);
+
+	virtual void OnExitCameraMode();
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnExitCameraMode"))
+	void K2_OnExitCameraMode();
+	virtual void OnEnterCameraMode(bool bWithInterpolation);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnEnterCameraMode"))
+	void K2_OnEnterCameraMode(bool bWithInterpolation);
+
+	virtual void SwitchToCineCamera();
+
+	void SetCamera(UC3DCameraComponent* Camera);
+
+protected:
+	UC3DCameraComponent& GetCamera();
+	const UC3DCameraComponent& GetCamera() const;
+
+	UFUNCTION(BlueprintPure, Category = "C3D")
+	UC3DCameraComponent* GetOwningCamera() const;
+
+	UFUNCTION(BlueprintPure, Category = "C3D")
+	class AActor* GetOwningActor() const;
+	UFUNCTION(BlueprintPure, Category = "C3D")
+	class APawn* GetOwningPawn() const;
+	UFUNCTION(BlueprintPure, Category = "C3D")
+	class APlayerController* GetPlayerController() const;
+	UFUNCTION(BlueprintPure, Category = "C3D")
+	class APlayerCameraManager* GetPlayerCameraManager() const;
+
+	/** Initialize the data from data asset. */
+	virtual void InitPropertyFromDataAsset() {}
+private:
+	UPROPERTY()
+	UC3DCameraComponent* OwningCamera;
+};

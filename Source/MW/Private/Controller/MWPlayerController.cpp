@@ -5,10 +5,11 @@
 #include "Character/MWCharacter.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Character/MWPawnExtensionComponent.h"
+#include "Camera/MWPlayerCameraManager.h"
 
 AMWPlayerController::AMWPlayerController()
 {
-
+	
 }
 
 AMWCharacter* AMWPlayerController::GetMWCharacter() const
@@ -116,4 +117,31 @@ UAbilitySystemComponent* AMWPlayerController::GetAbilitySystemComponent() const
 UMWAbilitySystemComponent* AMWPlayerController::GetMWAbilitySystemComponent() const
 {
 	return Cast<UMWAbilitySystemComponent>(GetAbilitySystemComponent());
+}
+
+void AMWPlayerController::SpawnPlayerCameraManager()
+{
+	// servers and owning clients get cameras
+	// If no archetype specified, spawn an Engine.PlayerCameraManager.  NOTE all games should specify an archetype.
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Owner = this;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.ObjectFlags |= RF_Transient;	// We never want to save camera managers into a map
+	if (PlayerCameraManagerClass != NULL)
+	{
+		PlayerCameraManager = GetWorld()->SpawnActor<APlayerCameraManager>(PlayerCameraManagerClass, SpawnInfo);
+	}
+	else
+	{
+		PlayerCameraManager = GetWorld()->SpawnActor<APlayerCameraManager>(SpawnInfo);
+	}
+
+	if (PlayerCameraManager != NULL)
+	{
+		PlayerCameraManager->InitializeFor(this);
+	}
+	else
+	{
+		UE_LOG(LogPlayerController, Log, TEXT("Couldn't Spawn PlayerCameraManager for Player!!"));
+	}
 }

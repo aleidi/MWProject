@@ -53,4 +53,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
 	UMWAbilitySystemComponent* GetMWAbilitySystemComponent() const;
+
+#pragma region Camera
+public:
+	// set AMWPlayerCameraManager to PlayerCameraManager.
+	virtual void SpawnPlayerCameraManager() override;
+#pragma endregion
 };

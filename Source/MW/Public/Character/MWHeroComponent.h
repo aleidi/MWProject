@@ -12,21 +12,19 @@ class UMWHeroComponent : public UMWPawnComponent
 {
 	GENERATED_BODY()
 
+public:
+	UMWHeroComponent(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+#pragma region Input
 public:
-	/** Removes a mode-specific input config if it has been added */
-	void RemoveAdditionalInputConfig(const UMWInputConfig* InputConfig);
-
-	/** True if this is controlled by a real player and has progressed far enough in initialization where additional input bindings can be added */
-	FORCEINLINE bool IsReadyToBindInputs() const { return bReadyToBindInputs; }
-	
 	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 
 protected:
-
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
@@ -35,11 +33,22 @@ protected:
 	void Input_LookStick(const FInputActionValue& InputActionValue);
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 	void Input_AutoRun(const FInputActionValue& InputActionValue);
+#pragma endregion
 
+#pragma region Pawn
 protected:
-	//UPROPERTY(EditAnywhere)
-	//TArray<FInputMappingContextAndPriority> DefaultInputMappings;
+	void UpdatePawnRotation(float DeltaTime);
 
-	/** True when player input bindings have been applied, will never be true for non - players */
-	bool bReadyToBindInputs;
+private:
+	// temporary value
+	FRotator LastVelocityRotation;
+	FRotator DesiredPawnRotation;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	float DesiredRotInterpSpeed = 460.f;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	float PawnRotInterpSpeed = 10.f;
+
+#pragma endregion
 };

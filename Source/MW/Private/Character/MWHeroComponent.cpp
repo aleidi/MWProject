@@ -12,6 +12,12 @@
 #include "Data/MWMasterData.h"
 #include "Character/MWPawnExtensionComponent.h"
 
+UMWHeroComponent::UMWHeroComponent(const FObjectInitializer& ObjectInitializer)
+{
+	// enable tick
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
 void UMWHeroComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -22,9 +28,11 @@ void UMWHeroComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UMWHeroComponent::RemoveAdditionalInputConfig(const UMWInputConfig* InputConfig)
+void UMWHeroComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	UpdatePawnRotation(DeltaTime);
 }
 
 void UMWHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputComponent)
@@ -170,4 +178,26 @@ void UMWHeroComponent::Input_LookAt(const FInputActionValue& InputActionValue)
 void UMWHeroComponent::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
 
+}
+
+void UMWHeroComponent::UpdatePawnRotation(float DeltaTime)
+{
+	APawn* pawn = GetPawn<APawn>();
+
+	if (!pawn)
+	{
+		return;
+	}
+
+	const FVector curr_vel = pawn->GetVelocity();
+	if (curr_vel.SizeSquared2D() > 0.f)
+	{
+		LastVelocityRotation = curr_vel.Rotation();
+	}
+
+	const FRotator desired_rot = FRotator(0.f, LastVelocityRotation.Yaw, 0.f);
+	DesiredPawnRotation = FMath::RInterpConstantTo(DesiredPawnRotation, desired_rot, DeltaTime, DesiredRotInterpSpeed);
+
+	const FRotator actor_rot = pawn->GetActorRotation();
+	pawn->SetActorRotation(FMath::RInterpTo(actor_rot, DesiredPawnRotation, DeltaTime, PawnRotInterpSpeed));
 }

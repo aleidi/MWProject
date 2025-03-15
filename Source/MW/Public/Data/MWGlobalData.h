@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/DataAsset.h"
-
+#include "Camera/MWCameraTypes.h"
 #include "MWGlobalData.generated.h"
 
 class UGameplayEffect;
@@ -45,4 +45,7 @@ public:
 	// Gameplay effect used to add and remove dynamic tags.
 	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects")
 	TSoftClassPtr<UGameplayEffect> DynamicTagGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	FMWCameraLocationSettings CameraSettings;
 };
