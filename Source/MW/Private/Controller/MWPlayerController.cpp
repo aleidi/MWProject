@@ -5,7 +5,6 @@
 #include "Character/MWCharacter.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Character/MWPawnExtensionComponent.h"
-#include "Camera/MWPlayerCameraManager.h"
 
 AMWPlayerController::AMWPlayerController()
 {
