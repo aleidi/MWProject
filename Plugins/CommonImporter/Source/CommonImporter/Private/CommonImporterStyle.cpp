@@ -42,7 +42,7 @@ TSharedRef< FSlateStyleSet > FCommonImporterStyle::Create()
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("CommonImporterStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("CommonImporter")->GetBaseDir() / TEXT("Resources"));
 
-	Style->Set("CommonImporter.OpenPluginWindow", new IMAGE_BRUSH(TEXT("Icon40"), Icon40x40));
+	Style->Set("CommonImporter.Logo", new IMAGE_BRUSH(TEXT("Icon40"), Icon40x40));
 
 	return Style;
 }

@@ -31,10 +31,10 @@ void FCommonImporterModule::StartupModule()
 	
 	PluginCommands = MakeShareable(new FUICommandList);
 
-	PluginCommands->MapAction(
-		FCommonImporterCommands::Get().CommonImporter,
-		FExecuteAction::CreateRaw(this, &FCommonImporterModule::PluginButtonClicked),
-		FCanExecuteAction());
+	//PluginCommands->MapAction(
+	//	FCommonImporterCommands::Get().CommonImporter,
+	//	FExecuteAction::CreateRaw(this, &FCommonImporterModule::PluginButtonClicked),
+	//	FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FCommonImporterModule::RegisterMenus));
 	
@@ -185,7 +185,12 @@ void FCommonImporterModule::RegisterMenus()
 		{
 			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("CommonImporter");
 			{
-				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FCommonImporterCommands::Get().CommonImporter));
+				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(
+					FCommonImporterCommands::Get().CommonImporter,
+					LOCTEXT("CommonImporter_Label", "CommonImporter"),
+					LOCTEXT("CommonImporter_Tooltip", "Import excel to UE as data table"),
+					FSlateIcon("CommonImporterStyle", "CommonImporter.Logo")
+					));
 				Entry.SetCommandList(PluginCommands);
 			}
 		}
