@@ -1,11 +1,10 @@
-#include "Battle/MWSkillSystem.h"
+#include "GameplayAbility/Battle/Skill/MWSkillSystem.h"
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystemComponent.h"
-#include "Battle/Skill/MWSkillBase.h"
+#include "GameplayAbility/Battle/Skill/MWSkillBase.h"
 #include "Data/MWGlobalData.h"
 #include "System/MWAssetManager.h"
-
-DEFINE_LOG_CATEGORY_STATIC(LogMWSkill, Log, All);
+#include "MWLogChannels.h"
 
 UMWSkillSystem::UMWSkillSystem(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

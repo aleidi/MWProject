@@ -1,5 +1,5 @@
 #include "Controller/MWPlayerController.h"
-#include "Subsystem/MWBattleSystem.h"
+#include "Gameplay/Battle/MWBattleSystem.h"
 #include "Character/MWTargetSelector.h"
 #include "GameFramework/Character.h"
 #include "Character/MWCharacter.h"

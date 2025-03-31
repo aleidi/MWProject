@@ -5,8 +5,8 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Gameplay/MWGameplayTypes.h"
 #include "Runtime/Engine/Classes/GameFramework/Pawn.h"
-#include "Subsystem/MWGameplaySubsystem.h"
-#include "Subsystem/MWBattleSystem.h"
+#include "Gameplay/MWGameplaySubsystem.h"
+#include "Gameplay/Battle/MWBattleSystem.h"
 
 void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
 {

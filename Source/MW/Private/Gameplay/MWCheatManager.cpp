@@ -1,6 +1,6 @@
 #include "Gameplay/MWCheatManager.h"
 #include "Gameplay/MWGameplayTypes.h"
-#include "Subsystem/MWBattleSystem.h"
+#include "Gameplay/Battle/MWBattleSystem.h"
 
 void UMWCheatManager::TargetSelctedTest(const FMWFoundActorInfo& TargetInfo)
 {

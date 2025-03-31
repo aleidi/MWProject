@@ -1,4 +1,4 @@
-#include "Subsystem/MWGameplaySubsystem.h"
+#include "Gameplay/MWGameplaySubsystem.h"
 #include "Gameplay/MWGameplayTypes.h"
 
 UDataTable* UMWGameplaySubsystem::GetTableCharacterInfo() const

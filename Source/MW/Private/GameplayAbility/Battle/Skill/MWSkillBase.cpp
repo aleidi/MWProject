@@ -1,4 +1,4 @@
-#include "Battle/Skill/MWSkillBase.h"
+#include "GameplayAbility/Battle/Skill/MWSkillBase.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 #include "MWLogChannels.h"

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "Battle/MWBattleTypes.h"
+#include "Gameplay/Battle/MWBattleTypes.h"
 #include "Gameplay/MWGameplayTypes.h"
 #include "MWBattleSystem.generated.h"
 
