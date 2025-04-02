@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Common.h"
 #include "EditorUtilityWidget.h"
 #include "libxl.h"
 #include "ExcelImporter.generated.h"

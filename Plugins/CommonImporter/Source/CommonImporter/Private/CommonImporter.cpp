@@ -39,7 +39,7 @@ void FCommonImporterModule::StartupModule()
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FCommonImporterModule::RegisterMenus));
 	
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(CommonImporterTabName, FOnSpawnTab::CreateRaw(this, &FCommonImporterModule::OnSpawnPluginTab))
-		.SetDisplayName(LOCTEXT("FCommonImporterTabTitle", "CommonImporter"))
+		.SetDisplayName(LOCTEXT("CommonImporter.FCommonImporterTabTitle", "CommonImporter"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
 
 	// Third Party
@@ -66,7 +66,7 @@ TSharedRef<SDockTab> FCommonImporterModule::OnSpawnPluginTab(const FSpawnTabArgs
 {
 	return SNew(SDockTab);
 	FText WidgetText = FText::Format(
-		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
+		LOCTEXT("CommonImporter.WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
 		FText::FromString(TEXT("FCommonImporterModule::OnSpawnPluginTab")),
 		FText::FromString(TEXT("CommonImporter.cpp"))
 		);
@@ -150,12 +150,12 @@ void FCommonImporterModule::InitThirdParty()
 		Handlelibxl = FPlatformProcess::GetDllHandle(*dll_path);
 		if (!Handlelibxl)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CommonImporter plguin : failed to load libxl dll."));
+			UE_LOG(LogCommonImporter, Warning, TEXT("CommonImporter plguin : failed to load libxl dll."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CommonImporter plguin : not found the plugin."));
+		UE_LOG(LogCommonImporter, Warning, TEXT("CommonImporter plguin : not found the plugin."));
 	}
 }
 
@@ -200,17 +200,17 @@ void FCommonImporterModule::RegisterMenus()
 void FCommonImporterModule::LoadExcelImporter()
 {
 	// get the  path of the asset by R.Clicking on the asset and 'Copy Reference'
-	const FStringAssetReference widgetAssetPath("/CommonImporter/LoadExcel.LoadExcel");
+	const FSoftObjectPath widgetAssetPath("/CommonImporter/LoadExcel.LoadExcel");
 
 	UObject* widgetAssetLoaded = widgetAssetPath.TryLoad();
 	if (widgetAssetLoaded == nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Missing Expected widget class at : /CommonImporter/LoadExcel.LoadExcel"));
+		UE_LOG(LogCommonImporter, Warning, TEXT("Missing Expected widget class at : /CommonImporter/LoadExcel.LoadExcel"));
 		return;
 	}
 
 	UEditorUtilityWidgetBlueprint* widget = Cast<UEditorUtilityWidgetBlueprint>(widgetAssetLoaded);
 	if (widget == nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Couldnt cast /CommonImporter/LoadExcel.LoadExcel to UEditorUtilityWidgetBlueprint"));
+		UE_LOG(LogCommonImporter, Warning, TEXT("Couldnt cast /CommonImporter/LoadExcel.LoadExcel to UEditorUtilityWidgetBlueprint"));
 		return;
 	}
 
