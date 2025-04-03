@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Common.h"
 #include "BlueprintEditorLibrary.h"
 #include "AssetCreator.generated.h"
 
@@ -11,5 +11,5 @@ class COMMONIMPORTER_API UAssetCreator : public UBlueprintEditorLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "CommonImporter|Asset")
-	static UObject* CreateAsset(FString AssetPath, UClass* AssetClass, UFactory* AssetFactory, bool& bOutSuccess, FString& OutInfoMessage);
+	static UObject* CreateAsset(FString AssetPath, UClass* AssetClass, UFactory* AssetFactory, bool& bOutSuccess);
 };

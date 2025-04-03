@@ -1,7 +1,7 @@
 #include "AssetCreator.h"
 #include "AssetToolsModule.h"
 
-UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFactory* AssetFactory, bool& bOutSuccess, FString& OutInfoMessage)
+UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFactory* AssetFactory, bool& bOutSuccess)
 {
 	// Get the asset tools module
 	IAssetTools& asset_tools = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools").Get();
@@ -22,7 +22,7 @@ UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFact
 		if (factory == nullptr)
 		{
 			bOutSuccess = false;
-			OutInfoMessage = FString::Printf(TEXT("Create asset failed."));
+			UE_LOG(LogCommonImporter, Warning, TEXT("Asset factory is not existed."));
 			return nullptr;
 		}
 	}
@@ -30,7 +30,7 @@ UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFact
 	if (factory->SupportedClass != AssetClass)
 	{
 		bOutSuccess = false;
-		OutInfoMessage = FString::Printf(TEXT("Create asset failed."));
+		UE_LOG(LogCommonImporter, Warning, TEXT("Not supported class : %s"), *AssetClass->GetName());
 		return nullptr;
 	}
 
@@ -40,11 +40,13 @@ UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFact
 	if (asset == nullptr)
 	{
 		bOutSuccess = false;
-		OutInfoMessage = FString::Printf(TEXT("Create asset failed."));
+		UE_LOG(LogCommonImporter, Warning, TEXT("asset instance creation failed : %s"), *AssetClass->GetName());
 		return nullptr;
 	}
 
 	bOutSuccess = true;
-	OutInfoMessage = FString::Printf(TEXT("Create asset succeed."));
+
+	UE_LOG(LogCommonImporter, Warning, TEXT("asset instance creation suceeed : %s"), *asset->GetName());
+
 	return asset;
 }

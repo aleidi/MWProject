@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Common.h"
 #include "Styling/SlateStyle.h"
 
 /**  */

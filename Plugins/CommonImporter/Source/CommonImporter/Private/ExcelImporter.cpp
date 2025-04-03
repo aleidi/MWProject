@@ -11,17 +11,17 @@
 #include "Engine/CurveTable.h"
 #include "AssetCreator.h"
 #include "Engine/CurveTable.h"
+#include "Editor/UnrealEd/Public/FileHelpers.h"
+
+#define LOCTEXT_NAMESPACE "CommonImporter"
 
 #define ASSET_SAVE_PATH_PREFIX	TEXT("/Game/")
-#define ASSET_SAVE_PATH_PROMPT	TEXT("The asset path must start with /Game/. Please ensure your input begins with this prefix.")
-#define EXCEL_PATH_PROMPT		TEXT("The excel file to be loaded is not found. Please input a valid path.")
 #define SHEET_DEFAULT_NUM		TEXT("0")
-#define SHEET_NUMBER_PROMPT		TEXT("It takes number as input for sheet number.")
 #define MAX_SHEET_NUM			99
 #define LIBXL_NAME				L"Aleidi"
 #define	LIBXL_KEY				L"windows-2b2b21050cc1e30b6ab3606ea9p1rdg1"
 
-UE_DISABLE_OPTIMIZATION
+
 UExcelImporter::UExcelImporter()
 {
 	IsExcelPathValid = false;
@@ -48,22 +48,25 @@ void UExcelImporter::NativeConstruct()
 
 void UExcelImporter::FindPath()
 {
-	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
-	if (DesktopPlatform == nullptr)
+	IDesktopPlatform* desktopPlatform = FDesktopPlatformModule::Get();
+	if (desktopPlatform == nullptr)
 		return;
 
 	static const FString DefaultPath = FPaths::GetProjectFilePath();
 	static const FString Filter = TEXT("excel file|*.xlsx;*.xls");
-	TArray<FString> OutFiles;
-	if (!DesktopPlatform->OpenFileDialog(nullptr, TEXT("Select excel file"), DefaultPath,
-		TEXT(""), Filter, EFileDialogFlags::None, OutFiles))
+
+	TArray<FString> outFiles;
+	if (!desktopPlatform->OpenFileDialog(nullptr, TEXT("Select excel file"), DefaultPath,
+		TEXT(""), Filter, EFileDialogFlags::None, outFiles))
 		return;
 
-	if (OutFiles.Num() <= 0)
+	if (outFiles.Num() <= 0)
 		return;
 
-	const FText text = FText::FromString(OutFiles[0]);
+	const FText text = FText::FromString(outFiles[0]);
+
 	ExcelPath->SetText(text);
+
 	// manually broadcast the text change event since SetText would not trigger it.
 	ExcelPath->OnTextChanged.Broadcast(text);
 }
@@ -72,7 +75,7 @@ void UExcelImporter::Execute()
 {
 	if (!IsExcelPathValid)
 	{
-		ResultDisplay->SetText(FText::FromString(EXCEL_PATH_PROMPT));
+		ResultDisplay->SetText(LOCTEXT("CommonImporter.ExcelPathPrompt", "The excel file to be loaded is not found. Please input a valid path."));
 		return;
 	}
 
@@ -81,35 +84,54 @@ void UExcelImporter::Execute()
 
 void UExcelImporter::LoadExcel()
 {
-	FString DisplayMessage;
-
 	// check asset path
-	const FString asset_name = FPaths::GetBaseFilename(ExcelPath->GetText().ToString());
-	const FString asset_path = AssetSavePath->GetText().ToString();
-	const FString complete_asset_path = FPaths::ProjectContentDir() + asset_path.Replace(TEXT("/game/"), TEXT("")).Replace(TEXT("\\game\\"), TEXT("")) + asset_name + TEXT(".uasset");
-	const bool is_file_exist = FPaths::FileExists(complete_asset_path);
+	const FString assetName = FPaths::GetBaseFilename(ExcelPath->GetText().ToString());
+	FString assetPath = AssetSavePath->GetText().ToString();
+
+	CommonImporter::FormatPathStr(assetPath);
+
+	assetPath = FPaths::ProjectContentDir() / assetPath.Replace(TEXT("/game/"), TEXT("")) / assetName + TEXT(".uasset");
+
+	const bool bIsFileExist = FPaths::FileExists(assetPath);
 
 	//  load or create a curve table asset
-	UCurveTable* curve_table = nullptr;
+	UCurveTable* curveTable = nullptr;
 
-	if (is_file_exist)
+	if (bIsFileExist)
 	{
-		DisplayMessage = TEXT("There is already a file with the same name.");
-		ResultDisplay->SetText(FText::FromString(DisplayMessage));
-		return;
+		EAppReturnType::Type Response = FMessageDialog::Open(
+			EAppMsgType::YesNo,
+			LOCTEXT("CommonImporter.OverwriteFilePrompt", "There is already a file with the same name.\nDo you want to overwrite it?")
+		);
+
+		if (Response == EAppReturnType::No)
+		{
+			ResultDisplay->SetText(LOCTEXT("CommonImporter.ExistFilePrompt", "There is already a file with the same name."));
+			return;
+		}
+
+		// try to load object
+		const FString curveTablePath = CommonImporter::ConvertToAssetPath(assetPath);
+
+		curveTable = LoadObject<UCurveTable>(nullptr, *curveTablePath);
+
+		if (!curveTable)
+		{
+			ResultDisplay->SetText(LOCTEXT("CommonImporter.LoadCurveTableFailed", "Curve table is existed but failed to load."));
+			return;
+		}
 	}
 	else
 	{
 		bool is_success = false;
-		curve_table = Cast<UCurveTable>(UAssetCreator::CreateAsset(FPaths::Combine(asset_path, asset_name), UCurveTable::StaticClass(), nullptr, is_success, DisplayMessage));
-		if (!curve_table)
+		curveTable = Cast<UCurveTable>(UAssetCreator::CreateAsset(FPaths::Combine(assetPath, assetName), UCurveTable::StaticClass(), nullptr, is_success));
+		if (!curveTable)
 		{
-			DisplayMessage = TEXT("Curve table creation is failed beause of : ") + DisplayMessage;
-			ResultDisplay->SetText(FText::FromString(DisplayMessage));
+			ResultDisplay->SetText(LOCTEXT("CommonImporter.CurveTableCreateFailPrompt", "Curve table creation is failed."));
 			return;
 		}
 	}
-	curve_table->EmptyTable();
+	curveTable->EmptyTable();
 
 	TArray<FCurveInfo> curves;
 
@@ -132,30 +154,47 @@ void UExcelImporter::LoadExcel()
 	// update curve table data
 	if (curves.Num() == 0)
 	{
-		DisplayMessage = TEXT("No curve loaded.");
-		ResultDisplay->SetText(FText::FromString(DisplayMessage));
+		ResultDisplay->SetText(LOCTEXT("CommonImporter.NoCurveTablePrompt", "No curve loaded."));
 		return;
 	}
 
 	for (FCurveInfo& curve : curves)
 	{
-		FSimpleCurve& tmp_curve = curve_table->AddSimpleCurve(*curve.CurveName);
+		FSimpleCurve& tmp_curve = curveTable->AddSimpleCurve(*curve.CurveName);
 		tmp_curve = curve.Curve;
 	}
 
-	DisplayMessage = FString::Printf(TEXT("%d curves loaded."), curves.Num());
-	ResultDisplay->SetText(FText::FromString(DisplayMessage));
+	// mark dirty
+	UPackage* Package = curveTable->GetOutermost();
+	if (Package) 
+	{
+		Package->MarkPackageDirty();
+	}
+
+	// reopen editor asset
+	if (UAssetEditorSubsystem* AssetEditorSubsystem = GEditor->GetEditorSubsystem<UAssetEditorSubsystem>())
+	{
+		if (AssetEditorSubsystem->FindEditorForAsset(curveTable, false))
+		{
+			AssetEditorSubsystem->CloseAllEditorsForAsset(curveTable);
+			AssetEditorSubsystem->OpenEditorForAsset(curveTable);
+		}
+	}
+
+	ResultDisplay->SetText(FText::Format(LOCTEXT("CommonImporter.LoadSucceedPrompt", "{0} curves loaded"), FText::AsNumber(curves.Num())));
 }
 
 void UExcelImporter::OnAssetPathChanged(const FText& Text)
 {
-	const FString str = Text.ToString();
-	
-	if (!str.StartsWith(TEXT("/Game/")) && !str.StartsWith("\\Game\\"))
+	FString str = Text.ToString();
+
+	CommonImporter::FormatPathStr(str);
+
+	if (!str.StartsWith(TEXT("/Game/")))
 	{
 		// fix the format and output prompt
 		AssetSavePath->SetText(FText::FromString(ASSET_SAVE_PATH_PREFIX));
-		ResultDisplay->SetText(FText::FromString(ASSET_SAVE_PATH_PROMPT));
+		ResultDisplay->SetText(LOCTEXT("CommonImporter.AssetSavePathPrompt", "The asset path must start with /Game/. Please ensure your input begins with this prefix."));
 	}
 }
 
@@ -185,7 +224,7 @@ void UExcelImporter::LoadSheets(libxl::Book* Book, TArray<FCurveInfo>& OutCurves
 		libxl::Sheet* sheet = Book->getSheet(i);
 		if (!sheet)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("sheet index %d is not existed."), i);
+			UE_LOG(LogCommonImporter, Warning, TEXT("sheet index %d is not existed."), i);
 			break;
 		}
 
@@ -230,7 +269,7 @@ float UExcelImporter::ReadNumData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 		libxl::CellType cell_type = Sheet->cellType(Row, Col);
 		if (cell_type != libxl::CELLTYPE_NUMBER)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("sheet data [%d,%d] is not number"), Row, Col);
+			UE_LOG(LogCommonImporter, Warning, TEXT("sheet data [%d,%d] is not number"), Row, Col);
 			return 0.f;
 		}
 
@@ -250,7 +289,7 @@ FString UExcelImporter::ReadStrData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 		libxl::CellType cell_type = Sheet->cellType(Row, Col);
 		if (cell_type != libxl::CELLTYPE_STRING)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("sheet data [%d,%d] is not string"), Row, Col);
+			UE_LOG(LogCommonImporter, Warning, TEXT("sheet data [%d,%d] is not string"), Row, Col);
 			return FString();
 		}
 
@@ -265,4 +304,5 @@ FString UExcelImporter::ReadStrData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 
 	return FString();
 }
-UE_ENABLE_OPTIMIZATION
+
+#undef LOCTEXT_NAMESPACE
