@@ -205,3 +205,11 @@ void UMWPawnExtensionComponent::OnTargetNotExisted(const FMWFoundActorInfo& Targ
         TargetSelector->OnTargetNotExisted(Target);
     }
 }
+
+void UMWPawnExtensionComponent::CastSkill(const FGameplayTag& SkillTag, FGameplayEventData Payload)
+{
+    if (AbilitySystemComponent.Get())
+    {
+        AbilitySystemComponent->HandleGameplayEvent(SkillTag, &Payload);
+    }
+}

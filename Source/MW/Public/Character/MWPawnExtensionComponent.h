@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Gameplay/MWPawnComponent.h"
+#include "GameplayTagContainer.h"
+#include "Abilities/GameplayAbilityTypes.h"
 #include "MWPawnExtensionComponent.generated.h"
 
 class UMWPawnData;
@@ -9,6 +11,11 @@ class FMWTargetSelector;
 struct FMWAbilitySetGrantedHandles;
 struct FMWFoundActorInfo;
 
+/* UMWPawnExtensionComponent
+* 
+* This class is used to extend the functionality of character so that character class can keep simple.
+* eg. various kinds of character data, ability system, battle function...
+*/
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class UMWPawnExtensionComponent : public UMWPawnComponent
 {
@@ -62,5 +69,13 @@ public:
 	void OnTargetNotExisted(const FMWFoundActorInfo& Target);
 protected:
 	TUniquePtr<FMWTargetSelector> TargetSelector;
+#pragma endregion
+
+#pragma region Battle
+	/* @param Tag		: used to find the skill ability and activate.
+	*  @param Payload	: extra information to pass
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void CastSkill(const FGameplayTag& Tag, FGameplayEventData Payload);
 #pragma endregion
 };

@@ -4,28 +4,31 @@
 
 #define DT_CHARACTERINFO TEXT("/Game/Datatable/Character/DT_CharacterInfo.DT_CharacterInfo")
 
+/* FMWFoundActorInfo
+*  It's a data struct used in searching a selectable actor.
+*/
 USTRUCT(BlueprintType)
 struct FMWFoundActorInfo
 {
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite)
-	FString Name = TEXT("NULL");
+	FString Name = TEXT("");
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bLeft;
+	bool bLeft = false;
 
 	UPROPERTY(BlueprintReadWrite)
-	float Angle;
+	float Angle = 0.f;
 
 	bool operator==(const FMWFoundActorInfo& Rhs)
 	{
 		return Name == Rhs.Name;
 	}
 
-	void Reset();
+	void Reset() { Name.Empty(); }
 
-	FORCEINLINE bool IsValid() const { return Name != TEXT("NULL"); }
+	FORCEINLINE bool IsValid() const { return Name.IsEmpty(); }
 };
 
 FORCEINLINE bool operator==(const FMWFoundActorInfo& Lhs, const FMWFoundActorInfo& Rhs)

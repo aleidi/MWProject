@@ -35,10 +35,7 @@ public:
 
 #pragma region Battle
 private:
-	UFUNCTION()
-	void NotifyPlayerAttackted(FMWFoundActorInfo Attacker, FMWFoundActorInfo Attackee);
-	UFUNCTION()
-	void OnOtherCharacterDied(FMWFoundActorInfo InCharacter);
+
 #pragma endregion
 
 	virtual void BeginPlay() override;

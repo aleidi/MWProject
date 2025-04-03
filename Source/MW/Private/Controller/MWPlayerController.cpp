@@ -56,28 +56,6 @@ void AMWPlayerController::UnlockTarget()
 	}
 }
 
-void AMWPlayerController::NotifyPlayerAttackted(FMWFoundActorInfo Attacker, FMWFoundActorInfo Attackee)
-{
-	if (Attackee.Name == GetPawn()->GetName())
-	{
-		if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-		{
-			comp->ForceLockIfNoTarget(Attacker);
-		}
-	}
-}
-
-void AMWPlayerController::OnOtherCharacterDied(FMWFoundActorInfo InCharacter)
-{
-	if (InCharacter.IsValid() && InCharacter.Name != GetCharacter()->GetName())
-	{
-		if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-		{
-			comp->OnTargetNotExisted(InCharacter);
-		}
-	}
-}
-
 void AMWPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -102,8 +80,7 @@ void AMWPlayerController::BindDelegates()
 {
 	if (UMWBattleSystem* mwbs = GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
-		mwbs->OnAttack.AddDynamic(this, &AMWPlayerController::NotifyPlayerAttackted);
-		mwbs->OnCharacterDied.AddDynamic(this, &AMWPlayerController::OnOtherCharacterDied);
+
 	}
 }
 
