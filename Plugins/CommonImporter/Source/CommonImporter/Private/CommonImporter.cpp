@@ -31,10 +31,10 @@ void FCommonImporterModule::StartupModule()
 	
 	PluginCommands = MakeShareable(new FUICommandList);
 
-	//PluginCommands->MapAction(
-	//	FCommonImporterCommands::Get().CommonImporter,
-	//	FExecuteAction::CreateRaw(this, &FCommonImporterModule::PluginButtonClicked),
-	//	FCanExecuteAction());
+	PluginCommands->MapAction(
+		FCommonImporterCommands::Get().CommonImporter,
+		FExecuteAction::CreateRaw(this, &FCommonImporterModule::PluginButtonClicked),
+		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FCommonImporterModule::RegisterMenus));
 	
@@ -172,13 +172,13 @@ void FCommonImporterModule::RegisterMenus()
 	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
 	FToolMenuOwnerScoped OwnerScoped(this);
 
-	{
-		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Tools");
-		{
-			FToolMenuSection& Section = Menu->FindOrAddSection("Tools");
-			Section.AddMenuEntryWithCommandList(FCommonImporterCommands::Get().CommonImporter, PluginCommands);
-		}
-	}
+	//{
+	//	UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Tools");
+	//	{
+	//		FToolMenuSection& Section = Menu->FindOrAddSection("Tools");
+	//		Section.AddMenuEntryWithCommandList(FCommonImporterCommands::Get().CommonImporter, PluginCommands);
+	//	}
+	//}
 
 	{
 		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
