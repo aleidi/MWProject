@@ -4,6 +4,7 @@
 !Document/
 !Plugins/
 !Source/
+!Resource/
 !*.uproject
 
 # Windows generated files
