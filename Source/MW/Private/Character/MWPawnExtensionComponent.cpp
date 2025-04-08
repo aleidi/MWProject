@@ -9,6 +9,7 @@
 #include "GameplayAbility/MWAbilitySet.h"
 #include "Character/MWTargetSelector.h"
 #include "Character/MWCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UMWPawnExtensionComponent::BeginPlay()
 {
@@ -211,5 +212,27 @@ void UMWPawnExtensionComponent::CastSkill(const FGameplayTag& SkillTag, FGamepla
     if (AbilitySystemComponent.Get())
     {
         AbilitySystemComponent->HandleGameplayEvent(SkillTag, &Payload);
+    }
+}
+
+void UMWPawnExtensionComponent::AddForce(const FVector& Dir, float Intensity)
+{
+    if (auto* pawn = GetPawnChecked<APawn>())
+    {
+        if (auto* moveComp = pawn->GetComponentByClass<UCharacterMovementComponent>())
+        {
+            moveComp->AddImpulse(Dir * Intensity * 1000.f, true);
+        }
+    }
+}
+
+void UMWPawnExtensionComponent::AffectedByGravity(bool bAffect)
+{
+    if (auto* pawn = GetPawnChecked<APawn>())
+    {
+        if (auto* moveComp = pawn->GetComponentByClass<UCharacterMovementComponent>())
+        {
+            moveComp->SetMovementMode(bAffect ? EMovementMode::MOVE_Walking : EMovementMode::MOVE_None);
+        }
     }
 }

@@ -72,10 +72,19 @@ protected:
 #pragma endregion
 
 #pragma region Battle
+public:
 	/* @param Tag		: used to find the skill ability and activate.
 	*  @param Payload	: extra information to pass
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void CastSkill(const FGameplayTag& Tag, FGameplayEventData Payload);
+
+	/* Add a force to move pawn a certain distance. */
+	UFUNCTION(BlueprintCallable, Category = "Battle|Combat")
+	void AddForce(const FVector& Dir, float Intensity);
+
+	/* This function will change the movement mode to get the pawn unaffected by gravity. */
+	UFUNCTION(BlueprintCallable, Category = "Battle|Combat")
+	void AffectedByGravity(bool bAffect);
 #pragma endregion
 };

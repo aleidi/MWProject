@@ -9,5 +9,15 @@ class UMWAnimNotify : public UAnimNotify
 	GENERATED_BODY()
 
 protected:
-	class UMWAbilitySystemComponent* GetAbilitySystemComponent(USkeletalMeshComponent* MeshComp) const;
+	template<typename T>
+	T* GetComponent(USkeletalMeshComponent* MeshComp) const
+	{
+		AActor* owner = MeshComp ? MeshComp->GetOwner() : nullptr;
+		if (owner)
+		{
+			return owner->GetComponentByClass<T>();
+		}
+
+		return nullptr;
+	}
 };
