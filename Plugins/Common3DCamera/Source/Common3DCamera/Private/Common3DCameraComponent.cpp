@@ -73,7 +73,7 @@ void UC3DCameraComponent::InitializeComponent()
 void UC3DCameraComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	USceneComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	UE_LOG(LogTemp, Log, TEXT("%s"), UTF8_TO_TCHAR(__FUNCTION__));
+	//UE_LOG(LogTemp, Log, TEXT("%s"), UTF8_TO_TCHAR(__FUNCTION__));
 
 	if (IsCineCameraActive())
 	{
