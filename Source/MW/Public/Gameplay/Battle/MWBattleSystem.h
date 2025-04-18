@@ -10,63 +10,81 @@
 
 #pragma region Skill
 /* Used to trigger gameplay ability for skill. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTriggerSkillAbility, const FGameplayTag&, Tag);
+DECLARE_MULTICAST_DELEGATE_OneParam(FTriggerSkillAbility, const FGameplayTag&);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkillTriggered, int32, SkillId);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSkillTriggered, int32);
 #pragma endregion
 
 #pragma region Target_Select
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetSelcted, FMWFoundActorInfo, TargetInfo);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTargetSelcted, FMWFoundActorInfo);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetCancelSelcted, FMWFoundActorInfo, TargetInfo);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTargetCancelSelcted, FMWFoundActorInfo);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetLocked, FMWFoundActorInfo, Target);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTargetLocked, FMWFoundActorInfo);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargetUnlocked, FMWFoundActorInfo, Target);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTargetUnlocked, FMWFoundActorInfo);
 #pragma endregion
 
 #pragma region Character
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDied, AActor*, Actor);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRevive, AActor*, Actor);
-
 /* Source is the attacker, target is the victim. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStartAttack, AActor*, Source, AActor*, Actor);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnStartAttack, AActor*, AActor*);
 
 /* Source is the attacker, target is the victim, location is the hit point. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHit, AActor*, Source, AActor*, Target, const FVector&, Location);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnHit, AActor*, AActor*, const FVector&);
 
 /* Source is the attacker, target is the victim, location is the hit point. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCriticalHit, AActor*, Source, AActor*, Target, const FVector&, Location);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnCriticalHit, AActor*, AActor*, const FVector&);
 
 /* Source is the attacker, target is the victim, Location is the attack point. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttackMiss, AActor*, Source, AActor*, Target, const FVector&, Location);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnAttackMiss, AActor*, AActor*, const FVector&);
 
 /* Source is the attacker, target is the victim. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHeal, AActor*, Source, AActor*, Target);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHeal, AActor*, AActor*);
+
+#pragma endregion
+
+#pragma region Battle
+DECLARE_MULTICAST_DELEGATE(FOnBattleBegin);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleEnd, EBattleResult);
+
+DECLARE_MULTICAST_DELEGATE(FOnBattleBeginPrepareComplete);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRoundBegin, int32);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRoundEnd, int32);
+
+/* Begin of the team's turn. */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnBegin, const FMWTeam&);
+
+/* End of the team's turn. */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnEnd, const FMWTeam&);
+
+DECLARE_MULTICAST_DELEGATE(FOnActionComplete);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInsertMoveAction, int32);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTeamDied, const FMWTeam&);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTeamRevive, const FMWTeam&);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTeamMemberDied, const FMWTeam&);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTeamMemberRevive, const FMWTeam&);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActionQueueUpdate, const TArray<FMWTeam>&);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActionBuffUpdate, const EMWBattleActionBuff&);
 
 #pragma endregion
 
 #pragma region Party
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOneJoinParty, AActor*, Actor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnOneJoinParty, AActor*);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOneLeaveParty, AActor*, Actor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnOneLeaveParty, AActor*);
 #pragma endregion
 
 #pragma region Common
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBattleStart);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBattleEnd, bool, IsVectory);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundBegin);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundEnd);
-
-/* begin of the actor's turn. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnBegin, AActor*, Actor);
-
-/* end of the actor's turn. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnEnd, AActor*, Actor);
 
 #pragma endregion
 
@@ -79,24 +97,62 @@ class MW_API UMWBattleSystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FTriggerSkillAbility TriggerSkillAbility;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FOnSkillTriggered OnSkillTriggered;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FOnTargetSelcted OnTargetSelected;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FOnTargetCancelSelcted OnTargetCancelSelected;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
-	FOnDied OnCharacterDied;
-
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FOnTargetLocked OnTargetLocked;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Battle")
 	FOnTargetUnlocked OnTargetUnlocked;
+
+	FOnBattleBegin OnBattleBegin;
+
+	FOnBattleEnd OnBattleEnd;
+
+	FOnBattleBeginPrepareComplete OnBattleBeginPrepareComplete;
+
+	FOnRoundBegin OnRoundBegin;
+
+	FOnRoundEnd OnRoundEnd;
+
+	FOnTurnBegin OnTurnBegin;
+
+	FOnTurnEnd OnTurnEnd;
+
+	FOnActionComplete OnActionComplete;
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void ActionComplete();
+
+	FOnTeamDied OnTeamDied;
+
+	FOnTeamRevive OnTeamRevive;
+
+	FOnTeamMemberDied OnTeamMemberDied;
+
+	FOnTeamMemberRevive OnTeamMemberRevive;
+
+	FOnActionQueueUpdate OnActionQueueUpdate;
+
+	FOnActionBuffUpdate OnActionBuffUpdate;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void StartBattle(const TArray<FMWTeam>& InTeams);
+
+	/* Force to end a battle and decide which force is the winner.
+	* @param Winner : 0 = player win, 1 = enemy win, 2 = draw
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void EndBattle(uint8 Winner);
+
+private:
+	void OnBattleEndCallback(EBattleResult Result);
+
+private:
+	FDelegateHandle DHBattleEnd;
+
+	TObjectPtr<class UMWBattle> BattleInst;
 };
