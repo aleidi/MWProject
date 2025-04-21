@@ -151,6 +151,8 @@ public:
 private:
 	void OnBattleEndCallback(EBattleResult Result);
 
+	void OnGameModeLogout(AGameModeBase* GameMode, AController* );
+
 private:
 	FDelegateHandle DHBattleEnd;
 

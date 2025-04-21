@@ -1,5 +1,6 @@
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/Battle/MWBattle.h"
+#include "GameFramework/GameModeBase.h"
 
 void UMWBattleSystem::ActionComplete()
 {
@@ -24,6 +25,8 @@ void UMWBattleSystem::StartBattle(const TArray<FMWTeam>& InTeams)
 		OnBattleEnd.Remove(DHBattleEnd);
 	}
 	DHBattleEnd = OnBattleEnd.AddUObject(this, &UMWBattleSystem::OnBattleEndCallback);
+
+	FGameModeEvents::OnGameModeLogoutEvent().AddUObject(this, &UMWBattleSystem::OnGameModeLogout);
 }
 
 void UMWBattleSystem::EndBattle(uint8 Winner)
@@ -43,4 +46,12 @@ void UMWBattleSystem::OnBattleEndCallback(EBattleResult Result)
 	}
 
 	OnBattleEnd.Remove(DHBattleEnd);
+}
+
+void UMWBattleSystem::OnGameModeLogout(AGameModeBase* GameMode, AController* Exiting)
+{
+	if (GetWorld()->GetFirstPlayerController() == Exiting)
+	{
+		OnBattleEndCallback(EBattleResult::PlayerWin);
+	}
 }
