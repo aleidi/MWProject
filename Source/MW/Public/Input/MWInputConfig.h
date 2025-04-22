@@ -69,5 +69,5 @@ public:
 	TArray<FMWInputAction> AbilityInputActions;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "Mapping"))
-	TArray<FMWInputMappingContextWithPriority> InputMappingContext;
+	TMap<FName, FMWInputMappingContextWithPriority> InputMappingContext;
 };

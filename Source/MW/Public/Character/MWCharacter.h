@@ -26,6 +26,8 @@ class MW_API AMWCharacter : public ACharacter,
 
 public:
 	AMWCharacter(const FObjectInitializer& ObjectInitializer);
+
+	virtual void Tick(float DeltaSeconds) override;
 	
 #pragma region GAS
 public:
@@ -38,16 +40,32 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
-#pragma region Input
-public:
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-#pragma endregion
-
 protected:
 	// The ability system component sub-object used by player characters.
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
 #pragma endregion 
+
+#pragma region Input
+public:
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+#pragma endregion
+
+#pragma region Move
+private:
+	virtual void UpdatePawnRotation(float DeltaTime);
+	
+private:
+	// temporary value
+	FRotator LastVelocityRotation;
+	FRotator DesiredPawnRotation;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	float DesiredRotInterpSpeed = 460.f;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	float PawnRotInterpSpeed = 10.f;
+#pragma endregion
 
 #pragma region Battle
 public:

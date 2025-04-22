@@ -6,6 +6,8 @@
 class FMWTargetSelector;
 class UAbilitySystemComponent;
 class UMWAbilitySystemComponent;
+struct FGameplayTag;
+struct FInputActionValue;
 
 UCLASS()
 class AMWPlayerController : public APlayerController
@@ -15,8 +17,28 @@ class AMWPlayerController : public APlayerController
 public:
 	AMWPlayerController();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	class AMWCharacter* GetMWCharacter() const;
+
+#pragma region Input
+protected:
+	virtual void SetupInputComponent() override;
+
+	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
+
+	void Input_Move(const FInputActionValue& InputActionValue);
+	void Input_LookAt(const FInputActionValue& InputActionValue);
+	void Input_LookStick(const FInputActionValue& InputActionValue);
+	void Input_Crouch(const FInputActionValue& InputActionValue);
+	void Input_AutoRun(const FInputActionValue& InputActionValue);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
+	FName IMCTag = TEXT("BaseInput");
+#pragma endregion
 
 #pragma region Select Target
 public:

@@ -32,6 +32,15 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 
 	BattleSet = CreateDefaultSubobject<UMWBattleSet>(TEXT("MWBattleSet"));
+
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMWCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	UpdatePawnRotation(DeltaSeconds);
 }
 
 UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
@@ -52,11 +61,21 @@ void AMWCharacter::UnPossessed()
 void AMWCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
-	if (HeroComp)
+void AMWCharacter::UpdatePawnRotation(float DeltaTime)
+{
+	const FVector curr_vel = GetVelocity();
+	if (curr_vel.SizeSquared2D() > 0.f)
 	{
-		HeroComp->InitializePlayerInput(PlayerInputComponent);
+		LastVelocityRotation = curr_vel.Rotation();
 	}
+
+	const FRotator desired_rot = FRotator(0.f, LastVelocityRotation.Yaw, 0.f);
+	DesiredPawnRotation = FMath::RInterpConstantTo(DesiredPawnRotation, desired_rot, DeltaTime, DesiredRotInterpSpeed);
+
+	const FRotator actor_rot = GetActorRotation();
+	SetActorRotation(FMath::RInterpTo(actor_rot, DesiredPawnRotation, DeltaTime, PawnRotInterpSpeed));
 }
 
 void AMWCharacter::ChangeBattleState(MWBehaviorState::EBehaviorState NewState)
