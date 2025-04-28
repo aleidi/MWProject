@@ -23,17 +23,37 @@ protected:
 	class AMWCharacter* GetMWCharacter() const;
 
 #pragma region Input
+public:
+	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
+	bool AddNewMappingContext(const FName& Tag);
+
 protected:
 	virtual void SetupInputComponent() override;
 
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
+	// Default Input
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookAt(const FInputActionValue& InputActionValue);
 	void Input_LookStick(const FInputActionValue& InputActionValue);
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 	void Input_AutoRun(const FInputActionValue& InputActionValue);
+
+	// Battle Command
+	void Input_CMD_Attack(const FInputActionValue& InputActionValue);
+	void Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue);
+	void Input_CMD_Charge(const FInputActionValue& InputActionValue);
+	void Input_CMD_Item(const FInputActionValue& InputActionValue);
+	void Input_CMD_Special(const FInputActionValue& InputActionValue);
+	void Input_CMD_Spirit(const FInputActionValue& InputActionValue);
+
+	// Combat Command
+	void Input_CC_Attack(const FInputActionValue& InputActionValue);
+	void Input_CC_Direction(const FInputActionValue& InputActionValue);
+	void Input_CC_SupportAttack1(const FInputActionValue& InputActionValue);
+	void Input_CC_SupportAttack2(const FInputActionValue& InputActionValue);
+	void Input_CC_UltimateSkill(const FInputActionValue& InputActionValue);
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))

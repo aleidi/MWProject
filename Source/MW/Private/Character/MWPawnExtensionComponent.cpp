@@ -85,8 +85,6 @@ void UMWPawnExtensionComponent::UninitializeAbilitySystem()
     if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
     {
         FGameplayTagContainer AbilityTypesToIgnore;
-        AbilityTypesToIgnore.AddTag(MWGameplayTags::Ability_Behavior_SurvivesDeath);
-
         AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
         AbilitySystemComponent->ClearAllAbilities();
         AbilitySystemComponent->ClearAbilityInput();

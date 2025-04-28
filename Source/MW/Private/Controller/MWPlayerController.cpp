@@ -13,6 +13,9 @@
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "Gameplay/MWGameplayTags.h"
 
+#define DEBUG_PRINT_FUNC() \
+if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
+
 AMWPlayerController::AMWPlayerController()
 {
 	
@@ -26,6 +29,49 @@ void AMWPlayerController::Tick(float DeltaSeconds)
 AMWCharacter* AMWPlayerController::GetMWCharacter() const
 {
 	return Cast<AMWCharacter>(GetPawn());
+}
+
+bool AMWPlayerController::AddNewMappingContext(const FName& Tag)
+{
+	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
+	check(local_player);
+
+	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(subsystem);
+
+	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	{
+		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		{
+			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
+			{
+				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(Tag))
+				{
+					if (mapping->Mapping.Get())
+					{
+						settings->RegisterInputMappingContext(mapping->Mapping);
+
+						// Structure to hold one-time initialization
+						struct FMappingOption
+						{
+							FModifyContextOptions Option;
+							FMappingOption()
+							{
+								Option.bIgnoreAllPressedKeysUntilRelease = false;
+							}
+						};
+						static FMappingOption mapping_option;
+
+						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, mapping_option.Option);
+
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void AMWPlayerController::SetupInputComponent()
@@ -80,13 +126,27 @@ void AMWPlayerController::SetupInputComponent()
 				// This is where we actually bind and input action to a gameplay tag, which means that Gameplay Ability Blueprints will
 				// be triggered directly by these input actions Triggered events. 
 				TArray<uint32> bind_handles;
-				mwic->BindAbilityActions(input_config, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
 
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, /*bLogIfNotFound=*/ false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, /*bLogIfNotFound=*/ false);
-				//mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_Look_Stick, ETriggerEvent::Triggered, this, &ThisClass::Input_LookStick, /*bLogIfNotFound=*/ false);
-				//mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_Crouch, ETriggerEvent::Triggered, this, &ThisClass::Input_Crouch, /*bLogIfNotFound=*/ false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, /*bLogIfNotFound=*/ false);
+				// default input
+				mwic->BindAbilityActions(input_config, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
+
+				// battle command input
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Attack, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Attack, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_ChangeLeader, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_ChangeLeader, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Charge, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Charge, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Item, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Item, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Special, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Special, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Spirit, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Spirit, false);
+
+				// combat command input
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Direction, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Direction, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack1, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack1, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack2, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack2, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_UltimateSkill, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_UltimateSkill, false);
 			}
 		}
 	}
@@ -151,16 +211,84 @@ void AMWPlayerController::Input_LookAt(const FInputActionValue& InputActionValue
 
 void AMWPlayerController::Input_LookStick(const FInputActionValue& InputActionValue)
 {
-
+	DEBUG_PRINT_FUNC();
 }
 
 void AMWPlayerController::Input_Crouch(const FInputActionValue& InputActionValue)
 {
-
+	DEBUG_PRINT_FUNC();
 }
 
 void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CMD_Attack(const FInputActionValue& InputActionValue)
+{
+	// broadcast event to enter combat command
+	// open command ui
+	DEBUG_PRINT_FUNC();
+}
+
+void AMWPlayerController::Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue)
+{
+
+	DEBUG_PRINT_FUNC();
+}
+
+void AMWPlayerController::Input_CMD_Charge(const FInputActionValue& InputActionValue)
+{
+
+	DEBUG_PRINT_FUNC();
+}
+
+void AMWPlayerController::Input_CMD_Item(const FInputActionValue& InputActionValue)
+{
+
+	DEBUG_PRINT_FUNC();
+}
+
+void AMWPlayerController::Input_CMD_Special(const FInputActionValue& InputActionValue)
+{
+
+	DEBUG_PRINT_FUNC();
+}
+
+void AMWPlayerController::Input_CMD_Spirit(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CC_Attack(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CC_Direction(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CC_SupportAttack1(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CC_SupportAttack2(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
+
+}
+
+void AMWPlayerController::Input_CC_UltimateSkill(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC();
 
 }
 

@@ -76,6 +76,10 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnActionQueueUpdate, const TArray<FMWTeam>&
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnActionBuffUpdate, const EMWBattleActionBuff&);
 
+DECLARE_MULTICAST_DELEGATE(FOnStartCombat);
+
+DECLARE_MULTICAST_DELEGATE(FOnEndCombat);
+
 #pragma endregion
 
 #pragma region Party
@@ -139,6 +143,14 @@ public:
 
 	FOnActionBuffUpdate OnActionBuffUpdate;
 
+	// Battle Command
+
+	// Combat Command
+	FOnStartCombat OnStartCombat;
+
+	FOnEndCombat OnEndCombat;
+
+public:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void StartBattle(const TArray<FMWTeam>& InTeams);
 
