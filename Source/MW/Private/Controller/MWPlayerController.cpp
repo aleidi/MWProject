@@ -13,12 +13,12 @@
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "Gameplay/MWGameplayTags.h"
 
-#define DEBUG_PRINT_FUNC() \
-if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
+#define DEBUG_PRINT_FUNC(Time) \
+if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
 
 AMWPlayerController::AMWPlayerController()
 {
-	
+	MappingOption.bIgnoreAllPressedKeysUntilRelease = false;
 }
 
 void AMWPlayerController::Tick(float DeltaSeconds)
@@ -47,22 +47,19 @@ bool AMWPlayerController::AddNewMappingContext(const FName& Tag)
 			{
 				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(Tag))
 				{
-					if (mapping->Mapping.Get())
+					if (mapping->Mapping.Get() && !MappingContextStack.Contains(*mapping))
 					{
+						// remove old mapping first then register the new mapping
+						const int num = MappingContextStack.Num();
+						if (num > 0)
+						{
+							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping);
+						}
+
 						settings->RegisterInputMappingContext(mapping->Mapping);
 
-						// Structure to hold one-time initialization
-						struct FMappingOption
-						{
-							FModifyContextOptions Option;
-							FMappingOption()
-							{
-								Option.bIgnoreAllPressedKeysUntilRelease = false;
-							}
-						};
-						static FMappingOption mapping_option;
-
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, mapping_option.Option);
+						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
+						MappingContextStack.Push(*mapping);
 
 						return true;
 					}
@@ -72,6 +69,30 @@ bool AMWPlayerController::AddNewMappingContext(const FName& Tag)
 	}
 
 	return false;
+}
+
+bool AMWPlayerController::RemoveLastMappingContext()
+{
+	if (MappingContextStack.Num() == 0)
+	{
+		return false;
+	}
+
+	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
+	check(local_player);
+
+	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(subsystem);
+
+	// remove old mapping context
+	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, MappingOption);
+
+	// enable the last mapping context
+	auto mapping = MappingContextStack[MappingContextStack.Num() - 1];
+
+	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
+
+	return true;
 }
 
 void AMWPlayerController::SetupInputComponent()
@@ -90,29 +111,7 @@ void AMWPlayerController::SetupInputComponent()
 	{
 		if (UMWInputConfig* input_config = data->InputConfig.Get())
 		{
-			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
-			{
-				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(IMCTag))
-				{
-					if (mapping->Mapping.Get())
-					{
-						settings->RegisterInputMappingContext(mapping->Mapping);
-
-						// Structure to hold one-time initialization
-						struct FMappingOption
-						{
-							FModifyContextOptions Option;
-							FMappingOption()
-							{
-								Option.bIgnoreAllPressedKeysUntilRelease = false;
-							}
-						};
-						static FMappingOption mapping_option;
-
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, mapping_option.Option);
-					}
-				}
-			}
+			AddNewMappingContext(IMCTag);
 
 			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
 			// If you want this functionality but still want to change your input component class, make it a subclass
@@ -211,17 +210,17 @@ void AMWPlayerController::Input_LookAt(const FInputActionValue& InputActionValue
 
 void AMWPlayerController::Input_LookStick(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_Crouch(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 
 }
 
@@ -229,67 +228,58 @@ void AMWPlayerController::Input_CMD_Attack(const FInputActionValue& InputActionV
 {
 	// broadcast event to enter combat command
 	// open command ui
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue)
 {
-
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CMD_Charge(const FInputActionValue& InputActionValue)
 {
-
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CMD_Item(const FInputActionValue& InputActionValue)
 {
-
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CMD_Special(const FInputActionValue& InputActionValue)
 {
-
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CMD_Spirit(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
-
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CC_Attack(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
-
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CC_Direction(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
-
+	DEBUG_PRINT_FUNC(0.f);
 }
 
 void AMWPlayerController::Input_CC_SupportAttack1(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
-
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::Input_CC_SupportAttack2(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
+	DEBUG_PRINT_FUNC(2.f);
 
 }
 
 void AMWPlayerController::Input_CC_UltimateSkill(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC();
-
+	DEBUG_PRINT_FUNC(2.f);
 }
 
 void AMWPlayerController::SwitchToLeftTarget()

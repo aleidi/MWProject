@@ -1,13 +1,16 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
+#include "EnhancedInputSubsystems.h"
 #include "MWPlayerController.generated.h"
 
 class FMWTargetSelector;
 class UAbilitySystemComponent;
 class UMWAbilitySystemComponent;
+class UInputMappingContext;
 struct FGameplayTag;
 struct FInputActionValue;
+struct FMWInputMappingContextWithPriority;
 
 UCLASS()
 class AMWPlayerController : public APlayerController
@@ -24,8 +27,14 @@ protected:
 
 #pragma region Input
 public:
+	/* Add a new mapping context to input system. */
 	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
 	bool AddNewMappingContext(const FName& Tag);
+
+	/* Remove the last added mapping context from input system. */
+	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
+	bool RemoveLastMappingContext();
+
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -58,6 +67,12 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
 	FName IMCTag = TEXT("BaseInput");
+
+private:
+	TArray<FMWInputMappingContextWithPriority> MappingContextStack;
+
+	FModifyContextOptions MappingOption;
+
 #pragma endregion
 
 #pragma region Select Target

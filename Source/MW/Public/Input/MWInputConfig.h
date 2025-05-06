@@ -40,6 +40,11 @@ struct FMWInputMappingContextWithPriority
 	/* High priority mapping would override low priority. */
 	UPROPERTY(EditDefaultsOnly)
 	int32 Priority;
+
+	bool operator==(const FMWInputMappingContextWithPriority& Other) const
+	{
+		return Mapping == Other.Mapping;
+	}
 };
 
 /**
