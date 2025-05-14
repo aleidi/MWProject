@@ -18,7 +18,8 @@ if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Pr
 
 AMWPlayerController::AMWPlayerController()
 {
-	MappingOption.bIgnoreAllPressedKeysUntilRelease = false;
+	RemoveMappingOption.bIgnoreAllPressedKeysUntilRelease = false;
+	RemoveMappingOption.bForceImmediately = true;
 }
 
 void AMWPlayerController::Tick(float DeltaSeconds)
@@ -31,7 +32,7 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
-bool AMWPlayerController::AddNewMappingContext(const FName& Tag)
+void AMWPlayerController::AddNewMappingContext(const FName& Tag)
 {
 	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
 	check(local_player);
@@ -53,29 +54,25 @@ bool AMWPlayerController::AddNewMappingContext(const FName& Tag)
 						const int num = MappingContextStack.Num();
 						if (num > 0)
 						{
-							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping);
+							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping, RemoveMappingOption);
 						}
 
 						settings->RegisterInputMappingContext(mapping->Mapping);
 
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
+						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, RemoveMappingOption);
 						MappingContextStack.Push(*mapping);
-
-						return true;
 					}
 				}
 			}
 		}
 	}
-
-	return false;
 }
 
-bool AMWPlayerController::RemoveLastMappingContext()
+void AMWPlayerController::RemoveLastMappingContext()
 {
 	if (MappingContextStack.Num() == 0)
 	{
-		return false;
+		return;
 	}
 
 	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
@@ -85,14 +82,50 @@ bool AMWPlayerController::RemoveLastMappingContext()
 	check(subsystem);
 
 	// remove old mapping context
-	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, MappingOption);
+	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, RemoveMappingOption);
 
 	// enable the last mapping context
 	auto mapping = MappingContextStack[MappingContextStack.Num() - 1];
 
-	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
+	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, RemoveMappingOption);
+}
 
-	return true;
+void AMWPlayerController::RemoveMappingContext(const FName& Tag)
+{
+	if (MappingContextStack.Num() == 0)
+	{
+		return;
+	}
+
+	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
+	check(local_player);
+
+	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(subsystem);
+
+	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	{
+		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		{
+			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
+			{
+				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(Tag))
+				{
+					FMWInputMappingContextWithPriority mappingToRemove = *MappingContextStack.FindByPredicate([mapping](const FMWInputMappingContextWithPriority& IMC)
+					{
+						return IMC == *mapping;
+					});
+
+					if (mappingToRemove.Mapping)
+					{
+						subsystem->RemoveMappingContext(mappingToRemove.Mapping);
+					}
+
+					MappingContextStack.Remove(mappingToRemove);
+				}
+			}
+		}
+	}
 }
 
 void AMWPlayerController::SetupInputComponent()
@@ -111,7 +144,7 @@ void AMWPlayerController::SetupInputComponent()
 	{
 		if (UMWInputConfig* input_config = data->InputConfig.Get())
 		{
-			AddNewMappingContext(IMCTag);
+			AddNewMappingContext(BaseIMCTag);
 
 			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
 			// If you want this functionality but still want to change your input component class, make it a subclass
@@ -141,8 +174,10 @@ void AMWPlayerController::SetupInputComponent()
 				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Spirit, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Spirit, false);
 
 				// combat command input
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Direction, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Direction, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Up, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Up, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Down, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Down, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Left, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Left, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Right, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Right, false);
 				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack1, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack1, false);
 				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack2, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack2, false);
 				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_UltimateSkill, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_UltimateSkill, false);
@@ -221,7 +256,6 @@ void AMWPlayerController::Input_Crouch(const FInputActionValue& InputActionValue
 void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
 	DEBUG_PRINT_FUNC(2.f);
-
 }
 
 void AMWPlayerController::Input_CMD_Attack(const FInputActionValue& InputActionValue)
@@ -229,6 +263,8 @@ void AMWPlayerController::Input_CMD_Attack(const FInputActionValue& InputActionV
 	// broadcast event to enter combat command
 	// open command ui
 	DEBUG_PRINT_FUNC(2.f);
+
+	ApplyCombatCommandIMC();
 }
 
 void AMWPlayerController::Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue)
@@ -256,14 +292,30 @@ void AMWPlayerController::Input_CMD_Spirit(const FInputActionValue& InputActionV
 	DEBUG_PRINT_FUNC(2.f);
 }
 
-void AMWPlayerController::Input_CC_Attack(const FInputActionValue& InputActionValue)
+void AMWPlayerController::Input_CC_Attack_Up(const FInputActionValue& InputActionValue)
 {
 	DEBUG_PRINT_FUNC(2.f);
+
+	// 触发方向技能
+	// 
 }
 
-void AMWPlayerController::Input_CC_Direction(const FInputActionValue& InputActionValue)
+void AMWPlayerController::Input_CC_Attack_Down(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC(0.f);
+	DEBUG_PRINT_FUNC(2.f);
+
+}
+
+void AMWPlayerController::Input_CC_Attack_Left(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC(2.f);
+
+}
+
+void AMWPlayerController::Input_CC_Attack_Right(const FInputActionValue& InputActionValue)
+{
+	DEBUG_PRINT_FUNC(2.f);
+
 }
 
 void AMWPlayerController::Input_CC_SupportAttack1(const FInputActionValue& InputActionValue)
@@ -274,7 +326,6 @@ void AMWPlayerController::Input_CC_SupportAttack1(const FInputActionValue& Input
 void AMWPlayerController::Input_CC_SupportAttack2(const FInputActionValue& InputActionValue)
 {
 	DEBUG_PRINT_FUNC(2.f);
-
 }
 
 void AMWPlayerController::Input_CC_UltimateSkill(const FInputActionValue& InputActionValue)
@@ -320,6 +371,51 @@ void AMWPlayerController::UnlockTarget()
 	{
 		comp->UnlockTarget();
 	}
+}
+
+void AMWPlayerController::OnBattleBegin()
+{
+	UMWBattleSystem* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>();
+
+	if (battleSys)
+	{
+		DHApplyBattleCommand = battleSys->OnCommandBattleBegin.AddUObject(this, &AMWPlayerController::ApplyBattleCommandIMC);
+		DHRemoveBattleCommand = battleSys->OnCommandBattleEnd.AddUObject(this, &AMWPlayerController::RemoveBattleCommandIMC);
+	}
+}
+
+void AMWPlayerController::OnBattleEnd()
+{
+	UMWBattleSystem* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>();
+
+	if (battleSys)
+	{
+		battleSys->OnCommandBattleBegin.Remove(DHApplyBattleCommand);
+		battleSys->OnCommandBattleEnd.Remove(DHRemoveBattleCommand);
+
+		DHApplyBattleCommand.Reset();
+		DHRemoveBattleCommand.Reset();
+	}
+}
+
+void AMWPlayerController::ApplyBattleCommandIMC()
+{
+	AddNewMappingContext(BattleCommandIMCTag);
+}
+
+void AMWPlayerController::RemoveBattleCommandIMC()
+{
+	RemoveMappingContext(BattleCommandIMCTag);
+}
+
+void AMWPlayerController::ApplyCombatCommandIMC()
+{
+	AddNewMappingContext(CombatCommandIMCTag);
+}
+
+void AMWPlayerController::RemoveCombatCommandIMC()
+{
+	RemoveMappingContext(CombatCommandIMCTag);
 }
 
 void AMWPlayerController::BeginPlay()

@@ -248,4 +248,7 @@ private:
 	uint8 bForceEndBattle:1;
 
 	EBattleResult BattleResult;
+
+public:
+	TObjectPtr<class AMWPlayerController> PC;
 };

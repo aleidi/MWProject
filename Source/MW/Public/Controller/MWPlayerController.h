@@ -29,12 +29,15 @@ protected:
 public:
 	/* Add a new mapping context to input system. */
 	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
-	bool AddNewMappingContext(const FName& Tag);
+	void AddNewMappingContext(const FName& Tag);
 
 	/* Remove the last added mapping context from input system. */
 	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
-	bool RemoveLastMappingContext();
+	void RemoveLastMappingContext();
 
+	/* Add a new mapping context to input system. */
+	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
+	void RemoveMappingContext(const FName& Tag);
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -58,20 +61,28 @@ protected:
 	void Input_CMD_Spirit(const FInputActionValue& InputActionValue);
 
 	// Combat Command
-	void Input_CC_Attack(const FInputActionValue& InputActionValue);
-	void Input_CC_Direction(const FInputActionValue& InputActionValue);
+	void Input_CC_Attack_Up(const FInputActionValue& InputActionValue);
+	void Input_CC_Attack_Down(const FInputActionValue& InputActionValue);
+	void Input_CC_Attack_Left(const FInputActionValue& InputActionValue);
+	void Input_CC_Attack_Right(const FInputActionValue& InputActionValue);
 	void Input_CC_SupportAttack1(const FInputActionValue& InputActionValue);
 	void Input_CC_SupportAttack2(const FInputActionValue& InputActionValue);
 	void Input_CC_UltimateSkill(const FInputActionValue& InputActionValue);
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
-	FName IMCTag = TEXT("BaseInput");
+	FName BaseIMCTag = TEXT("BaseInput");
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
+	FName BattleCommandIMCTag = TEXT("BattleCommand");
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
+	FName CombatCommandIMCTag = TEXT("CombatCommand");
 
 private:
 	TArray<FMWInputMappingContextWithPriority> MappingContextStack;
 
-	FModifyContextOptions MappingOption;
+	FModifyContextOptions RemoveMappingOption;
 
 #pragma endregion
 
@@ -91,8 +102,25 @@ public:
 
 
 #pragma region Battle
-private:
+public:
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void OnBattleBegin();
 
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void OnBattleEnd();
+
+private:
+	void ApplyBattleCommandIMC();
+
+	void RemoveBattleCommandIMC();
+
+	void ApplyCombatCommandIMC();
+
+	void RemoveCombatCommandIMC();
+
+private:
+	FDelegateHandle DHApplyBattleCommand;
+	FDelegateHandle DHRemoveBattleCommand;
 #pragma endregion
 
 	virtual void BeginPlay() override;

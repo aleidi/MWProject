@@ -60,6 +60,10 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnBegin, const FMWTeam&);
 /* End of the team's turn. */
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnEnd, const FMWTeam&);
 
+DECLARE_MULTICAST_DELEGATE(FOnCommandBattleBegin);
+
+DECLARE_MULTICAST_DELEGATE(FOnCommandBattleEnd);
+
 DECLARE_MULTICAST_DELEGATE(FOnActionComplete);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInsertMoveAction, int32);
@@ -126,6 +130,10 @@ public:
 	FOnTurnBegin OnTurnBegin;
 
 	FOnTurnEnd OnTurnEnd;
+
+	FOnCommandBattleBegin OnCommandBattleBegin;
+
+	FOnCommandBattleEnd OnCommandBattleEnd;
 
 	FOnActionComplete OnActionComplete;
 	UFUNCTION(BlueprintCallable, Category = "Battle")

@@ -25,8 +25,14 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CMD_Spirit, "InputTag.CMD.Spirit", "Input Command Spirit.");
 
 	// Combat Command
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Attack, "InputTag.CC.Attack", "Input CombatCommand Attack.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Direction, "InputTag.CC.Direction", "Input CombatCommand Direction.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Attack_Up, "InputTag.CC.Attack.Up", "Input CombatCommand Attack Up.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Attack_Down, "InputTag.CC.Attack.Down", "Input CombatCommand Attack Down.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Attack_Left, "InputTag.CC.Attack.Left", "Input CombatCommand Attack Left.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Attack_Right, "InputTag.CC.Attack.Right", "Input CombatCommand Attack Right.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Dir_Up, "InputTag.CC.Dir.Up", "Input CombatCommand Direction Up.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Dir_Down, "InputTag.CC.Dir.Down", "Input CombatCommand Direction Down.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Dir_Left, "InputTag.CC.Dir.Left", "Input CombatCommand Direction Left.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_Dir_Right, "InputTag.CC.Dir.Right", "Input CombatCommand Direction Right.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_SupportAttack1, "InputTag.CC.SupportAttack1", "Input CombatCommand SupportAttack1.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_SupportAttack2, "InputTag.CC.SupportAttack2", "Input CombatCommand SupportAttack2.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_CC_UltimateSkill, "InputTag.CC.UltimateSkill", "Input CombatCommand UltimateSkill.");

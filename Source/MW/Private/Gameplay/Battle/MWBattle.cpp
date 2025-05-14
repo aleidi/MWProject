@@ -1,4 +1,6 @@
 #include "Gameplay/Battle/MWBattle.h"
+#include "Controller/MWPlayerController.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 UE_DISABLE_OPTIMIZATION
 
 UMWBattle::UMWBattle()
@@ -12,6 +14,11 @@ UMWBattle::UMWBattle()
 void UMWBattle::StartBattle(const TArray<FMWTeam>& InTeams)
 {
 	check(GetWorld () != nullptr);
+
+	if (IsValid(PC))
+	{
+		PC = Cast<AMWPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	}
 
 	if (auto* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>())
 	{
@@ -148,21 +155,17 @@ void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)
 {
 	check(Context.GetCurrentActionQueue().Num() > 0 && Context.GetCurrentActionQueue()[0].Team.IsAlive());
 
-	Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentActionQueue()[0].Team);
+	if (Context.GetBattleSystem().OnTurnBegin.IsBound())
+	{
+		Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentActionQueue()[0].Team);
+	}
+	
+	if (Context.GetBattleSystem().OnCommandBattleBegin.IsBound())
+	{
+		Context.GetBattleSystem().OnCommandBattleBegin.Broadcast();
+	}
 
 	HandleActionComplete = Context.GetBattleSystem().OnActionComplete.AddRaw(this, &MWBattle::FMWBSTurnBegin::OnActionComplete);
-
-	Async(EAsyncExecution::Thread, [this](){
-
-		FPlatformProcess::Sleep(5.0f);
-
-		// 然后继续执行你想在等待结束后进行的操作
-		AsyncTask(ENamedThreads::GameThread, [this]()
-		{
-			bIsActionComplete = true;
-		});
-
-	});
 }
 
 void MWBattle::FMWBSTurnBegin::Update(BattleContext& Context)
@@ -176,6 +179,7 @@ void MWBattle::FMWBSTurnBegin::Update(BattleContext& Context)
 void MWBattle::FMWBSTurnBegin::Exit(BattleContext& Context)
 {
 	Context.GetBattleSystem().OnActionComplete.Remove(HandleActionComplete);
+	HandleActionComplete.Reset();
 }
 
 void MWBattle::FMWBSTurnBegin::OnActionComplete()
@@ -190,6 +194,16 @@ MWBattle::FMWBSTurnBegin::FMWBSTurnBegin(const MWBattle::FMWBattleUnit& NewOwner
 
 void MWBattle::FMWBSTurnEnd::Enter(BattleContext& Context)
 {
+	if (Context.GetBattleSystem().OnTurnEnd.IsBound())
+	{
+		Context.GetBattleSystem().OnTurnEnd.Broadcast(Context.GetCurrentActionQueue()[0].Team);
+	}
+
+	if (Context.GetBattleSystem().OnCommandBattleEnd.IsBound())
+	{
+		Context.GetBattleSystem().OnCommandBattleEnd.Broadcast();
+	}
+
 	// remove dead unit first
 	UpdateActionQueueForDeadUnit(Context);
 
@@ -337,6 +351,11 @@ void MWBattle::FMWBSRoundEnd::Enter(BattleContext& Context)
 	{
 		Context.GetBattleSystem().OnRoundEnd.Broadcast(Context.GetCurrentRound());
 	}
+
+	if (IsValid(Context.PC))
+	{
+		Context.PC->OnBattleEnd();
+	}
 }
 
 void MWBattle::FMWBSRoundEnd::Update(BattleContext& Context)
@@ -454,6 +473,11 @@ void MWBattle::FMWBSBattleBegin::Enter(BattleContext& Context)
 	InitializeActionBuff(Context);
 
 	bBattlePrepared = true;
+
+	if (IsValid(Context.PC))
+	{
+		Context.PC->OnBattleBegin();
+	}
 }
 
 void MWBattle::FMWBSBattleBegin::Update(BattleContext& Context)
