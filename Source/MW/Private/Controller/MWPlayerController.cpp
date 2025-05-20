@@ -40,9 +40,9 @@ void AMWPlayerController::AddNewMappingContext(const FName& Tag)
 	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 	{
-		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
 			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
 			{
@@ -103,9 +103,9 @@ void AMWPlayerController::RemoveMappingContext(const FName& Tag)
 	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 	{
-		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
 			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
 			{
@@ -140,9 +140,9 @@ void AMWPlayerController::SetupInputComponent()
 
 	subsystem->ClearAllMappings();
 
-	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 	{
-		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
 			AddNewMappingContext(BaseIMCTag);
 

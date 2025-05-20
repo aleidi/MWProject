@@ -77,6 +77,7 @@ namespace MWBattle
 		virtual FString GetName() const { return TEXT("BattleBegin"); }
 
 		void InitializeActionBuff(BattleContext& Context);
+
 	private:
 		bool bBattlePrepared = false;
 	};

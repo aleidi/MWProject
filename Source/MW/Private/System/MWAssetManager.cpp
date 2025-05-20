@@ -102,29 +102,9 @@ void UMWAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 }
 
-void UMWAssetManager::OnAssetRegistryFilesLoaded()
+const UMWMasterData& UMWAssetManager::GetMasterData()
 {
-	Super::OnAssetRegistryFilesLoaded();
-
-	// load master data
-	TArray<FPrimaryAssetId> PrimaryAssetIdList;
-	GetPrimaryAssetIdList(UMWMasterData::MasterDataID.PrimaryAssetType, PrimaryAssetIdList);
-
-	// there is only one master data
-	if (PrimaryAssetIdList.Num() > 0)
-	{
-		MasterDataHandle = LoadPrimaryAsset(PrimaryAssetIdList[0]);
-	}
-}
-
-const UMWMasterData* UMWAssetManager::GetMasterData() const
-{
-	if (MasterDataHandle.IsValid() && MasterDataHandle->HasLoadCompleted())
-	{
-		return Cast<UMWMasterData>(MasterDataHandle->GetLoadedAsset());
-	}
-
-	return nullptr;
+	return GetOrLoadTypedGameData<UMWMasterData>(MWMasterDataPath);
 }
 
 const UMWGlobalData& UMWAssetManager::GetGlobalData()

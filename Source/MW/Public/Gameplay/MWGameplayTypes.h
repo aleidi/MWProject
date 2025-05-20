@@ -65,7 +65,7 @@ enum class EBattleResult
 };
 
 UENUM(BlueprintType)
-enum class EMWTeamType
+enum class EMWTeamAlign : uint8
 {
 	Player,
 	Enemy,
@@ -86,6 +86,9 @@ struct FMWTeamUnit
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<APawn> Pawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsLeader;
 };
 
 USTRUCT(BlueprintType)
@@ -105,7 +108,7 @@ public:
 
 	FORCEINLINE void SetAlive(bool NewValue) {  bIsAlive = NewValue; }
 
-	FORCEINLINE EMWTeamType GetTeamType() const { return Type; }
+	FORCEINLINE EMWTeamAlign GetTeamAlign() const { return Align; }
 
 	FORCEINLINE bool operator==(const FMWTeam& Other) { return TeamId == Other.TeamId; }
 
@@ -113,16 +116,13 @@ public:
 	int32 TeamId = INDEX_NONE;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMWTeamType Type = EMWTeamType::Player;
+	int32 TeamNo = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMWTeamAlign Align = EMWTeamAlign::Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FMWTeamUnit> Units;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxNum = 3;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 LeaderIdx = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsAlive = true;
@@ -136,5 +136,17 @@ enum class EMWBattleActionBuff
 	Idle,
 	Attack,
 	Heal
+};
+
+USTRUCT(BlueprintType)
+struct FMWBattleSceneParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FVector Origin;
+
+	UPROPERTY()
+	TArray<FMWTeam> Teams;
 };
 #pragma endregion

@@ -40,7 +40,10 @@ void AMWCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	UpdatePawnRotation(DeltaSeconds);
+	if (bUpdatePawnRotation)
+	{
+		UpdatePawnRotation(DeltaSeconds);
+	}
 }
 
 UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
@@ -51,11 +54,15 @@ UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
 void AMWCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	EnableUpdatePawnRotation(true);
 }
 
 void AMWCharacter::UnPossessed()
 {
 	Super::UnPossessed();
+
+	EnableUpdatePawnRotation(false);
 }
 
 void AMWCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -76,6 +83,11 @@ void AMWCharacter::UpdatePawnRotation(float DeltaTime)
 
 	const FRotator actor_rot = GetActorRotation();
 	SetActorRotation(FMath::RInterpTo(actor_rot, DesiredPawnRotation, DeltaTime, PawnRotInterpSpeed));
+}
+
+void AMWCharacter::EnableUpdatePawnRotation(bool bEnabled)
+{
+	bUpdatePawnRotation = bEnabled;
 }
 
 void AMWCharacter::ChangeBattleState(MWBehaviorState::EBehaviorState NewState)

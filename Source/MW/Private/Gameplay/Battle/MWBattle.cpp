@@ -1,6 +1,8 @@
 #include "Gameplay/Battle/MWBattle.h"
 #include "Controller/MWPlayerController.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Gameplay/Battle/MWBattleScenePreparation.h"
+
 UE_DISABLE_OPTIMIZATION
 
 UMWBattle::UMWBattle()
@@ -32,7 +34,7 @@ void UMWBattle::StartBattle(const TArray<FMWTeam>& InTeams)
 	bool isValidBattle = false;
 	for (uint32 i = 1; i < teamNo; ++i)
 	{
-		if (InTeams[0].GetTeamType() != InTeams[i].GetTeamType())
+		if (InTeams[0].GetTeamAlign() != InTeams[i].GetTeamAlign())
 		{
 			isValidBattle = true;
 			break;
@@ -253,11 +255,11 @@ void MWBattle::FMWBSTurnEnd::CheckShouldEndBattle(BattleContext& Context)
 
 	for (auto& unit : currActQueue)
 	{
-		if (unit.Team.GetTeamType() == EMWTeamType::Player)
+		if (unit.Team.GetTeamAlign() == EMWTeamAlign::Player)
 		{
 			++existPlayerNo;
 		}
-		else if (unit.Team.GetTeamType() == EMWTeamType::Enemy)
+		else if (unit.Team.GetTeamAlign() == EMWTeamAlign::Enemy)
 		{
 			++existEnemyNo;
 		}
@@ -265,11 +267,11 @@ void MWBattle::FMWBSTurnEnd::CheckShouldEndBattle(BattleContext& Context)
 
 	for (auto& unit : nextActQueue)
 	{
-		if (unit.Team.GetTeamType() == EMWTeamType::Player)
+		if (unit.Team.GetTeamAlign() == EMWTeamAlign::Player)
 		{
 			++existPlayerNo;
 		}
-		else if (unit.Team.GetTeamType() == EMWTeamType::Enemy)
+		else if (unit.Team.GetTeamAlign() == EMWTeamAlign::Enemy)
 		{
 			++existEnemyNo;
 		}
@@ -467,6 +469,13 @@ void MWBattle::FMWBSBattleBegin::Enter(BattleContext& Context)
 	}
 
 	// prepare scene
+	FMWBattleScenePreparation scenePrep;
+
+	FMWBattleSceneParam param;
+
+	param.Teams = Context.GetTeams();
+
+	scenePrep.PrepareScene(param);
 	// use async task?
 	// play cutscene
 

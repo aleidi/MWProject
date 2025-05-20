@@ -35,9 +35,9 @@ void AMWGameMode::InitGameState()
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	if (auto* data = UMWAssetManager::Get().GetMasterData())
+	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 	{
-		if (auto pawn = UMWAssetManager::Get().GetSubclass(data->DefaultPawn))
+		if (auto pawn = UMWAssetManager::Get().GetSubclass(data.DefaultPawn))
 		{
 			return pawn;
 		}

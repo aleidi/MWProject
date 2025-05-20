@@ -46,7 +46,7 @@ public:
 	// Logs all assets currently loaded and tracked by the asset manager.
 	static void DumpLoadedAssets();
 
-	const UMWMasterData* GetMasterData() const;
+	const UMWMasterData& GetMasterData();
 
 	const UMWGlobalData& GetGlobalData();
 
@@ -74,7 +74,6 @@ protected:
 	UPrimaryDataAsset* LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType);
 
 	virtual void StartInitialLoading() override;
-	virtual void OnAssetRegistryFilesLoaded() override;
 #if WITH_EDITOR
 	virtual void PreBeginPIE(bool bStartSimulate) override;
 #endif
@@ -86,6 +85,10 @@ protected:
 
 	// master data of the game, should be loaded at game start
 	TSharedPtr<FStreamableHandle> MasterDataHandle = nullptr;
+
+	// necessary data of the game, should be loaded at game start
+	UPROPERTY(Config)
+	TSoftObjectPtr<UMWMasterData> MWMasterDataPath;
 
 	// Global game data asset to use.
 	UPROPERTY(Config)

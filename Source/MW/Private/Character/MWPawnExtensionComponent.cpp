@@ -120,11 +120,11 @@ void UMWPawnExtensionComponent::GiveAbility()
         AbilityGranetedHandles->RemoveFromAbilitySystem(AbilitySystemComponent);
     }
 
-    if (auto data = UMWAssetManager::Get().GetMasterData())
+    const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
     {
-        if (data->MainCharacterData)
+        if (data.MainCharacterData)
         {
-            const FMWCharacterMasterData* char_data = data->MainCharacterData->FindRow<FMWCharacterMasterData>(PawnDataName, PawnDataName.ToString());
+            const FMWCharacterMasterData* char_data = data.MainCharacterData->FindRow<FMWCharacterMasterData>(PawnDataName, PawnDataName.ToString());
             if (char_data && char_data->AbilitySets.Num() > 0)
             {
                 for (auto& ability_set : char_data->AbilitySets)

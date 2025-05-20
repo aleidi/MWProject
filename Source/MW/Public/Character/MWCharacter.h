@@ -54,6 +54,9 @@ public:
 #pragma region Move
 private:
 	virtual void UpdatePawnRotation(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, Category = "Move")
+	void EnableUpdatePawnRotation(bool bEnabled);
 	
 private:
 	// temporary value
@@ -65,6 +68,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	float PawnRotInterpSpeed = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	bool bUpdatePawnRotation = false;
 #pragma endregion
 
 #pragma region Battle

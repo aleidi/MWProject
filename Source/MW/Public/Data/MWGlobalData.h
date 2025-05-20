@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Engine/DataAsset.h"
+//#include "Gameplay/MWGameplayTypes.h"
 #include "MWGlobalData.generated.h"
 
 class UGameplayEffect;
-class UObject;
+class UMWBattleSceneSetting;
 
 /**
  * UMWGlobalData
@@ -26,22 +27,25 @@ public:
 public:
 
 	// Gameplay effect used to apply blocking skill cast.
-	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Block Cast Skill"))
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Block Cast Skill"))
 	TSoftClassPtr<UGameplayEffect> GEBlockCastSkill;
 
 	// Gameplay effect used to apply unblocking skill cast.
-	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Unblock Cast Skill"))
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Unblock Cast Skill"))
 	TSoftClassPtr<UGameplayEffect> GEUnblockCastSkill;
 
 	// Gameplay effect used to enable skill combo. 
-	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Combo"))
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Combo"))
 	TSoftClassPtr<UGameplayEffect> GESkillCombo;
 
 	// Gameplay effect used to be appled when getting perfect combo in skill.
-	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Perfect Combo"))
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Perfect Combo"))
 	TSoftClassPtr<UGameplayEffect> GESkillPerfectCombo;
 
 	// Gameplay effect used to add and remove dynamic tags.
-	UPROPERTY(EditDefaultsOnly, Category = "Default Gameplay Effects")
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects")
 	TSoftClassPtr<UGameplayEffect> DynamicTagGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Scene")
+	TObjectPtr<UMWBattleSceneSetting> BattleSceneSetting;
 };
