@@ -40,7 +40,7 @@ void AMWCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bUpdatePawnRotation)
+	if (CanUpdatePawnRotation())
 	{
 		UpdatePawnRotation(DeltaSeconds);
 	}
@@ -90,7 +90,12 @@ void AMWCharacter::EnableUpdatePawnRotation(bool bEnabled)
 	bUpdatePawnRotation = bEnabled;
 }
 
-void AMWCharacter::ChangeBattleState(MWBehaviorState::EBehaviorState NewState)
+bool AMWCharacter::CanUpdatePawnRotation() const
+{
+	return bUpdatePawnRotation && BehaviorState == ECharacterBehaviorState::Normal;
+}
+
+void AMWCharacter::ChangeBehaviorState(ECharacterBehaviorState NewState)
 {
 	BehaviorState = NewState;
 }

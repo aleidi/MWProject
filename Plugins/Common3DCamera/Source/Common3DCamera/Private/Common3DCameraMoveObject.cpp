@@ -149,7 +149,7 @@ FRotator UC3DCameraMoveObject::GetTargetRotation() const
 		}
 	}
 
-	return desiredRot;
+	return desiredRot + CameraRotationOffset;
 }
 
 FVector UC3DCameraMoveObject::GetUnfixedCameraPosition() const
@@ -195,6 +195,8 @@ void UC3DCameraMoveObject::InitPropertyFromDataAsset()
 	bInheritRoll = moveSettings.bInheritRoll;
 
 	CameraOffset = moveSettings.CameraOffset;
+
+	CameraRotationOffset = moveSettings.CameraRotationOffset;
 
 	TargetPivotOffset = moveSettings.TargetPivotOffset;
 

@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "Gameplay/Battle/MWBattleTypes.h"
-#include "Gameplay/MWGameplayTypes.h"
+#include "Define/MWStruct.h"
+#include "GameplayTagContainer.h"
 #include "MWBattleSystem.generated.h"
 
 #pragma region Skill
@@ -135,6 +135,7 @@ public:
 
 	FOnCommandBattleEnd OnCommandBattleEnd;
 
+	/* Event when active character complete action. Used to end the turn. */
 	FOnActionComplete OnActionComplete;
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void ActionComplete();

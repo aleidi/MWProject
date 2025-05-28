@@ -11,6 +11,13 @@ class MW_API UMWCommandBase : public UMWUserWidget
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> Command;
+	virtual void NativeOnInitialized() override;
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, DisplayName = "Command"))
+	TObjectPtr<UTextBlock> T_Command;
+
+	/* The real content of Command. */
+	UPROPERTY(EditAnywhere)
+	FText Text;
 };

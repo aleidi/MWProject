@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "GameFramework/Actor.h"
-#include "Gameplay/MWGameplayTypes.h"
+#include "Define/MWStruct.h"
 #include "MWBattleUnitPosition.generated.h"
 
 /* AMWBattleUnitPosition

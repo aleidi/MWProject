@@ -4,8 +4,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/MWSelectableInterface.h"
-#include "Interface/MWCharacterInterface.h"
-#include "Character/MWCharacterTypes.h"
+#include "Define/MWStruct.h"
 #include "MWCharacter.generated.h"
 
 class FMWTargetSelector;
@@ -19,8 +18,7 @@ class UMWBattleSet;
 UCLASS()
 class MW_API AMWCharacter : public ACharacter,
 	public IAbilitySystemInterface,
-	public IMWSelectableInterface,
-	public IMWCharacterInterface
+	public IMWSelectableInterface
 {
 	GENERATED_BODY()
 
@@ -59,6 +57,8 @@ private:
 	void EnableUpdatePawnRotation(bool bEnabled);
 	
 private:
+	bool CanUpdatePawnRotation() const;
+
 	// temporary value
 	FRotator LastVelocityRotation;
 	FRotator DesiredPawnRotation;
@@ -76,19 +76,18 @@ private:
 #pragma region Battle
 public:
 	UFUNCTION(BlueprintCallable, Category="Battle")
-	void ChangeBattleState(MWBehaviorState::EBehaviorState NewState);
+	void ChangeBehaviorState(ECharacterBehaviorState NewState);
 
 protected:
-
 	UFUNCTION(BlueprintPure)
 	float BP_GetNormalizedVelocity() const;
-	virtual float GetNormalizedVelocity() const override;
-	virtual bool GetIsMoving() const override;
-	virtual bool GetCanNormalAtk() const override;
+	float GetNormalizedVelocity() const;
+	bool GetIsMoving() const;
+	bool GetCanNormalAtk() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Character|Behavior")
-	TEnumAsByte<MWBehaviorState::EBehaviorState> BehaviorState;
+	TEnumAsByte<ECharacterBehaviorState> BehaviorState;
 	UPROPERTY(BlueprintReadOnly, Category="Character|Battle")
 	bool bAttackTarget;
 	UPROPERTY(BlueprintReadOnly, Category="Character|Battle")

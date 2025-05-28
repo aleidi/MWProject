@@ -95,7 +95,7 @@ void FMWBattleScenePreparation::TrySetTeamPositionFromBattleUnitPos(FMWTeam& Tea
 
 			teamUnit.Pawn->SetActorLocation(worldPos);
 
-			if (BattleUnitPos->Align == EMWTeamAlign::Player)
+			if (BattleUnitPos->Align == EMWTeamAlign::Enemy)
 			{
 				teamUnit.Pawn->SetActorRotation(FRotator(0.f, 180.f, 0.f));
 			}

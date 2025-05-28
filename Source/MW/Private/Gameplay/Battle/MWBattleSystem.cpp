@@ -14,8 +14,10 @@ void UMWBattleSystem::StartBattle(const TArray<FMWTeam>& InTeams)
 {
 	if (IsValid(BattleInst))
 	{
-		BattleInst = nullptr;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("There is a already battle is running"));
+		return;
 	}
+
 	BattleInst = NewObject<UMWBattle>(this);
 	BattleInst->StartBattle(InTeams);
 	BattleInst->AddToRoot();

@@ -18,8 +18,7 @@ if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Pr
 
 AMWPlayerController::AMWPlayerController()
 {
-	RemoveMappingOption.bIgnoreAllPressedKeysUntilRelease = false;
-	RemoveMappingOption.bForceImmediately = true;
+	MappingOption.bIgnoreAllPressedKeysUntilRelease = true;
 }
 
 void AMWPlayerController::Tick(float DeltaSeconds)
@@ -54,12 +53,12 @@ void AMWPlayerController::AddNewMappingContext(const FName& Tag)
 						const int num = MappingContextStack.Num();
 						if (num > 0)
 						{
-							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping, RemoveMappingOption);
+							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping, MappingOption);
 						}
 
-						settings->RegisterInputMappingContext(mapping->Mapping);
+						//settings->RegisterInputMappingContext(mapping->Mapping);
 
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, RemoveMappingOption);
+						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
 						MappingContextStack.Push(*mapping);
 					}
 				}
@@ -82,12 +81,12 @@ void AMWPlayerController::RemoveLastMappingContext()
 	check(subsystem);
 
 	// remove old mapping context
-	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, RemoveMappingOption);
+	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, MappingOption);
 
 	// enable the last mapping context
 	auto mapping = MappingContextStack[MappingContextStack.Num() - 1];
 
-	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, RemoveMappingOption);
+	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
 }
 
 void AMWPlayerController::RemoveMappingContext(const FName& Tag)

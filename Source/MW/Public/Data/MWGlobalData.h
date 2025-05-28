@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/DataAsset.h"
-//#include "Gameplay/MWGameplayTypes.h"
 #include "MWGlobalData.generated.h"
 
 class UGameplayEffect;

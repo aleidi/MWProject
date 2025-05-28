@@ -1,4 +1,4 @@
-#include "Gameplay/MWGameplayTypes.h"
+#include "Define/MWStruct.h"
 
 int32 FMWTeam::GetTeamSpeed() const
 {
@@ -7,6 +7,14 @@ int32 FMWTeam::GetTeamSpeed() const
 
 FMWTeamUnit FMWTeam::GetLeader() const
 {
+	for (auto& unit : Units)
+	{
+		if (unit.bIsLeader)
+		{
+			return unit;
+		}
+	}
+
 	return FMWTeamUnit();
 }
 

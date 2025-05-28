@@ -1,5 +1,6 @@
 #include "Gameplay/MWGameplaySubsystem.h"
-#include "Gameplay/MWGameplayTypes.h"
+
+#define DT_CHARACTERINFO TEXT("/Game/Datatable/Character/DT_CharacterInfo.DT_CharacterInfo")
 
 UDataTable* UMWGameplaySubsystem::GetTableCharacterInfo() const
 {

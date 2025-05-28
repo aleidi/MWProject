@@ -82,7 +82,7 @@ protected:
 private:
 	TArray<FMWInputMappingContextWithPriority> MappingContextStack;
 
-	FModifyContextOptions RemoveMappingOption;
+	FModifyContextOptions MappingOption;
 
 #pragma endregion
 

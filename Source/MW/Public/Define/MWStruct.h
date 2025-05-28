@@ -1,8 +1,15 @@
 #pragma once
 
-#include "MWGameplayTypes.generated.h"
+#include "MWStruct.generated.h"
 
-#define DT_CHARACTERINFO TEXT("/Game/Datatable/Character/DT_CharacterInfo.DT_CharacterInfo")
+#pragma region Character
+UENUM(BlueprintType)
+enum ECharacterBehaviorState
+{
+	Normal,
+	Battle
+};
+#pragma endregion
 
 /* FMWFoundActorInfo
 *  It's a data struct used in searching a selectable actor.

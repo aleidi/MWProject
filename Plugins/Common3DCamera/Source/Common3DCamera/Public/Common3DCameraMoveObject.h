@@ -82,6 +82,8 @@ protected:
 
 	FVector CameraOffset = FVector::ZeroVector;
 
+	FRotator CameraRotationOffset = FRotator::ZeroRotator;
+
 	FVector TargetPivotOffset = FVector::ZeroVector;
 
 	float TargetArmLength = 300.f;

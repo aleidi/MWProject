@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Animation/AnimInstance.h"
-#include "Character/MWCharacterTypes.h"
+#include "Define/MWStruct.h"
 #include "Interface/MWCharacterAnimInterface.h"
 #include "MWCharacterAnimInstance.generated.h"
 
@@ -38,7 +38,7 @@ private:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Anim")
-	TEnumAsByte<MWBehaviorState::EBehaviorState> BehaviorState;
+	TEnumAsByte<ECharacterBehaviorState> BehaviorState;
 	UPROPERTY(BlueprintReadOnly, Category="Anim")
 	bool bIsMoving;
 	UPROPERTY(BlueprintReadOnly, Category="Anim")

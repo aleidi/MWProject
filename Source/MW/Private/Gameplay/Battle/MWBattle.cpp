@@ -2,6 +2,7 @@
 #include "Controller/MWPlayerController.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Gameplay/Battle/MWBattleScenePreparation.h"
+#include "Common3DCameraComponent.h"
 
 UE_DISABLE_OPTIMIZATION
 
@@ -87,6 +88,12 @@ void UMWBattle::UpdateBattleState()
 	{
 		CurrState->Update(*this);
 		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Yellow, FString::Printf(TEXT("%s - round : %d"), *CurrState->GetName(), CurrRound));
+		if (GetCurrentActionQueue().Num() > 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Yellow, FString::Printf(TEXT("%s - active character : %s"), 
+				*CurrState->GetName(), 
+				GetCurrentActionTeam().GetLeader().Pawn ? *GetCurrentActionTeam().GetLeader().Pawn->GetName() : TEXT("none")));
+		}
 	}
 
 	if (CurrState->GetName() == TEXT("BattleEnd"))
@@ -155,11 +162,11 @@ UMWBattleSystem& UMWBattle::GetBattleSystem()
 
 void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)
 {
-	check(Context.GetCurrentActionQueue().Num() > 0 && Context.GetCurrentActionQueue()[0].Team.IsAlive());
+	check(Context.GetCurrentActionQueue().Num() > 0 && Context.GetCurrentActionTeam().IsAlive());
 
 	if (Context.GetBattleSystem().OnTurnBegin.IsBound())
 	{
-		Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentActionQueue()[0].Team);
+		Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentActionTeam());
 	}
 	
 	if (Context.GetBattleSystem().OnCommandBattleBegin.IsBound())
@@ -168,6 +175,9 @@ void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)
 	}
 
 	HandleActionComplete = Context.GetBattleSystem().OnActionComplete.AddRaw(this, &MWBattle::FMWBSTurnBegin::OnActionComplete);
+
+	// Change camera to current pawn's view
+	SetCamera(Context);
 }
 
 void MWBattle::FMWBSTurnBegin::Update(BattleContext& Context)
@@ -189,6 +199,29 @@ void MWBattle::FMWBSTurnBegin::OnActionComplete()
 	bIsActionComplete = true;
 }
 
+void MWBattle::FMWBSTurnBegin::SetCamera(BattleContext& Context)
+{
+	const FMWTeam& team = Context.GetCurrentActionTeam();
+
+	const FMWTeamUnit& leader = team.GetLeader();
+
+	if (leader.Pawn == nullptr)
+	{
+		return;
+	}
+	
+	if (auto* pc = UGameplayStatics::GetPlayerController(Context.GetWorld(), 0))
+	{
+		//pc->SetViewTargetWithBlend(leader.Pawn);
+		if (auto* camComp = leader.Pawn->FindComponentByClass<UC3DCameraComponent>())
+		{
+			camComp->SetCameraMode(FGameplayTag::RequestGameplayTag("Camera.Mode.Battle"), true);
+		}
+
+		pc->Possess(leader.Pawn);
+	}
+}
+
 MWBattle::FMWBSTurnBegin::FMWBSTurnBegin(const MWBattle::FMWBattleUnit& NewOwner)
 {
 	Owner = NewOwner;
@@ -198,7 +231,7 @@ void MWBattle::FMWBSTurnEnd::Enter(BattleContext& Context)
 {
 	if (Context.GetBattleSystem().OnTurnEnd.IsBound())
 	{
-		Context.GetBattleSystem().OnTurnEnd.Broadcast(Context.GetCurrentActionQueue()[0].Team);
+		Context.GetBattleSystem().OnTurnEnd.Broadcast(Context.GetCurrentActionTeam());
 	}
 
 	if (Context.GetBattleSystem().OnCommandBattleEnd.IsBound())
@@ -238,7 +271,7 @@ void MWBattle::FMWBSTurnEnd::Update(BattleContext& Context)
 	}
 
 	// change to next turn
-	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue()[0]));
+	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue().Top()));
 }
 
 void MWBattle::FMWBSTurnEnd::Exit(BattleContext& Context)
@@ -384,7 +417,7 @@ void MWBattle::FMWBSRoundBegin::Enter(BattleContext& Context)
 
 void MWBattle::FMWBSRoundBegin::Update(BattleContext& Context)
 {
-	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue()[0]));
+	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue().Top()));
 }
 
 void MWBattle::FMWBSRoundBegin::UpdateCurrentRoundActionQueue(BattleContext& Context)
@@ -423,9 +456,10 @@ void MWBattle::FMWBSRoundBegin::UpdateCurrentRoundActionQueue(BattleContext& Con
 		}
 	}
 
+	// the last one is the first one to act
 	currActQueue.Sort([](const MWBattle::FMWBattleUnit& A, const MWBattle::FMWBattleUnit& B)
 	{
-		return A.WaitTime < B.WaitTime;
+		return A.WaitTime > B.WaitTime;
 	});
 
 	TArray<FMWTeam> newTeamQueue;

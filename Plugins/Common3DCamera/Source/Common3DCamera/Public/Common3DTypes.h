@@ -39,6 +39,9 @@ struct COMMON3DCAMERA_API FC3DMoveSettings
 	FVector CameraOffset = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
+	FRotator CameraRotationOffset = FRotator::ZeroRotator;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	bool bEnableRotLag = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "ShouldEnableRotLag"))

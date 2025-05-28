@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Gameplay/MWGameplayTypes.h"
+#include "Define/MWStruct.h"
 
 class FMWBattleScenePreparation : public TSharedFromThis<FMWBattleScenePreparation>
 {

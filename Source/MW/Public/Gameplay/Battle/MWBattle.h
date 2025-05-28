@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Gameplay/MWGameplayTypes.h"
+#include "Define/MWStruct.h"
 #include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "MWBattle.generated.h"
@@ -136,6 +136,8 @@ namespace MWBattle
 	protected:
 		void OnActionComplete();
 
+		void SetCamera(BattleContext& Context);
+
 	private:
 		FMWBattleUnit Owner;
 		bool bIsActionComplete = false;
@@ -167,6 +169,14 @@ UCLASS()
 class UMWBattle : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
+	
+	friend class MWBattle::FMWBSIdle;
+	friend class MWBattle::FMWBSBattleBegin;
+	friend class MWBattle::FMWBSBattleEnd;
+	friend class MWBattle::FMWBSRoundBegin;
+	friend class MWBattle::FMWBSRoundEnd;
+	friend class MWBattle::FMWBSTurnBegin;
+	friend class MWBattle::FMWBSTurnEnd;
 
 public:
 	UMWBattle();
@@ -179,9 +189,9 @@ public:
 
 	bool IsTickable() const override;
 
+private:
 	UMWBattleSystem& GetBattleSystem();
 
-private:
 	void UpdateBattleState();
 
 private:
@@ -198,24 +208,26 @@ private:
 
 	void OnTeamRevive(const FMWTeam& Team);
 
+	void ChangeState(TUniquePtr<MWBattle::IBattleState> NewState);
+
+	void SetCurrentRound(uint32 NewRound) { CurrRound = NewRound; }
+
+	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
+
 public:
+	const FMWTeam& GetCurrentActionTeam() { return GetCurrentActionQueue().Top().Team; }
+
 	TArray<MWBattle::FMWBattleUnit>& GetCurrentActionQueue() { return CurrActionQueue; }
 
 	TArray<MWBattle::FMWBattleUnit>& GetNextActionQueue() { return NextActionQueue; }
 
 	TArray<EMWBattleActionBuff>& GetActionBuffPool() { return ActionBuffPool; }
 
-	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
-
 	TArray<EMWBattleActionBuff>& GetActiveActionBuffs() { return ActiveActionBuffs; }
 
 	uint32 GetMaxDisplayActiveBuffNo() const { return MaxDisplayActiveBuffNo; }
 
 	TArray<FMWTeam>& GetTeams() { return Teams; }
-
-	void ChangeState(TUniquePtr<MWBattle::IBattleState> NewState);
-
-	void SetCurrentRound(uint32 NewRound) { CurrRound = NewRound; }
 
 	uint32 GetCurrentRound() const { return CurrRound; }
 
