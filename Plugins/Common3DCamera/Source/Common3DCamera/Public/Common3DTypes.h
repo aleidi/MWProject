@@ -44,13 +44,13 @@ struct COMMON3DCAMERA_API FC3DMoveSettings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	bool bEnableRotLag = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "ShouldEnableRotLag"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "bEnableRotLag"))
 	float RotLagSpeed = 10.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	bool bEnableLocLag = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "ShouldEnableLocLag"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "bEnableLocLag"))
 	float LocLagSpeed = 10.f;
 
 	/** If true, do a collision test using ProbeChannel and ProbeSize to prevent camera clipping into level. */
@@ -58,11 +58,11 @@ struct COMMON3DCAMERA_API FC3DMoveSettings
 	uint8 bCollisionTest : 1 = true;
 
 	/** Collision channel of the query probe (defaults to ECC_Camera) */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|Collision", meta = (editcondition = "ShouldDoCollisionTest"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|Collision", meta = (editcondition = "bCollisionTest"))
 	TEnumAsByte<ECollisionChannel> ProbeChannel = ECollisionChannel::ECC_Camera;
 
 	/** How big should the query probe sphere be (in unreal units) */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Move|Collision", meta=(editcondition = "ShouldDoCollisionTest"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Move|Collision", meta=(editcondition = "bCollisionTest"))
 	float ProbeSize = 12.0f;
 };
 
