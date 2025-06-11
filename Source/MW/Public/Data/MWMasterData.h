@@ -4,6 +4,11 @@
 #include "Data/MWCharacterData.h"
 #include "MWMasterData.generated.h"
 
+// Forward Declare
+class AMWCharacter;
+class UMWInputConfig;
+class UMWUIConfigData;
+
 /*
 * UMWMasterData
 * 
@@ -16,7 +21,7 @@ class UMWMasterData : public UPrimaryDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	TSoftClassPtr<class AMWCharacter> DefaultPawn;
+	TSoftClassPtr<AMWCharacter> DefaultPawn;
 
 	/* FMWCharacterMasterData : Main character data  */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
@@ -24,5 +29,8 @@ public:
 
 	// Input configuration used by player controlled pawns to create input mappings and bind input actions.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UMWInputConfig> InputConfig;
+	TObjectPtr<UMWInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UMWUIConfigData> UIConfig;
 };

@@ -8,6 +8,9 @@
 #include "GameplayTagContainer.h"
 #include "MWBattleSystem.generated.h"
 
+class UMWBattle;
+class FMWBattleManager;
+
 #pragma region Skill
 /* Used to trigger gameplay ability for skill. */
 DECLARE_MULTICAST_DELEGATE_OneParam(FTriggerSkillAbility, const FGameplayTag&);
@@ -169,6 +172,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void EndBattle(uint8 Winner);
 
+	FMWBattleManager* GetBattleManager() const;
 private:
 	void OnBattleEndCallback(EBattleResult Result);
 
@@ -177,5 +181,7 @@ private:
 private:
 	FDelegateHandle DHBattleEnd;
 
-	TObjectPtr<class UMWBattle> BattleInst;
+	TObjectPtr<UMWBattle> BattleInst;
+
+	TSharedPtr<FMWBattleManager> BattleMng;
 };

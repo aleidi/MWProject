@@ -136,7 +136,8 @@ namespace MWBattle
 	protected:
 		void OnActionComplete();
 
-		void SetCamera(BattleContext& Context);
+		void SetCharacterCameraAsMain(UMWBattle& Context);
+		void ShowBattleCommandUI(UMWBattle& Context);
 
 	private:
 		FMWBattleUnit Owner;

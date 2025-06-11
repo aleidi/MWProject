@@ -1,15 +1,7 @@
 #pragma once
 
+#include "Define/MWEnum.h"
 #include "MWStruct.generated.h"
-
-#pragma region Character
-UENUM(BlueprintType)
-enum ECharacterBehaviorState
-{
-	Normal,
-	Battle
-};
-#pragma endregion
 
 /* FMWFoundActorInfo
 *  It's a data struct used in searching a selectable actor.
@@ -61,25 +53,6 @@ struct FMWCharacterInfo : public FTableRowBase
 #pragma endregion
 
 #pragma region Battle
-
-UENUM()
-enum class EBattleResult
-{
-	PlayerWin	= 0,
-	EnemyWin	= 1,
-	Draw		= 2,
-	Max			= 3
-};
-
-UENUM(BlueprintType)
-enum class EMWTeamAlign : uint8
-{
-	Player,
-	Enemy,
-	Friendly,
-	Neutral
-};
-
 USTRUCT(BlueprintType)
 struct FMWTeamUnit 
 {
@@ -136,14 +109,6 @@ public:
 };
 
 FORCEINLINE bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs) { return Lhs.TeamId == Rhs.TeamId; }
-
-UENUM(BlueprintType)
-enum class EMWBattleActionBuff
-{
-	Idle,
-	Attack,
-	Heal
-};
 
 USTRUCT(BlueprintType)
 struct FMWBattleSceneParam

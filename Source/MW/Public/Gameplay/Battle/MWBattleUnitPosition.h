@@ -22,10 +22,10 @@ public:
 
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn=true))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true))
 	TArray<UChildActorComponent*> PreviewActors;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn=true))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true))
 	bool bShowPreviewMesh;
 
 	/* Check or uncheck UpdatePositionViaPreviewMesh, Position will be updated according to PreviewActors's location.*/

@@ -3,6 +3,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Gameplay/Battle/MWBattleScenePreparation.h"
 #include "Common3DCameraComponent.h"
+#include "Gameplay/Battle/MWBattleManager.h"
 
 UE_DISABLE_OPTIMIZATION
 
@@ -176,8 +177,8 @@ void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)
 
 	HandleActionComplete = Context.GetBattleSystem().OnActionComplete.AddRaw(this, &MWBattle::FMWBSTurnBegin::OnActionComplete);
 
-	// Change camera to current pawn's view
-	SetCamera(Context);
+	// Change to battle camera
+	SetCharacterCameraAsMain(Context);
 }
 
 void MWBattle::FMWBSTurnBegin::Update(BattleContext& Context)
@@ -199,7 +200,7 @@ void MWBattle::FMWBSTurnBegin::OnActionComplete()
 	bIsActionComplete = true;
 }
 
-void MWBattle::FMWBSTurnBegin::SetCamera(BattleContext& Context)
+void MWBattle::FMWBSTurnBegin::SetCharacterCameraAsMain(UMWBattle& Context)
 {
 	const FMWTeam& team = Context.GetCurrentActionTeam();
 
@@ -209,10 +210,9 @@ void MWBattle::FMWBSTurnBegin::SetCamera(BattleContext& Context)
 	{
 		return;
 	}
-	
+
 	if (auto* pc = UGameplayStatics::GetPlayerController(Context.GetWorld(), 0))
 	{
-		//pc->SetViewTargetWithBlend(leader.Pawn);
 		if (auto* camComp = leader.Pawn->FindComponentByClass<UC3DCameraComponent>())
 		{
 			camComp->SetCameraMode(FGameplayTag::RequestGameplayTag("Camera.Mode.Battle"), true);
@@ -220,6 +220,11 @@ void MWBattle::FMWBSTurnBegin::SetCamera(BattleContext& Context)
 
 		pc->Possess(leader.Pawn);
 	}
+}
+
+void MWBattle::FMWBSTurnBegin::ShowBattleCommandUI(UMWBattle& Context)
+{
+
 }
 
 MWBattle::FMWBSTurnBegin::FMWBSTurnBegin(const MWBattle::FMWBattleUnit& NewOwner)

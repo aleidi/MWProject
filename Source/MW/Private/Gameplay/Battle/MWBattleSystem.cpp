@@ -1,6 +1,7 @@
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/Battle/MWBattle.h"
 #include "GameFramework/GameModeBase.h"
+#include "Gameplay/Battle/MWBattleManager.h"
 
 void UMWBattleSystem::ActionComplete()
 {
@@ -18,6 +19,7 @@ void UMWBattleSystem::StartBattle(const TArray<FMWTeam>& InTeams)
 		return;
 	}
 
+	// Init battle instance
 	BattleInst = NewObject<UMWBattle>(this);
 	BattleInst->StartBattle(InTeams);
 	BattleInst->AddToRoot();
@@ -29,6 +31,9 @@ void UMWBattleSystem::StartBattle(const TArray<FMWTeam>& InTeams)
 	DHBattleEnd = OnBattleEnd.AddUObject(this, &UMWBattleSystem::OnBattleEndCallback);
 
 	FGameModeEvents::OnGameModeLogoutEvent().AddUObject(this, &UMWBattleSystem::OnGameModeLogout);
+
+	// Init Battle Manager
+	BattleMng = MakeShared<FMWBattleManager>();
 }
 
 void UMWBattleSystem::EndBattle(uint8 Winner)
@@ -37,6 +42,16 @@ void UMWBattleSystem::EndBattle(uint8 Winner)
 	{
 		BattleInst->ForceEndBattle(Winner);
 	}
+
+	if (BattleMng.IsValid())
+	{
+		BattleMng.Reset();
+	}
+}
+
+FMWBattleManager* UMWBattleSystem::GetBattleManager() const
+{
+	return BattleMng.Get();
 }
 
 void UMWBattleSystem::OnBattleEndCallback(EBattleResult Result)

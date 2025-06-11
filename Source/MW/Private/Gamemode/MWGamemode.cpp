@@ -1,13 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Gamemode//MWGameMode.h"
+#include "Gamemode/MWGameMode.h"
 #include "MWLogChannels.h"
 #include "Controller/MWPlayerController.h"
 #include "Player/MWPlayerState.h"
 #include "Character/MWCharacter.h"
-#include "Character/MWPawnData.h"
-#include "Kismet/GameplayStatics.h"
-#include "TimerManager.h"
 #include "System/MWAssetManager.h"
 #include "Data/MWMasterData.h"
 
@@ -31,6 +28,11 @@ void AMWGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 void AMWGameMode::InitGameState()
 {
 	Super::InitGameState();
+}
+
+void AMWGameMode::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)

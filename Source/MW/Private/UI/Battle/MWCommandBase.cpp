@@ -5,8 +5,8 @@ void UMWCommandBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	
-	if (IsValid(T_Command))
+	if (IsValid(Txt_Command))
 	{
-		T_Command->SetText(Text);
+		Txt_Command->SetText(Text);
 	}
 }

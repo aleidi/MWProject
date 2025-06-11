@@ -3,24 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "Gamemode/MWGameModeBase.h"
 #include "MWGameMode.generated.h"
-
-
-class UMWPawnData;
 
 /**
  * AMWGameMode
  *
  *	The base game mode class used by this project.
  */
-UCLASS(Config = Game, Meta = (ShortTooltip = "The base game mode class used by this project."))
-class AMWGameMode : public AGameModeBase
+UCLASS()
+class AMWGameMode : public AMWGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-
 	AMWGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	//~AGameModeBase interface
@@ -35,6 +31,5 @@ public:
 	//~End of AGameModeBase interface
 
 protected:
-	UPROPERTY(EditAnywhere,  Category = "Data")
-	TObjectPtr<UMWPawnData> DefaultPawnData;
+	virtual void BeginPlay() override;
 };

@@ -13,15 +13,18 @@ public class MW : ModuleRules
 		{
 			"Core",
 			"CoreUObject",
-			"Engine", 
+			"Engine",
 			"InputCore",
 			"GameplayTags",
 			"GameplayAbilities",
 			"GameplayTasks",
-            "EnhancedInput",
-            "GameFeatures",
-            "ModularGameplay",
-            "CommonInput",
+			"EnhancedInput",
+			"GameFeatures",
+			"ModularGameplay",
+			"CommonInput",
+			"UMG",
+			"Slate",
+			"SlateCore"
             //"ModularGameplayActors",
         });
 
