@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Animation/AnimInstance.h"
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 #include "Interface/MWCharacterAnimInterface.h"
 #include "MWCharacterAnimInstance.generated.h"
 

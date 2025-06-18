@@ -1,49 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 #include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "MWBattle.generated.h"
 
-
-// read from data table
-#define WAIT_TIME_DEFAULT 100
-
 namespace MWBattle
 {
-	struct FMWBattleUnit
-	{	
-		FMWBattleUnit() = default;
-
-		FMWBattleUnit(const FMWBattleUnit& InUnit):Team(InUnit.Team), WaitTime(InUnit.WaitTime)
-		{}
-
-		FMWBattleUnit(const FMWTeam& InTeam) : Team(InTeam), WaitTime(WAIT_TIME_DEFAULT)
-		{}
-
-		FMWTeam Team;
-
-		int32 WaitTime;
-
-		bool operator ==(const FMWBattleUnit& Other)
-		{
-			return Team == Other.Team;
-		}
-
-		FMWBattleUnit& operator =(const FMWBattleUnit& Other)
-		{
-			if (this != &Other)
-			{
-				Team = Other.Team;
-				WaitTime = Other.WaitTime;
-			}
-			return *this;
-		}
-	};
-
-	FORCEINLINE bool operator ==(const FMWBattleUnit& Lhs, const FMWBattleUnit& Rhs) { return Lhs.Team == Rhs.Team; }
-
 	class IBattleState
 	{
 	protected:
@@ -76,8 +40,6 @@ namespace MWBattle
 		virtual void Exit(BattleContext& Context) {}
 		virtual FString GetName() const { return TEXT("BattleBegin"); }
 
-		void InitializeActionBuff(BattleContext& Context);
-
 	private:
 		bool bBattlePrepared = false;
 	};
@@ -104,11 +66,6 @@ namespace MWBattle
 		virtual void Enter(BattleContext& Context);
 		virtual void Update(BattleContext& Context);
 		virtual FString GetName() const { return TEXT("RoundBegin"); }
-
-		/* Determine the action order for this turn. */
-		void UpdateCurrentRoundActionQueue(BattleContext& Context);
-
-		void UpdateActionBuff(BattleContext& Context);
 	};
 
 	class FMWBSRoundEnd : public IBattleState
@@ -125,8 +82,7 @@ namespace MWBattle
 	class FMWBSTurnBegin : public IBattleState
 	{
 	public:
-		FMWBSTurnBegin() = delete;
-		FMWBSTurnBegin(const FMWBattleUnit& NewOwner);
+		FMWBSTurnBegin() = default;
 		virtual ~FMWBSTurnBegin() = default;
 		virtual void Enter(BattleContext& Context);
 		virtual void Update(BattleContext& Context);
@@ -137,10 +93,8 @@ namespace MWBattle
 		void OnActionComplete();
 
 		void SetCharacterCameraAsMain(UMWBattle& Context);
-		void ShowBattleCommandUI(UMWBattle& Context);
 
 	private:
-		FMWBattleUnit Owner;
 		bool bIsActionComplete = false;
 		FDelegateHandle HandleActionComplete;
 	};
@@ -148,6 +102,7 @@ namespace MWBattle
 	class FMWBSTurnEnd : public IBattleState
 	{
 	public:
+		FMWBSTurnEnd() = default;
 		virtual ~FMWBSTurnEnd() = default;
 		virtual void Enter(BattleContext& Context);
 		virtual void Update(BattleContext& Context);
@@ -156,8 +111,6 @@ namespace MWBattle
 
 		void CheckShouldEndBattle(BattleContext& Context);
 		void CheckShouldRoundEnd(BattleContext& Context);
-		void UpdateActionQueueForNextRound(BattleContext& Context);
-		void UpdateActionQueueForDeadUnit(BattleContext& Context);
 
 	private:
 		bool bIsBattleOver = false;
@@ -182,7 +135,7 @@ class UMWBattle : public UObject, public FTickableGameObject
 public:
 	UMWBattle();
 
-	void StartBattle(const TArray<FMWTeam>& InTeams);
+	void StartBattle(const FMWBattleData& InData);
 
 	void Tick(float DeltaTime) override;
 
@@ -216,11 +169,9 @@ private:
 	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
 
 public:
-	const FMWTeam& GetCurrentActionTeam() { return GetCurrentActionQueue().Top().Team; }
+	const TArray<FMWTeam>& GetPlayer() const { return PlayerTeams; }
 
-	TArray<MWBattle::FMWBattleUnit>& GetCurrentActionQueue() { return CurrActionQueue; }
-
-	TArray<MWBattle::FMWBattleUnit>& GetNextActionQueue() { return NextActionQueue; }
+	const TArray<FMWTeam>& GetEnemy() const { return EnemyTeam; }
 
 	TArray<EMWBattleActionBuff>& GetActionBuffPool() { return ActionBuffPool; }
 
@@ -228,29 +179,27 @@ public:
 
 	uint32 GetMaxDisplayActiveBuffNo() const { return MaxDisplayActiveBuffNo; }
 
-	TArray<FMWTeam>& GetTeams() { return Teams; }
-
 	uint32 GetCurrentRound() const { return CurrRound; }
+
+	EMWTeamAlign GetCurrentTurnTeamAlign() const { return bPlayerTurn ? EMWTeamAlign::Player : EMWTeamAlign::Enemy; }
+
+	void ChangeToNewTurn();
 
 	/* Force to end a battle and decide which force is the winner.
 	* @param Winner : 0 = player win, 1 = enemy win, 2 = draw
 	*/
-	void ForceEndBattle(uint8 Winner);
+	void ForceEndBattle(EBattleResult Winner);
 
 private:
 	/* Cache the teams in the battle. */
-	TArray<FMWTeam> Teams;
+	TArray<FMWTeam> PlayerTeams;
+
+	TArray<FMWTeam> EnemyTeam;
 
 	/* Cache the action buff can be used in the battle. */
 	TArray<EMWBattleActionBuff> ActionBuffPool;
 
 	uint32 CurrRound;
-
-	/* It represents the action order of battle units at the current round. */
-	TArray<MWBattle::FMWBattleUnit> CurrActionQueue;
-
-	/* It represents the action order of battle units at the next round. */
-	TArray<MWBattle::FMWBattleUnit> NextActionQueue;
 
 	int32 MaxDisplayActiveBuffNo;
 
@@ -258,10 +207,13 @@ private:
 
 	TUniquePtr<MWBattle::IBattleState> CurrState;
 
-	/* used to force end a battle. */
-	uint8 bForceEndBattle:1;
-
 	EBattleResult BattleResult;
+
+	/* used to force end a battle. */
+	bool bForceEndBattle;
+
+	/* Player's Turn or Enemy's Turn.*/
+	bool bPlayerTurn;
 
 public:
 	TObjectPtr<class AMWPlayerController> PC;

@@ -3,7 +3,6 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Gameplay/Battle/MWBattleScenePreparation.h"
 #include "Common3DCameraComponent.h"
-#include "Gameplay/Battle/MWBattleManager.h"
 
 UE_DISABLE_OPTIMIZATION
 
@@ -12,10 +11,11 @@ UMWBattle::UMWBattle()
 	, CurrRound(1)
 	, MaxDisplayActiveBuffNo(5)
 	, bForceEndBattle(false)
+	, bPlayerTurn(true)
 {
 }
 
-void UMWBattle::StartBattle(const TArray<FMWTeam>& InTeams)
+void UMWBattle::StartBattle(const FMWBattleData& InData)
 {
 	check(GetWorld () != nullptr);
 
@@ -30,30 +30,28 @@ void UMWBattle::StartBattle(const TArray<FMWTeam>& InTeams)
 		battleSys->OnTeamRevive.AddUObject(this, &UMWBattle::OnTeamRevive);
 	}
 
-	const uint32 teamNo = InTeams.Num();
-	check(teamNo > 0);
+	const uint32 teamNo = InData.Teams.Num();
 
 	bool isValidBattle = false;
-	for (uint32 i = 1; i < teamNo; ++i)
+
+	for (uint32 i = 0; i < teamNo; ++i)
 	{
-		if (InTeams[0].GetTeamAlign() != InTeams[i].GetTeamAlign())
+		if (InData.Teams[i].GetTeamAlign() == EMWTeamAlign::Player)
 		{
-			isValidBattle = true;
-			break;
+			PlayerTeams.Emplace(InData.Teams[i]);
+		}
+		else if (InData.Teams[i].GetTeamAlign() == EMWTeamAlign::Enemy)
+		{
+			EnemyTeam.Emplace(InData.Teams[i]);
+		}
+		
+		if (!isValidBattle)
+		{
+			isValidBattle = InData.Teams[0].GetTeamAlign() != InData.Teams[i].GetTeamAlign();
 		}
 	}
 
 	check(isValidBattle);
-
-	CurrActionQueue.Reserve(teamNo * 2);
-	NextActionQueue.Reserve(teamNo * 2);
-
-	Teams = InTeams;
-	for (auto& team : Teams)
-	{
-		MWBattle::FMWBattleUnit unit{ team };
-		NextActionQueue.Emplace(unit);
-	}
 
 	CurrState = MakeUnique<MWBattle::FMWBSIdle>();
 
@@ -89,12 +87,6 @@ void UMWBattle::UpdateBattleState()
 	{
 		CurrState->Update(*this);
 		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Yellow, FString::Printf(TEXT("%s - round : %d"), *CurrState->GetName(), CurrRound));
-		if (GetCurrentActionQueue().Num() > 0)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Yellow, FString::Printf(TEXT("%s - active character : %s"), 
-				*CurrState->GetName(), 
-				GetCurrentActionTeam().GetLeader().Pawn ? *GetCurrentActionTeam().GetLeader().Pawn->GetName() : TEXT("none")));
-		}
 	}
 
 	if (CurrState->GetName() == TEXT("BattleEnd"))
@@ -124,10 +116,15 @@ void UMWBattle::ChangeState(TUniquePtr<MWBattle::IBattleState> NewState)
 	}
 }
 
-void UMWBattle::ForceEndBattle(uint8 Winner)
+void UMWBattle::ChangeToNewTurn()
+{
+	bPlayerTurn = !bPlayerTurn;
+}
+
+void UMWBattle::ForceEndBattle(EBattleResult Winner)
 {
 	bForceEndBattle = true;
-	BattleResult = (EBattleResult)FMath::Clamp(Winner, (int32)EBattleResult::PlayerWin, (int32)EBattleResult::Draw);
+	BattleResult = Winner;
 }
 
 void UMWBattle::Initialize()
@@ -140,19 +137,19 @@ void UMWBattle::Uninitialize()
 
 void UMWBattle::OnTeamDied(const FMWTeam& Team)
 {
-	int32 index = Teams.Find(Team);
+	int32 index = PlayerTeams.Find(Team);
 	if (index != INDEX_NONE)
 	{
-		Teams[index].SetAlive(false);
+		PlayerTeams[index].SetAlive(false);
 	}
 }
 
 void UMWBattle::OnTeamRevive(const FMWTeam& Team)
 {
-	int32 index = Teams.Find(Team);
+	int32 index = PlayerTeams.Find(Team);
 	if (index != INDEX_NONE)
 	{
-		Teams[index].SetAlive(true);
+		PlayerTeams[index].SetAlive(true);
 	}
 }
 
@@ -163,13 +160,12 @@ UMWBattleSystem& UMWBattle::GetBattleSystem()
 
 void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)
 {
-	check(Context.GetCurrentActionQueue().Num() > 0 && Context.GetCurrentActionTeam().IsAlive());
-
 	if (Context.GetBattleSystem().OnTurnBegin.IsBound())
 	{
-		Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentActionTeam());
+		Context.GetBattleSystem().OnTurnBegin.Broadcast(Context.GetCurrentTurnTeamAlign());
 	}
 	
+	// TODO : REMOVE
 	if (Context.GetBattleSystem().OnCommandBattleBegin.IsBound())
 	{
 		Context.GetBattleSystem().OnCommandBattleBegin.Broadcast();
@@ -202,7 +198,9 @@ void MWBattle::FMWBSTurnBegin::OnActionComplete()
 
 void MWBattle::FMWBSTurnBegin::SetCharacterCameraAsMain(UMWBattle& Context)
 {
-	const FMWTeam& team = Context.GetCurrentActionTeam();
+	
+	
+	const FMWTeam& team = Context.GetCurrentTurnTeamAlign() == EMWTeamAlign::Player ? Context.GetPlayer().Top() : Context.GetEnemy().Top();
 
 	const FMWTeamUnit& leader = team.GetLeader();
 
@@ -222,43 +220,32 @@ void MWBattle::FMWBSTurnBegin::SetCharacterCameraAsMain(UMWBattle& Context)
 	}
 }
 
-void MWBattle::FMWBSTurnBegin::ShowBattleCommandUI(UMWBattle& Context)
-{
-
-}
-
-MWBattle::FMWBSTurnBegin::FMWBSTurnBegin(const MWBattle::FMWBattleUnit& NewOwner)
-{
-	Owner = NewOwner;
-}
-
 void MWBattle::FMWBSTurnEnd::Enter(BattleContext& Context)
 {
 	if (Context.GetBattleSystem().OnTurnEnd.IsBound())
 	{
-		Context.GetBattleSystem().OnTurnEnd.Broadcast(Context.GetCurrentActionTeam());
+		Context.GetBattleSystem().OnTurnEnd.Broadcast(Context.GetCurrentTurnTeamAlign());
 	}
 
+	// TODO : REMOVE
 	if (Context.GetBattleSystem().OnCommandBattleEnd.IsBound())
 	{
 		Context.GetBattleSystem().OnCommandBattleEnd.Broadcast();
 	}
 
-	// remove dead unit first
-	UpdateActionQueueForDeadUnit(Context);
-
 	// check if battle end
 	CheckShouldEndBattle(Context);
+
 	if (bIsBattleOver)
 	{
 		return;
 	}
 
-	// update action queue for next round
-	UpdateActionQueueForNextRound(Context);
-
 	// check if round end
 	CheckShouldRoundEnd(Context);
+
+	// update team align of next turn
+	Context.ChangeToNewTurn();
 }
 
 void MWBattle::FMWBSTurnEnd::Update(BattleContext& Context)
@@ -276,7 +263,7 @@ void MWBattle::FMWBSTurnEnd::Update(BattleContext& Context)
 	}
 
 	// change to next turn
-	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue().Top()));
+	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>());
 }
 
 void MWBattle::FMWBSTurnEnd::Exit(BattleContext& Context)
@@ -285,31 +272,24 @@ void MWBattle::FMWBSTurnEnd::Exit(BattleContext& Context)
 
 void MWBattle::FMWBSTurnEnd::CheckShouldEndBattle(BattleContext& Context)
 {
-	const TArray<FMWBattleUnit>& currActQueue = Context.GetCurrentActionQueue();
-	const TArray<FMWBattleUnit>& nextActQueue = Context.GetNextActionQueue();
+	const TArray<FMWTeam>& playerTeam = Context.GetPlayer();
+
+	const TArray<FMWTeam>& enemyTeam = Context.GetEnemy();
 
 	// check is game end
 	int32 existPlayerNo = 0, existEnemyNo = 0;
 
-	for (auto& unit : currActQueue)
+	for (auto& unit : playerTeam)
 	{
-		if (unit.Team.GetTeamAlign() == EMWTeamAlign::Player)
+		if (unit.IsAlive())
 		{
 			++existPlayerNo;
-		}
-		else if (unit.Team.GetTeamAlign() == EMWTeamAlign::Enemy)
-		{
-			++existEnemyNo;
 		}
 	}
 
-	for (auto& unit : nextActQueue)
+	for (auto& unit : enemyTeam)
 	{
-		if (unit.Team.GetTeamAlign() == EMWTeamAlign::Player)
-		{
-			++existPlayerNo;
-		}
-		else if (unit.Team.GetTeamAlign() == EMWTeamAlign::Enemy)
+		if (unit.IsAlive())
 		{
 			++existEnemyNo;
 		}
@@ -336,35 +316,9 @@ void MWBattle::FMWBSTurnEnd::CheckShouldEndBattle(BattleContext& Context)
 
 void MWBattle::FMWBSTurnEnd::CheckShouldRoundEnd(BattleContext& Context)
 {
-	bIsRoundEnd = Context.GetCurrentActionQueue().Num() == 0;
-}
-
-void MWBattle::FMWBSTurnEnd::UpdateActionQueueForNextRound(BattleContext& Context)
-{
-	TArray<FMWBattleUnit>& nextActQueue = Context.GetNextActionQueue();
-
-	FMWBattleUnit unit = Context.GetCurrentActionQueue().Pop(false);
-	unit.WaitTime += WAIT_TIME_DEFAULT;
-
-	nextActQueue.Emplace(unit);
-}
-
-void MWBattle::FMWBSTurnEnd::UpdateActionQueueForDeadUnit(BattleContext& Context)
-{
-	auto RemoveDeadUnit = [](TArray<FMWBattleUnit>& Queue)
-	{
-		Queue.RemoveAll([](const FMWBattleUnit& Unit)
-		{
-			return !Unit.Team.IsAlive();
-		});
-	};
-
-	TArray<FMWBattleUnit>& currActQueue = Context.GetCurrentActionQueue();
-	TArray<FMWBattleUnit>& nextActQueue = Context.GetNextActionQueue();
-
-	RemoveDeadUnit(currActQueue);
-	RemoveDeadUnit(nextActQueue);
-
+	// player first, then enemy.
+	// after enemy finish action, round over.
+	bIsRoundEnd = Context.GetCurrentTurnTeamAlign() == EMWTeamAlign::Enemy ? true : false;
 }
 
 MWBattle::FMWBSBattleEnd::FMWBSBattleEnd(EBattleResult Result)
@@ -383,6 +337,12 @@ void MWBattle::FMWBSBattleEnd::Enter(BattleContext& Context)
 	{
 		Context.GetBattleSystem().OnBattleEnd.Broadcast(BattleResult);
 	}
+
+	// TODO : REMOVE
+	if (IsValid(Context.PC))
+	{
+		Context.PC->OnBattleEnd();
+	}
 }
 
 void MWBattle::FMWBSRoundEnd::Enter(BattleContext& Context)
@@ -390,11 +350,6 @@ void MWBattle::FMWBSRoundEnd::Enter(BattleContext& Context)
 	if (Context.GetBattleSystem().OnRoundEnd.IsBound())
 	{
 		Context.GetBattleSystem().OnRoundEnd.Broadcast(Context.GetCurrentRound());
-	}
-
-	if (IsValid(Context.PC))
-	{
-		Context.PC->OnBattleEnd();
 	}
 }
 
@@ -410,10 +365,6 @@ void MWBattle::FMWBSRoundEnd::Exit(BattleContext& Context)
 
 void MWBattle::FMWBSRoundBegin::Enter(BattleContext& Context)
 {
-	UpdateCurrentRoundActionQueue(Context);
-
-	UpdateActionBuff(Context);
-
 	if (Context.GetBattleSystem().OnRoundBegin.IsBound())
 	{
 		Context.GetBattleSystem().OnRoundBegin.Broadcast(Context.GetCurrentRound());
@@ -422,81 +373,7 @@ void MWBattle::FMWBSRoundBegin::Enter(BattleContext& Context)
 
 void MWBattle::FMWBSRoundBegin::Update(BattleContext& Context)
 {
-	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>(Context.GetCurrentActionQueue().Top()));
-}
-
-void MWBattle::FMWBSRoundBegin::UpdateCurrentRoundActionQueue(BattleContext& Context)
-{
-	TArray<FMWBattleUnit>& nextActQueue = Context.GetNextActionQueue();
-	TArray<FMWBattleUnit>& currActQueue = Context.GetCurrentActionQueue();
-
-	currActQueue = nextActQueue;
-	nextActQueue.Reset();
-
-	// find revive battle units
-	const TArray<FMWTeam>& teams = Context.GetTeams();
-	for (const auto& team : teams)
-	{
-		if (team.IsAlive())
-		{
-			FMWBattleUnit unit{team};
-			if (!currActQueue.Contains(unit))
-			{
-				currActQueue.Emplace(unit);
-			}
-		}
-	}
-
-	bool bUpdateWaitTime = true;
-	while (bUpdateWaitTime)
-	{
-		// update wait time of each battle unit, if wait time <= 0, then update is complete
-		for (auto& battleUnit : currActQueue)
-		{
-			battleUnit.WaitTime -= battleUnit.Team.GetTeamSpeed();
-			if (battleUnit.WaitTime <= 0)
-			{
-				bUpdateWaitTime = false;
-			}
-		}
-	}
-
-	// the last one is the first one to act
-	currActQueue.Sort([](const MWBattle::FMWBattleUnit& A, const MWBattle::FMWBattleUnit& B)
-	{
-		return A.WaitTime > B.WaitTime;
-	});
-
-	TArray<FMWTeam> newTeamQueue;
-	const uint32 queueNo = currActQueue.Num();
-	for (uint32 i = 0; i < queueNo; ++i)
-	{
-		newTeamQueue.Emplace(currActQueue[i].Team);
-	}
-
-	// Broadcast new action queue
-	if (Context.GetBattleSystem().OnActionQueueUpdate.IsBound())
-	{
-		Context.GetBattleSystem().OnActionQueueUpdate.Broadcast(newTeamQueue);
-	}
-}
-
-void MWBattle::FMWBSRoundBegin::UpdateActionBuff(BattleContext& Context)
-{
-	TArray<EMWBattleActionBuff>& activeActionBuffs = Context.GetActiveActionBuffs();
-	TArray<EMWBattleActionBuff>& actionBuffPool = Context.GetActionBuffPool();
-
-	activeActionBuffs.Pop(false);
-
-	int32 id = FMath::RandRange(0, actionBuffPool.Num() - 1);
-
-	activeActionBuffs.Push(actionBuffPool[id]);
-
-	// broadcast new action buff
-	if (Context.GetBattleSystem().OnActionBuffUpdate.IsBound())
-	{
-		Context.GetBattleSystem().OnActionBuffUpdate.Broadcast(actionBuffPool[id]);
-	}
+	Context.ChangeState(MakeUnique<MWBattle::FMWBSTurnBegin>());
 }
 
 void MWBattle::FMWBSBattleBegin::Enter(BattleContext& Context)
@@ -504,7 +381,6 @@ void MWBattle::FMWBSBattleBegin::Enter(BattleContext& Context)
 	if (Context.GetBattleSystem().OnBattleBegin.IsBound())
 	{
 		Context.GetBattleSystem().OnBattleBegin.Broadcast();
-
 	}
 
 	// prepare scene
@@ -512,16 +388,16 @@ void MWBattle::FMWBSBattleBegin::Enter(BattleContext& Context)
 
 	FMWBattleSceneParam param;
 
-	param.Teams = Context.GetTeams();
+	param.Teams = Context.GetPlayer();
+	param.Teams.Append(Context.GetEnemy());
 
 	scenePrep.PrepareScene(param);
 	// use async task?
 	// play cutscene
 
-	InitializeActionBuff(Context);
-
 	bBattlePrepared = true;
 
+	// TODO : REMOVE
 	if (IsValid(Context.PC))
 	{
 		Context.PC->OnBattleBegin();
@@ -533,39 +409,6 @@ void MWBattle::FMWBSBattleBegin::Update(BattleContext& Context)
 	if (bBattlePrepared)
 	{
 		Context.ChangeState(MakeUnique<MWBattle::FMWBSRoundBegin>());
-	}
-}
-
-void MWBattle::FMWBSBattleBegin::InitializeActionBuff(BattleContext& Context)
-{
-	TArray<EMWBattleActionBuff>& actionBuffPool = Context.GetActionBuffPool();
-
-	// Get all action buff can be used here : TODO
-	TArray<EMWBattleActionBuff> buffPool;
-	buffPool.Emplace(EMWBattleActionBuff::Attack);
-	buffPool.Emplace(EMWBattleActionBuff::Idle);
-	buffPool.Emplace(EMWBattleActionBuff::Heal);
-	Context.SetActionBuffPool(buffPool);
-
-	TArray<EMWBattleActionBuff>& activeActionBuffs = Context.GetActiveActionBuffs();
-	const uint32 maxDisplayActiveBuffNo = Context.GetMaxDisplayActiveBuffNo();
-
-	activeActionBuffs.Reset();
-
-	const uint32 randMax = actionBuffPool.Num() - 1;
-
-	const bool isDeleBound = Context.GetBattleSystem().OnActionBuffUpdate.IsBound();
-
-	for (uint32 i = 0; i < maxDisplayActiveBuffNo; ++i)
-	{
-		int32 id = FMath::RandRange(0, randMax);
-
-		activeActionBuffs.Push(actionBuffPool[id]);
-
-		if (isDeleBound)
-		{
-			Context.GetBattleSystem().OnActionBuffUpdate.Broadcast(actionBuffPool[id]);
-		}
 	}
 }
 

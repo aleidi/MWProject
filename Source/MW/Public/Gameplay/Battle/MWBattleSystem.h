@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 #include "GameplayTagContainer.h"
 #include "MWBattleSystem.generated.h"
 
 class UMWBattle;
-class FMWBattleManager;
 
 #pragma region Skill
 /* Used to trigger gameplay ability for skill. */
@@ -58,10 +57,10 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnRoundBegin, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRoundEnd, int32);
 
 /* Begin of the team's turn. */
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnBegin, const FMWTeam&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnBegin, EMWTeamAlign);
 
 /* End of the team's turn. */
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnEnd, const FMWTeam&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTurnEnd, EMWTeamAlign);
 
 DECLARE_MULTICAST_DELEGATE(FOnCommandBattleBegin);
 
@@ -164,7 +163,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
-	void StartBattle(const TArray<FMWTeam>& InTeams);
+	void StartBattle(const FMWBattleData& InData);
 
 	/* Force to end a battle and decide which force is the winner.
 	* @param Winner : 0 = player win, 1 = enemy win, 2 = draw
@@ -172,7 +171,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void EndBattle(uint8 Winner);
 
-	FMWBattleManager* GetBattleManager() const;
 private:
 	void OnBattleEndCallback(EBattleResult Result);
 
@@ -182,6 +180,4 @@ private:
 	FDelegateHandle DHBattleEnd;
 
 	TObjectPtr<UMWBattle> BattleInst;
-
-	TSharedPtr<FMWBattleManager> BattleMng;
 };

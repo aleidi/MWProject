@@ -1,7 +1,37 @@
 #pragma once
 
-#include "Define/MWEnum.h"
-#include "MWStruct.generated.h"
+#include "MWDefineGameplay.generated.h"
+
+UENUM(BlueprintType)
+enum ECharacterBehaviorState
+{
+	Normal,
+	Battle
+};
+
+UENUM()
+enum class EBattleResult
+{
+	PlayerWin	= 0,
+	EnemyWin	= 1,
+	Draw		= 2,
+	Max			= 3
+};
+
+UENUM(BlueprintType)
+enum class EMWTeamAlign : uint8
+{
+	Player,
+	Enemy,
+};
+
+UENUM(BlueprintType)
+enum class EMWBattleActionBuff
+{
+	Idle,
+	Attack,
+	Heal
+};
 
 /* FMWFoundActorInfo
 *  It's a data struct used in searching a selectable actor.
@@ -50,9 +80,7 @@ struct FMWCharacterInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Head;
 };
-#pragma endregion
 
-#pragma region Battle
 USTRUCT(BlueprintType)
 struct FMWTeamUnit 
 {
@@ -121,4 +149,16 @@ struct FMWBattleSceneParam
 	UPROPERTY()
 	TArray<FMWTeam> Teams;
 };
-#pragma endregion
+
+USTRUCT(BlueprintType)
+struct FMWBattleData
+{
+	GENERATED_BODY()
+
+	/* */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bPlayerFirst;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TArray<FMWTeam> Teams;
+};

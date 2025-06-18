@@ -1,4 +1,4 @@
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 
 int32 FMWTeam::GetTeamSpeed() const
 {

@@ -3,7 +3,7 @@
 #include "Runtime/Engine/Public/EngineUtils.h"
 #include "Interface/MWSelectableInterface.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 #include "Runtime/Engine/Classes/GameFramework/Pawn.h"
 #include "Gameplay/MWGameplaySubsystem.h"
 #include "Gameplay/Battle/MWBattleSystem.h"

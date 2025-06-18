@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/MWSelectableInterface.h"
-#include "Define/MWStruct.h"
+#include "Define/MWDefineGameplay.h"
 #include "MWCharacter.generated.h"
 
 class FMWTargetSelector;
