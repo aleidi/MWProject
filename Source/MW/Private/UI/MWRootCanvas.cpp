@@ -28,7 +28,7 @@ bool UMWRootCanvas::AddWidget(UUserWidget* Widget, int32 ZOrder)
 		return false;
 	}
 
-	UCanvasPanelSlot* slot = RootCanvas->AddChildToCanvas(Widget);
+	UCanvasPanelSlot* slot = CP_RootCanvas->AddChildToCanvas(Widget);
 
 	slot->SetAnchors(FAnchors(0.f, 0.f, 1.f, 1.f));
 
@@ -39,5 +39,5 @@ bool UMWRootCanvas::AddWidget(UUserWidget* Widget, int32 ZOrder)
 
 bool UMWRootCanvas::RemoveWidget(UUserWidget* Widget)
 {
-	return RootCanvas->RemoveChild(Widget);
+	return CP_RootCanvas->RemoveChild(Widget);
 }

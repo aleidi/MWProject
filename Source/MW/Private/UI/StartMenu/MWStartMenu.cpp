@@ -8,14 +8,14 @@ void UMWStartMenu::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	if (IsValid(Start))
+	if (IsValid(WBP_Start))
 	{
-		Start->GetButton()->OnPressed().AddUObject(this, &UMWStartMenu::OnStart);
+		WBP_Start->GetButton()->OnPressed().AddUObject(this, &UMWStartMenu::OnStart);
 	}
 
-	if (IsValid(Exit))
+	if (IsValid(WBP_Exit))
 	{
-		Exit->GetButton()->OnPressed().AddUObject(this, &UMWStartMenu::OnExit);
+		WBP_Exit->GetButton()->OnPressed().AddUObject(this, &UMWStartMenu::OnExit);
 	}
 }
 
@@ -43,20 +43,20 @@ void UMWStartMenu::SetFocus()
 {
 	SetIsFocusable(true);
 
-	if (IsValid(Start))
+	if (IsValid(WBP_Start))
 	{
-		SetDesiredFocusWidget(Start);
+		SetDesiredFocusWidget(WBP_Start);
 	}
-	else if (IsValid(Continue))
+	else if (IsValid(WBP_Continue))
 	{
-		SetDesiredFocusWidget(Continue);
+		SetDesiredFocusWidget(WBP_Continue);
 	}
-	else if (IsValid(Config))
+	else if (IsValid(WBP_Config))
 	{
-		SetDesiredFocusWidget(Config);
+		SetDesiredFocusWidget(WBP_Config);
 	}
-	else if (IsValid(Exit))
+	else if (IsValid(WBP_Exit))
 	{
-		SetDesiredFocusWidget(Exit);
+		SetDesiredFocusWidget(WBP_Exit);
 	}
 }

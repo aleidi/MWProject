@@ -15,7 +15,7 @@ protected:
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, DisplayName = "Command"))
-	TObjectPtr<UTextBlock> Txt_Command;
+	TObjectPtr<UTextBlock> TXT_Command;
 
 	/* The real content of Command. */
 	UPROPERTY(EditAnywhere)

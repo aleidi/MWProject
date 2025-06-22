@@ -5,17 +5,17 @@
 
 void UMWUserWidget::PlayOpenAnim()
 {
-	if (IsValid(OpenAnimation))
+	if (IsValid(WA_OpenAnimation))
 	{
-		PlayAnimationForward(OpenAnimation);
+		PlayAnimationForward(WA_OpenAnimation);
 	}
 }
 
 void UMWUserWidget::PlayCloseAnim(TFunction<void()> FinishedCallback)
 {
-	if (IsValid(CloseAnimation))
+	if (IsValid(WA_CloseAnimation))
 	{
-		PlayAnimationForward(CloseAnimation);
+		PlayAnimationForward(WA_CloseAnimation);
 
 		if (FinishedCallback)
 		{
@@ -33,7 +33,7 @@ void UMWUserWidget::PlayCloseAnim(TFunction<void()> FinishedCallback)
 
 void UMWUserWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
 {
-	if (Animation == CloseAnimation)
+	if (Animation == WA_CloseAnimation)
 	{
 		if (OnCloseAnimationFinishedCallback)
 		{

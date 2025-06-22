@@ -10,9 +10,9 @@ void UMWButton::SetButtonText(FText NewText)
 {
 	ButtonText = NewText;
 
-	if (IsValid(Txt_BtnText))
+	if (IsValid(CTB_BtnText))
 	{
-		Txt_BtnText->SetText(ButtonText);
+		CTB_BtnText->SetText(ButtonText);
 	}
 }
 
@@ -30,9 +30,9 @@ void UMWButton::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	if (IsValid(Txt_BtnText))
+	if (IsValid(CTB_BtnText))
 	{
-		Txt_BtnText->SetText(ButtonText);
+		CTB_BtnText->SetText(ButtonText);
 	}
 }
 
@@ -40,9 +40,9 @@ void UMWButton::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();
 
-	if (IsValid(Txt_BtnText))
+	if (IsValid(CTB_BtnText))
 	{
-		Txt_BtnText->SetStyle(GetCurrentTextStyleClass());
+		CTB_BtnText->SetStyle(GetCurrentTextStyleClass());
 	}
 }
 
@@ -50,9 +50,9 @@ void UMWButton::NativeOnCurrentTextStyleChanged()
 {
 	Super::NativeOnCurrentTextStyleChanged();
 
-	if (IsValid(Txt_BtnText))
+	if (IsValid(CTB_BtnText))
 	{
-		Txt_BtnText->SetStyle(GetCurrentTextStyleClass());
+		CTB_BtnText->SetStyle(GetCurrentTextStyleClass());
 	}
 }
 

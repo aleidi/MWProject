@@ -24,7 +24,8 @@ public class MW : ModuleRules
 			"CommonInput",
 			"UMG",
 			"Slate",
-			"SlateCore"
+			"SlateCore",
+			"CommonUI",
             //"ModularGameplayActors",
         });
 

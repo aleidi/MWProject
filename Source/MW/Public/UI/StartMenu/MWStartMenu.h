@@ -23,16 +23,16 @@ class UMWStartMenu : public UMWUserWidget
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMWMenuButton> Start;
+	TObjectPtr<UMWMenuButton> WBP_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMWMenuButton> Continue;
+	TObjectPtr<UMWMenuButton> WBP_Continue;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMWMenuButton> Config;
+	TObjectPtr<UMWMenuButton> WBP_Config;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMWMenuButton> Exit;
+	TObjectPtr<UMWMenuButton> WBP_Exit;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Menu")
 	TSoftObjectPtr<UWorld> Level;

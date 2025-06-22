@@ -28,19 +28,19 @@ class UMWMenuButton : public UMWUserWidget
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<USizeBox> SizeBox;
+	TObjectPtr<USizeBox> SB_ButtonSize;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<UBorder> BG;
+	TObjectPtr<UBorder> BD_BackGround;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<USpacer> Indent;
+	TObjectPtr<USpacer> SP_Indent;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UHorizontalBox> HorizontalBox;
+	TObjectPtr<UHorizontalBox> HB_Layout;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<UMWButton> Button;
+	TObjectPtr<UMWButton> WBP_Button;
 
 public:
 	/* If true, the Text will be indented according to IndentRate. */

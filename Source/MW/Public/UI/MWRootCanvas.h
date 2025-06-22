@@ -37,5 +37,5 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> RootCanvas;
+	TObjectPtr<UCanvasPanel> CP_RootCanvas;
 };

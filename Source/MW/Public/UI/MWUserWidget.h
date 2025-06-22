@@ -25,10 +25,10 @@ protected:
 
 protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	TObjectPtr<UWidgetAnimation> OpenAnimation;
+	TObjectPtr<UWidgetAnimation> WA_OpenAnimation;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	TObjectPtr<UWidgetAnimation> CloseAnimation;
+	TObjectPtr<UWidgetAnimation> WA_CloseAnimation;
 
 	TFunction<void()> OnCloseAnimationFinishedCallback = nullptr;
 

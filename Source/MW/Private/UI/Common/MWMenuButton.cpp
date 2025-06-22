@@ -17,7 +17,7 @@ void UMWMenuButton::SetTextHorizontalAlignment(EHorizontalAlignment NewHorizonta
 
 	if (IsAlignValid())
 	{
-		if (auto* slot = Cast<UHorizontalBoxSlot>(Button->Slot))
+		if (auto* slot = Cast<UHorizontalBoxSlot>(WBP_Button->Slot))
 		{		
 			slot->SetHorizontalAlignment(TextHorizontalAlignment);
 		}
@@ -30,7 +30,7 @@ void UMWMenuButton::SetTextVerticalAlignment(EVerticalAlignment NewVerticalAlign
 
 	if (IsAlignValid())
 	{
-		if (auto* slot = Cast<UHorizontalBoxSlot>(Button->Slot))
+		if (auto* slot = Cast<UHorizontalBoxSlot>(WBP_Button->Slot))
 		{
 			slot->SetVerticalAlignment(TextVerticalAlignment);
 		}
@@ -39,20 +39,20 @@ void UMWMenuButton::SetTextVerticalAlignment(EVerticalAlignment NewVerticalAlign
 
 UMWButton* UMWMenuButton::GetButton() const
 {
-	return Button.Get();
+	return WBP_Button.Get();
 }
 
 void UMWMenuButton::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (IsValid(Button))
+	if (IsValid(WBP_Button))
 	{
-		Button->OnHovered().AddUObject(this, &UMWMenuButton::OnHovered);
-		Button->OnUnhovered().AddUObject(this, &UMWMenuButton::OnUnhovered);
-		Button->OnFocusReceived().AddUObject(this, &UMWMenuButton::OnFocusReceived);
-		Button->OnFocusLost().AddUObject(this, &UMWMenuButton::OnFocusLost);
-		Button->OnInputMethodChangedDele.AddUObject(this, &UMWMenuButton::OnInputMethodChanged);
+		WBP_Button->OnHovered().AddUObject(this, &UMWMenuButton::OnHovered);
+		WBP_Button->OnUnhovered().AddUObject(this, &UMWMenuButton::OnUnhovered);
+		WBP_Button->OnFocusReceived().AddUObject(this, &UMWMenuButton::OnFocusReceived);
+		WBP_Button->OnFocusLost().AddUObject(this, &UMWMenuButton::OnFocusLost);
+		WBP_Button->OnInputMethodChangedDele.AddUObject(this, &UMWMenuButton::OnInputMethodChanged);
 	}
 
 	SetFocusSetting();
@@ -66,24 +66,27 @@ void UMWMenuButton::NativePreConstruct()
 
 	SetFocusSetting();
 
-	if (IsValid(Button))
+	if (IsValid(WBP_Button))
 	{
-		Button->SetButtonText(ButtonText);
+		WBP_Button->SetButtonText(ButtonText);
 	}
 
-	if (IsValid(SizeBox))
+	if (IsValid(SB_ButtonSize))
 	{
-		SizeBox->SetWidthOverride(WidgetWidth);
-		SizeBox->SetHeightOverride(WidgetHeight);
+		SB_ButtonSize->SetWidthOverride(WidgetWidth);
+		SB_ButtonSize->SetHeightOverride(WidgetHeight);
 	}
 
-	SetTextHorizontalAlignment(TextHorizontalAlignment);
-	SetTextVerticalAlignment(TextVerticalAlignment);
+	if (IsValid(WBP_Button))
+	{
+		SetTextHorizontalAlignment(TextHorizontalAlignment);
+		SetTextVerticalAlignment(TextVerticalAlignment);
+	}
 
 	if(bUseImageAsBackGround && IsValid(BGImg))
 	{
-		MidBg = UMaterialInstanceDynamic::Create(BGImg, BG, TEXT("BGImg"));
-		BG->SetBrushFromMaterial(MidBg);
+		MidBg = UMaterialInstanceDynamic::Create(BGImg, BD_BackGround, TEXT("BGImg"));
+		BD_BackGround->SetBrushFromMaterial(MidBg);
 	}
 }
 
@@ -109,19 +112,19 @@ void UMWMenuButton::OnFocusLost()
 
 bool UMWMenuButton::IsIndentValid() const
 {
-	return IsAlignValid() && bUseIndent && IsValid(Indent);
+	return IsAlignValid() && bUseIndent && IsValid(SP_Indent);
 }
 
 bool UMWMenuButton::IsAlignValid() const
 {
-	return IsValid(HorizontalBox);
+	return IsValid(HB_Layout);
 }
 
 void UMWMenuButton::SetIndentSize(FSlateChildSize NewSize)
 {
 	if (IsIndentValid())
 	{
-		if (auto* slot = Cast<UHorizontalBoxSlot>(Indent->Slot))
+		if (auto* slot = Cast<UHorizontalBoxSlot>(SP_Indent->Slot))
 		{
 			slot->SetSize(NewSize);
 		}
@@ -130,11 +133,11 @@ void UMWMenuButton::SetIndentSize(FSlateChildSize NewSize)
 
 void UMWMenuButton::SetFocusSetting()
 {
-	if (IsValid(Button))
+	if (IsValid(WBP_Button))
 	{
 		SetIsFocusable(true);
 
-		SetDesiredFocusWidget(Button);
+		SetDesiredFocusWidget(WBP_Button);
 	}
 }
 

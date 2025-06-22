@@ -25,7 +25,7 @@ class UMWButton : public UCommonButtonBase
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> Txt_BtnText;
+	TObjectPtr<UCommonTextBlock> CTB_BtnText;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Getter = GetButtonText, Setter = SetButtonText, Category = "Content", meta = (DisplayName = "Text"))
@@ -39,8 +39,6 @@ public:
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnInputMethodChanged, ECommonInputType);
 	FOnInputMethodChanged OnInputMethodChangedDele;
-
-	
 
 protected:
 	virtual void NativeConstruct() override;
