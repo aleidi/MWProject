@@ -5,7 +5,6 @@
 !Plugins/
 !Source/
 !Resource/
-!*.uproject
 
 # Windows generated files
 [Bb]inaries/
@@ -59,7 +58,9 @@ xcuserdata/
 /*.xcodeproj
 *.DS_Store
 
-
 #忽略Plugins目录下Developer的临时内容
 /Plugins/*/Binaries/
 /Plugins/*/Intermediate/
+
+#visual studio tool
+/Plugins/VisualStudioTools
