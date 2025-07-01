@@ -32,4 +32,7 @@ public:
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameBeginPlay, AGameModeBase*);
 	static FOnGameBeginPlay OnGameBeginPlay;
+
+protected:
+	void CreateParty();
 };

@@ -18,6 +18,10 @@ struct FMWCharacterMasterData : public FTableRowBase
 {
 	GENERATED_BODY()
 
+	/* Id of the character. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Id;
+
 	/* character blueprint class */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftClassPtr<class AMWCharacter> CharacterClass;

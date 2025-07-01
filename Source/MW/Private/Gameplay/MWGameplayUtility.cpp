@@ -5,7 +5,6 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Define/MWDefineGameplay.h"
 #include "Runtime/Engine/Classes/GameFramework/Pawn.h"
-#include "Gameplay/MWGameplaySubsystem.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
 
 void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
@@ -63,16 +62,6 @@ UMWBattleSystem* UWMGameplayUtility::GetBattleSubSystem(const UObject* WorldCont
 	if (UWorld* world = WorldContextObject->GetWorld())
 	{
 		return world->GetSubsystem<UMWBattleSystem>();
-	}
-
-	return nullptr;
-}
-
-UMWGameplaySubsystem* UWMGameplayUtility::GetGameplaySubsystem(const UObject* WorldContextObject)
-{
-	if (UGameInstance* GI = UGameplayStatics::GetGameInstance(WorldContextObject))
-	{
-		return GI->GetSubsystem<UMWGameplaySubsystem>();
 	}
 
 	return nullptr;

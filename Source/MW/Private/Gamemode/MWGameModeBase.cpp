@@ -1,4 +1,5 @@
 #include "Gamemode/MWGameModeBase.h"
+#include "Gameplay/MWPartyManager.h"
 
 AMWGameModeBase::FOnGameInit AMWGameModeBase::OnGameInit;
 AMWGameModeBase::FOnGameBeginPlay AMWGameModeBase::OnGameBeginPlay;
@@ -26,4 +27,16 @@ void AMWGameModeBase::BeginPlay()
 	{
 		OnGameBeginPlay.Broadcast(this);
 	}
+
+	// Initialize party and team
+	CreateParty();
+}
+
+void AMWGameModeBase::CreateParty()
+{
+	auto* partyMng = GetWorld()->GetGameInstance()->GetSubsystem<UMWPartyManager>();
+
+	check(partyMng);
+
+	partyMng->InitializeParty();
 }

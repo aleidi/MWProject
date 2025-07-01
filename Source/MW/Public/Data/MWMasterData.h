@@ -33,4 +33,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UMWUIConfigData> UIConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default", meta = (ClampMin = 0))
+	int32 TeamsNumber = 3;
 };

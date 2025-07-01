@@ -19,10 +19,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta=(WorldContext = "WorldContextObject"))
 	static UMWBattleSystem* GetBattleSubSystem(const UObject* WorldContextObject);
 
-	/* Quick to get Battle Subsystem. */
-	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta=(WorldContext = "WorldContextObject"))
-	static UMWGameplaySubsystem* GetGameplaySubsystem(const UObject* WorldContextObject);
-
 	/* Access to save config in blueprint.*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void SaveConfig(UObject* WorldContextObject);

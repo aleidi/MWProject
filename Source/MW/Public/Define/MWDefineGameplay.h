@@ -65,22 +65,6 @@ FORCEINLINE bool operator==(const FMWFoundActorInfo& Lhs, const FMWFoundActorInf
 	return Lhs.Name == Rhs.Name;
 }
 
-#pragma region DataTable
-USTRUCT(BlueprintType)
-struct FMWCharacterInfo : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ID;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* Head;
-};
-
 USTRUCT(BlueprintType)
 struct FMWTeamUnit 
 {
