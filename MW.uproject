@@ -1,51 +1,55 @@
 {
-	"FileVersion": 3,
-	"EngineAssociation": "{2A213506-4157-A5E9-7DA6-3CB26DFF6E96}",
-	"Category": "",
-	"Description": "",
-	"Modules": [
-		{
-			"Name": "MW",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"UMG",
-				"CommonUI"
-			]
-		},
-		{
-			"Name": "MWEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default"
-		}
-	],
-	"Plugins": [
-		{
-			"Name": "ModelingToolsEditorMode",
-			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
-			]
-		},
-		{
-			"Name": "GameplayAbilities",
-			"Enabled": true
-		},
-		{
-			"Name": "CommonUI",
-			"Enabled": true
-		},
-		{
-			"Name": "ModelViewViewModel",
-			"Enabled": true
-		},
-		{
-			"Name": "GameFeatures",
-			"Enabled": true
-		},
-		{
-			"Name": "ModularGameplay",
-			"Enabled": true
-		}
-	]
+  "FileVersion": 3,
+  "EngineAssociation": "{2A213506-4157-A5E9-7DA6-3CB26DFF6E96}",
+  "Category": "",
+  "Description": "",
+  "Modules": [
+    {
+      "Name": "MW",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "MWEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ModelingToolsEditorMode",
+      "Enabled": true
+    },
+    {
+      "Name": "GameplayAbilities",
+      "Enabled": true
+    },
+    {
+      "Name": "CommonUI",
+      "Enabled": true
+    },
+    {
+      "Name": "ModelViewViewModel",
+      "Enabled": true
+    },
+    {
+      "Name": "GameFeatures",
+      "Enabled": true
+    },
+    {
+      "Name": "ModularGameplay",
+      "Enabled": true
+    },
+    {
+      "Name": "VisualStudioTools",
+      "Enabled": true,
+      "SupportedTargetPlatforms": [
+        "Win64"
+      ]
+    }
+  ],
+  "TargetPlatforms": [],
+  "AdditionalRootDirectories": [],
+  "AdditionalPluginDirectories": [],
+  "EpicSampleNameHash": ""
 }

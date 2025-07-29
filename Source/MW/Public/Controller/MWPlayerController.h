@@ -4,7 +4,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "MWPlayerController.generated.h"
 
-class FMWTargetSelector;
 class UAbilitySystemComponent;
 class UMWAbilitySystemComponent;
 class UInputMappingContext;

@@ -27,16 +27,6 @@ enum class EMWUILayer : uint8
 	Debug
 };
 
-UCLASS()
-class UMWUILayerConfig : public UDataAsset 
-{
-	GENERATED_BODY()
-
-public:	
-	UPROPERTY(EditDefaultsOnly)
-	TMap<EMWUILayer, int32> Config;
-};
-
 USTRUCT()
 struct FMWWidgetLayerInfo
 {
@@ -64,20 +54,4 @@ struct FMWUIClassConfig : public FTableRowBase
 	
 	UPROPERTY(EditDefaultsOnly)
 	FMWWidgetLayerInfo WidgetConfig;
-};
-
-UCLASS()
-class UMWUIConfigData : public UDataAsset 
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> RootCanvas;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UMWUILayerConfig> LayerConfigData;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UDataTable> ClassTable;
 };

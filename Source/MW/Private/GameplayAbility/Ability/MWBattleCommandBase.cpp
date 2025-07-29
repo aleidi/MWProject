@@ -3,8 +3,7 @@
 
 void UMWBattleCommandBase::OnCommandComplete()
 {
-	UMWBattleSystem* mwbs = GetWorld() ? GetWorld()->GetSubsystem<UMWBattleSystem>() : nullptr;
-	if (mwbs)
+	if (UMWBattleSystem * mwbs = UMWBattleSystem::Get(this))
 	{
 		mwbs->OnActionComplete.Broadcast();
 	}

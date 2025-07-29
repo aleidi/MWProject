@@ -374,7 +374,7 @@ void AMWPlayerController::UnlockTarget()
 
 void AMWPlayerController::OnBattleBegin()
 {
-	UMWBattleSystem* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>();
+	UMWBattleSystem* battleSys = UMWBattleSystem::Get(this);
 
 	if (battleSys)
 	{
@@ -385,7 +385,7 @@ void AMWPlayerController::OnBattleBegin()
 
 void AMWPlayerController::OnBattleEnd()
 {
-	UMWBattleSystem* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>();
+	UMWBattleSystem* battleSys = UMWBattleSystem::Get(this);
 
 	if (battleSys)
 	{
@@ -439,7 +439,7 @@ void AMWPlayerController::PostProcessInput(const float DeltaTime, const bool bGa
 
 void AMWPlayerController::BindDelegates()
 {
-	if (UMWBattleSystem* mwbs = GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(this))
 	{
 
 	}

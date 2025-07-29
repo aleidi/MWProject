@@ -7,7 +7,6 @@
 #include "Define/MWDefineGameplay.h"
 #include "MWCharacter.generated.h"
 
-class FMWTargetSelector;
 class USpringArmComponent;
 class UCameraComponent;
 class UMWHeroComponent;
@@ -42,6 +41,12 @@ protected:
 	// The ability system component sub-object used by player characters.
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Ability")
+	TObjectPtr<UMWBattleSet> BattleSet;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability")
+	int32 Level;
 #pragma endregion 
 
 #pragma region Input
@@ -105,15 +110,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Ability
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Ability")
-	TObjectPtr<UMWBattleSet> BattleSet;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability")
-	int32 Level;
-#pragma endregion
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Hero")
 	TObjectPtr<UMWHeroComponent> HeroComp;
@@ -126,4 +122,11 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void PostInitializeComponents() override;
 
+public:
+	UFUNCTION(BlueprintPure)
+	int32 GetEntityId() const { return Id; }
+
+protected:
+	UPROPERTY()
+	int32 Id;
 };

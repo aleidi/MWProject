@@ -15,10 +15,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	static void SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore);
 
-	/* Quick to get Battle Subsystem. */
-	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta=(WorldContext = "WorldContextObject"))
-	static UMWBattleSystem* GetBattleSubSystem(const UObject* WorldContextObject);
-
 	/* Access to save config in blueprint.*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void SaveConfig(UObject* WorldContextObject);

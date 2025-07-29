@@ -4,7 +4,7 @@
 
 void UMWCheatManager::TargetSelctedTest(const FMWFoundActorInfo& TargetInfo)
 {
-	if (UMWBattleSystem* mwbs = GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(this))
 	{
 		if (mwbs->OnTargetSelected.IsBound())
 		{

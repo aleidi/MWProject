@@ -19,6 +19,12 @@ void AMWGameModeBase::InitGame(const FString& MapName, const FString& Options, F
 	}
 }
 
+UClass* AMWGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	// Avoid to spawn default pawn
+	return nullptr;
+}
+
 void AMWGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -34,7 +40,7 @@ void AMWGameModeBase::BeginPlay()
 
 void AMWGameModeBase::CreateParty()
 {
-	auto* partyMng = GetWorld()->GetGameInstance()->GetSubsystem<UMWPartyManager>();
+	auto* partyMng = UMWPartyManager::Get(this);
 
 	check(partyMng);
 

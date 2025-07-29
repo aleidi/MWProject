@@ -8,7 +8,6 @@
 #include "Engine/Engine.h"
 #include "Misc/ScopedSlowTask.h"
 #include "Data/MWMasterData.h"
-#include "Data/MWGlobalData.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAssetManager)
 
@@ -105,11 +104,6 @@ void UMWAssetManager::StartInitialLoading()
 const UMWMasterData& UMWAssetManager::GetMasterData()
 {
 	return GetOrLoadTypedGameData<UMWMasterData>(MWMasterDataPath);
-}
-
-const UMWGlobalData& UMWAssetManager::GetGlobalData()
-{
-	return GetOrLoadTypedGameData<UMWGlobalData>(MWGlobalDataPath);
 }
 
 UPrimaryDataAsset* UMWAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType)

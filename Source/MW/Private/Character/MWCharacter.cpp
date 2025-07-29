@@ -1,7 +1,6 @@
 #include "Character/MWCharacter.h"
 #include "Character/MWCharacterMovementComponent.h"
 #include "Controller/MWPlayerController.h"
-#include "Character/MWTargetSelector.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"

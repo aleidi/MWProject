@@ -21,6 +21,9 @@ public:
 
 	//~AGameModeBase interface
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	/* This method is used for spawning default pawn which may ignore default pawn class. */
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	//~End of AGameModeBase interface
 
 protected:

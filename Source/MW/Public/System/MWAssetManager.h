@@ -8,7 +8,7 @@
 
 class UPrimaryDataAsset;
 class UMWMasterData;
-class UMWGlobalData;
+class UMWGameplayData;
 
 struct FMWBundles
 {
@@ -47,8 +47,6 @@ public:
 	static void DumpLoadedAssets();
 
 	const UMWMasterData& GetMasterData();
-
-	const UMWGlobalData& GetGlobalData();
 
 protected:
 	template <typename GameDataClass>
@@ -92,7 +90,7 @@ protected:
 
 	// Global game data asset to use.
 	UPROPERTY(Config)
-	TSoftObjectPtr<UMWGlobalData> MWGlobalDataPath;
+	TSoftObjectPtr<UMWGameplayData> MWGlobalDataPath;
 
 private:
 	// Assets loaded and tracked by the asset manager.

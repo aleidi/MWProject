@@ -8,6 +8,11 @@ FMWTargetSelector::FMWTargetSelector(const AController* InController)
 	OwnerType = Controller.IsA(APlayerController::StaticClass()) ? MWTargetSelector::Player : MWTargetSelector::Npc;
 }
 
+FMWTargetSelector::~FMWTargetSelector()
+{
+
+}
+
 void FMWTargetSelector::SwitchToLeft()
 {
 	TryFindSelectableTarget(true);
@@ -26,7 +31,7 @@ void FMWTargetSelector::CancelSelect()
 	}
 
 	SelectedTarget.Reset();
-	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
 	{
 		if (mwbs->OnTargetCancelSelected.IsBound())
 		{
@@ -78,7 +83,7 @@ void FMWTargetSelector::LockTarget()
 	LockedTarget = SelectedTarget;
 
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
 	{
 		if (mwbs->OnTargetLocked.IsBound())
 		{
@@ -99,7 +104,7 @@ void FMWTargetSelector::UnlockTarget()
 		LockedTarget.Reset();
 		
 		// broadcast unlock target event
-		if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
+		if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
 		{
 			if (mwbs->OnTargetUnlocked.IsBound())
 			{
@@ -160,7 +165,7 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 		return;
 	}
 
-	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
 	{
 		if (mwbs->OnTargetSelected.IsBound())
 		{
@@ -220,7 +225,7 @@ void FMWTargetSelector::ForceLockIfNoTarget(const FMWFoundActorInfo& Target)
 
 	LockedTarget = Target;
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = Controller->GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
 	{
 		if (mwbs->OnTargetLocked.IsBound())
 		{

@@ -36,9 +36,7 @@ void AMWEntryGamemode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameInstance* gi = GetWorld()->GetGameInstance();
-	
-	if (auto* uiMng = gi->GetSubsystem<UMWUIManager>())
+	if (auto* uiMng = UMWUIManager::Get(this))
 	{
 		uiMng->OpenUI(MenuName, true);
 	}
@@ -58,12 +56,12 @@ APawn* AMWEntryGamemode::SpawnDefaultPawnAtTransform_Implementation(AController*
 
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
 	{
-		if (APawn* spawned_pawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
+		if (APawn* spawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
 		{
 
-			spawned_pawn->FinishSpawning(SpawnTransform);
+			spawnedPawn->FinishSpawning(SpawnTransform);
 
-			return spawned_pawn;
+			return spawnedPawn;
 		}
 		else
 		{

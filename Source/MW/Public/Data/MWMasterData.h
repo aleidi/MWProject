@@ -8,6 +8,7 @@
 class AMWCharacter;
 class UMWInputConfig;
 class UMWUIConfigData;
+class UMWGameplayData;
 
 /*
 * UMWMasterData
@@ -34,6 +35,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UMWUIConfigData> UIConfig;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default", meta = (ClampMin = 0))
-	int32 TeamsNumber = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
+	TObjectPtr<UMWGameplayData> GameplayData;
 };

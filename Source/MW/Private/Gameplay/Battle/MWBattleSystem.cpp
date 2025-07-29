@@ -1,6 +1,7 @@
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/Battle/MWBattle.h"
 #include "GameFramework/GameModeBase.h"
+#include "System/MWGameInstanceSubsystem.h"
 
 void UMWBattleSystem::ActionComplete()
 {
@@ -8,6 +9,16 @@ void UMWBattleSystem::ActionComplete()
 	{
 		OnActionComplete.Broadcast();
 	}
+}
+
+UMWBattleSystem* UMWBattleSystem::Get(const UObject* WorldContext)
+{
+	if (UMWGameInstanceSubsystem* subsystem = UMWGameInstanceSubsystem::Get(WorldContext))
+	{
+		return subsystem->GetBattleSystem();
+	}
+
+	return nullptr;
 }
 
 void UMWBattleSystem::StartBattle(const FMWBattleData& InData)

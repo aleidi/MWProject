@@ -53,7 +53,7 @@ protected:
 	TObjectPtr<UMWAbilitySystemComponent> AbilitySystemComponent;
 
 	/* Cache the granted abilities */
-	TUniquePtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
+	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
 #pragma endregion
 
 #pragma region Select
@@ -68,7 +68,7 @@ public:
 	void ForceLockIfNoTarget(const FMWFoundActorInfo& Target);
 	void OnTargetNotExisted(const FMWFoundActorInfo& Target);
 protected:
-	TUniquePtr<FMWTargetSelector> TargetSelector;
+	TSharedPtr<FMWTargetSelector> TargetSelector;
 #pragma endregion
 
 #pragma region Battle

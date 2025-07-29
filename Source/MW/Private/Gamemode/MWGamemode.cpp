@@ -5,8 +5,8 @@
 #include "Controller/MWPlayerController.h"
 #include "Player/MWPlayerState.h"
 #include "Character/MWCharacter.h"
-#include "System/MWAssetManager.h"
 #include "Data/MWMasterData.h"
+#include "MWGameSingleton.h"
 
 AMWGameMode::AMWGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -37,12 +37,9 @@ void AMWGameMode::BeginPlay()
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	if (auto* masterData = UMWGameSingleton::Get()->GetMasterData())
 	{
-		if (auto pawn = UMWAssetManager::Get().GetSubclass(data.DefaultPawn))
-		{
-			return pawn;
-		}
+		return masterData->DefaultPawn.Get();
 	}
 
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
@@ -57,12 +54,12 @@ APawn* AMWGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewP
 
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
 	{
-		if (APawn* spawned_pawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
+		if (APawn* spawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
 		{
 
-			spawned_pawn->FinishSpawning(SpawnTransform);
+			spawnedPawn->FinishSpawning(SpawnTransform);
 
-			return spawned_pawn;
+			return spawnedPawn;
 		}
 		else
 		{

@@ -1,7 +1,7 @@
 #pragma once
 
 // Include Header
-#include "Subsystems/GameInstanceSubsystem.h"
+#include "UObject/NoExportTypes.h"
 #include "Define/MWDefineUI.h"
 #include "MWUIManager.generated.h"
 
@@ -18,16 +18,18 @@ class UMWRootCanvas;
  * @note
  */
 UCLASS()
-class UMWUIManager : public UGameInstanceSubsystem
+class MW_API UMWUIManager : public UObject
 {
 	GENERATED_BODY()
 
 public:
-    /** Implement this for initialization of instances of the system */
-    virtual void Initialize(FSubsystemCollectionBase& Collection);
+    void Initialize();
+    void Deinitialize() {}
 
-    /** Implement this for deinitialization of instances of the system */
-    virtual void Deinitialize();
+    UFUNCTION(BlueprintPure, Category = "Manager", meta = (WorldContext="WorldContext", DisplayName = "GetUIManager"))
+	static UMWUIManager* Get(const UObject* WorldContext);
+
+    UMWUIManager();
 
 public:
     /*

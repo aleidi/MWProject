@@ -4,19 +4,26 @@
 #include "MWLogChannels.h"
 #include "UI/MWRootCanvas.h"
 #include "Gamemode/MWGameModeBase.h"
+#include "System/MWGameInstanceSubsystem.h"
+#include "Data/MWUIConfigData.h"
 
-void UMWUIManager::Initialize(FSubsystemCollectionBase& Collection)
+void UMWUIManager::Initialize()
 {
-	UE_LOG(LogMWUI, Log, TEXT("[%s] world : %s created."), UTF8_TO_TCHAR(__FUNCTION__), GetWorld() ? *GetWorld()->GetName() : TEXT("null"));
-
-	LoadDataConfig();
-
 	AMWGameModeBase::OnGameBeginPlay.AddUObject(this, &UMWUIManager::OnGameModeBeginPlay);
 }
 
-void UMWUIManager::Deinitialize()
+UMWUIManager* UMWUIManager::Get(const UObject* WorldContext)
 {
-	UE_LOG(LogMWUI, Log, TEXT("[%s] current world is : %s."), UTF8_TO_TCHAR(__FUNCTION__), GetWorld() ? *GetWorld()->GetName() : TEXT("null"));
+	if (UMWGameInstanceSubsystem* subsystem = UMWGameInstanceSubsystem::Get(WorldContext))
+	{
+		return subsystem->GetUIManager();
+	}
+
+	return nullptr;
+}
+
+UMWUIManager::UMWUIManager()
+{
 }
 
 bool UMWUIManager::OpenUI(const FName& WidgetName, bool bFocus)
@@ -137,6 +144,8 @@ bool UMWUIManager::CloseUI(const FName& WidgetName, bool bForceImmediately)
 void UMWUIManager::OnGameModeBeginPlay(AGameModeBase* NewGameMode)
 {
 	CreateCanvas();
+
+	LoadDataConfig();
 }
 
 bool UMWUIManager::HasRootCanvas()

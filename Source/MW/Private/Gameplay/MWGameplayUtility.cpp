@@ -52,21 +52,6 @@ void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<F
 	}
 }
 
-UMWBattleSystem* UWMGameplayUtility::GetBattleSubSystem(const UObject* WorldContextObject)
-{
-	if (!WorldContextObject)
-	{
-		return nullptr;
-	}
-
-	if (UWorld* world = WorldContextObject->GetWorld())
-	{
-		return world->GetSubsystem<UMWBattleSystem>();
-	}
-
-	return nullptr;
-}
-
 void UWMGameplayUtility::SaveConfig(UObject* WorldContextObject)
 {
 	if (WorldContextObject)

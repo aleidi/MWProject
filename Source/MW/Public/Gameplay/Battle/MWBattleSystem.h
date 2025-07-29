@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/WorldSubsystem.h"
+#include "UObject/NoExportTypes.h"
 #include "Define/MWDefineGameplay.h"
 #include "GameplayTagContainer.h"
 #include "MWBattleSystem.generated.h"
@@ -102,7 +102,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnOneLeaveParty, AActor*);
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class MW_API UMWBattleSystem : public UWorldSubsystem
+class MW_API UMWBattleSystem : public UObject
 {
 	GENERATED_BODY()
 
@@ -162,6 +162,12 @@ public:
 	FOnEndCombat OnEndCombat;
 
 public:
+	void Initialize() {}
+	void Deinitialize() {}
+
+	UFUNCTION(BlueprintPure, Category = "Manager", meta = (WorldContext="WorldContext", DisplayName = "GetBattleSystem"))
+	static UMWBattleSystem* Get(const UObject* WorldContext);
+
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void StartBattle(const FMWBattleData& InData);
 

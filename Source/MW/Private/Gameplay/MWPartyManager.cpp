@@ -1,6 +1,7 @@
 #include "Gameplay/MWPartyManager.h"
 #include "System/MWAssetManager.h"
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
+#include "System/MWGameInstanceSubsystem.h"
 
 void UMWPartyManager::FMemberInfo::Reset()
 {
@@ -81,14 +82,14 @@ int32 UMWPartyManager::FTeam::GetMemberByPos(int32 Pos) const
 	return INDEX_NONE;
 }
 
-void UMWPartyManager::Initialize(FSubsystemCollectionBase& Collection)
+UMWPartyManager* UMWPartyManager::Get(const UObject* WorldContext)
 {
-	Super::Initialize(Collection);
-}
+	if (UMWGameInstanceSubsystem* subsystem = UMWGameInstanceSubsystem::Get(WorldContext))
+	{
+		return subsystem->GetPartyManager();
+	}
 
-void UMWPartyManager::Deinitialize()
-{
-	Super::Deinitialize();
+	return nullptr;
 }
 
 void UMWPartyManager::InitializeParty()
@@ -313,9 +314,9 @@ void UMWPartyManager::InitializeTeams()
 {
 	Teams.Reset();
 
-	auto& data = UMWAssetManager::Get().GetMasterData();
+	const int32 teamsNum = UMWGameplayData::Get().TeamsNumber;
 
-	for (int32 i = 0; i < data.TeamsNumber; ++i)
+	for (int32 i = 0; i < teamsNum; ++i)
 	{
 		FTeam team;
 		

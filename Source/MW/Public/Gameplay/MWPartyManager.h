@@ -1,7 +1,7 @@
 #pragma once
 
 // Include Header
-#include "Subsystems/WorldSubsystem.h"
+#include "UObject/NoExportTypes.h"
 #include "MWPartyManager.generated.h"
 
 // Forward Declare
@@ -16,9 +16,16 @@
  * @note
  */
 UCLASS()
-class UMWPartyManager : public UGameInstanceSubsystem
+class MW_API UMWPartyManager : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	void Initialize() {}
+	void Deinitialize() {}
+
+	UFUNCTION(BlueprintPure, Category = "Manager", meta = (WorldContext="WorldContext", DisplayName = "GetPartyManager"))
+	static UMWPartyManager* Get(const UObject* WorldContext);
 
 private:
 	struct FMemberInfo
@@ -89,11 +96,6 @@ private:
 	private:
 		void ResetLeaderId() { LeaderId = INDEX_NONE; }
 	};
-
-public:
-	void Initialize(FSubsystemCollectionBase& Collection) override;
-
-	void Deinitialize() override;
 
 public:
 	/* Call this when game starts play. */

@@ -141,7 +141,7 @@ void UMWPawnExtensionComponent::InitializeTargetSelector(const AController* InCo
     // set target selector
     if (!TargetSelector.IsValid())
     {
-        TargetSelector = MakeUnique<FMWTargetSelector>(InControler);
+        TargetSelector = MakeShared<FMWTargetSelector>(InControler);
     }
     else
     {

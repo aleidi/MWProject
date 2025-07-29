@@ -15,8 +15,9 @@ namespace MWTargetSelector
 class FMWTargetSelector : public TSharedFromThis<FMWTargetSelector>
 {
 public:
-	FMWTargetSelector() = delete;
+	FMWTargetSelector() = default;
 	FMWTargetSelector(const AController* InController);
+	virtual ~FMWTargetSelector();
 
 	void SwitchToLeft();
 	void SwitchToRight();

@@ -24,7 +24,7 @@ void UMWBattle::StartBattle(const FMWBattleData& InData)
 		PC = Cast<AMWPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	}
 
-	if (auto* battleSys = GetWorld()->GetSubsystem<UMWBattleSystem>())
+	if (auto* battleSys = UMWBattleSystem::Get(this))
 	{
 		battleSys->OnTeamDied.AddUObject(this, &UMWBattle::OnTeamDied);
 		battleSys->OnTeamRevive.AddUObject(this, &UMWBattle::OnTeamRevive);
@@ -155,7 +155,7 @@ void UMWBattle::OnTeamRevive(const FMWTeam& Team)
 
 UMWBattleSystem& UMWBattle::GetBattleSystem()
 {
-	return  *GetWorld()->GetSubsystem<UMWBattleSystem>();
+	return  *UMWBattleSystem::Get(this);
 }
 
 void MWBattle::FMWBSTurnBegin::Enter(BattleContext& Context)

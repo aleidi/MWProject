@@ -1,5 +1,5 @@
 #include "Gameplay/Battle/MWBattleScenePreparation.h"
-#include "Data/MWGlobalData.h"
+#include "Data/MWGameplayData.h"
 #include "Data/MWBattleData.h"
 #include "EngineUtils.h"
 #include "Gameplay/Battle/MWBattleUnitPosition.h"
