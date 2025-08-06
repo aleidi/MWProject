@@ -20,7 +20,7 @@ struct FMWCharacterMasterData : public FTableRowBase
 
 	/* Id of the character. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 Id;
+	int32 Id = 0;
 
 	/* character blueprint class */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

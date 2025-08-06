@@ -71,7 +71,7 @@ struct FMWTeamUnit
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ID;
+	int32 ID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
@@ -80,7 +80,7 @@ struct FMWTeamUnit
 	TObjectPtr<APawn> Pawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsLeader;
+	bool bIsLeader = false;
 };
 
 USTRUCT(BlueprintType)
@@ -118,6 +118,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsAlive = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin=0))
+	int32 ActionPoints = 10;
 };
 
 FORCEINLINE bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs) { return Lhs.TeamId == Rhs.TeamId; }
@@ -128,7 +131,7 @@ struct FMWBattleSceneParam
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FVector Origin;
+	FVector Origin = FVector::ZeroVector;
 
 	UPROPERTY()
 	TArray<FMWTeam> Teams;
@@ -141,7 +144,7 @@ struct FMWBattleData
 
 	/* */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bPlayerFirst;
+	bool bPlayerFirst = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FMWTeam> Teams;
