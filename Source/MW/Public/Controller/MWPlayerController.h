@@ -25,19 +25,6 @@ protected:
 	class AMWCharacter* GetMWCharacter() const;
 
 #pragma region Input
-public:
-	/* Add a new mapping context to input system. */
-	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
-	void AddNewMappingContext(const FName& Tag);
-
-	/* Remove the last added mapping context from input system. */
-	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
-	void RemoveLastMappingContext();
-
-	/* Add a new mapping context to input system. */
-	UFUNCTION(BlueprintCallable, Category = "PlayerController|Input")
-	void RemoveMappingContext(const FName& Tag);
-
 protected:
 	virtual void SetupInputComponent() override;
 

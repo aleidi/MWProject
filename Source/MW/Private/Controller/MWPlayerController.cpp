@@ -12,6 +12,7 @@
 #include "Input/MWInputComponent.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "Gameplay/MWGameplayTags.h"
+#include "Input/MWInputUtility.h"
 
 #define DEBUG_PRINT_FUNC(Time) \
 if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
@@ -31,102 +32,6 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
-void AMWPlayerController::AddNewMappingContext(const FName& Tag)
-{
-	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
-	check(local_player);
-
-	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	check(subsystem);
-
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
-	{
-		if (UMWInputConfig* input_config = data.InputConfig.Get())
-		{
-			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
-			{
-				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(Tag))
-				{
-					if (mapping->Mapping.Get() && !MappingContextStack.Contains(*mapping))
-					{
-						// remove old mapping first then register the new mapping
-						const int num = MappingContextStack.Num();
-						if (num > 0)
-						{
-							subsystem->RemoveMappingContext(MappingContextStack[num - 1].Mapping, MappingOption);
-						}
-
-						//settings->RegisterInputMappingContext(mapping->Mapping);
-
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
-						MappingContextStack.Push(*mapping);
-					}
-				}
-			}
-		}
-	}
-}
-
-void AMWPlayerController::RemoveLastMappingContext()
-{
-	if (MappingContextStack.Num() == 0)
-	{
-		return;
-	}
-
-	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
-	check(local_player);
-
-	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	check(subsystem);
-
-	// remove old mapping context
-	subsystem->RemoveMappingContext(MappingContextStack.Pop().Mapping, MappingOption);
-
-	// enable the last mapping context
-	auto mapping = MappingContextStack[MappingContextStack.Num() - 1];
-
-	subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
-}
-
-void AMWPlayerController::RemoveMappingContext(const FName& Tag)
-{
-	if (MappingContextStack.Num() == 0)
-	{
-		return;
-	}
-
-	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
-	check(local_player);
-
-	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	check(subsystem);
-
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
-	{
-		if (UMWInputConfig* input_config = data.InputConfig.Get())
-		{
-			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
-			{
-				if (FMWInputMappingContextWithPriority* mapping = input_config->InputMappingContext.Find(Tag))
-				{
-					FMWInputMappingContextWithPriority mappingToRemove = *MappingContextStack.FindByPredicate([mapping](const FMWInputMappingContextWithPriority& IMC)
-					{
-						return IMC == *mapping;
-					});
-
-					if (mappingToRemove.Mapping)
-					{
-						subsystem->RemoveMappingContext(mappingToRemove.Mapping);
-					}
-
-					MappingContextStack.Remove(mappingToRemove);
-				}
-			}
-		}
-	}
-}
-
 void AMWPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -143,7 +48,7 @@ void AMWPlayerController::SetupInputComponent()
 	{
 		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
-			AddNewMappingContext(BaseIMCTag);
+			UMWInputUtility::EnableMappingContext(this, BaseIMCTag);
 
 			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
 			// If you want this functionality but still want to change your input component class, make it a subclass
@@ -374,47 +279,30 @@ void AMWPlayerController::UnlockTarget()
 
 void AMWPlayerController::OnBattleBegin()
 {
-	UMWBattleSystem* battleSys = UMWBattleSystem::Get(this);
-
-	if (battleSys)
-	{
-		DHApplyBattleCommand = battleSys->OnCommandBattleBegin.AddUObject(this, &AMWPlayerController::ApplyBattleCommandIMC);
-		DHRemoveBattleCommand = battleSys->OnCommandBattleEnd.AddUObject(this, &AMWPlayerController::RemoveBattleCommandIMC);
-	}
 }
 
 void AMWPlayerController::OnBattleEnd()
 {
-	UMWBattleSystem* battleSys = UMWBattleSystem::Get(this);
-
-	if (battleSys)
-	{
-		battleSys->OnCommandBattleBegin.Remove(DHApplyBattleCommand);
-		battleSys->OnCommandBattleEnd.Remove(DHRemoveBattleCommand);
-
-		DHApplyBattleCommand.Reset();
-		DHRemoveBattleCommand.Reset();
-	}
 }
 
 void AMWPlayerController::ApplyBattleCommandIMC()
 {
-	AddNewMappingContext(BattleCommandIMCTag);
+	UMWInputUtility::EnableMappingContext(this, BattleCommandIMCTag);
 }
 
 void AMWPlayerController::RemoveBattleCommandIMC()
 {
-	RemoveMappingContext(BattleCommandIMCTag);
+	UMWInputUtility::DisableMappingContext(this, BattleCommandIMCTag);
 }
 
 void AMWPlayerController::ApplyCombatCommandIMC()
 {
-	AddNewMappingContext(CombatCommandIMCTag);
+	UMWInputUtility::EnableMappingContext(this, CombatCommandIMCTag);
 }
 
 void AMWPlayerController::RemoveCombatCommandIMC()
 {
-	RemoveMappingContext(CombatCommandIMCTag);
+	UMWInputUtility::DisableMappingContext(this, CombatCommandIMCTag);
 }
 
 void AMWPlayerController::BeginPlay()
