@@ -17,6 +17,7 @@ public:
 	virtual FName GetName() const = 0;
 	virtual T* GetOwner() const	= 0;
 	virtual int32 GetFsmStateCount() const = 0;
+	virtual float GetCurrentStateTime() const = 0;
 	virtual bool IsRunning() const = 0;
 	virtual bool IsDestroyed() const = 0;
 	virtual FFsmState<T>* GetCurrentState() const = 0;
@@ -83,6 +84,11 @@ public:
 	virtual int32 GetFsmStateCount() const override
 	{ 
 		return States.Num();
+	}
+
+	virtual float GetCurrentStateTime() const override 
+	{ 
+		return CurrentStateTime; 
 	}
 
 	virtual bool IsRunning() const override 

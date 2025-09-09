@@ -51,6 +51,7 @@ protected:
 		Fsm->ChangeState(StateName);
 	}
 
+public:
 	virtual FName GetName() const 
 	{ 
 		return Name; 
