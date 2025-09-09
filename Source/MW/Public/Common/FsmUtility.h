@@ -3,13 +3,12 @@
 #include "Common/Fsm.h"
 #include "Common/FsmState.h"
 
-#define DECLARE_FSM_STATE_START(FsmState) \
-template<typename T> \
-class FsmState : public FFsmState<T> \
+#define DECLARE_FSM_STATE_START(OwnerClass, FsmState) \
+class FsmState : public FFsmState<OwnerClass> \
 { \
 public: \
 	FsmState() \
-	: FFsmState<T>(TEXT(#FsmState)) \
+	: FFsmState<OwnerClass>(TEXT(#FsmState)) \
 	{ \
 	} \
 private:
