@@ -11,9 +11,10 @@ public: \
 	FsmState() \
 	: FFsmState<T>(TEXT(#FsmState)) \
 	{ \
-	}
+	} \
+private:
 
-#define DECLARE_FSM_STATE_END };
+#define DECLARE_FSM_STATE_END() };
 
 /*** Use Template ***
 Recommend to use the macro DECLARE_FSM_STATE_START and DECLARE_FSM_STATE_END to declare a Fsm State class.

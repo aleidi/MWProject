@@ -12,7 +12,6 @@ class FFsm;
 
 class IFsmState
 {
-public:
 	virtual void OnEnter() = 0;
 	virtual void OnUpdate(float DeltaTime) = 0;
 	virtual void OnLeave(bool bShutDown) = 0;
@@ -29,6 +28,8 @@ public:
 template<typename T>
 class FFsmState : public TSharedFromThis<FFsmState<T>>, public IFsmState
 {
+	friend class FFsm<T>;
+
 public:
 	FFsmState() = delete;
 
@@ -42,13 +43,7 @@ public:
 		Fsm = nullptr;
 	}
 
-	virtual void OnInit() {}
-	virtual void OnEnter() override {}
-	virtual void OnUpdate(float DeltaTime) override {}
-	virtual void OnLeave(bool bShutDown) override {}
-	virtual void OnDestroy() {}
-	virtual FName GetName() const { return TEXT("FFsmState"); }
-
+protected:
 	void ChangeState(FName StateName)
 	{
 		checkf(Fsm != nullptr, TEXT("Fsm cached in fsm state is not valid."));
@@ -56,10 +51,32 @@ public:
 		Fsm->ChangeState(StateName);
 	}
 
+	virtual FName GetName() const 
+	{ 
+		return Name; 
+	}
+
 	T* GetOwner() const 
 	{
 		return Fsm ? Fsm->GetOwner() : nullptr;
 	}
+
+	FFsm<T>* GetFsm() const 
+	{
+		return Fsm;
+	}
+
+	int32 GetIndex() const 
+	{
+		return Index;
+	}
+
+private:
+	virtual void OnInit() {}
+	virtual void OnEnter() {}
+	virtual void OnUpdate(float DeltaTime) {}
+	virtual void OnLeave(bool bShutDown) {}
+	virtual void OnDestroy() {}
 
 	void SetFSM(FFsm<T>* InFsm)
 	{
