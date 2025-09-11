@@ -13,10 +13,10 @@
 
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	PartyManager		= NewObject<UMWPartyManager>(this);
+	PartyManager	= NewObject<UMWPartyManager>(this);
 	EntityManager	= NewObject<UMWEntityManager>(this);
-	BattleSystem		= NewObject<UMWBattleSystem>(this);
-	UIManager			= NewObject<UMWUIManager>(this);
+	BattleSystem	= NewObject<UMWBattleSystem>(this);
+	UIManager		= NewObject<UMWUIManager>(this);
 
 	PartyManager->Initialize();
 	EntityManager->Initialize();

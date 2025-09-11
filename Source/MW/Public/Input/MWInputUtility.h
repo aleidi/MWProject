@@ -3,6 +3,16 @@
 // Include
 #include "CoreMinimal.h"
 #include "EnhancedInputSubsystemInterface.h"
+#include "MWLogChannels.h"
+#include "EnhancedInputDeveloperSettings.h"
+#include "EnhancedInputComponent.h"
+#include "System/MWWorldSubsystem.h"
+#include "MWInputHandler.h"
+#include "System/MWAssetManager.h"
+#include "MWLogChannels.h"
+#include "Data/MWMasterData.h"
+#include "Define/MWDefineCommon.h"
+#include "MWInputUtility.generated.h"
 
 // Forward Declare
 
@@ -16,10 +26,58 @@
  *
  * @note
  */
-class UMWInputUtility
+ UCLASS()
+class UMWInputUtility : public UObject
 {
-public:
-	static void EnableMappingContext(APlayerController* PC, const FName& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+	GENERATED_BODY()
 
-	static void DisableMappingContext(APlayerController* PC, const FName& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+public:
+	UFUNCTION(BlueprintCallable)
+	static void EnableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+
+	UFUNCTION(BlueprintCallable)
+	static void DisableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+
+	template<DerivedFromUObject UserClass>
+	static void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, void (UserClass::* Func)(const FInputActionValue&))
+	{
+		if (!Object)
+		{
+			return;
+		}
+
+		if (!GetDefault<UEnhancedInputDeveloperSettings>()->bEnableWorldSubsystem)
+		{
+			UE_LOG(LogMWInput, Warning, TEXT("Please enable world subsystem of Enhanced Input Developer Settings in Editor->Project Settings or the bind action of Actor would not be used"));
+
+			return;
+		}
+
+		if (UMWWorldSubsystem* worldSubsys = Object->GetWorld()->GetSubsystem<UMWWorldSubsystem>())
+		{
+			if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
+			{
+				inputHandler->BindInputAction<UserClass>(Action, TriggerEvent, Object, Func);
+			}
+		}
+	}
+
+	template<DerivedFromUObject UserClass>
+	static void BindInputAction(const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, void (UserClass::* Func)(const FInputActionValue&))
+	{
+		const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+		if (UMWInputConfig* input_config = data.InputConfig.Get())
+		{
+			if (const UInputAction* action = input_config->FindNativeInputActionForTag(InputActionTag, false))
+			{
+				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func);
+			}
+		}
+		else
+		{
+			UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+		}
+	}
+
+	static void ClearBindingsForObject(UObject* Object);
 };

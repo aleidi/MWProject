@@ -23,6 +23,7 @@ enum class EMWTeamAlign : uint8
 {
 	Player,
 	Enemy,
+	Max
 };
 
 UENUM(BlueprintType)
@@ -118,9 +119,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsAlive = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin=0))
-	int32 ActionPoints = 10;
 };
 
 FORCEINLINE bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs) { return Lhs.TeamId == Rhs.TeamId; }

@@ -45,7 +45,7 @@ void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, cons
 	check(InputConfig);
 	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag, bLogIfNotFound))
 	{
-		BindAction(IA, TriggerEvent, Object, Func);
+		BindAction(IA, TriggerEvent, Object, Func); 
 	}
 }
 

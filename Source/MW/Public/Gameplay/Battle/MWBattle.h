@@ -4,7 +4,42 @@
 #include "Define/MWDefineGameplay.h"
 #include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
+#include "Common/FsmUtility.h"
 #include "MWBattle.generated.h"
+
+// Forward Declare
+class UMWTurnAction;
+
+struct FMWActionState
+{
+	EMWTeamAlign Align = EMWTeamAlign::Max;
+
+	/* Used to check the turn of align if ended. */
+	bool bActed = false;
+
+	/* Used to determine the action order of the align. */
+	int32 Priority = INDEX_NONE;
+
+	static FMWActionState Player;
+	static FMWActionState Enemy;
+	static FMWActionState Null;
+
+	bool IsValid() const { return Align != EMWTeamAlign::Max && Priority != INDEX_NONE; }
+
+	void Reset() { *this = FMWActionState::Null; }
+
+	void MarkAsActed() { bActed = true; }
+
+	bool operator==(const FMWActionState& Other)
+	{
+		return Align == Other.Align && bActed == Other.bActed && Priority == Other.Priority;
+	}
+};
+
+FORCEINLINE bool operator==(const FMWActionState& A, const FMWActionState& B)
+{
+	return A.Align == B.Align && A.bActed == B.bActed && A.Priority == B.Priority;
+}
 
 namespace MWBattle
 {
@@ -21,116 +56,69 @@ namespace MWBattle
 		virtual FString GetName() const = 0;
 	};
 
-	class FMWBSIdle : public IBattleState
-	{
-	public:
-		FMWBSIdle() = default;
-		virtual ~FMWBSIdle() = default;
-		virtual void Update(BattleContext& Context);
-		virtual FString GetName() const { return TEXT("Idle"); }
-	};
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSIdle)
+	virtual void OnUpdate(float DeltaTime) override;
+	DECLARE_FSM_STATE_END()
 
-	class FMWBSBattleBegin : public IBattleState
-	{
-	public:
-		FMWBSBattleBegin() = default;
-		virtual ~FMWBSBattleBegin() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context);
-		virtual void Exit(BattleContext& Context) {}
-		virtual FString GetName() const { return TEXT("BattleBegin"); }
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSBattleBegin)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
 
-	private:
-		bool bBattlePrepared = false;
-	};
+private:
+	bool bBattlePrepared = false;
+	DECLARE_FSM_STATE_END()
 
-	class FMWBSBattleEnd : public IBattleState
-	{
-	public:
-		FMWBSBattleEnd() = delete;
-		FMWBSBattleEnd(EBattleResult Result);
-		virtual ~FMWBSBattleEnd() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context) {}
-		virtual FString GetName() const { return TEXT("BattleEnd"); }
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSBattleEnd)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
 
-	private:
-		EBattleResult BattleResult;
-	};
+private:
+	EBattleResult BattleResult = EBattleResult::Draw;
+	DECLARE_FSM_STATE_END()
 
-	class FMWBSRoundBegin : public IBattleState
-	{
-	public:
-		FMWBSRoundBegin() = default;
-		virtual ~FMWBSRoundBegin() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context);
-		virtual FString GetName() const { return TEXT("RoundBegin"); }
-	};
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSRoundBegin)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
+	DECLARE_FSM_STATE_END()
 
-	class FMWBSRoundEnd : public IBattleState
-	{
-	public:
-		FMWBSRoundEnd() = default;
-		virtual ~FMWBSRoundEnd() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context);
-		virtual void Exit(BattleContext& Context);
-		virtual FString GetName() const { return TEXT("RoundEnd"); }
-	};
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSRoundEnd)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
+	virtual void OnLeave(bool bShutDown) override;
+	void ResetActionState();
+	DECLARE_FSM_STATE_END()
 
-	class FMWBSTurnBegin : public IBattleState
-	{
-	public:
-		FMWBSTurnBegin() = default;
-		virtual ~FMWBSTurnBegin() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context);
-		virtual void Exit(BattleContext& Context);
-		virtual FString GetName() const { return TEXT("TurnBegin"); }
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSTurnBegin)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
+	virtual void OnLeave(bool bShutDown) override;
+	virtual void OnDestroy() override;
+	void SetCharacterCameraAsMain();
+	void OnActionComplete();
 
-	protected:
-		void OnActionComplete();
+	bool bIsActionComplete = false;
+	FDelegateHandle DHActionComplete;
+	TObjectPtr<UMWTurnAction> TurnAction;
 
-		void SetCharacterCameraAsMain(UMWBattle& Context);
+	FDelegateHandle DHCleanup;
+	void OnCleanUp(UWorld* World, bool bSessionEnded, bool bCleanupResources);
+	DECLARE_FSM_STATE_END()
 
-	private:
-		bool bIsActionComplete = false;
-		FDelegateHandle HandleActionComplete;
-	};
+	DECLARE_FSM_STATE_START(UMWBattle, MWBSTurnEnd)
+	virtual void OnEnter() override;
+	virtual void OnUpdate(float DeltaTime) override;
+	void CheckShouldEndBattle();
+	void CheckShouldRoundEnd();
 
-	class FMWBSTurnEnd : public IBattleState
-	{
-	public:
-		FMWBSTurnEnd() = default;
-		virtual ~FMWBSTurnEnd() = default;
-		virtual void Enter(BattleContext& Context);
-		virtual void Update(BattleContext& Context);
-		virtual void Exit(BattleContext& Context);
-		virtual FString GetName() const { return TEXT("TurnEnd"); }
-
-		void CheckShouldEndBattle(BattleContext& Context);
-		void CheckShouldRoundEnd(BattleContext& Context);
-
-	private:
-		bool bIsBattleOver = false;
-		EBattleResult Winner = EBattleResult::PlayerWin;
-		bool bIsRoundEnd = false;
-	};
+	bool bIsBattleOver = false;
+	bool bIsRoundEnd = false;
+	DECLARE_FSM_STATE_END()
 }
 
 UCLASS()
 class UMWBattle : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
-	
-	friend class MWBattle::FMWBSIdle;
-	friend class MWBattle::FMWBSBattleBegin;
-	friend class MWBattle::FMWBSBattleEnd;
-	friend class MWBattle::FMWBSRoundBegin;
-	friend class MWBattle::FMWBSRoundEnd;
-	friend class MWBattle::FMWBSTurnBegin;
-	friend class MWBattle::FMWBSTurnEnd;
 
 public:
 	UMWBattle();
@@ -143,13 +131,13 @@ public:
 
 	bool IsTickable() const override;
 
-private:
+	virtual void BeginDestroy() override;
+
+public:
 	UMWBattleSystem& GetBattleSystem();
 
-	void UpdateBattleState();
-
 private:
-	bool bIsTickable;
+	bool bIsTickable = false;
 
 private:
 	/* Called before battle begin. */
@@ -164,14 +152,12 @@ private:
 
 	void ChangeState(TUniquePtr<MWBattle::IBattleState> NewState);
 
-	void SetCurrentRound(uint32 NewRound) { CurrRound = NewRound; }
-
-	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
-
 public:
 	const TArray<FMWTeam>& GetPlayer() const { return PlayerTeams; }
 
 	const TArray<FMWTeam>& GetEnemy() const { return EnemyTeam; }
+
+	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
 
 	TArray<EMWBattleActionBuff>& GetActionBuffPool() { return ActionBuffPool; }
 
@@ -179,16 +165,26 @@ public:
 
 	uint32 GetMaxDisplayActiveBuffNo() const { return MaxDisplayActiveBuffNo; }
 
+	void SetCurrentRound(uint32 NewRound) { CurrRound = NewRound; }
+
 	uint32 GetCurrentRound() const { return CurrRound; }
 
-	EMWTeamAlign GetCurrentTurnTeamAlign() const { return bPlayerTurn ? EMWTeamAlign::Player : EMWTeamAlign::Enemy; }
+	EMWTeamAlign GetCurrentTurnTeamAlign() const { return CurrentTurnAlign; }
 
-	void ChangeToNewTurn();
+	void SetCurrentTurnTeamAlign(EMWTeamAlign NewAlign) { CurrentTurnAlign = NewAlign; }
+
+	FMWActionState& GetCurrentTurnActionState();
+
+	TArray<FMWActionState>& GetActionStates() { return ActionStates; }
+
+	void SetBattleResult(EBattleResult InResult) { BattleResult = InResult; }
+
+	EBattleResult GetBattleResult() const { return BattleResult; }
 
 	/* Force to end a battle and decide which force is the winner.
 	* @param Winner : 0 = player win, 1 = enemy win, 2 = draw
 	*/
-	void ForceEndBattle(EBattleResult Winner);
+	void ForceEndBattle(EBattleResult InWinner);
 
 private:
 	/* Cache the teams in the battle. */
@@ -199,22 +195,32 @@ private:
 	/* Cache the action buff can be used in the battle. */
 	TArray<EMWBattleActionBuff> ActionBuffPool;
 
-	uint32 CurrRound;
+	uint32 CurrRound = 0;
 
-	int32 MaxDisplayActiveBuffNo;
+	int32 MaxDisplayActiveBuffNo = 5;
 
 	TArray<EMWBattleActionBuff> ActiveActionBuffs;
 
 	TUniquePtr<MWBattle::IBattleState> CurrState;
 
-	EBattleResult BattleResult;
+	EBattleResult BattleResult = EBattleResult::Draw;
 
 	/* used to force end a battle. */
-	bool bForceEndBattle;
+	bool bForceEndBattle = false;
 
-	/* Player's Turn or Enemy's Turn.*/
-	bool bPlayerTurn;
+	/* The align is acting in current turn. */
+	EMWTeamAlign CurrentTurnAlign;
+
+	/* Record the action state of each align. Used to check if round should be ended. */
+	TArray<FMWActionState> ActionStates;
+
+	FDelegateHandle DHTeamDied;
+
+	FDelegateHandle DHTeamRevive;
 
 public:
-	TObjectPtr<class AMWPlayerController> PC;
+	TWeakObjectPtr<class AMWPlayerController> PC;
+
+private:
+	TSharedPtr<FFsm<UMWBattle>> Fsm;
 };

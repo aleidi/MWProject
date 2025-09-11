@@ -3,8 +3,10 @@
 #include "Input/MWInputConfig.h"
 #include "Data/MWMasterData.h"
 #include "System/MWAssetManager.h"
+#include "Input/MWInputComponent.h"
+#include "Gameplay/MWGameplayTags.h"
 
-void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FName& Tag, const FModifyContextOptions& MappingOption)
+void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& MappingOption)
 {
 	if (!PC)
 	{
@@ -37,7 +39,7 @@ void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FName& T
 	}
 }
 
-void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FName& Tag, const FModifyContextOptions& MappingOption)
+void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& MappingOption)
 {
 	if (!PC)
 	{
@@ -64,6 +66,22 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FName& 
 					}
 				}
 			}
+		}
+	}
+}
+
+void UMWInputUtility::ClearBindingsForObject(UObject* Object)
+{
+	if (!Object->GetWorld())
+	{
+		return;
+	}
+
+	if (UMWWorldSubsystem* worldSubsys = Object->GetWorld()->GetSubsystem<UMWWorldSubsystem>())
+	{
+		if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
+		{
+			inputHandler->ClearBindingsForObject(Object);
 		}
 	}
 }

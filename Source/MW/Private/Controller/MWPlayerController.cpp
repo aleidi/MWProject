@@ -48,7 +48,7 @@ void AMWPlayerController::SetupInputComponent()
 	{
 		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
-			UMWInputUtility::EnableMappingContext(this, BaseIMCTag);
+			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMCTag_Basic);
 
 			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
 			// If you want this functionality but still want to change your input component class, make it a subclass
@@ -65,26 +65,9 @@ void AMWPlayerController::SetupInputComponent()
 
 				// default input
 				mwic->BindAbilityActions(input_config, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
-
-				// battle command input
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Attack, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Attack, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_ChangeLeader, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_ChangeLeader, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Charge, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Charge, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Item, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Item, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Special, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Special, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CMD_Spirit, ETriggerEvent::Triggered, this, &ThisClass::Input_CMD_Spirit, false);
-
-				// combat command input
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Up, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Up, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Down, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Down, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Left, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Left, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_Attack_Right, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_Attack_Right, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack1, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack1, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_SupportAttack2, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_SupportAttack2, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::InputTag_CC_UltimateSkill, ETriggerEvent::Triggered, this, &ThisClass::Input_CC_UltimateSkill, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
 			}
 		}
 	}
@@ -104,7 +87,7 @@ void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 	const APawn* pawn = GetPawn<APawn>();
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
-		mwasc->AbilityInputTagPressed(InputTag);
+		mwasc->AbilityInputTagReleased(InputTag);
 	}
 }
 
@@ -162,81 +145,6 @@ void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValu
 	DEBUG_PRINT_FUNC(2.f);
 }
 
-void AMWPlayerController::Input_CMD_Attack(const FInputActionValue& InputActionValue)
-{
-	// broadcast event to enter combat command
-	// open command ui
-	DEBUG_PRINT_FUNC(2.f);
-
-	ApplyCombatCommandIMC();
-}
-
-void AMWPlayerController::Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CMD_Charge(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CMD_Item(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CMD_Special(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CMD_Spirit(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CC_Attack_Up(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-
-	// 触发方向技能
-	// 
-}
-
-void AMWPlayerController::Input_CC_Attack_Down(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-
-}
-
-void AMWPlayerController::Input_CC_Attack_Left(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-
-}
-
-void AMWPlayerController::Input_CC_Attack_Right(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-
-}
-
-void AMWPlayerController::Input_CC_SupportAttack1(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CC_SupportAttack2(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
-void AMWPlayerController::Input_CC_UltimateSkill(const FInputActionValue& InputActionValue)
-{
-	DEBUG_PRINT_FUNC(2.f);
-}
-
 void AMWPlayerController::SwitchToLeftTarget()
 {
 	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
@@ -283,26 +191,6 @@ void AMWPlayerController::OnBattleBegin()
 
 void AMWPlayerController::OnBattleEnd()
 {
-}
-
-void AMWPlayerController::ApplyBattleCommandIMC()
-{
-	UMWInputUtility::EnableMappingContext(this, BattleCommandIMCTag);
-}
-
-void AMWPlayerController::RemoveBattleCommandIMC()
-{
-	UMWInputUtility::DisableMappingContext(this, BattleCommandIMCTag);
-}
-
-void AMWPlayerController::ApplyCombatCommandIMC()
-{
-	UMWInputUtility::EnableMappingContext(this, CombatCommandIMCTag);
-}
-
-void AMWPlayerController::RemoveCombatCommandIMC()
-{
-	UMWInputUtility::DisableMappingContext(this, CombatCommandIMCTag);
 }
 
 void AMWPlayerController::BeginPlay()

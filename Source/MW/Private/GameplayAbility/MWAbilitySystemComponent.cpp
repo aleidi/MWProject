@@ -204,6 +204,30 @@ void UMWAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inpu
 	}
 }
 
+bool UMWAbilitySystemComponent::ActorAbilityInputTagPressed(AActor* InActor, const FGameplayTag& InputTag)
+{
+	if (UMWAbilitySystemComponent* mwASC = InActor != nullptr ? InActor->FindComponentByClass<UMWAbilitySystemComponent>() : nullptr)
+	{
+		mwASC->AbilityInputTagPressed(InputTag);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool UMWAbilitySystemComponent::ActorAbilityInputTagReleased(AActor* InActor, const FGameplayTag& InputTag)
+{
+	if (UMWAbilitySystemComponent* mwASC = InActor != nullptr ? InActor->FindComponentByClass<UMWAbilitySystemComponent>() : nullptr)
+	{
+		mwASC->AbilityInputTagReleased(InputTag);
+
+		return true;
+	}
+
+	return false;
+}
+
 void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
 	if (HasMatchingGameplayTag(TAG_Gameplay_AbilityInputBlocked))

@@ -6,6 +6,7 @@
 #include "Define/MWDefineGameplay.h"
 #include "Runtime/Engine/Classes/GameFramework/Pawn.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
 
 void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
 {
@@ -65,5 +66,13 @@ void UWMGameplayUtility::LoadConfig(UObject* WorldContextObject)
 	if (WorldContextObject)
 	{
 		WorldContextObject->LoadConfig();
+	}
+}
+
+void UWMGameplayUtility::CastAbility(AActor* Actor, const FGameplayTag& AbilityTag)
+{
+	if (UMWAbilitySystemComponent* mwasc = Actor->FindComponentByClass<UMWAbilitySystemComponent>())
+	{
+		mwasc->AbilityInputTagPressed(AbilityTag);
 	}
 }

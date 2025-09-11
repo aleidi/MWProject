@@ -38,33 +38,6 @@ protected:
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 	void Input_AutoRun(const FInputActionValue& InputActionValue);
 
-	// Battle Command
-	void Input_CMD_Attack(const FInputActionValue& InputActionValue);
-	void Input_CMD_ChangeLeader(const FInputActionValue& InputActionValue);
-	void Input_CMD_Charge(const FInputActionValue& InputActionValue);
-	void Input_CMD_Item(const FInputActionValue& InputActionValue);
-	void Input_CMD_Special(const FInputActionValue& InputActionValue);
-	void Input_CMD_Spirit(const FInputActionValue& InputActionValue);
-
-	// Combat Command
-	void Input_CC_Attack_Up(const FInputActionValue& InputActionValue);
-	void Input_CC_Attack_Down(const FInputActionValue& InputActionValue);
-	void Input_CC_Attack_Left(const FInputActionValue& InputActionValue);
-	void Input_CC_Attack_Right(const FInputActionValue& InputActionValue);
-	void Input_CC_SupportAttack1(const FInputActionValue& InputActionValue);
-	void Input_CC_SupportAttack2(const FInputActionValue& InputActionValue);
-	void Input_CC_UltimateSkill(const FInputActionValue& InputActionValue);
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
-	FName BaseIMCTag = TEXT("BaseInput");
-
-	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
-	FName BattleCommandIMCTag = TEXT("BattleCommand");
-
-	UPROPERTY(EditAnywhere, Category = "Input", meta = (DisplayName="IMC"))
-	FName CombatCommandIMCTag = TEXT("CombatCommand");
-
 private:
 	TArray<FMWInputMappingContextWithPriority> MappingContextStack;
 
@@ -94,15 +67,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void OnBattleEnd();
-
-private:
-	void ApplyBattleCommandIMC();
-
-	void RemoveBattleCommandIMC();
-
-	void ApplyCombatCommandIMC();
-
-	void RemoveCombatCommandIMC();
 
 private:
 	FDelegateHandle DHApplyBattleCommand;

@@ -45,6 +45,11 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
+	/* Help function to call AbilityInputTagPressed of Actor. */
+	static bool ActorAbilityInputTagPressed(AActor* InActor, const FGameplayTag& InputTag);
+	/* Help function to call AbilityInputTagReleased of Actor. */
+	static bool ActorAbilityInputTagReleased(AActor* InActor, const FGameplayTag& InputTag);
+
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
 

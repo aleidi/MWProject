@@ -22,4 +22,7 @@ public:
 	/* Access to load config in blueprint.*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void LoadConfig(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayAbility")
+	static void CastAbility(AActor* Actor, const FGameplayTag& AbilityTag);
 };

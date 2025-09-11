@@ -1,6 +1,7 @@
 #pragma once
 
-#include "MWDefineCommon.generated.h"
+#include "CoreMinimal.h"
+//#include "MWDefineCommon.generated.h"
 
-// Forward Declare
-
+template<typename T>
+concept DerivedFromUObject = std::is_base_of_v<UObject, T>;

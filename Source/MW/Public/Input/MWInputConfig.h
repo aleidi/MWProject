@@ -58,9 +58,6 @@ class UMWInputConfig : public UDataAsset
 	GENERATED_BODY()
 
 public:
-
-	UMWInputConfig(const FObjectInitializer& ObjectInitializer);
-
 	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
 	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
 
@@ -74,5 +71,5 @@ public:
 	TArray<FMWInputAction> AbilityInputActions;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "Mapping"))
-	TMap<FName, FMWInputMappingContextWithPriority> InputMappingContext;
+	TMap<FGameplayTag, FMWInputMappingContextWithPriority> InputMappingContext;
 };

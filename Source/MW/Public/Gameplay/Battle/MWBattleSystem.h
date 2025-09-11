@@ -133,10 +133,6 @@ public:
 
 	FOnTurnEnd OnTurnEnd;
 
-	FOnCommandBattleBegin OnCommandBattleBegin;
-
-	FOnCommandBattleEnd OnCommandBattleEnd;
-
 	/* Event when active character complete action. Used to end the turn. */
 	FOnActionComplete OnActionComplete;
 	UFUNCTION(BlueprintCallable, Category = "Battle")
