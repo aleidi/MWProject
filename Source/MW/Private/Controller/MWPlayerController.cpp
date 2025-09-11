@@ -65,9 +65,9 @@ void AMWPlayerController::SetupInputComponent()
 
 				// default input
 				mwic->BindAbilityActions(input_config, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
 			}
 		}
 	}
