@@ -72,7 +72,7 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGamepl
 
 void UMWInputUtility::ClearBindingsForObject(UObject* Object)
 {
-	if (!Object->GetWorld())
+	if (!Object || !Object->GetWorld())
 	{
 		return;
 	}
@@ -83,5 +83,41 @@ void UMWInputUtility::ClearBindingsForObject(UObject* Object)
 		{
 			inputHandler->ClearBindingsForObject(Object);
 		}
+	}
+}
+
+void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UInputAction* Action)
+{
+	if (!Object && !Object->GetWorld() && !Action)
+	{
+		return;
+	}
+
+	if (UMWWorldSubsystem* worldSubsys = Object->GetWorld()->GetSubsystem<UMWWorldSubsystem>())
+	{
+		if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
+		{
+			inputHandler->RemoveBindingInputAction(Object, Action);
+		}
+	}
+}
+
+void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& InputActionTag)
+{
+	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	if (UMWInputConfig* input_config = data.InputConfig.Get())
+	{
+		if (const UInputAction* action = input_config->FindNativeInputActionForTag(InputActionTag, false))
+		{
+			UMWInputUtility::RemoveBindingInputAction(Object, action);
+		}
+		else
+		{
+			UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
+		}
+	}
+	else
+	{
+		UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
 	}
 }

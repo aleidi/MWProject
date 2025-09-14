@@ -16,7 +16,7 @@
 
 // Forward Declare
 
-// Macro
+// Define
 
 /*
  * @class UMWInputUtility
@@ -72,6 +72,10 @@ public:
 			{
 				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func);
 			}
+			else
+			{
+				UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
+			}
 		}
 		else
 		{
@@ -80,4 +84,8 @@ public:
 	}
 
 	static void ClearBindingsForObject(UObject* Object);
+
+	static void RemoveBindingInputAction(const UObject* Object, const UInputAction* Action);
+
+	static void RemoveBindingInputAction(const UObject* Object, const FGameplayTag& InputActionTag);
 };
