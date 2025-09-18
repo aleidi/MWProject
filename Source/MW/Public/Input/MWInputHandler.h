@@ -26,14 +26,14 @@ class AMWInputHandler : public AActor
 public:
 	AMWInputHandler(const FObjectInitializer& ObjectInitializer);
 
-	template<class UserClass>
-	void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, void (UserClass::* Func)(const FInputActionValue&))
+	template<class UserClass, typename FuncType, typename... VarTypes>
+	void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
 		UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
 
 		checkf(mwic != nullptr, TEXT("Check if the enhanced input system is enabled in project settings."));
 
-		FInputBindingHandle handle = mwic->BindAction(Action, TriggerEvent, Object, Func);
+		FInputBindingHandle handle = mwic->BindAction(Action, TriggerEvent, Object, Func, Params...);
 
 		BindActionhandleWithObject(Object, Action, handle);
 	}

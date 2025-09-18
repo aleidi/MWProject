@@ -38,8 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void DisableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
 
-	template<DerivedFromUObject UserClass>
-	static void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, void (UserClass::* Func)(const FInputActionValue&))
+	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
+	static void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
 		if (!Object)
 		{
@@ -57,20 +57,21 @@ public:
 		{
 			if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
 			{
-				inputHandler->BindInputAction<UserClass>(Action, TriggerEvent, Object, Func);
+				inputHandler->BindInputAction<UserClass>(Action, TriggerEvent, Object, Func, Params...);
 			}
 		}
 	}
-
-	template<DerivedFromUObject UserClass>
-	static void BindInputAction(const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, void (UserClass::* Func)(const FInputActionValue&))
+	
+	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
+	static void BindInputAction(const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
 		const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+
 		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
 			if (const UInputAction* action = input_config->FindNativeInputActionForTag(InputActionTag, false))
 			{
-				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func);
+				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
 			}
 			else
 			{
