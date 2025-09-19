@@ -9,7 +9,7 @@ class UCommonTextBlock;
 class USpacer;
 class UHorizontalBox;
 
-// Macro
+// Define
 
 /*
  * @class UMWButton

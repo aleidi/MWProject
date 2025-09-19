@@ -8,7 +8,7 @@
 class UCommonTextBlock;
 class UImage;
 
-// Macro
+// Define
 
 /*
  * @class UMWCharacterSkillInfo

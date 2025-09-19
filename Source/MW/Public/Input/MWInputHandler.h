@@ -21,7 +21,7 @@ class AMWInputHandler : public AActor
 {
 	GENERATED_BODY()
 	
-	typedef TMap<const UInputAction*, FInputBindingHandle> ActionBindingMap;
+	typedef TMap<const UInputAction*, uint32> ActionBindingMap;
 
 public:
 	AMWInputHandler(const FObjectInitializer& ObjectInitializer);
@@ -33,12 +33,12 @@ public:
 
 		checkf(mwic != nullptr, TEXT("Check if the enhanced input system is enabled in project settings."));
 
-		FInputBindingHandle handle = mwic->BindAction(Action, TriggerEvent, Object, Func, Params...);
+		uint32 handle = mwic->BindAction(Action, TriggerEvent, Object, Func, Params...).GetHandle();
 
 		BindActionhandleWithObject(Object, Action, handle);
 	}
 
-	bool RemoveBindingInputAction(const FInputBindingHandle& BindingToRemove);
+	bool RemoveBindingInputAction(uint32 BindingToRemove);
 
 	bool RemoveBindingInputAction(const void* Object, const UInputAction* Action);
 
@@ -51,7 +51,7 @@ protected:
 
 private:
 	/* Cache the InputBindingHandle with the object and action. */
-	void BindActionhandleWithObject(const void* Object, const UInputAction* Action, const FInputBindingHandle& Handle);
+	void BindActionhandleWithObject(const void* Object, const UInputAction* Action, uint32 Handle);
 	
 private:
 	TMap<const void*, ActionBindingMap> BindingHandles;

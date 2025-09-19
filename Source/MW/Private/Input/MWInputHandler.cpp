@@ -6,7 +6,7 @@ AMWInputHandler::AMWInputHandler(const FObjectInitializer& ObjectInitializer)
 	AutoReceiveInput = EAutoReceiveInput::Player0;
 }
 
-bool AMWInputHandler::RemoveBindingInputAction(const FInputBindingHandle& BindingToRemove)
+bool AMWInputHandler::RemoveBindingInputAction(uint32 BindingToRemove)
 {
 	UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
 
@@ -15,7 +15,7 @@ bool AMWInputHandler::RemoveBindingInputAction(const FInputBindingHandle& Bindin
 		return false;
 	}
 
-	return mwic->RemoveBinding(BindingToRemove);
+	return mwic->RemoveBindingByHandle(BindingToRemove);
 }
 
 bool AMWInputHandler::RemoveBindingInputAction(const void* Object, const UInputAction* Action)
@@ -71,7 +71,7 @@ void AMWInputHandler::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void AMWInputHandler::BindActionhandleWithObject(const void* Object, const UInputAction* Action, const FInputBindingHandle& Handle)
+void AMWInputHandler::BindActionhandleWithObject(const void* Object, const UInputAction* Action, uint32 Handle)
 {
 	auto& key = BindingHandles.FindOrAdd(Object);
 

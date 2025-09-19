@@ -102,12 +102,12 @@ void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UInp
 	}
 }
 
-void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& InputActionTag)
+void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag)
 {
 	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 	if (UMWInputConfig* input_config = data.InputConfig.Get())
 	{
-		if (const UInputAction* action = input_config->FindNativeInputActionForTag(InputActionTag, false))
+		if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
 		{
 			UMWInputUtility::RemoveBindingInputAction(Object, action);
 		}
@@ -119,5 +119,24 @@ void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGam
 	else
 	{
 		UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+	}
+}
+
+void UMWInputUtility::DisableAllInputActionExcept(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag)
+{
+	for (const auto& tag : TagContainer)
+	{
+		if (tag != ExceptTag)
+		{
+			UMWInputUtility::RemoveBindingInputAction(Object, IMCTag, tag);
+		}
+	}
+}
+
+void UMWInputUtility::DisableAllInputAction(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer)
+{
+	for (const auto& tag : TagContainer)
+	{
+		UMWInputUtility::RemoveBindingInputAction(Object, IMCTag, tag);
 	}
 }

@@ -6,7 +6,7 @@
 
 // Forward Declare
 
-// Macro
+// Define
 
 /*
  * @class UMWGameInstance

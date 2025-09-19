@@ -8,7 +8,7 @@
 // Forward Declare
 class AActor;
 
-// Macro
+// Define
 
 /*
  * @class UMWEntity

@@ -9,7 +9,7 @@
 class UMWEntity;
 class UMWCharacterEntity;
 
-// Macro
+// Define
 
 /*
  * @class UMWEntityManager

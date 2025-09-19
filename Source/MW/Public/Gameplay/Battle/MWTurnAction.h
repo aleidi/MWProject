@@ -5,11 +5,12 @@
 #include "UObject/NoExportTypes.h"
 #include "InputActionValue.h"
 #include "Define/MWDefineGameplay.h"
+#include "Gameplay/MWGameplayTags.h"
 #include "MWTurnAction.generated.h"
 
 // Forward Declare
 
-// Macro
+// Define
 
 struct FMWTurnActionData
 {
@@ -41,7 +42,10 @@ public:
 	 */
 	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin) {}
 
-	void SetActionUnits(const TArray<FMWTeam>& InUnits);
+	void SetActionUnits(const TArray<FMWTeam>& InPlayerUnits, const TArray<FMWTeam>& InEnemyUnits);
+
+protected:
+	virtual AActor* GetTarget() { return nullptr; }
 
 protected:
 	UPROPERTY()
@@ -51,7 +55,8 @@ protected:
 
 	bool bActionFinished = false;
 
-	TArray<FMWTeam> ActionUnits;
+	TArray<FMWTeam> PlayerUnits;
+	TArray<FMWTeam> EnemyUnits;
 };
 
 UCLASS()
@@ -76,7 +81,8 @@ public:
 	virtual void Uninit() override;
 
 	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin);
-protected:
+
+private:
 	/* Display action related ui.*/
 	virtual void DisplayUI();
 
@@ -87,4 +93,7 @@ protected:
 	void OnChangeLeader(const FInputActionValue& Value);
 	void OnUseItem(const FInputActionValue& Value);
 	void OnUseSpirit(const FInputActionValue& Value);
+
+	void OnSelectEnemy(const FInputActionValue& Value);
+	void OnCharacterActionControl(FGameplayTag Tag);
 };

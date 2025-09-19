@@ -11,8 +11,8 @@ class UHorizontalBox;
 class UMWButton;
 class USizeBox;
 
+// Define
 enum class ECommonInputType : uint8;
-// Macro
 
 /*
  * @class UMWMenuButton

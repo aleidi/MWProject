@@ -47,6 +47,20 @@ struct FMWInputMappingContextWithPriority
 	}
 };
 
+USTRUCT(BlueprintType)
+struct FMWInputActionContainer
+{
+	GENERATED_BODY()
+
+	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and must be manually bound.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
+	TArray<FMWInputAction> NativeInputActions;
+
+	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and are automatically bound to abilities with matching input tags.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
+	TArray<FMWInputAction> AbilityInputActions;
+};
+
 /**
  * UMWInputConfig
  *
@@ -58,17 +72,14 @@ class UMWInputConfig : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
-	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
+	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
+	bool GetAbilityInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const;
 
 public:
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and must be manually bound.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FMWInputAction> NativeInputActions;
-
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and are automatically bound to abilities with matching input tags.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FMWInputAction> AbilityInputActions;
+	/* Key is the input mapping context that owns the input actions. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TMap<FGameplayTag, FMWInputActionContainer> InputActionsContainers;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "Mapping"))
 	TMap<FGameplayTag, FMWInputMappingContextWithPriority> InputMappingContext;

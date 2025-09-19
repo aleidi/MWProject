@@ -63,13 +63,13 @@ public:
 	}
 	
 	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
-	static void BindInputAction(const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
+	static void BindInputAction(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
 		const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
 
 		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
-			if (const UInputAction* action = input_config->FindNativeInputActionForTag(InputActionTag, false))
+			if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
 			{
 				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
 			}
@@ -88,5 +88,15 @@ public:
 
 	static void RemoveBindingInputAction(const UObject* Object, const UInputAction* Action);
 
-	static void RemoveBindingInputAction(const UObject* Object, const FGameplayTag& InputActionTag);
+	static void RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag);
+
+	/* 
+	 * Disable all input action in the tag container except the except tag.
+	 * @Param Object : Object binds the actions.
+	 * @Param TagContainer : The tag container of input actions to be disabled.
+	 * @Param ExceptTag    : The input action tag that will not be disabled.
+	*/
+	static void DisableAllInputActionExcept(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag);
+
+	static void DisableAllInputAction(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer);
 };

@@ -9,7 +9,7 @@ class UImage;
 class UCommonTextBlock;
 class UProgressBar;
 
-// Macro
+// Define
 
 /*
  * @class UMWCharacterBaseInfo

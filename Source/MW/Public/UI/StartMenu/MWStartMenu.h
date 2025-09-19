@@ -7,7 +7,7 @@
 // Forward Declare
 class UMWMenuButton;
 
-// Macro
+// Define
 
 /*
  * @class UMWStartMenu

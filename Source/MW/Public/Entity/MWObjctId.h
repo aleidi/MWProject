@@ -7,7 +7,7 @@
 
 // Forward Declare
 
-// Macro
+// Define
 
 /*
  * @class FObjectId

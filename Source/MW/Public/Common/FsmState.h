@@ -8,7 +8,7 @@
 template<typename T>
 class FFsm;
 
-// Macro
+// Define
 
 class IFsmState
 {

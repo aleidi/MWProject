@@ -8,7 +8,7 @@
 // Forward Declare
 class UMWRootCanvas;
 
-// Macro
+// Define
 
 /*
  * @class UMWUIManager

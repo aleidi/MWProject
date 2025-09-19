@@ -7,7 +7,7 @@
 // Forward Declare
 class UVerticalBox;
 
-// Macro
+// Define
 
 /*
  * @class UMWCombatUI

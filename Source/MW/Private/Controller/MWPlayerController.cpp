@@ -48,7 +48,7 @@ void AMWPlayerController::SetupInputComponent()
 	{
 		if (UMWInputConfig* input_config = data.InputConfig.Get())
 		{
-			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMCTag_Basic);
+			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMC_TPDefault);
 
 			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
 			// If you want this functionality but still want to change your input component class, make it a subclass
@@ -64,10 +64,10 @@ void AMWPlayerController::SetupInputComponent()
 				TArray<uint32> bind_handles;
 
 				// default input
-				mwic->BindAbilityActions(input_config, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, false);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IATag_Default_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
+				mwic->BindAbilityActions(input_config, MWGameplayTags::IMC_TPDefault, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
 			}
 		}
 	}

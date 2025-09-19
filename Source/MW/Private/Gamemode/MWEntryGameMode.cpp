@@ -40,6 +40,13 @@ void AMWEntryGamemode::BeginPlay()
 	{
 		uiMng->OpenUI(MenuName, true);
 	}
+
+	APlayerController* pc = UGameplayStatics::GetPlayerController(this, 0);
+
+	if(pc)
+	{
+		pc->SetShowMouseCursor(true);
+	}
 }
 
 UClass* AMWEntryGamemode::GetDefaultPawnClassForController_Implementation(AController* InController)

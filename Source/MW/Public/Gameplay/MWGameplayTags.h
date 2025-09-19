@@ -10,45 +10,70 @@ namespace MWGameplayTags
 {
 	MW_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
+//****Action Tag****//
 #pragma region ActionTag
 
+//****Basic****//
 #pragma region Basic
-	// Basic
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_DirectionalInput);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Direction);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Confirm);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Cancel);
 #pragma endregion
+//****Basic****//
 
+//****TPDefault Input****//
+#pragma region TPDefault
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Debug);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Move);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_LookAt);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_AutoRun);
+#pragma endregion
+//****TPDefault Input****//
 
-	// Default Input
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Default_Debug);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Default_Move);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Default_LookAt);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Default_AutoRun);
-
-	// Battle Command
+//****Battle Command****//
+#pragma region Battle Command
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_ChangeLeader);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseItem);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseSpirit);
+	/* Battle Command tags container. */
+	extern TArray<FGameplayTag> BattleCommands;
 
-	// Combat Command
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Attack_Up);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Attack_Down);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Attack_Left);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Attack_Right);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Dir_Up);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Dir_Down);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Dir_Left);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_Dir_Right);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_SupportAttack1);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_SupportAttack2);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_CC_UltimateSkill);
+	// Move Command
+	/* Character 1 control. */
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C1U);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C1D);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C1L);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C1R);
+	/* Character 2 control. */
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C2U);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C2D);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C2L);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C2R);
+	/* Character 3 control. */
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C3);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C3U);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C3D);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C3L);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move_C3R);
+	/* Character action tags container. */
+	extern TArray<FGameplayTag> BattleCharacterAction;
+
+	//DECLARE_MW_GAMEPLAY_TAG(IATag_CC_SupportAttack1);
+	//DECLARE_MW_GAMEPLAY_TAG(IATag_CC_SupportAttack2);
+	//DECLARE_MW_GAMEPLAY_TAG(IATag_CC_UltimateSkill);
 #pragma endregion
+//****Battle Command****//
+
+#pragma endregion
+//****Action Tag****//
 
 #pragma region InputMappingTag
-	DECLARE_MW_GAMEPLAY_TAG(IMCTag_Basic);
-	DECLARE_MW_GAMEPLAY_TAG(IMCTag_BattleCommand);
-	DECLARE_MW_GAMEPLAY_TAG(IMCTag_CombatCommand);
+	DECLARE_MW_GAMEPLAY_TAG(IMC_Basic);
+	DECLARE_MW_GAMEPLAY_TAG(IMC_TPDefault);
+	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand);
+	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCharacterAction);
 #pragma endregion
 };

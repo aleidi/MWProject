@@ -8,7 +8,7 @@
 // Forward Declare
 class AMWInputHandler;
 
-// Macro
+// Define
 
 /*
  * @class UMWWorldSubsystem

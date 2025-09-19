@@ -9,7 +9,7 @@ class UMWCharacterBaseInfo;
 class UMWCharacterSkillInfo;
 class UUniformGridPanel;
 
-// Macro
+// Define
 
 /*
  * @class UMWCombatCharacterPanel

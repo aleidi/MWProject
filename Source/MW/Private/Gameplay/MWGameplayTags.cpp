@@ -34,39 +34,73 @@ namespace MWGameplayTags
 	}
 
 	// Basic
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_DirectionalInput,		"InputTag.Basic.DirectionalInput",				"Basic Input DirectionalInput.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Confirm,					"InputTag.Basic.Confirm",						"Basic Input Confirm.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Cancel,					"InputTag.Basic.Cancel",						"Basic Input Cancel.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Direction,				"InputTag.Basic.Direction",								"Basic Input Direction.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Confirm,					"InputTag.Basic.Confirm",								"Basic Input Confirm.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Cancel,					"InputTag.Basic.Cancel",								"Basic Input Cancel.");
 
-	// Default Input
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Default_Debug,					"InputTag.Default.Debug",						"Move Debug.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Default_Move,					"InputTag.Default.Move",						"Move input.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Default_LookAt,				"InputTag.Default.LookAt",						"LookAt input.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Default_AutoRun,				"InputTag.Default.AutoRun",						"Auto-run input.");
+	// TPDefault Input
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_Debug,				"InputTag.TPDefault.Debug",								"Third-Person default action Move Debug.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_Move,				"InputTag.TPDefault.Move",								"Third-Person default action Move.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_LookAt,				"InputTag.TPDefault.LookAt",							"Third-Person default action LookAt.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_AutoRun,				"InputTag.TPDefault.AutoRun",							"Third-Person default action Auto-run.");
 
 	// Battle Command
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move,						"InputTag.BC.Move",								"Input Battle Command Move.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeLeader,				"InputTag.BC.ChangeLeader",						"Input Battle Command ChangeLeader.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem,					"InputTag.BC.Item",								"Input Battle Command Item.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit,					"InputTag.BC.Spirit",							"Input Battle Command Spirit.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move,						"InputTag.BC.Move",										"Input Battle Command Move.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeLeader,				"InputTag.BC.ChangeLeader",								"Input Battle Command ChangeLeader.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem,					"InputTag.BC.Item",										"Input Battle Command Item.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit,					"InputTag.BC.Spirit",									"Input Battle Command Spirit.");
 
-	// Combat Command
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Attack_Up,					"InputTag.CC.Attack.Up",						"Input CombatCommand Attack Up.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Attack_Down,				"InputTag.CC.Attack.Down",						"Input CombatCommand Attack Down.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Attack_Left,				"InputTag.CC.Attack.Left",						"Input CombatCommand Attack Left.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Attack_Right,				"InputTag.CC.Attack.Right",						"Input CombatCommand Attack Right.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Dir_Up,						"InputTag.CC.Dir.Up",							"Input CombatCommand Direction Up.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Dir_Down,					"InputTag.CC.Dir.Down",							"Input CombatCommand Direction Down.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Dir_Left,					"InputTag.CC.Dir.Left",							"Input CombatCommand Direction Left.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_Dir_Right,					"InputTag.CC.Dir.Right",						"Input CombatCommand Direction Right.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_SupportAttack1,				"InputTag.CC.SupportAttack1",					"Input CombatCommand SupportAttack1.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_SupportAttack2,				"InputTag.CC.SupportAttack2",					"Input CombatCommand SupportAttack2.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_CC_UltimateSkill,				"InputTag.CC.UltimateSkill",					"Input CombatCommand UltimateSkill.");
+	// Move Command
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C1,					"InputTag.BC.Move.C1",									"Input Battle Command Move Character1 Action.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C1U,					"InputTag.BC.Move.C1U",									"Input Battle Command Move Character1 Action Combo Up.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C1D,					"InputTag.BC.Move.C1D",									"Input Battle Command Move Character1 Action Combo Down.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C1L,					"InputTag.BC.Move.C1L",									"Input Battle Command Move Character1 Action Combo Left.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C1R,					"InputTag.BC.Move.C1R",									"Input Battle Command Move Character1 Action Combo Right.");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C2,					"InputTag.BC.Move.C2",									"Input Battle Command Move Character2 Action.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C2U,					"InputTag.BC.Move.C2U",									"Input Battle Command Move Character2 Action Combo Up.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C2D,					"InputTag.BC.Move.C2D",									"Input Battle Command Move Character2 Action Combo Down.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C2L,					"InputTag.BC.Move.C2L",									"Input Battle Command Move Character2 Action Combo Left.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C2R,					"InputTag.BC.Move.C2R",									"Input Battle Command Move Character2 Action Combo Right.");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3,					"InputTag.BC.Move.C3",									"Input Battle Command Move Character3 Action.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3U,					"InputTag.BC.Move.C3U",									"Input Battle Command Move Character3 Action Combo Up.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3D,					"InputTag.BC.Move.C3D",									"Input Battle Command Move Character3 Action Combo Down.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3L,					"InputTag.BC.Move.C3L",									"Input Battle Command Move Character3 Action Combo Left.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3R,					"InputTag.BC.Move.C3R",									"Input Battle Command Move Character3 Action Combo Right.");
 
 #pragma region InputMappingTag
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMCTag_Basic,						"InputTag.MappingContext.Basic",				"Input Mapping Context Basic.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMCTag_BattleCommand,				"InputTag.MappingContext.BattleCommand",		"Input Mapping Context Battle Command.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMCTag_CombatCommand,				"InputTag.MappingContext.UnitCommand",			"Input Mapping Context Unit Command.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_Basic,							"InputTag.MappingContext.Basic",						"Input Mapping Context Basic.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPDefault,						"InputTag.MappingContext.TPDefault",					"Input Mapping Context Third-Person-Default.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand,					"InputTag.MappingContext.BattleCommand",				"Input Mapping Context Battle Command.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCharacterAction,			"InputTag.MappingContext.BattleCharacterAction",		"Input Mapping Context Character Action in Battle.");
 #pragma endregion
+
+	TArray<FGameplayTag> BattleCommands = 
+	{
+		MWGameplayTags::IATag_BC_Move,
+		MWGameplayTags::IATag_BC_ChangeLeader,
+		MWGameplayTags::IATag_BC_UseItem,
+		MWGameplayTags::IATag_BC_UseSpirit,
+	};
+
+	TArray<FGameplayTag> BattleCharacterAction =
+	{
+		MWGameplayTags::IATag_BC_Move_C1,
+		MWGameplayTags::IATag_BC_Move_C1U,
+		MWGameplayTags::IATag_BC_Move_C1D,
+		MWGameplayTags::IATag_BC_Move_C1L,
+		MWGameplayTags::IATag_BC_Move_C1R,
+		MWGameplayTags::IATag_BC_Move_C2,
+		MWGameplayTags::IATag_BC_Move_C2U,
+		MWGameplayTags::IATag_BC_Move_C2D,
+		MWGameplayTags::IATag_BC_Move_C2L,
+		MWGameplayTags::IATag_BC_Move_C2R,
+		MWGameplayTags::IATag_BC_Move_C3,
+		MWGameplayTags::IATag_BC_Move_C3U,
+		MWGameplayTags::IATag_BC_Move_C3D,
+		MWGameplayTags::IATag_BC_Move_C3L,
+		MWGameplayTags::IATag_BC_Move_C3R
+	};
 }
 

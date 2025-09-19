@@ -153,9 +153,9 @@ private:
 	void ChangeState(TUniquePtr<MWBattle::IBattleState> NewState);
 
 public:
-	const TArray<FMWTeam>& GetPlayer() const { return PlayerTeams; }
+	const TArray<FMWTeam>& GetPlayerUnits() const { return PlayerTeams; }
 
-	const TArray<FMWTeam>& GetEnemy() const { return EnemyTeam; }
+	const TArray<FMWTeam>& GetEnemyUnits() const { return EnemyTeam; }
 
 	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
 

@@ -10,7 +10,7 @@ class UMWEntityManager;
 class UMWBattleSystem;
 class UMWUIManager;
 
-// Macro
+// Define
 
 /*
  * @class UMWGameInstanceSubsystem

@@ -8,7 +8,7 @@
 class UMWMasterData;
 class UMWGameplayData;
 
-// Macro
+// Define
 
 /*
  * @class UMWGameSingleton

@@ -12,13 +12,12 @@ UE_DISABLE_OPTIMIZATION
 
 FMWActionState FMWActionState::Player	{EMWTeamAlign::Player,	false,	200};
 FMWActionState FMWActionState::Enemy	{EMWTeamAlign::Enemy,	false,	100};
-FMWActionState FMWActionState::Null	{EMWTeamAlign::Max,		false,	-1};
+FMWActionState FMWActionState::Null		{EMWTeamAlign::Max,		false,	-1};
 
 void MWBattle::MWBSIdle::OnUpdate(float DeltaTime)
 {
 	this->ChangeState(TEXT("MWBSBattleBegin"));
 }
-
 
 void MWBattle::MWBSBattleBegin::OnEnter()
 {
@@ -35,8 +34,8 @@ void MWBattle::MWBSBattleBegin::OnEnter()
 
 	FMWBattleSceneParam param;
 
-	param.Teams = context->GetPlayer();
-	param.Teams.Append(context->GetEnemy());
+	param.Teams = context->GetPlayerUnits();
+	param.Teams.Append(context->GetEnemyUnits());
 
 	scenePrep.PrepareScene(param);
 	// use async task?
@@ -62,9 +61,9 @@ void MWBattle::MWBSBattleBegin::OnUpdate(float DeltaTime)
 void MWBattle::MWBSBattleEnd::OnEnter()
 {
 	// play battle result
-		// 游戏结算界面等等
-		// wait for battle end
-		// destroy battle
+	// 游戏结算界面等等
+	// wait for battle end
+	// destroy battle
 
 	UMWBattle* context = this->GetOwner();
 
@@ -183,6 +182,8 @@ void MWBattle::MWBSTurnBegin::OnEnter()
 
 	TurnAction->Init();
 
+	TurnAction->SetActionUnits(context->GetPlayerUnits(), context->GetEnemyUnits());
+
 	TurnAction->AddToRoot();
 }
 
@@ -222,7 +223,7 @@ void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 {
 	UMWBattle* context = this->GetOwner();
 
-	const FMWTeam& team = context->GetCurrentTurnTeamAlign() == EMWTeamAlign::Player ? context->GetPlayer().Top() : context->GetEnemy().Top();
+	const FMWTeam& team = context->GetCurrentTurnTeamAlign() == EMWTeamAlign::Player ? context->GetPlayerUnits().Top() : context->GetEnemyUnits().Top();
 
 	const FMWTeamUnit& leader = team.GetLeader();
 
@@ -337,9 +338,9 @@ void MWBattle::MWBSTurnEnd::CheckShouldEndBattle()
 {
 	UMWBattle* context = this->GetOwner();
 
-	const TArray<FMWTeam>& playerTeam = context->GetPlayer();
+	const TArray<FMWTeam>& playerTeam = context->GetPlayerUnits();
 
-	const TArray<FMWTeam>& enemyTeam = context->GetEnemy();
+	const TArray<FMWTeam>& enemyTeam = context->GetEnemyUnits();
 
 	// check is game end
 	int32 existPlayerNo = 0, existEnemyNo = 0;
@@ -395,11 +396,6 @@ void MWBattle::MWBSTurnEnd::CheckShouldRoundEnd()
 
 UMWBattle::UMWBattle()
 {
-	//auto fsm = IStandaloneFsm::Create(TEXT("testfsm"), this, new FFsmState<UMWBattle>(TEXT("123")), new FFsmState<UMWBattle>(TEXT("456")));
-
-	//fsm->Start(TEXT("MWBSIdleState"));
-	//fsm->Update(0.1f);
-	//fsm->ShutDown();
 }
 
 void UMWBattle::StartBattle(const FMWBattleData& InData)
@@ -435,7 +431,7 @@ void UMWBattle::StartBattle(const FMWBattleData& InData)
 
 	if (PC.IsValid())
 	{
-		UMWInputUtility::DisableMappingContext(PC.Get(), MWGameplayTags::IMCTag_Basic);
+		UMWInputUtility::DisableMappingContext(PC.Get(), MWGameplayTags::IMC_TPDefault);
 	}
 
 	// Delegates

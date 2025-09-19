@@ -30,31 +30,40 @@ public:
 	void RemoveInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const;
 
 	template<class UserClass, typename FuncType>
-	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, bool bLogIfNotFound);
+	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
 
 	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-	void BindAbilityActions(const UMWInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles);
+	void BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles);
 
 	void RemoveBinds(TArray<uint32>& BindHandles);
 };
 
 
 template<class UserClass, typename FuncType>
-void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, bool bLogIfNotFound)
+void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func)
 {
 	check(InputConfig);
-	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag, bLogIfNotFound))
+	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(IMCTag, InputTag))
 	{
 		BindAction(IA, TriggerEvent, Object, Func); 
 	}
 }
 
 template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
+void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
 {
 	check(InputConfig);
 
-	for (const FMWInputAction& Action : InputConfig->AbilityInputActions)
+	TArray<FMWInputAction> abilityInputActions;
+
+	bool res = InputConfig->GetAbilityInputActionsForTag(IMCTag, abilityInputActions);
+
+	if (!res)
+	{
+		return;
+	}
+
+	for (const FMWInputAction& Action : abilityInputActions)
 	{
 		if (Action.InputAction && Action.InputTag.IsValid())
 		{

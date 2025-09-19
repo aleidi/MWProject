@@ -7,7 +7,7 @@
 // Forward Declare
 class UCanvasPanel;
 
-// Macro
+// Define
 
 /*
  * @class UMWRootCanvas
