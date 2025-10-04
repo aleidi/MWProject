@@ -21,7 +21,7 @@ public class MWEditor : ModuleRules
             "InputCore",
             "UnrealEd",
             "BlueprintGraph",
-			"MW"
+            "Blutility",
 		});
 
 		// Uncomment if you are using Slate UI
