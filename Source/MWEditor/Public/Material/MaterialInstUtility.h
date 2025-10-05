@@ -11,15 +11,24 @@ class UMaterialInstance;
 // Define
 struct FMaterialInstanceCreateInfo
 {
+	FString MaterialName;
+
 	bool bInstanceCreated = false;
 
-	bool bTexCreated = false;
+	bool bAlbedoTexSet = false;
+
+    bool bSpecularTexSet = false;
+
+    bool bNormalTexSet = false;
 
 	FString PrintInfo() const
 	{
-		return FString::Printf(TEXT("MaterialInstance Created: %s, Texture Set: %s"),
+		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s"),
+                *MaterialName,
 				bInstanceCreated ? TEXT("O") : TEXT("X"), 
-				bTexCreated ? TEXT("O") : TEXT("X"));
+                bAlbedoTexSet ? TEXT("O") : TEXT("X"),
+                bSpecularTexSet ? TEXT("O") : TEXT("X"),
+                bNormalTexSet ? TEXT("O") : TEXT("X"));
 	}
 };
 
@@ -85,6 +94,10 @@ private:
         const TSet<FName>& ExcludeParams,
         TFunctionRef<bool(const TParamType&, const FName&)> NameMatchFunc,
         TFunctionRef<void(TParamType&, const TValueType&)> SetValueFunc);
+
+	// The texture must be directly connected to the material property node.
+	// テクスチャはマテリアルプロパティノードに直接接続されている必要があります。
+    UTexture* GetTextureFromMaterialProperty(UMaterial* Material, EMaterialProperty Property);
 };
 
 template<typename TParamType, typename TValueType>

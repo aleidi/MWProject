@@ -1,9 +1,10 @@
 #include "Material/MaterialInstUtility.h"
-#include "EditorUtilityLibrary.h"
-#include "Materials/MaterialInstanceConstant.h"
-#include "Factories/MaterialInstanceConstantFactoryNew.h"
-#include "PackageTools.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "EditorUtilityLibrary.h"
+#include "Factories/MaterialInstanceConstantFactoryNew.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "Materials/MaterialExpressionTextureSample.h"
+#include "PackageTools.h"
 
 void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* TemplateMaterialInst)
 {
@@ -20,12 +21,12 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 
 	for (UObject* obj : selectedAssets)
 	{
-		if (UMaterialInterface* material = Cast<UMaterialInterface>(obj))
+		if (UMaterialInterface* iMaterial = Cast<UMaterialInterface>(obj))
 		{
 			FMaterialInstanceCreateInfo tmpreateInfo;
 
 			// 1. Set new asset name and path
-			FString assetName = material->GetName();
+			FString assetName = iMaterial->GetName();
 
 			// Change the prefix "M_" to "MI_"
 			if (assetName.StartsWith(TEXT("M_")))
@@ -36,8 +37,10 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 			{
 				assetName = FString::Printf(TEXT("MI_%s"), *assetName);
 			}
+
+			tmpreateInfo.MaterialName = assetName;
 			
-			FString assetPath = material->GetPackage()->GetName();
+			FString assetPath = iMaterial->GetPackage()->GetName();
 
 			// Remove the asset name from the path
 			assetPath = FPaths::GetPath(assetPath);
@@ -58,16 +61,35 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 			newMaterialInst->PostEditChange();
 			newMaterialInst->MarkPackageDirty();
 
-			// 4. Get diffuse texture and set to new material instance
-			TArray<UTexture*> textures;
-			material->GetUsedTextures(textures, EMaterialQualityLevel::High, true, ERHIFeatureLevel::SM5, true);
-			if (textures.Num() > 0)
+			// 4. Get textures and set to new material instance
 			{
-				tmpreateInfo.bTexCreated = SetTextureParameter(newMaterialInst, TEXT("Albedo"), textures[0]);
-			}
-			else
-			{
-				tmpreateInfo.bTexCreated = false;
+				UTexture* baseColorTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_BaseColor);
+				if (baseColorTex)
+				{
+					tmpreateInfo.bAlbedoTexSet = SetTextureParameter(newMaterialInst, TEXT("Albedo"), baseColorTex);
+				}
+
+				// Roughness texture here is actually a specular texture in blender shader.
+				// blenderのシェーダーでは、ここでいうroughnessテクスチャは実際にはスペキュラテクスチャです。
+				UTexture* roughnessTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Roughness);
+				if (roughnessTex)
+				{
+					tmpreateInfo.bSpecularTexSet = SetTextureParameter(newMaterialInst, TEXT("Specular"), roughnessTex);
+				}
+
+				// Emissive texture here is a lightmap texture. It's not used any more, so skip it.
+				// ここでいうEmissiveテクスチャはライトマップテクスチャです。もう使わないのでスキップします。
+				/*UTexture* emissiveTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_EmissiveColor);
+				if (roughnessTex)
+				{
+					SetTextureParameter(newMaterialInst, TEXT("Emissive"), roughnessTex);
+				}*/
+
+				UTexture* normalTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Normal);
+				if (normalTex)
+				{
+					tmpreateInfo.bNormalTexSet = SetTextureParameter(newMaterialInst, TEXT("Normal"), normalTex);
+				}
 			}
 
 			tmpreateInfo.bInstanceCreated = true;
@@ -80,19 +102,17 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 	TArray<FString> logInfos;
 
 	int32 instSucceedCount = 0;
-	int32 texSucceedCount = 0;
 
 	for(const FMaterialInstanceCreateInfo& info : createInfos)
 	{
 		logInfos.Emplace(info.PrintInfo());
 
 		instSucceedCount += info.bInstanceCreated ? 1 : 0;
-		texSucceedCount += info.bTexCreated ? 1 : 0;
 	}
 
 	FString resultInfo = FString::Join(logInfos, TEXT("\n"));
 
-	resultInfo += FString::Printf(TEXT("\n\nTotal MaterialInstance Created: %d, Texture Set: %d"), createInfos.Num(), instSucceedCount, texSucceedCount);
+	resultInfo += FString::Printf(TEXT("\n\nTotal MaterialInstance Created: %d"), instSucceedCount);
 
 	FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(resultInfo));
 }
@@ -212,4 +232,30 @@ void UMaterialInstUtility::ModifyMaterialInstanceParametersInternal(UMaterialIns
 
 	MIC->PostEditChange();
 	MIC->MarkPackageDirty();
+}
+
+UTexture* UMaterialInstUtility::GetTextureFromMaterialProperty(UMaterial* Material, EMaterialProperty Property)
+{
+	if (!Material)
+	{
+		return nullptr;
+	}
+
+	FExpressionInput* inputNode = Material->GetExpressionInputForProperty(Property);
+
+	UMaterialExpression* expr = inputNode ? inputNode->Expression : nullptr;
+
+	if (!expr)
+	{
+		return nullptr;
+	}
+
+	UMaterialExpressionTextureSample* textureSample = Cast<UMaterialExpressionTextureSample>(expr);
+
+	if (textureSample && textureSample->Texture)
+	{
+		return textureSample->Texture;
+	}
+
+	return nullptr;
 }
