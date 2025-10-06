@@ -55,7 +55,6 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 				continue;
 			}
 
-
 			// 3. Copy Parameter Values
 			newMaterialInst->CopyMaterialUniformParametersEditorOnly(TemplateMaterialInst);
 			newMaterialInst->PostEditChange();
@@ -77,13 +76,11 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 					tmpreateInfo.bSpecularTexSet = SetTextureParameter(newMaterialInst, TEXT("Specular"), roughnessTex);
 				}
 
-				// Emissive texture here is a lightmap texture. It's not used any more, so skip it.
-				// ここでいうEmissiveテクスチャはライトマップテクスチャです。もう使わないのでスキップします。
-				/*UTexture* emissiveTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_EmissiveColor);
-				if (roughnessTex)
+				UTexture* emissiveTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_EmissiveColor);
+				if (emissiveTex)
 				{
-					SetTextureParameter(newMaterialInst, TEXT("Emissive"), roughnessTex);
-				}*/
+					tmpreateInfo.bEmissiveTexSet = SetTextureParameter(newMaterialInst, TEXT("Emissive"), emissiveTex);
+				}
 
 				UTexture* normalTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Normal);
 				if (normalTex)
@@ -229,6 +226,26 @@ void UMaterialInstUtility::ModifyMaterialInstanceParametersInternal(UMaterialIns
 		[](const FVectorParameterValue& Param, const FName& Name) { return Param.ParameterInfo.Name == Name; },
 		[](FVectorParameterValue& Param, const FLinearColor& Value) { Param.ParameterValue = Value; }
 	);
+
+	// Static Switchパラメータを変更
+	{
+		FStaticParameterSet staticParams = MIC->GetStaticParameters();
+
+		for (const auto& switchParam : ModifyData.StaticSwitchParams)
+		{
+			for (FStaticSwitchParameter& param : staticParams.StaticSwitchParameters)
+			{
+				if (param.ParameterInfo.Name == switchParam.Key)
+				{
+					param.Value = switchParam.Value;
+					param.bOverride = ModifyData.bOverrideStaticSwitchParams;
+					break;
+				}
+			}
+		}
+
+		MIC->UpdateStaticPermutation(staticParams);
+	}
 
 	MIC->PostEditChange();
 	MIC->MarkPackageDirty();

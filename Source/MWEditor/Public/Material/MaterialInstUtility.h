@@ -21,14 +21,17 @@ struct FMaterialInstanceCreateInfo
 
     bool bNormalTexSet = false;
 
+	bool bEmissiveTexSet = false;
+
 	FString PrintInfo() const
 	{
-		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s"),
+		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s, Emissive Texture Set: %s"),
                 *MaterialName,
 				bInstanceCreated ? TEXT("O") : TEXT("X"), 
                 bAlbedoTexSet ? TEXT("O") : TEXT("X"),
                 bSpecularTexSet ? TEXT("O") : TEXT("X"),
-                bNormalTexSet ? TEXT("O") : TEXT("X"));
+                bNormalTexSet ? TEXT("O") : TEXT("X"),
+                bEmissiveTexSet ? TEXT("O") : TEXT("X"));
 	}
 };
 
@@ -55,6 +58,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSet<FName> ExcludeParams;
+
+    UPROPERTY(EditDefaultsOnly, Category = "StaticSwitch")
+	bool bOverrideStaticSwitchParams = false;
+
+	// Static Switch Parameters to modify in the MaterialInstance. It's not influenced by ExcludeParams.
+	// MaterialInstance内で変更するStatic Switchパラメータ。ExcludeParamsの影響を受けません。
+    UPROPERTY(EditDefaultsOnly, Category = "StaticSwitch")
+	TMap<FName, bool> StaticSwitchParams;
 };
 
 /*
