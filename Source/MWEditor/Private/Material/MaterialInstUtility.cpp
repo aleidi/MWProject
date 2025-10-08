@@ -6,7 +6,7 @@
 #include "Materials/MaterialExpressionTextureSample.h"
 #include "PackageTools.h"
 
-void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* TemplateMaterialInst)
+void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance* TemplateMaterialInst)
 {
 	if (!TemplateMaterialInst)
 	{
@@ -101,6 +101,109 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterial(UMaterialInstance* Te
 	int32 instSucceedCount = 0;
 
 	for(const FMaterialInstanceCreateInfo& info : createInfos)
+	{
+		logInfos.Emplace(info.PrintInfo());
+
+		instSucceedCount += info.bInstanceCreated ? 1 : 0;
+	}
+
+	FString resultInfo = FString::Join(logInfos, TEXT("\n"));
+
+	resultInfo += FString::Printf(TEXT("\n\nTotal MaterialInstance Created: %d"), instSucceedCount);
+
+	FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(resultInfo));
+}
+
+void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance* TemplateMaterialInst)
+{
+	if (!TemplateMaterialInst)
+	{
+		FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("TemplateMaterialInst is nullptr!")));
+
+		return;
+	}
+
+	TArray<UObject*> selectedAssets = UEditorUtilityLibrary::GetSelectedAssets();
+
+	TArray<FMaterialInstanceCreateInfo> createInfos;
+
+	for (UObject* obj : selectedAssets)
+	{
+		if (UMaterialInterface* iMaterial = Cast<UMaterialInterface>(obj))
+		{
+			FMaterialInstanceCreateInfo tmpreateInfo;
+
+			// 1. Set new asset name and path
+			FString assetName = iMaterial->GetName();
+
+			// Change the prefix "M_" to "MI_"
+			if (assetName.StartsWith(TEXT("M_")))
+			{
+				assetName = assetName.Replace(TEXT("M_"), TEXT("MI_"));
+			}
+			else
+			{
+				assetName = FString::Printf(TEXT("MI_%s"), *assetName);
+			}
+
+			tmpreateInfo.MaterialName = assetName;
+
+			FString assetPath = iMaterial->GetPackage()->GetName();
+
+			// Remove the asset name from the path
+			assetPath = FPaths::GetPath(assetPath);
+
+			// 2. Create new material instance
+			UMaterialInstanceConstant* newMaterialInst = CreateMaterialInstance(assetName, assetPath, TemplateMaterialInst);
+
+			if (!newMaterialInst)
+			{
+				tmpreateInfo.bInstanceCreated = false;
+
+				continue;
+			}
+
+			// 3. Copy Parameter Values
+			newMaterialInst->CopyMaterialUniformParametersEditorOnly(TemplateMaterialInst);
+			newMaterialInst->PostEditChange();
+			newMaterialInst->MarkPackageDirty();
+
+			// 4. Get textures and set to new material instance
+			{
+				UTexture* baseColorTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_BaseColor);
+				if (baseColorTex)
+				{
+					tmpreateInfo.bAlbedoTexSet = SetTextureParameter(newMaterialInst, TEXT("Albedo"), baseColorTex);
+				}
+
+				// metallic and roughness share the same texture in FSM's shader.
+				UTexture* metallicTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Metallic);
+				if (metallicTex)
+				{
+					tmpreateInfo.bMetallicTexSet = SetTextureParameter(newMaterialInst, TEXT("Metallic"), metallicTex);
+					tmpreateInfo.bRoughnessTexSet = SetTextureParameter(newMaterialInst, TEXT("Roughness"), metallicTex);
+				}
+
+
+				UTexture* normalTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Normal);
+				if (normalTex)
+				{
+					tmpreateInfo.bNormalTexSet = SetTextureParameter(newMaterialInst, TEXT("Normal"), normalTex);
+				}
+			}
+
+			tmpreateInfo.bInstanceCreated = true;
+
+			createInfos.Emplace(tmpreateInfo);
+		}
+	}
+
+	// 5. Show result dialog
+	TArray<FString> logInfos;
+
+	int32 instSucceedCount = 0;
+
+	for (const FMaterialInstanceCreateInfo& info : createInfos)
 	{
 		logInfos.Emplace(info.PrintInfo());
 

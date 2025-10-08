@@ -17,6 +17,10 @@ struct FMaterialInstanceCreateInfo
 
 	bool bAlbedoTexSet = false;
 
+    bool bMetallicTexSet = false;
+
+	bool bRoughnessTexSet = false;
+
     bool bSpecularTexSet = false;
 
     bool bNormalTexSet = false;
@@ -25,10 +29,12 @@ struct FMaterialInstanceCreateInfo
 
 	FString PrintInfo() const
 	{
-		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s, Emissive Texture Set: %s"),
+		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Metallic Texture Set: %s, Roughness Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s, Emissive Texture Set: %s"),
                 *MaterialName,
 				bInstanceCreated ? TEXT("O") : TEXT("X"), 
                 bAlbedoTexSet ? TEXT("O") : TEXT("X"),
+			    bMetallicTexSet ? TEXT("O") : TEXT("X"),
+			    bRoughnessTexSet ? TEXT("O") : TEXT("X"),
                 bSpecularTexSet ? TEXT("O") : TEXT("X"),
                 bNormalTexSet ? TEXT("O") : TEXT("X"),
                 bEmissiveTexSet ? TEXT("O") : TEXT("X"));
@@ -81,10 +87,15 @@ class UMaterialInstUtility : public UAssetActionUtility
 	GENERATED_BODY()
 
 public:
-	// Helper function to create MaterialInstance from material with a diffused texture.
-	// ディフューズテクスチャを持つマテリアルからMaterialInstanceを作成するためのヘルパー関数
+	// Helper function to create MaterialInstance from XSP's material.
+	// XSPのマテリアルからMaterialInstanceを作成するためのヘルパー関数
 	UFUNCTION(CallInEditor, Category = "MaterialInstanceUtility")
-	void CreateMaterialInstaFromMaterial(UMaterialInstance* TemplateMaterialInst);
+    void CreateMaterialInstaFromMaterialXSP(UMaterialInstance* TemplateMaterialInst);
+
+    // Helper function to create MaterialInstance from FSM's material.
+    // FSMのマテリアルからMaterialInstanceを作成するためのヘルパー関数
+	UFUNCTION(CallInEditor, Category = "MaterialInstanceUtility")
+    void CreateMaterialInstaFromMaterialFSM(UMaterialInstance* TemplateMaterialInst);
 
 	// Helper function to modify parameters in the MaterialInstance.
 	// MaterialInstance内のパラメータを変更するためのヘルパー関数
