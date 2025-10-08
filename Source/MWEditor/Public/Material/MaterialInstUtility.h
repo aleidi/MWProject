@@ -29,7 +29,7 @@ struct FMaterialInstanceCreateInfo
 
 	FString PrintInfo() const
 	{
-		return FString::Printf(TEXT("%s Created: %s, Albedo Texture Set: %s, Metallic Texture Set: %s, Roughness Texture Set: %s, Specular Texture Set: %s, Normal Texture Set: %s, Emissive Texture Set: %s"),
+		return FString::Printf(TEXT("%s Created[%s], Albedo[%s], Metallic[%s], Roughness[%s], Specular[%s], Normal[%s], Emissive[%s]"),
                 *MaterialName,
 				bInstanceCreated ? TEXT("O") : TEXT("X"), 
                 bAlbedoTexSet ? TEXT("O") : TEXT("X"),
