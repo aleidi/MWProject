@@ -20,3 +20,15 @@ void UMWWorldSubsystem::Deinitialize()
 		InputHandler->MarkAsGarbage();
 	}
 }
+
+bool UMWWorldSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	UWorld* world = Cast<UWorld>(Outer);
+
+	if (world)
+	{
+		return world->WorldType == EWorldType::Game || world->WorldType == EWorldType::PIE;
+	}
+
+	return false;
+}

@@ -29,6 +29,8 @@ public:
 
 	AMWInputHandler* GetInputHandler() const { return InputHandler; }
 
+	bool ShouldCreateSubsystem(UObject* Outer) const override;
+
 private:
 	TObjectPtr<AMWInputHandler> InputHandler = nullptr;
 };
