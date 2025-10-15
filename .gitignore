@@ -5,6 +5,7 @@
 !Plugins/
 !Source/
 !Resource/
+!Model/
 
 # Windows generated files
 [Bb]inaries/
