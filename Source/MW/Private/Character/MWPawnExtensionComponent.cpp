@@ -124,7 +124,7 @@ void UMWPawnExtensionComponent::GiveAbility()
     {
         if (data.MainCharacterData)
         {
-            const FMWCharacterMasterData* char_data = data.MainCharacterData->FindRow<FMWCharacterMasterData>(PawnDataName, PawnDataName.ToString());
+            const FMWCharacterData* char_data = data.MainCharacterData->FindRow<FMWCharacterData>(PawnDataName, PawnDataName.ToString());
             if (char_data && char_data->AbilitySets.Num() > 0)
             {
                 for (auto& ability_set : char_data->AbilitySets)

@@ -28,7 +28,6 @@ class MW_API UMWAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
-
 	UMWAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	//~UActorComponent interface
@@ -98,4 +97,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	void FindInstancedAbilityByClass(TArray<UMWGameplayAbility*>& OutAbilities, TSubclassOf<UMWGameplayAbility> InClass);
+
+//****Interface for Actor****//
+public:
+	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
+	static bool ClearAllAbilitiesByActor(AActor* InActor);
+
+	//****Interface for Actor****//
 };

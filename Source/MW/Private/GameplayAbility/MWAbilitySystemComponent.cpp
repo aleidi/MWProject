@@ -468,6 +468,21 @@ void UMWAbilitySystemComponent::FindInstancedAbilityByClass(TArray<UMWGameplayAb
 	}
 }
 
+bool UMWAbilitySystemComponent::ClearAllAbilitiesByActor(AActor* InActor)
+{
+	if (!InActor)
+	{
+		return false;
+	}
+
+	if (UMWAbilitySystemComponent* mwASC = InActor->FindComponentByClass<UMWAbilitySystemComponent>())
+	{
+		mwASC->ClearAllAbilities();
+	}
+
+	return true;
+}
+
 //bool UMWAbilitySystemComponent::IsActivationGroupBlocked(EMWAbilityActivationGroup Group) const
 //{
 //	bool bBlocked = false;

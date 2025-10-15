@@ -14,7 +14,7 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct FMWCharacterMasterData : public FTableRowBase
+struct FMWCharacterData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -22,15 +22,29 @@ struct FMWCharacterMasterData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 Id = 0;
 
-	/* character blueprint class */
+	/* character blueprint class*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftClassPtr<class AMWCharacter> CharacterClass;
 
 	/* character used animation data */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
-	TSoftObjectPtr<UMWCharacterAnimData> CharacterAnim;
+	TSoftClassPtr<class UMWCharacterAnimInstance> CharacterAnimInst;
 
 	/* character ability data */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	TArray<TObjectPtr<class UMWAbilitySet>> AbilitySets;
+
+	/* Abilities given to character at the beginning of battle. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
+	TArray<TSoftClassPtr<class UMWGameplayAbility>> BattleAbilities;
+};
+
+UCLASS(BlueprintType)
+class UMWCharacterMasterData : public UPrimaryDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	TObjectPtr<UDataTable> CharacterData;
 };
