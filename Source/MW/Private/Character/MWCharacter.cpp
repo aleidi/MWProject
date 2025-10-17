@@ -7,7 +7,7 @@
 #include "Character/MWHeroComponent.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Character/MWPawnExtensionComponent.h"
-#include "GameplayAbility/Attribute/MWBattleSet.h"
+#include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UMWCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -30,7 +30,7 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 
-	BattleSet = CreateDefaultSubobject<UMWBattleSet>(TEXT("MWBattleSet"));
+	BattleSet = CreateDefaultSubobject<UMWBattleAttributeSet>(TEXT("MWBattleSet"));
 
 	PrimaryActorTick.bCanEverTick = true;
 }

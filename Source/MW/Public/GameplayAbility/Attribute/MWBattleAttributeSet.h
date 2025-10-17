@@ -6,7 +6,7 @@
 #include "MWAttributeSet.h"
 #include "NativeGameplayTags.h"
 
-#include "MWBattleSet.generated.h"
+#include "MWBattleAttributeSet.generated.h"
 
 class UObject;
 struct FFrame;
@@ -21,19 +21,19 @@ struct FGameplayEffectModCallbackData;
 
 
 /**
- * UMWBattleSet
+ * @class UMWBattleAttributeSet
  *
- *	Class that defines attributes that are necessary for taking damage.
- *	Attribute examples include: Strength, shields, and resistances.
+ * @brief Attributes used for characters in battle.
+ *	      戦闘中のキャラクターに使用される属性.
  */
 UCLASS(BlueprintType)
-class UMWBattleSet : public UMWAttributeSet
+class UMWBattleAttributeSet : public UMWAttributeSet
 {
 	GENERATED_BODY()
 
 public:
 
-	UMWBattleSet();
+	UMWBattleAttributeSet();
 
 	//// Delegate when Strength changes due to damage/Dexterity, some information may be missing on the client
 	//mutable FMWAttributeEvent OnStrengthChanged;
@@ -57,42 +57,42 @@ protected:
 public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Strength;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Strength);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Strength);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Endurance, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Endurance;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Endurance);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Endurance);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Dexterity, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Dexterity;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Dexterity);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Dexterity);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Agility, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Agility;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Agility);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Agility);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Luck, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Luck;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Luck);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Luck);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HP, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData HP;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, HP);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, HP);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHP, Category = "MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxHP;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, MaxHP);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, MaxHP);
 
 	// -------------------------------------------------------------------
 	//	Temp Attribute
 	// -------------------------------------------------------------------
 	UPROPERTY(BlueprintReadOnly, Category="MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData HitRate;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, HitRate);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, HitRate);
 
 	UPROPERTY(BlueprintReadOnly, Category="MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Damage;
-	ATTRIBUTE_ACCESSORS(UMWBattleSet, Damage);
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Damage);
 
 protected:
 	// These OnRep functions exist to make sure that the ability system internal representations are synchronized properly during replication

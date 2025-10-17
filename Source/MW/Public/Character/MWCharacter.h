@@ -12,7 +12,7 @@ class UCameraComponent;
 class UMWHeroComponent;
 class UMWPawnExtensionComponent;
 class UAbilitySystemComponent;
-class UMWBattleSet;
+class UMWBattleAttributeSet;
 
 UCLASS()
 class MW_API AMWCharacter : public ACharacter,
@@ -43,7 +43,7 @@ protected:
 	UMWAbilitySystemComponent* AbilitySystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Ability")
-	TObjectPtr<UMWBattleSet> BattleSet;
+	TObjectPtr<UMWBattleAttributeSet> BattleSet;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability")
 	int32 Level;
