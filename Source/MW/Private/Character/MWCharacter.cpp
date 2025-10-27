@@ -1,12 +1,9 @@
 #include "Character/MWCharacter.h"
-#include "Character/MWCharacterMovementComponent.h"
+#include "Component/Character/MWCharacterMovementComponent.h"
 #include "Controller/MWPlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
-#include "Character/MWHeroComponent.h"
-#include "GameplayAbility/MWAbilitySystemComponent.h"
-#include "Character/MWPawnExtensionComponent.h"
+#include "Component/Pawn/MWPawnExtensionComponent.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
@@ -22,15 +19,7 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	//FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UMWAbilitySystemComponent>(this, TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	HeroComp = CreateDefaultSubobject<UMWHeroComponent>(TEXT("HeroComponent"));
-
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
-
-	BattleSet = CreateDefaultSubobject<UMWBattleAttributeSet>(TEXT("MWBattleSet"));
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -43,11 +32,6 @@ void AMWCharacter::Tick(float DeltaSeconds)
 	{
 		UpdatePawnRotation(DeltaSeconds);
 	}
-}
-
-UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 void AMWCharacter::PossessedBy(AController* NewController)
@@ -124,11 +108,6 @@ bool AMWCharacter::GetIsMoving() const
 	return false;
 }
 
-bool AMWCharacter::GetCanNormalAtk() const
-{
-	return false;
-}
-
 void AMWCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -142,9 +121,4 @@ void AMWCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMWCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-}
-
-UAbilitySystemComponent* AMWCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }

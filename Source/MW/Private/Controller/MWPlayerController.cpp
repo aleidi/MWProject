@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Character/MWCharacter.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
-#include "Character/MWPawnExtensionComponent.h"
+#include "Component/Pawn/MWPawnExtensionComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "System/MWAssetManager.h"
 #include "Data/MWMasterData.h"

@@ -1,4 +1,4 @@
-#include "Character/MWPawnExtensionComponent.h"
+#include "Component/Pawn/MWPawnExtensionComponent.h"
 #include "GameplayAbility/MWAbilitySet.h"
 #include "Character/MWPawnData.h"
 #include "MWLogChannels.h"

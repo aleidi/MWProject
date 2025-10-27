@@ -40,7 +40,7 @@ bool UPlaySkillAnimCallbackProxy::PlayMontage(class USkeletalMeshComponent* InSk
 	{
 		if (UMWCharacterAnimInstance* AnimInstance = Cast<UMWCharacterAnimInstance>(InSkeletalMeshComponent->GetAnimInstance()))
 		{
-			bPlayedSuccessfully = AnimInstance->PlaySkillAnimation(MontageToPlay, PlayRate);
+			bPlayedSuccessfully = AnimInstance->Montage_Play(MontageToPlay, PlayRate) > 0.f;
 
 			if (bPlayedSuccessfully)
 			{

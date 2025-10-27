@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Gameplay/MWPawnComponent.h"
+#include "Component/Pawn/MWPawnComponent.h"
 #include "GameplayTagContainer.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "MWPawnExtensionComponent.generated.h"
@@ -30,6 +30,9 @@ public:
 	static UMWPawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor);
 
 #pragma region PawnSetting
+protected:
+	// The name of pawn data asset to load. Check the asset of FMWCharacterData in content.
+	// ロードするポーンデータアセットの名前。コンテンツ内のFMWCharacterDataのアセットで名前を確認する。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setting")
 	FName PawnDataName;
 #pragma endregion
