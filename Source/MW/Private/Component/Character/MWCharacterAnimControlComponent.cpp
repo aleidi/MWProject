@@ -26,7 +26,10 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 		return;
 	}
 
-	const FVector targetLoc = FMath::Lerp(ApproachStartLocation, ApproachEndLocation, ApproachProgress);
+	FVector targetLoc = FMath::Lerp(ApproachStartLocation, ApproachEndLocation, ApproachProgress);
+	// Ignore Z axis change.
+	// Z軸の変化を無視する。
+	targetLoc.Z = ApproachStartLocation.Z;
 
 	GetOwner()->SetActorLocation(targetLoc);
 
@@ -93,7 +96,7 @@ void UMWCharacterAnimControlComponent::DrawDebugShapeForApprachTarget() const
 	::DrawDebugDirectionalArrow(GetWorld(), ApproachStartLocation, ApproachEndLocation, 50.f, FColor::Green, false, 5.f, 0, 5.f);
 }
 
-void UMWCharacterAnimControlComponent::StartApproachTarget(AActor* InTarget)
+void UMWCharacterAnimControlComponent::StartApproachTarget(const AActor* InTarget)
 {
 	// If the owner is doing approach, stop approaching.
 	if (bCanDoApproach)
@@ -214,4 +217,14 @@ void UMWCharacterAnimControlComponent::StartApproachPoint(const FVector& InPoint
 	bCanDoApproach = true;
 
 	DrawDebugShapeForApprachTarget();
+}
+
+void UMWCharacterAnimControlComponent::EndApproach()
+{
+	ApproachTarget = nullptr;
+	OwnerAnimInst = nullptr;
+
+	ResetApproachProgress();
+
+	bCanDoApproach = false;
 }

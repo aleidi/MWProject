@@ -50,7 +50,7 @@ public:
 	// Sets the target actor to approach and starts approaching.
 	// ターゲットアクターを設定し、接近を開始する。
 	UFUNCTION(BlueprintCallable, Category = "ApproachTarget")
-	void StartApproachTarget(AActor* InTarget);
+	void StartApproachTarget(const AActor* InTarget);
 
 	// Sets the point to approach and starts approaching.
 	// This method don't consider the collision of target and owner.
@@ -58,6 +58,11 @@ public:
 	// 'StartApproachTarget'に比べて、この方法はターゲットとオーナーのコリジョンを考慮しない。
 	UFUNCTION(BlueprintCallable, Category = "ApproachTarget")
 	void StartApproachPoint(const FVector& InPoint);
+
+	// Force stop approaching.
+	// 強制的に接近を停止する。
+	UFUNCTION(BlueprintCallable, Category = "ApproachTarget")
+	void EndApproach();
 
 protected:
 	// Name of the animation curve used for approaching the target.
@@ -81,7 +86,7 @@ protected:
 	TEnumAsByte<ECollisionChannel> ApproachTraceChannel = ECC_Camera;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ApproachTarget")
-	TObjectPtr<AActor> ApproachTarget;
+	TObjectPtr<const AActor> ApproachTarget;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ApproachTarget")
 	float ApproachProgress = 0.f;
