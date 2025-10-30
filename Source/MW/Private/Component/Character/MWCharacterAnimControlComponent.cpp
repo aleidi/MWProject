@@ -33,23 +33,9 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 
 	GetOwner()->SetActorLocation(targetLoc);
 
-	// Approaching target completed, clear the data.
-	// ターゲットへの接近が完了、データをクリア。
-	auto EndApproaching = [this]() -> void
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("ApproachProgress end: %f"), ApproachProgress));
-		ApproachTarget = nullptr;
-		OwnerAnimInst = nullptr;
-
-		ResetApproachProgress();
-
-		bCanDoApproach = false;
-
-	};
-
 	if(ApproachProgress > 0.99f)
 	{
-		EndApproaching();
+		EndApproach();
 
 		return;
 	}
@@ -58,7 +44,7 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 
 	if (distance < ApproachEndLocTolerance)
 	{
-		EndApproaching();
+		EndApproach();
 
 		return;
 	}
@@ -221,10 +207,18 @@ void UMWCharacterAnimControlComponent::StartApproachPoint(const FVector& InPoint
 
 void UMWCharacterAnimControlComponent::EndApproach()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("ApproachProgress end: %f"), ApproachProgress));
+
+	// Ignore Z axis change.
+	// Z軸の変化を無視する。
+	ApproachEndLocation.Z = ApproachStartLocation.Z;
+	GetOwner()->SetActorLocation(ApproachEndLocation);
+
 	ApproachTarget = nullptr;
+
 	OwnerAnimInst = nullptr;
 
-	ResetApproachProgress();
-
 	bCanDoApproach = false;
+
+	ResetApproachProgress();
 }

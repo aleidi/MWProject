@@ -33,6 +33,7 @@ namespace MWGameplayTags
 		return Tag;
 	}
 
+#pragma region Action Tag
 	// Basic
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Direction,				"InputTag.Basic.Direction",								"Basic Input Direction.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Confirm,					"InputTag.Basic.Confirm",								"Basic Input Confirm.");
@@ -68,12 +69,23 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3D,					"InputTag.BC.Move.C3D",									"Input Battle Command Move Character3 Action Combo Down.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3L,					"InputTag.BC.Move.C3L",									"Input Battle Command Move Character3 Action Combo Left.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Move_C3R,					"InputTag.BC.Move.C3R",									"Input Battle Command Move Character3 Action Combo Right.");
+#pragma endregion
 
-#pragma region InputMappingTag
+#pragma region Input Mapping Tag
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_Basic,							"InputTag.MappingContext.Basic",						"Input Mapping Context Basic.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPDefault,						"InputTag.MappingContext.TPDefault",					"Input Mapping Context Third-Person-Default.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand,					"InputTag.MappingContext.BattleCommand",				"Input Mapping Context Battle Command.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCharacterAction,			"InputTag.MappingContext.BattleCharacterAction",		"Input Mapping Context Character Action in Battle.");
+#pragma endregion
+
+#pragma region Battle Tag
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,		"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack,				"GameplayTag.Battle.ComboAttack",						"Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,				"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,				"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,			"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Event_AvatarChanged,		"GameplayTag.Battle.Event.AvatarChanged",				"Battle: Avatar changed / swapped event.");
+
 #pragma endregion
 
 	TArray<FGameplayTag> BattleCommands = 
