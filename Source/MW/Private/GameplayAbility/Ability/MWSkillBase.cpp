@@ -1,8 +1,9 @@
 #include "GameplayAbility/Ability/MWSkillBase.h"
 #include "AbilitySystemComponent.h"
-#include "GameFramework/Character.h"
-#include "MWLogChannels.h"
 #include "Data/MWGameplayData.h"
+#include "GameFramework/Character.h"
+#include "MWGameSingleton.h"
+#include "MWLogChannels.h"
 #include "System/MWAssetManager.h"
 
 void UMWSkillBase::PlayMontage()
@@ -35,7 +36,7 @@ void UMWSkillBase::PlayMontage()
 				bPlayedMontage = true;
 
 				// Block Cast Skill at the begining of the montage is playing
-				TSubclassOf<UGameplayEffect> blockcast = UMWAssetManager::Get().GetSubclass(UMWGameplayData::Get().GEBlockCastSkill);
+				TSubclassOf<UGameplayEffect> blockcast = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GEBlockCastSkill);
 				FGameplayEffectSpecHandle spec_handle = asc->MakeOutgoingSpec(blockcast, 1.f, asc->MakeEffectContext());
 				BlockCastSkillEffectHandle = asc->ApplyGameplayEffectSpecToSelf(*spec_handle.Data.Get());
 			}

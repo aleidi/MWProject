@@ -2,16 +2,15 @@
 
 // Include
 #include "CoreMinimal.h"
-#include "EnhancedInputSubsystemInterface.h"
-#include "MWLogChannels.h"
-#include "EnhancedInputDeveloperSettings.h"
-#include "EnhancedInputComponent.h"
-#include "System/MWWorldSubsystem.h"
-#include "MWInputHandler.h"
-#include "System/MWAssetManager.h"
-#include "MWLogChannels.h"
 #include "Data/MWMasterData.h"
 #include "Define/MWDefineCommon.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputDeveloperSettings.h"
+#include "EnhancedInputSubsystemInterface.h"
+#include "MWGameSingleton.h"
+#include "MWInputHandler.h"
+#include "MWLogChannels.h"
+#include "System/MWWorldSubsystem.h"
 #include "MWInputUtility.generated.h"
 
 // Forward Declare
@@ -65,9 +64,9 @@ public:
 	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
 	static void BindInputAction(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
-		const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+		const UMWMasterData* data = MWSINGLETON->GetMasterData();
 
-		if (UMWInputConfig* input_config = data.InputConfig.Get())
+		if (UMWInputConfig* input_config = data->InputConfig.Get())
 		{
 			if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
 			{

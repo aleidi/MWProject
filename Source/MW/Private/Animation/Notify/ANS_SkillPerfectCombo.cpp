@@ -1,14 +1,15 @@
 #include "Animation/Notify/ANS_SkillPerfectCombo.h"
 #include "Data/MWGameplayData.h"
-#include "System/MWAssetManager.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "MWGameSingleton.h"
 #include "MWLogChannels.h"
+#include "System/MWAssetManager.h"
 
 void UANS_SkillPerfectCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
 	{
-		TSubclassOf<UGameplayEffect> perfect_combo = UMWAssetManager::Get().GetSubclass(UMWGameplayData::Get().GESkillPerfectCombo);
+		TSubclassOf<UGameplayEffect> perfect_combo = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GESkillPerfectCombo);
 		if (!perfect_combo)
 		{
 			UE_LOG(LogMWAnimNotify, Warning, TEXT("GameplayEffect class asset is not existed."));

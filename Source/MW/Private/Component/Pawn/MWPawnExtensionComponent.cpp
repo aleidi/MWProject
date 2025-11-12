@@ -1,15 +1,16 @@
 #include "Component/Pawn/MWPawnExtensionComponent.h"
-#include "GameplayAbility/MWAbilitySet.h"
 #include "Character/MWPawnData.h"
-#include "MWLogChannels.h"
-#include "GameplayAbility/MWAbilitySystemComponent.h"
-#include "Gameplay/MWGameplayTags.h"
-#include "System/MWAssetManager.h"
-#include "Data/MWMasterData.h"
-#include "GameplayAbility/MWAbilitySet.h"
-#include "Character/MWTargetSelector.h"
 #include "Character/MWCharacter.h"
+#include "Character/MWTargetSelector.h"
+#include "Data/MWDataTableManager.h"
+#include "Data/MWMasterData.h"
+#include "Define/MWDefineDataTable.h"
+#include "Gameplay/MWGameplayTags.h"
+#include "GameplayAbility/MWAbilitySet.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MWGameSingleton.h"
+#include "MWLogChannels.h"
 
 void UMWPawnExtensionComponent::BeginPlay()
 {
@@ -120,20 +121,14 @@ void UMWPawnExtensionComponent::GiveAbility()
         AbilityGranetedHandles->RemoveFromAbilitySystem(AbilitySystemComponent);
     }
 
-    const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
-    {
-        if (data.MainCharacterData)
-        {
-            const FMWCharacterData* char_data = data.MainCharacterData->FindRow<FMWCharacterData>(PawnDataName, PawnDataName.ToString());
-            if (char_data && char_data->AbilitySets.Num() > 0)
-            {
-                for (auto& ability_set : char_data->AbilitySets)
-                {
-                    ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
-                }
-            }
-        }
-    }
+    const FMWCharacterData* characterData = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+	if (characterData && characterData->BaseAbilitySets.Num() > 0)
+	{
+		for (auto& ability_set : characterData->BaseAbilitySets)
+		{
+			ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
+		}
+	}
 }
 
 void UMWPawnExtensionComponent::InitializeTargetSelector(const AController* InControler)

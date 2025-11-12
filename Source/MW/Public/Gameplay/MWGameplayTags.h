@@ -89,10 +89,12 @@ namespace MWGameplayTags
 //**********************//
 #pragma region Gameplay Tag
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Ability_UnitAttack);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack);
+	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P1);
+	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P2);
+	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P3);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboCentral);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboUpDown);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboLeftRight);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Event_AvatarChanged);
+	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_AvatarChanged);
 #pragma endregion
 };

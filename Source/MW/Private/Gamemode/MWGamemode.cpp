@@ -1,12 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "Gamemode/MWGameMode.h"
-#include "MWLogChannels.h"
-#include "Controller/MWPlayerController.h"
-#include "Player/MWPlayerState.h"
 #include "Character/MWCharacter.h"
+#include "Controller/MWPlayerController.h"
 #include "Data/MWMasterData.h"
 #include "MWGameSingleton.h"
+#include "MWLogChannels.h"
+#include "Player/MWPlayerState.h"
 
 AMWGameMode::AMWGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -37,7 +35,7 @@ void AMWGameMode::BeginPlay()
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	if (auto* masterData = UMWGameSingleton::Get()->GetMasterData())
+	if (auto* masterData = MWSINGLETON->GetMasterData())
 	{
 		return masterData->DefaultPawn.Get();
 	}

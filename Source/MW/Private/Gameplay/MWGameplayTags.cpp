@@ -80,11 +80,13 @@ namespace MWGameplayTags
 
 #pragma region Battle Tag
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,		"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack,				"GameplayTag.Battle.ComboAttack",						"Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P1,			"GameplayTag.Battle.ComboAttack.P1",					"Player 1 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P2,			"GameplayTag.Battle.ComboAttack.P2",					"Player 2 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P3,			"GameplayTag.Battle.ComboAttack.P3",					"Player 3 Battle Combo Attack.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,				"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,				"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,			"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Event_AvatarChanged,		"GameplayTag.Battle.Event.AvatarChanged",				"Battle: Avatar changed / swapped event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,				"GameplayTag.Battle.AvatarChanged",						"Battle: Avatar changed / swapped event.");
 
 #pragma endregion
 

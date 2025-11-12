@@ -4,11 +4,12 @@
 #include "Define/MWDefineGameplay.h"
 #include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
-#include "Common/FsmUtility.h"
+#include "Util/FsmUtil.h"
 #include "MWBattle.generated.h"
 
 // Forward Declare
 class UMWTurnAction;
+class UMWBattleUnit;
 
 struct FMWActionState
 {
@@ -146,16 +147,12 @@ private:
 	/* Called after battle end. */
 	void Uninitialize();
 
-	void OnTeamDied(const FMWTeam& Team);
-
-	void OnTeamRevive(const FMWTeam& Team);
-
-	void ChangeState(TUniquePtr<MWBattle::IBattleState> NewState);
+	void InitBattleUnits(const FMWBattleData& InData);
 
 public:
-	const TArray<FMWTeam>& GetPlayerUnits() const { return PlayerTeams; }
+	const FMWTeam& GetPlayerTeam() const { return PlayerTeam; }
 
-	const TArray<FMWTeam>& GetEnemyUnits() const { return EnemyTeam; }
+	const FMWTeam& GetEnemyTeam() const { return EnemyTeam; }
 
 	void SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool);
 
@@ -188,9 +185,9 @@ public:
 
 private:
 	/* Cache the teams in the battle. */
-	TArray<FMWTeam> PlayerTeams;
+	FMWTeam PlayerTeam;
 
-	TArray<FMWTeam> EnemyTeam;
+	FMWTeam EnemyTeam;
 
 	/* Cache the action buff can be used in the battle. */
 	TArray<EMWBattleActionBuff> ActionBuffPool;

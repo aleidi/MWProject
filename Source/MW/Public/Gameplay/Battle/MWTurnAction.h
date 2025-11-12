@@ -42,7 +42,7 @@ public:
 	 */
 	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin) {}
 
-	void SetActionUnits(const TArray<FMWTeam>& InPlayerUnits, const TArray<FMWTeam>& InEnemyUnits);
+	void SetActionUnits(const FMWTeam& InPlayerTeam, const FMWTeam& InEnemyTeam);
 
 protected:
 	virtual AActor* GetTarget() { return nullptr; }
@@ -55,8 +55,9 @@ protected:
 
 	bool bActionFinished = false;
 
-	TArray<FMWTeam> PlayerUnits;
-	TArray<FMWTeam> EnemyUnits;
+	FMWTeam PlayerTeam;
+
+	FMWTeam EnemyTeam;
 };
 
 UCLASS()

@@ -1,6 +1,7 @@
 #include "Gameplay/MWPartyManager.h"
-#include "System/MWAssetManager.h"
 #include "Data/MWGameplayData.h"
+#include "MWGameSingleton.h"
+#include "System/MWAssetManager.h"
 #include "System/MWGameInstanceSubsystem.h"
 
 void UMWPartyManager::FMemberInfo::Reset()
@@ -314,7 +315,7 @@ void UMWPartyManager::InitializeTeams()
 {
 	Teams.Reset();
 
-	const int32 teamsNum = UMWGameplayData::Get().TeamsNumber;
+	const int32 teamsNum = MWSINGLETON->GetGameplayData()->TeamsNumber;
 
 	for (int32 i = 0; i < teamsNum; ++i)
 	{

@@ -1,18 +1,21 @@
 #pragma once
 
+#include "AbilitySystemInterface.h"
 #include "CoreMinimal.h"
-#include "MWCharacterASC.h"
-#include "Interface/MWSelectableInterface.h"
 #include "Define/MWDefineGameplay.h"
+#include "GameFramework/Character.h"
+#include "Interface/MWSelectableInterface.h"
 #include "MWCharacter.generated.h"
 
-class USpringArmComponent;
 class UCameraComponent;
+class UC3DCameraComponent;
+class UMWCharacterEntity;
 class UMWPawnExtensionComponent;
 
 UCLASS()
-class MW_API AMWCharacter : public AMWCharacterASC,
-							public IMWSelectableInterface
+class MW_API AMWCharacter : public ACharacter,
+							public IMWSelectableInterface,
+							public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -25,12 +28,41 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitializeComponents() override;
+
+public:
+	USkeletalMeshComponent* GetDummyMesh() const;
+	USkeletalMeshComponent* GetVisualMesh() const;
+
+private:
+UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> DummyMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> VisualMesh;
+
+#pragma region GAS
+public:
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UFUNCTION(Blueprintpure, Category = "MWCharacter|GAS")
+	UMWAbilitySystemComponent* GetMWAbilitySystemComponent() const;
+
+protected:
+	// The ability system component sub-object used by player characters.
+	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
+	UMWAbilitySystemComponent* AbilitySystemComponent;
+#pragma endregion 
+
 #pragma region Input
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 
-#pragma region Animation
+#pragma region Move
 private:
 	virtual void UpdatePawnRotation(float DeltaTime);
 
@@ -67,24 +99,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category="Character|Behavior")
 	TEnumAsByte<ECharacterBehaviorState> BehaviorState;
 #pragma endregion
-	
-#pragma region Camera
-protected:
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<USpringArmComponent> CameraBoom;
-
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UCameraComponent> FollowCamera;
-
-#pragma endregion
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Hero")
 	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
 
+public:
+	virtual FVector GetFloorLocation() const;
+
+	void SetCharacterLocation(FVector FloorLocation);
+
+#pragma region Entity
+public:
+	virtual void SetOwnerEntity(UMWCharacterEntity* InOwnerEntity);
+
 protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void PostInitializeComponents() override;
+	TObjectPtr<UMWCharacterEntity> OwnerEntity = nullptr;
+#pragma endregion
+
 };

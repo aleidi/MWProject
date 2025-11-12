@@ -1,24 +1,26 @@
 #include "Define/MWDefineGameplay.h"
 
-int32 FMWTeam::GetTeamSpeed() const
+bool FMWTeam::IsAlive() const
 {
-	return 1;
+	return true;
 }
 
-FMWTeamUnit FMWTeam::GetLeader() const
+EMWTeamAlign FMWTeam::GetTeamAlign() const
 {
-	for (auto& unit : Units)
-	{
-		if (unit.bIsLeader)
-		{
-			return unit;
-		}
-	}
-
-	return FMWTeamUnit();
+	return Align;
 }
 
-FMWTeamUnit FMWTeam::GetMember(int Index) const
+bool FMWTeam::IsValid() const
 {
-	return FMWTeamUnit();
+	return BattleUnits.Num() > 0;
+}
+
+bool FMWTeam::operator==(const FMWTeam& Other)
+{
+	return TeamId == Other.TeamId;
+}
+
+bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs)
+{
+	return Lhs.TeamId == Rhs.TeamId;
 }

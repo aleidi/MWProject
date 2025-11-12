@@ -1,10 +1,10 @@
 #include "Input/MWInputUtility.h"
-#include "EnhancedInputSubsystems.h"
-#include "Input/MWInputConfig.h"
 #include "Data/MWMasterData.h"
-#include "System/MWAssetManager.h"
-#include "Input/MWInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Gameplay/MWGameplayTags.h"
+#include "Input/MWInputComponent.h"
+#include "Input/MWInputConfig.h"
+#include "MWGameSingleton.h"
 
 void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& MappingOption)
 {
@@ -19,9 +19,9 @@ void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGamepla
 	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	{
-		if (UMWInputConfig* inputConfig = data.InputConfig.Get())
+		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
 		{
 			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
 			{
@@ -52,9 +52,9 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGamepl
 	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	{
-		if (UMWInputConfig* inputConfig = data.InputConfig.Get())
+		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
 		{
 			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
 			{
@@ -104,8 +104,8 @@ void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UInp
 
 void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag)
 {
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
-	if (UMWInputConfig* input_config = data.InputConfig.Get())
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	if (UMWInputConfig* input_config = data->InputConfig.Get())
 	{
 		if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
 		{

@@ -59,7 +59,6 @@ public:
 	void UnlockTarget();
 #pragma endregion
 
-
 #pragma region Battle
 public:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
@@ -73,11 +72,11 @@ private:
 	FDelegateHandle DHRemoveBattleCommand;
 #pragma endregion
 
+protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
-
-	void BindDelegates();
+	virtual void OnPossess(APawn* aPawn) override;
 
 public:
 	UFUNCTION(BlueprintPure, Category = "Ability")
@@ -90,5 +89,10 @@ public:
 public:
 	// set AMWPlayerCameraManager to PlayerCameraManager.
 	virtual void SpawnPlayerCameraManager() override;
+
+protected:
+	// Setup camera components dynamically.
+	// カメラコンポーネントの設定.
+	void SetupCameraComponents();
 #pragma endregion
 };

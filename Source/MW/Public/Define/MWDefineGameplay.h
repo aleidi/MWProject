@@ -3,6 +3,7 @@
 #include "MWDefineGameplay.generated.h"
 
 class UMWBattleUnit;
+class AMWCharacter;
 
 UENUM(BlueprintType)
 enum ECharacterBehaviorState : uint8
@@ -316,4 +317,22 @@ public:
 	const FMWCharacterSkillGroup* GetSkillCombo2() const { return GetComboAt(1); }
 	const FMWCharacterSkillGroup* GetSkillCombo3() const { return GetComboAt(2); }
 	const FMWCharacterSkillGroup* GetSkillCombo4() const { return GetComboAt(3); }
+};
+
+USTRUCT(BlueprintType)
+struct FMWCharacterResourceData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AMWCharacter> CharacterClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USkeletalMesh> VisualMesh = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> VisualAnimInst = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Height = 0.f;
 };

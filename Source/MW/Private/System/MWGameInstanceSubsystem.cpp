@@ -4,6 +4,11 @@
 #include "Entity/MWEntityManager.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "UI/MWUIManager.h"
+#include "Data/MWRuntimeDataManager.h"
+
+#define INIT_MANAGER(VarName, ClassType)\
+	VarName = NewObject<ClassType>(this);\
+	VarName->Initialize();
 
 #define DEINIT_MANAGER(VarName)\
 	if (IsValid(VarName))\
@@ -13,15 +18,11 @@
 
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	PartyManager	= NewObject<UMWPartyManager>(this);
-	EntityManager	= NewObject<UMWEntityManager>(this);
-	BattleSystem	= NewObject<UMWBattleSystem>(this);
-	UIManager		= NewObject<UMWUIManager>(this);
-
-	PartyManager->Initialize();
-	EntityManager->Initialize();
-	BattleSystem->Initialize();
-	UIManager->Initialize();
+	INIT_MANAGER(PartyManager, UMWPartyManager);
+	INIT_MANAGER(EntityManager, UMWEntityManager);
+	INIT_MANAGER(BattleSystem, UMWBattleSystem);
+	INIT_MANAGER(UIManager, UMWUIManager);
+	INIT_MANAGER(RuntimeDataManager, UMWRuntimeDataManager);
 }
 
 void UMWGameInstanceSubsystem::Deinitialize()
@@ -30,6 +31,7 @@ void UMWGameInstanceSubsystem::Deinitialize()
 	DEINIT_MANAGER(EntityManager);
 	DEINIT_MANAGER(BattleSystem);
 	DEINIT_MANAGER(UIManager);
+	DEINIT_MANAGER(RuntimeDataManager);
 }
 
 UMWGameInstanceSubsystem* UMWGameInstanceSubsystem::Get(const UObject* WorldContext)

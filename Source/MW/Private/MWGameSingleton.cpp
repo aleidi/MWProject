@@ -1,4 +1,6 @@
 #include "MWGameSingleton.h"
+#include "Data/DataAsset/MWDataAsset.h"
+#include "Data/MWDataTableManager.h"
 #include "System/MWAssetManager.h"
 
 UMWGameSingleton::UMWGameSingleton(const FObjectInitializer& ObjectInitializer)
@@ -23,17 +25,19 @@ void UMWGameSingleton::Initialize()
 		return;
 	}
 
-	// TODO : create assets that are necessary for game running here
-	
+	DataTableManager = NewObject<UMWDataTableManager>(this);
+
+	if (DataAsset)
+	{
+		DataAsset->Initialize();
+
+		DataTableManager->Initialize();
+	}
+
 	bInitialized = true;
 }
 
 void UMWGameSingleton::PostLoad()
 {
 	Super::PostLoad();
-}
-
-const UMWMasterData* UMWGameSingleton::GetMasterData()
-{
-	return &(UMWAssetManager::Get().GetMasterData());
 }

@@ -1,11 +1,11 @@
 #include "UI/MWUIManager.h"
-#include "System/MWAssetManager.h"
 #include "Data/MWMasterData.h"
-#include "MWLogChannels.h"
-#include "UI/MWRootCanvas.h"
-#include "Gamemode/MWGameModeBase.h"
-#include "System/MWGameInstanceSubsystem.h"
 #include "Data/MWUIConfigData.h"
+#include "Gamemode/MWGameModeBase.h"
+#include "MWGameSingleton.h"
+#include "MWLogChannels.h"
+#include "System/MWGameInstanceSubsystem.h"
+#include "UI/MWRootCanvas.h"
 
 void UMWUIManager::Initialize()
 {
@@ -155,11 +155,11 @@ bool UMWUIManager::HasRootCanvas()
 
 bool UMWUIManager::CreateCanvas()
 {
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	
-	if (data.UIConfig && data.UIConfig->RootCanvas)
+	if (data->UIConfig && data->UIConfig->RootCanvas)
 	{
-		RootCanvas = Cast<UMWRootCanvas>(CreateWidget(GetWorld(), data.UIConfig->RootCanvas));
+		RootCanvas = Cast<UMWRootCanvas>(CreateWidget(GetWorld(), data->UIConfig->RootCanvas));
 
 		if (!RootCanvas)
 		{
@@ -178,13 +178,13 @@ bool UMWUIManager::CreateCanvas()
 
 void UMWUIManager::LoadDataConfig()
 {
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 
-	if (data.UIConfig && data.UIConfig->ClassTable)
+	if (data->UIConfig && data->UIConfig->ClassTable)
 	{
 		TArray<FMWUIClassConfig*> rows;
 
-		data.UIConfig->ClassTable->GetAllRows("", rows);
+		data->UIConfig->ClassTable->GetAllRows("", rows);
 
 		for (auto row : rows)
 		{
@@ -192,8 +192,8 @@ void UMWUIManager::LoadDataConfig()
 		}
 	}
 
-	if (data.UIConfig && data.UIConfig->LayerConfigData)
+	if (data->UIConfig && data->UIConfig->LayerConfigData)
 	{
-		LayerConfig = data.UIConfig->LayerConfigData->Config;
+		LayerConfig = data->UIConfig->LayerConfigData->Config;
 	}
 }

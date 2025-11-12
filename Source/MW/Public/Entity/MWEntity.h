@@ -14,7 +14,7 @@ class AActor;
  * @class UMWEntity
  * 
  * @brief The Entity is like a wrapper of the AActor.
- *		  It has UID, consists of the components that are not derived from UActorComponent.
+ *		  It has EntityId, consists of the components that are not derived from UActorComponent.
  *		  All entities are managed by the UMWEntityManager.
  * @note
  */
@@ -22,6 +22,8 @@ UCLASS()
 class UMWEntity : public UObject
 {
 	GENERATED_BODY()
+
+	friend class UMWEntityManager;
 
 public:
 	virtual void Initialize();
@@ -69,6 +71,7 @@ public:
 
 	virtual FRotator GetRotation() const;
 
+protected:
 	virtual void OnLocationUpdated();
 
 	virtual void OnRotationUpdated();
@@ -82,11 +85,11 @@ protected:
 	// ID
 	//===========================================
 public:
-	FORCEINLINE void SetId(FObjectId NewId) { Uid = NewId; }
+	FORCEINLINE void SetId(FObjectId NewId) { EntityId = NewId; }
 
-	FORCEINLINE FObjectId GetId() const { return Uid; }
+	FORCEINLINE FObjectId GetId() const { return EntityId; }
 
 protected:
-	/* UID is used to specific a entity. */
-	FObjectId Uid;
+	/* EntityId is used to specific a entity. */
+	FObjectId EntityId;
 };

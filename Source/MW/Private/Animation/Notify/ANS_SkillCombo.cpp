@@ -1,14 +1,15 @@
 #include "Animation/Notify/ANS_SkillCombo.h"
 #include "Data/MWGameplayData.h"
-#include "System/MWAssetManager.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "MWGameSingleton.h"
 #include "MWLogChannels.h"
+#include "System/MWAssetManager.h"
 
 void UANS_SkillCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
 	{
-		TSubclassOf<UGameplayEffect> skill_combo = UMWAssetManager::Get().GetSubclass(UMWGameplayData::Get().GESkillCombo);
+		TSubclassOf<UGameplayEffect> skill_combo = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GESkillCombo);
 		if (!skill_combo)
 		{
 			UE_LOG(LogMWAnimNotify, Warning, TEXT("GameplayEffect class asset is not existed."));

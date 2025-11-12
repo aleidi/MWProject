@@ -1,7 +1,8 @@
 #include "Entity/MWEntityManager.h"
+#include "Entity/Character/MWCharacterEntity.h"
 #include "Entity/MWEntity.h"
+#include "MWLogChannels.h"
 #include "System/MWGameInstanceSubsystem.h"
-#include "Entity/MWCharacterEntity.h"
 
 UMWEntityManager* UMWEntityManager::Get(const UObject* WorldContext)
 {
@@ -18,33 +19,32 @@ UMWEntity* UMWEntityManager::FindEntity(const FObjectId EntityId)
 	return nullptr;
 }
 
-UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(const FVector& Location, const FRotator& Rotation)
+UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(const FVector& Location, const FRotator& Rotation, const FMWCharacterResourceData* ResData)
 {
-	UMWCharacterEntity* charaEntity = NewObject<UMWCharacterEntity>(this);
+	FObjectId newId = AllocateEntityId();
 
-	charaEntity->Initialize();
-
-	FObjectId entityId = FObjectId::Generate();
-
-	charaEntity->SetId(entityId);
-
-	CharacterMap.Emplace(entityId, charaEntity);
-
-	AActor* charActor = charaEntity->LoadActor(true);
-	charActor->FinishSpawning(FTransform(Rotation, Location));
-
-	return charaEntity;
+	return CreateCharacterEntity(newId, Location, Rotation, ResData);
 }
 
-UMWCharacterEntity* UMWEntityManager::SpawnCharacter(const FVector& Location, const FRotator& Rotation)
+UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(FObjectId EntityId, const FVector& Location, const FRotator& Rotation, const FMWCharacterResourceData* ResData)
 {
-	UMWCharacterEntity* newCharEntity = CreateCharacterEntity(Location, Rotation);
-	if (newCharEntity)
+	UMWCharacterEntity* characterEntity = NewObject<UMWCharacterEntity>(this);
+
+	characterEntity->Initialize();
+	characterEntity->SetSpawnData(EntityId, Location, Rotation);
+
+	//set character data
+	if (ResData)
 	{
-		// TODO : something initialization for character
+		characterEntity->SetCharacterData(ResData);
 	}
 
-	return newCharEntity;
+	CharacterMap.Emplace(EntityId, characterEntity);
+
+	AActor* charActor = characterEntity->LoadActor(true);
+	charActor->FinishSpawning(FTransform(Rotation, Location));
+
+	return characterEntity;
 }
 
 UMWCharacterEntity* UMWEntityManager::FindCharacter(const FObjectId& EntityId)
@@ -65,4 +65,44 @@ void UMWEntityManager::RemoveCharacter(const FObjectId& EntityId)
 		charEntity->Uninitialize();
 		CharacterMap.Remove(EntityId);
 	}
+}
+
+FObjectId UMWEntityManager::AllocateEntityId()
+{
+	FObjectId newId;
+
+	if (RecycledEntityIds.Num() > 0)
+	{
+		newId = RecycledEntityIds.Pop();
+	}
+	else
+	{
+		if (NextEntityId == UINT64_MAX)
+		{
+			newId = FObjectId(0);
+
+			MW_LOG_WARNING(TEXT("Entity ID has reached the maximum limit!"));
+
+			return newId;
+		}
+
+		newId = FObjectId(NextEntityId++);
+	}
+
+	ActiveEntityIds.Emplace(newId);
+
+	return newId;
+}
+
+void UMWEntityManager::ReleaseEntityId(const FObjectId& EntityId)
+{
+	if (ActiveEntityIds.Remove(EntityId) > 0)
+	{
+		RecycledEntityIds.Add(EntityId);
+	}
+}
+
+bool UMWEntityManager::IsEntityIdValid(const FObjectId& EntityId) const
+{
+	return ActiveEntityIds.Contains(EntityId);
 }

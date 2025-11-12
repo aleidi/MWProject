@@ -3,6 +3,8 @@
 #include "Data/MWBattleData.h"
 #include "EngineUtils.h"
 #include "Gameplay/Battle/MWBattleUnitPosition.h"
+#include "Gameplay/Battle/BattleUnit/MWBattleUnit.h"
+#include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 
 FMWBattleScenePreparation::FMWBattleScenePreparation()
 {
@@ -15,35 +17,15 @@ FMWBattleScenePreparation::~FMWBattleScenePreparation()
 
 void FMWBattleScenePreparation::PrepareScene(const FMWBattleSceneParam& Param)
 {
-	TArray<FMWTeam> enemyTeams, playerTeams;
+	FMWTeam playerTeam = Param.PlayerTeam;
+	FMWTeam enemyTeam = Param.EnemyTeam;
 
-	for (const auto& team : Param.Teams)
-	{
-		if (team.GetTeamAlign() == EMWTeamAlign::Enemy)
-		{
-			enemyTeams.Emplace(team);
-		}
-		else if (team.GetTeamAlign() == EMWTeamAlign::Player)
-		{
-			playerTeams.Emplace(team);
-		}
-	}
-
-	const int32 enemyNo = enemyTeams.Num();
-	const int32 playerNo = playerTeams.Num();
+	const int32 enemyNo = playerTeam.BattleUnits.Num();
+	const int32 playerNo = enemyTeam.BattleUnits.Num();
 
 	check(enemyNo > 0 && playerNo > 0);
 
-	// sort the enemy teams and player teams by index
-	auto teamSort = [](const FMWTeam& A, const FMWTeam& B) -> bool
-	{
-		return A.TeamNo < B.TeamNo;
-	};
-
-	enemyTeams.Sort(teamSort);
-	playerTeams.Sort(teamSort);
-
-	UWorld* world = Param.Teams[0].Units[0].Pawn->GetWorld();
+	UWorld* world = playerTeam.BattleUnits[0]->GetAvatar()->GetWorld();
 
 	// collect battle unit position and set character to right location
 	for (TActorIterator<AMWBattleUnitPosition> iter(world); iter; ++iter)
@@ -52,53 +34,46 @@ void FMWBattleScenePreparation::PrepareScene(const FMWBattleSceneParam& Param)
 
 		if (unitPos->Align == EMWTeamAlign::Enemy)
 		{
-			for (auto& team : enemyTeams)
-			{
-				TrySetTeamPositionFromBattleUnitPos(team, unitPos);
-			}
+			TrySetTeamPositionFromBattleUnitPos(enemyTeam, unitPos);
 		}
 		else if (unitPos->Align == EMWTeamAlign::Player)
 		{
-			for (auto& team : playerTeams)
-			{
-				TrySetTeamPositionFromBattleUnitPos(team, unitPos);
-			}
+			TrySetTeamPositionFromBattleUnitPos(playerTeam, unitPos);
 		}
 	}
 }
 
 void FMWBattleScenePreparation::TrySetTeamPositionFromBattleUnitPos(FMWTeam& Team, const AMWBattleUnitPosition* BattleUnitPos)
 {
-	if (Team.Units.Num() != BattleUnitPos->UnitNo)
+	if (Team.BattleUnits.Num() != BattleUnitPos->UnitNo)
 	{
 		return;
 	}
 
 	int32 memNo = 0;
 
-	if (Team.TeamNo == BattleUnitPos->Index)
+	if (BattleUnitPos->Index < Team.BattleUnits.Num())
 	{
-		for (auto& teamUnit : Team.Units)
+		FVector worldPos;
+
+		worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[0]);
+
+		//if (teamUnit.bIsLeader)
+		//{
+		//	worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[0]);
+		//}
+		//else
+		//{
+		//	worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[1 + memNo++]);
+		//}
+
+		auto* actor = Team.BattleUnits[BattleUnitPos->Index]->GetAvatar();
+
+		actor->SetActorLocation(worldPos);
+
+		if (BattleUnitPos->Align == EMWTeamAlign::Enemy)
 		{
-			check(teamUnit.Pawn != nullptr);
-
-			FVector worldPos;
-
-			if (teamUnit.bIsLeader)
-			{
-				worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[0]);
-			}
-			else
-			{
-				worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[1 + memNo++]);
-			}
-
-			teamUnit.Pawn->SetActorLocation(worldPos);
-
-			if (BattleUnitPos->Align == EMWTeamAlign::Enemy)
-			{
-				teamUnit.Pawn->SetActorRotation(FRotator(0.f, 180.f, 0.f));
-			}
+			actor->SetActorRotation(FRotator(0.f, 180.f, 0.f));
 		}
 	}
 }

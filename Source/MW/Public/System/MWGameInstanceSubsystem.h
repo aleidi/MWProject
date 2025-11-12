@@ -9,6 +9,7 @@ class UMWPartyManager;
 class UMWEntityManager;
 class UMWBattleSystem;
 class UMWUIManager;
+class UMWRuntimeDataManager;
 
 // Define
 
@@ -51,6 +52,11 @@ public:
 		return UIManager;
 	}
 
+	UMWRuntimeDataManager* GetRuntimeDataManager()
+	{
+		return RuntimeDataManager;
+	}
+
 private:
 	UPROPERTY()
 	TObjectPtr<UMWPartyManager> PartyManager;
@@ -63,4 +69,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMWUIManager> UIManager;
+
+	UPROPERTY()
+	TObjectPtr<UMWRuntimeDataManager> RuntimeDataManager;
 };

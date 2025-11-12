@@ -1,18 +1,21 @@
 #include "Controller/MWPlayerController.h"
-#include "Gameplay/Battle/MWBattleSystem.h"
-#include "Character/MWTargetSelector.h"
-#include "GameFramework/Character.h"
 #include "Character/MWCharacter.h"
-#include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "Character/MWTargetSelector.h"
+#include "Camera/CameraComponent.h"
+#include "Common3DCameraComponent.h"
+#include "Common3DCameraModeDataAsset.h"
 #include "Component/Pawn/MWPawnExtensionComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "System/MWAssetManager.h"
 #include "Data/MWMasterData.h"
-#include "Input/MWInputConfig.h"
-#include "Input/MWInputComponent.h"
-#include "UserSettings/EnhancedInputUserSettings.h"
+#include "EnhancedInputSubsystems.h"
+#include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/MWGameplayTags.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "GameFramework/Character.h"
+#include "Input/MWInputComponent.h"
+#include "Input/MWInputConfig.h"
 #include "Input/MWInputUtility.h"
+#include "MWGameSingleton.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 
 #define DEBUG_PRINT_FUNC(Time) \
 if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
@@ -44,9 +47,9 @@ void AMWPlayerController::SetupInputComponent()
 
 	subsystem->ClearAllMappings();
 
-	const UMWMasterData& data = UMWAssetManager::Get().GetMasterData();
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	{
-		if (UMWInputConfig* input_config = data.InputConfig.Get())
+		if (UMWInputConfig* input_config = data->InputConfig.Get())
 		{
 			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMC_TPDefault);
 
@@ -213,12 +216,11 @@ void AMWPlayerController::PostProcessInput(const float DeltaTime, const bool bGa
 	}
 }
 
-void AMWPlayerController::BindDelegates()
+void AMWPlayerController::OnPossess(APawn* aPawn)
 {
-	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(this))
-	{
+	Super::OnPossess(aPawn);
 
-	}
+	SetupCameraComponents();
 }
 
 UAbilitySystemComponent* AMWPlayerController::GetAbilitySystemComponent() const
@@ -256,5 +258,54 @@ void AMWPlayerController::SpawnPlayerCameraManager()
 	else
 	{
 		UE_LOG(LogPlayerController, Log, TEXT("Couldn't Spawn PlayerCameraManager for Player!!"));
+	}
+}
+
+void AMWPlayerController::SetupCameraComponents()
+{
+	ACharacter* character = GetMWCharacter();
+	if (!character)
+	{
+		return;
+	}
+
+	// Check if camera components already exist
+	UC3DCameraComponent* existingC3DCamera = character->FindComponentByClass<UC3DCameraComponent>();
+	if (existingC3DCamera)
+	{
+		return; // Camera components already exist
+	}
+
+	// Create C3DCamera component
+	UC3DCameraComponent* c3dCamera = NewObject<UC3DCameraComponent>(character, UC3DCameraComponent::StaticClass(), TEXT("C3DCamera"));
+	if (c3dCamera)
+	{
+		character->AddInstanceComponent(c3dCamera);
+		c3dCamera->RegisterComponent();
+		c3dCamera->AttachToComponent(character->GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+
+		// Create Camera component
+		UCameraComponent* camera = NewObject<UCameraComponent>(character, UCameraComponent::StaticClass(), TEXT("Camera"));
+		if (camera)
+		{
+			character->AddInstanceComponent(camera);
+			camera->RegisterComponent();
+			camera->AttachToComponent(c3dCamera, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		}
+
+		// Setup default camera modes
+		if (const UMWMasterData* data = MWSINGLETON->GetMasterData())
+		{
+			checkf(data->DefaultCameraModesAssets.Num() > 0, TEXT("No camera mode assets"));
+
+			c3dCamera->ClearAllCameraModes();
+
+			for (auto& asset : data->DefaultCameraModesAssets)
+			{
+				c3dCamera->AddCameraMode(asset.Get());
+			}
+
+			c3dCamera->SetCameraMode(data->DefaultCameraModesAssets[0]->ModeTag, true);			
+		}
 	}
 }

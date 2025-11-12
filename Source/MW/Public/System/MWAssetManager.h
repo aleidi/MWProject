@@ -46,8 +46,6 @@ public:
 	// Logs all assets currently loaded and tracked by the asset manager.
 	static void DumpLoadedAssets();
 
-	const UMWMasterData& GetMasterData();
-
 protected:
 	template <typename GameDataClass>
 	const GameDataClass& GetOrLoadTypedGameData(const TSoftObjectPtr<GameDataClass>& DataPath)
@@ -61,13 +59,11 @@ protected:
 		return *CastChecked<const GameDataClass>(LoadGameDataOfClass(GameDataClass::StaticClass(), DataPath, GameDataClass::StaticClass()->GetFName()));
 	}
 
-
 	static UObject* SynchronousLoadAsset(const FSoftObjectPath& AssetPath);
 	static bool ShouldLogAssetLoads();
 
 	// Thread safe way of adding a loaded asset to keep in memory.
 	void AddLoadedAsset(const UObject* Asset);
-
 
 	UPrimaryDataAsset* LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType);
 
@@ -83,14 +79,6 @@ protected:
 
 	// master data of the game, should be loaded at game start
 	TSharedPtr<FStreamableHandle> MasterDataHandle = nullptr;
-
-	// necessary data of the game, should be loaded at game start
-	UPROPERTY(Config)
-	TSoftObjectPtr<UMWMasterData> MWMasterDataPath;
-
-	// Global game data asset to use.
-	UPROPERTY(Config)
-	TSoftObjectPtr<UMWGameplayData> MWGlobalDataPath;
 
 private:
 	// Assets loaded and tracked by the asset manager.

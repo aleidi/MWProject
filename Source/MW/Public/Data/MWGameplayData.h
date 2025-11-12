@@ -6,8 +6,11 @@
 class UGameplayEffect;
 class UMWBattleSceneSetting;
 
-/**
- * UMWGameplayData
+/*
+ * @class UMWGameplayData
+ *
+ * @brief Gameplay related const data.
+ *        ゲームプレイに関連する定数データ。
  *
  */
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "MW Gameplay Data", ShortTooltip = "Data asset containing gaameplay data."))
@@ -16,14 +19,6 @@ class UMWGameplayData : public UDataAsset
 	GENERATED_BODY()
 
 public:
-
-	UMWGameplayData();
-
-	// Quick access to data.
-	static const UMWGameplayData& Get();
-
-public:
-
 	// Gameplay effect used to apply blocking skill cast.
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Block Cast Skill"))
 	TSoftClassPtr<UGameplayEffect> GEBlockCastSkill;

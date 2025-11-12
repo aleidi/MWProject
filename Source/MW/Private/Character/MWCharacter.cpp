@@ -1,25 +1,28 @@
 #include "Character/MWCharacter.h"
 #include "Component/Character/MWCharacterMovementComponent.h"
 #include "Controller/MWPlayerController.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 #include "Component/Pawn/MWPawnExtensionComponent.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UMWCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	//CameraBoom->SetupAttachment(RootComponent);
-	//CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
-	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	bUseControllerRotationYaw = false;
 
-	//// Create a follow camera
-	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	//FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	AbilitySystemComponent = CreateDefaultSubobject<UMWAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
+
+	DummyMesh = GetMesh();
+	DummyMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	DummyMesh->SetVisibility(false);
+
+	VisualMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VisualMesh"));
+	VisualMesh->SetupAttachment(DummyMesh);
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -47,6 +50,17 @@ void AMWCharacter::UnPossessed()
 
 	EnableUpdatePawnRotation(false);
 }
+
+UAbilitySystemComponent* AMWCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 
 void AMWCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -108,6 +122,24 @@ bool AMWCharacter::GetIsMoving() const
 	return false;
 }
 
+FVector AMWCharacter::GetFloorLocation() const
+{
+	FVector loc = GetActorLocation() - FVector::UpVector * GetDefaultHalfHeight();
+
+	return loc;
+}
+
+void AMWCharacter::SetCharacterLocation(FVector FloorLocation)
+{
+	const FVector loc = FloorLocation + FVector::UpVector * GetDefaultHalfHeight();
+	SetActorLocation(loc);
+}
+
+void AMWCharacter::SetOwnerEntity(UMWCharacterEntity* InOwnerEntity)
+{
+	OwnerEntity = InOwnerEntity;
+}
+
 void AMWCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -121,4 +153,14 @@ void AMWCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMWCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+}
+
+USkeletalMeshComponent* AMWCharacter::GetDummyMesh() const
+{
+	return DummyMesh;
+}
+
+USkeletalMeshComponent* AMWCharacter::GetVisualMesh() const
+{
+	return VisualMesh;
 }

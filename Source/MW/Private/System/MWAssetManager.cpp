@@ -101,11 +101,6 @@ void UMWAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 }
 
-const UMWMasterData& UMWAssetManager::GetMasterData()
-{
-	return GetOrLoadTypedGameData<UMWMasterData>(MWMasterDataPath);
-}
-
 UPrimaryDataAsset* UMWAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType)
 {
 	UPrimaryDataAsset* Asset = nullptr;

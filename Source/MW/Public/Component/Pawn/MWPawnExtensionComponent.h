@@ -31,10 +31,8 @@ public:
 
 #pragma region PawnSetting
 protected:
-	// The name of pawn data asset to load. Check the asset of FMWCharacterData in content.
-	// ロードするポーンデータアセットの名前。コンテンツ内のFMWCharacterDataのアセットで名前を確認する。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setting")
-	FName PawnDataName;
+	int32 CharacterId;
 #pragma endregion
 
 #pragma region Ability

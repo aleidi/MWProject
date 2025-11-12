@@ -6,9 +6,12 @@
 
 // Forward Declare
 class UMWMasterData;
+class UMWDataAsset;
 class UMWGameplayData;
+class UMWDataTableManager;
 
 // Define
+#define MWSINGLETON (UMWGameSingleton::Get())
 
 /*
  * @class UMWGameSingleton
@@ -17,7 +20,7 @@ class UMWGameplayData;
  *
  * @note
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class UMWGameSingleton : public UObject
 {
 	GENERATED_BODY()
@@ -33,11 +36,25 @@ public:
 	virtual void PostLoad() override;
 
 	UFUNCTION(BlueprintPure)
-	const UMWMasterData* GetMasterData();
+	const UMWMasterData* GetMasterData() { return MasterData; }
 
+	UMWDataAsset* GetDataAsset() { return DataAsset; }
+
+	FORCEINLINE UMWGameplayData* GetGameplayData() { return GameplayData; }
+
+	FORCEINLINE	UMWDataTableManager* GetDataTableManager() { return DataTableManager; }
 protected:
 	bool bInitialized = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "MWMasterData")
 	TObjectPtr<UMWMasterData> MasterData;
+
+	UPROPERTY(EditAnywhere, Category = "MWDataAsset")
+	TObjectPtr<UMWDataAsset> DataAsset;
+
+	UPROPERTY(EditAnywhere, Category = "MWGameplayData")
+	TObjectPtr<UMWGameplayData> GameplayData;
+
+	UPROPERTY()
+	TObjectPtr<UMWDataTableManager> DataTableManager;
 };

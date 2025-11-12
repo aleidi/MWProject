@@ -6,10 +6,10 @@
 #include "Data/MWMasterData.h"
 UE_DISABLE_OPTIMIZATION
 
-void UMWTurnAction::SetActionUnits(const TArray<FMWTeam>& InPlayerUnits, const TArray<FMWTeam>& InEnemyUnits)
+void UMWTurnAction::SetActionUnits(const FMWTeam& InPlayerTeam, const FMWTeam& InEnemyTeam)
 {
-    PlayerUnits = InPlayerUnits;
-    EnemyUnits  = InEnemyUnits;
+    PlayerTeam = InPlayerTeam;
+    EnemyTeam = InEnemyTeam;
 }
 
 void UMWEnemyTurnAction::Init()

@@ -27,6 +27,80 @@ enum class EMWUILayer : uint8
 	Debug
 };
 
+UENUM(BlueprintType)
+enum class EMWSceneUIType : uint8 
+{
+	None = 0,
+	LoginUI,
+	CharacterCustomize_MainUI,
+	BaseUI,
+};
+
+UENUM(BlueprintType)
+enum class EMWWindowUIType : uint8 
+{
+	None = 0,	
+	LoginUI,
+	//InGameManagedUI,
+	DialogueUI,
+	LoadingUI,
+	InventoryUI,
+	Debug_PartsSelctUI,
+	DyeingUI,
+	ChatUI,
+	PacketMonitorUI,
+	TransporterOarControlUI,
+	TransporterAirBalloonControlUI,
+	CommercePartyAirCombatUI,
+	DialogO,
+	DialogU,
+	ComposeUI,
+	Debug_InstrumentTestUI,
+	ContextMenuUI,
+	ItemContextMenuUI,
+	ClockUI,
+	Debug_GameTimeUI,
+	Debug_SoundTestUI,
+	CharacterCustomize_MainUI,
+	BagInventoryUI,
+	SkillListUI,
+	Quest_ListPopupUI,
+	Quest_DetailPopupUI,
+	CharcterInfoUI,
+	ErrorPacketNoticeUI,
+	SkillLevelUpUI,
+	Respawn_MainUI,
+	FloatingTabUI,
+	MyLevelUpUI,	// 내 레벨이 올랐을때 UI
+	SkillDetailPopupUI,
+	Debug_GameServerTimeUI,
+	APLevelupPopupUI,
+	OptionUI,
+	OptionContentUI,		// WindowUIType 이 아닌데 분리 해야 되나... TODO
+	Common_ItemSelectPopupUI,
+	Common_BundlePopupUI,
+	CheatUI,
+	GameLogoffUI,
+	GameLogoutUI,
+	RecipeManualUI,
+	RecipeSelectionUI,
+	RecipeCompleteManualSelectionUI,
+	Debug_ActionEffectTestUI,
+	RecipeProductionUI,
+	RecipeProductionMakingUI,
+
+	//////////  Debug Or Temp
+	InventoryRecycleBinUI,
+};
+
+UENUM()
+enum class EMWPopupUIType
+{
+	Common_Message_PopupUI,
+	APconsume_PopupUI,
+	ConfirmDeletePopupUI
+};
+
 USTRUCT()
 struct FMWWidgetLayerInfo
 {
