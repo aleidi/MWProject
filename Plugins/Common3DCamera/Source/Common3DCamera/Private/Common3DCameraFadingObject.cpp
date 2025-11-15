@@ -4,6 +4,7 @@
 
 #include "Common3DCameraComponent.h"
 #include "Common3DCameraModeDataAsset.h"
+#include "Engine/OverlapResult.h"
 #include "Algo/ForEach.h"
 #include "Components/MeshComponent.h"
 #include "Components/WidgetComponent.h"

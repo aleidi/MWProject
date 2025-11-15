@@ -8,7 +8,7 @@
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 
-void UWMGameplayUtility::SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
+void UWMGameplayUtility::SearchSelectableTargets(const APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore)
 {
 	if (!PC || !PC->PlayerCameraManager)
 	{

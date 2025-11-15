@@ -34,8 +34,9 @@ static inline FString GetPIEClientID()
 {
 #if WITH_EDITOR
     return FString::Printf(TEXT("[View:%d]"), static_cast<int32>(GPlayInEditorID));
-#endif
+#else    
     return FString(TEXT(""));
+#endif
 }
 
 static IConsoleVariable* MWLOGVerbose = IConsoleManager::Get().RegisterConsoleVariable(TEXT("Log.Verbose"), 0, TEXT("Logs include the function name and line number.\n0-Clear\n1-WithFunc\n2-WIthView"), ECVF_Default);

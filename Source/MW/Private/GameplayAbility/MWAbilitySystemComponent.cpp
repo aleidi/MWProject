@@ -140,7 +140,7 @@ void UMWAbilitySystemComponent::CancelInputActivatedAbilities(bool bReplicateCan
 {
 	auto ShouldCancelFunc = [this](const UMWGameplayAbility* MWAbility, FGameplayAbilitySpecHandle Handle) -> bool
 	{
-		return false;
+		//return false;
 		const EMWAbilityActivationPolicy ActivationPolicy = MWAbility->GetActivationPolicy();
 		return ((ActivationPolicy == EMWAbilityActivationPolicy::OnInputTriggered) || (ActivationPolicy == EMWAbilityActivationPolicy::WhileInputActive));
 	};

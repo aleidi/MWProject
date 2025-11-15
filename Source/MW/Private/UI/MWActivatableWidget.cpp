@@ -7,7 +7,7 @@ void UMWActivatableWidget::PlayOpenAnim()
 {
 	if (IsValid(WA_OpenAnimation))
 	{
-		auto* player = PlayAnimationForward(WA_OpenAnimation);
+		PlayAnimationForward(WA_OpenAnimation);
 	}
 }
 

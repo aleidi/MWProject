@@ -58,7 +58,7 @@ void FMWTargetSelector::LockTarget()
 		{
 			TArray<AActor*> ignoreActors;
 			ignoreActors.Emplace(Controller->GetPawn());
-			UWMGameplayUtility::SearchSelectableTargets(Cast<APlayerController>(Controller), FindTargets, ignoreActors);
+			UWMGameplayUtility::SearchSelectableTargets(Cast<const APlayerController>(Controller), FindTargets, ignoreActors);
 		}
 		else
 		{
@@ -125,7 +125,7 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 	{
 		TArray<AActor*> ignoreActors;
 		ignoreActors.Emplace(Controller->GetPawn());
-		UWMGameplayUtility::SearchSelectableTargets(Cast<APlayerController>(Controller), FindTargets, ignoreActors);
+		UWMGameplayUtility::SearchSelectableTargets(Cast<const APlayerController>(Controller), FindTargets, ignoreActors);
 	}
 	else
 	{

@@ -23,16 +23,11 @@ void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGamepla
 	{
 		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
 		{
-			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
+			if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
 			{
-				if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
+				if (mapping->Mapping.Get())
 				{
-					if (mapping->Mapping.Get())
-					{
-						//settings->RegisterInputMappingContext(mapping->Mapping);
-
-						subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
-					}
+					subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
 				}
 			}
 		}
@@ -56,14 +51,11 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGamepl
 	{
 		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
 		{
-			if (UEnhancedInputUserSettings* settings = subsystem->GetUserSettings())
+			if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
 			{
-				if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
+				if (mapping->Mapping.Get())
 				{
-					if (mapping->Mapping.Get())
-					{
-						subsystem->RemoveMappingContext(mapping->Mapping, MappingOption);
-					}
+					subsystem->RemoveMappingContext(mapping->Mapping, MappingOption);
 				}
 			}
 		}

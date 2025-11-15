@@ -293,7 +293,6 @@ FTransform UC3DCameraComponent::GetSocketTransform(FName InSocketName, ERelative
 	{
 		return Super::GetSocketTransform(InSocketName, TransformSpace);
 	}
-	return FTransform();
 }
 
 void UC3DCameraComponent::ZoomIn()

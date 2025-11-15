@@ -13,7 +13,7 @@ class MW_API UWMGameplayUtility : public UGameplayStatics
 public:
 	/* Find selectable targets in front of the center within distance. */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	static void SearchSelectableTargets(APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore);
+	static void SearchSelectableTargets(const APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore);
 
 	/* Access to save config in blueprint.*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
