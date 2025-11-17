@@ -52,7 +52,7 @@ void UMWCharacterEntity::OnActorLoaded(AActor* InLoadedActor)
 
 		if (data->DummyAnimClass)
 		{
-			mesh->SetAnimClass(data->DummyAnimClass);
+			mesh->SetAnimInstanceClass(data->DummyAnimClass);
 		}
 	}
 
@@ -62,7 +62,7 @@ void UMWCharacterEntity::OnActorLoaded(AActor* InLoadedActor)
 	}
 
 	character->GetVisualMesh()->SetSkeletalMesh(ResourceDataPtr->VisualMesh);
-	character->GetVisualMesh()->SetAnimClass(ResourceDataPtr->VisualAnimInst);
+	character->GetVisualMesh()->SetAnimInstanceClass(ResourceDataPtr->VisualAnimInst);
 
 	// Set right mesh location
 	// 正しいメッシュの位置を設定

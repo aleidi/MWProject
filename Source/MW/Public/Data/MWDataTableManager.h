@@ -35,7 +35,7 @@ public:
 	UDataTable* GetDataTable(const FString& TableName);
 	UDataTable* GetDataTable(const FName& TableName);
 
-	template <typename T, TEMPLATE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
+	template <typename T UE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
 	void GetDataTableAllRows(const FString& TableName, TArray<T*>& OutRowArray)
 	{
 		if (UDataTable* DataTable = GetDataTable(TableName))
@@ -44,7 +44,7 @@ public:
 		}
 	}
 
-	template <typename T, TEMPLATE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
+	template <typename T UE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
 	T* GetDataTableItem(const FString& TableName, FName RowName)
 	{
 		if (UDataTable* DataTable = GetDataTable(TableName))
@@ -55,7 +55,7 @@ public:
 		return nullptr;
 	}
 
-	template <typename T, TEMPLATE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
+	template <typename T UE_REQUIRES(TIsDerivedFrom<T, FTableRowBase>::IsDerived)>
 	T* GetDataTableItem(const FString& TableName, int32 Index)
 	{
 		if (UDataTable* DataTable = GetDataTable(TableName))

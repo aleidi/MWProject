@@ -44,24 +44,19 @@ void UMWAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActo
 		// Notify all abilities that a new pawn avatar has been set
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(AbilitySpec.Ability);
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+			ensureMsgf(AbilitySpec.Ability && AbilitySpec.Ability->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced, TEXT("InitAbilityActorInfo: All Abilities should be Instanced (NonInstanced is being deprecated due to usability issues)."));
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
-			if (MWAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+			TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
+			for (UGameplayAbility* abilityInstance : Instances)
 			{
-				TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
-				for (UGameplayAbility* AbilityInstance : Instances)
+				UMWGameplayAbility* wmAbilityInstance = Cast<UMWGameplayAbility>(abilityInstance);
+				if (wmAbilityInstance)
 				{
-					UMWGameplayAbility* MWAbilityInstance = Cast<UMWGameplayAbility>(AbilityInstance);
-					if (MWAbilityInstance)
-					{
-						// Ability instances may be missing for replays
-						//MWAbilityInstance->OnPawnAvatarSet();
-					}
+					// Ability instances may be missing for replays
+					//abilityInstance->OnPawnAvatarSet();
 				}
-			}
-			else
-			{
-				//MWAbilityCDO->OnPawnAvatarSet();
 			}
 		}
 
@@ -83,54 +78,54 @@ void UMWAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActo
 void UMWAbilitySystemComponent::TryActivateAbilitiesOnSpawn()
 {
 	ABILITYLIST_SCOPE_LOCK();
+
 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 	{
-		const UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(AbilitySpec.Ability);
-		//MWAbilityCDO->TryActivateAbilityOnSpawn(AbilityActorInfo.Get(), AbilitySpec);
+		if (const UMWGameplayAbility* abilityCDO = Cast<UMWGameplayAbility>(AbilitySpec.Ability))
+		{
+			//abilityCDO->TryActivateAbilityOnSpawn(AbilityActorInfo.Get(), AbilitySpec);
+		}
 	}
 }
 
 void UMWAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility)
 {
 	ABILITYLIST_SCOPE_LOCK();
-	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+
+	for (const FGameplayAbilitySpec& abilitySpec : ActivatableAbilities.Items)
 	{
-		if (!AbilitySpec.IsActive())
+		if (!abilitySpec.IsActive())
 		{
 			continue;
 		}
 
-		UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(AbilitySpec.Ability);
-
-		if (MWAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+		UMWGameplayAbility* abilityCDO = Cast<UMWGameplayAbility>(abilitySpec.Ability);
+		if (!abilityCDO)
 		{
-			// Cancel all the spawned instances, not the CDO.
-			TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
-			for (UGameplayAbility* AbilityInstance : Instances)
-			{
-				UMWGameplayAbility* MWAbilityInstance = CastChecked<UMWGameplayAbility>(AbilityInstance);
-
-				if (ShouldCancelFunc(MWAbilityInstance, AbilitySpec.Handle))
-				{
-					if (MWAbilityInstance->CanBeCanceled())
-					{
-						MWAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), MWAbilityInstance->GetCurrentActivationInfo(), bReplicateCancelAbility);
-					}
-					else
-					{
-						//UE_LOG(LogMWAbilitySystem, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *MWAbilityInstance->GetName());
-					}
-				}
-			}
+			UE_LOG(LogMWAbilitySystem, Error, TEXT("CancelAbilitiesByFunc: Non-MWGameplayAbility %s was Granted to ASC. Skipping."), *abilitySpec.Ability.GetName());
+			continue;
 		}
-		else
+
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		ensureMsgf(abilitySpec.Ability->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced, TEXT("CancelAbilitiesByFunc: All Abilities should be Instanced (NonInstanced is being deprecated due to usability issues)."));
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+		// Cancel all the spawned instances.
+		TArray<UGameplayAbility*> instances = abilitySpec.GetAbilityInstances();
+		for (UGameplayAbility* abilityInstance : instances)
 		{
-			// Cancel the non-instanced ability CDO.
-			if (ShouldCancelFunc(MWAbilityCDO, AbilitySpec.Handle))
+			UMWGameplayAbility* mwAbilityInstance = CastChecked<UMWGameplayAbility>(abilityInstance);
+
+			if (ShouldCancelFunc(mwAbilityInstance, abilitySpec.Handle))
 			{
-				// Non-instanced abilities can always be canceled.
-				check(MWAbilityCDO->CanBeCanceled());
-				MWAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), bReplicateCancelAbility);
+				if (mwAbilityInstance->CanBeCanceled())
+				{
+					mwAbilityInstance->CancelAbility(abilitySpec.Handle, AbilityActorInfo.Get(), mwAbilityInstance->GetCurrentActivationInfo(), bReplicateCancelAbility);
+				}
+				else
+				{
+					UE_LOG(LogMWAbilitySystem, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *mwAbilityInstance->GetName());
+				}
 			}
 		}
 	}
@@ -140,7 +135,6 @@ void UMWAbilitySystemComponent::CancelInputActivatedAbilities(bool bReplicateCan
 {
 	auto ShouldCancelFunc = [this](const UMWGameplayAbility* MWAbility, FGameplayAbilitySpecHandle Handle) -> bool
 	{
-		//return false;
 		const EMWAbilityActivationPolicy ActivationPolicy = MWAbility->GetActivationPolicy();
 		return ((ActivationPolicy == EMWAbilityActivationPolicy::OnInputTriggered) || (ActivationPolicy == EMWAbilityActivationPolicy::WhileInputActive));
 	};
@@ -156,8 +150,13 @@ void UMWAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Sp
 	// Use replicated events instead so that the WaitInputPress ability task works.
 	if (Spec.IsActive())
 	{
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		const UGameplayAbility* instance = Spec.GetPrimaryInstance();
+		FPredictionKey originalPredictionKey = instance ? instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
 		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, originalPredictionKey);
 	}
 }
 
@@ -169,8 +168,13 @@ void UMWAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& S
 	// Use replicated events instead so that the WaitInputRelease ability task works.
 	if (Spec.IsActive())
 	{
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		const UGameplayAbility* instance = Spec.GetPrimaryInstance();
+		FPredictionKey originalPredictionKey = instance ? instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
 		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, originalPredictionKey);
 	}
 }
 
@@ -178,12 +182,12 @@ void UMWAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Input
 {
 	if (InputTag.IsValid())
 	{
-		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		for (const FGameplayAbilitySpec& abilitySpec : ActivatableAbilities.Items)
 		{
-			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+			if (abilitySpec.Ability && (abilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
 			{
-				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
-				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+				InputPressedSpecHandles.AddUnique(abilitySpec.Handle);
+				InputHeldSpecHandles.AddUnique(abilitySpec.Handle);
 			}
 		}
 	}
@@ -193,12 +197,12 @@ void UMWAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inpu
 {
 	if (InputTag.IsValid())
 	{
-		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		for (const FGameplayAbilitySpec& abilitySpec : ActivatableAbilities.Items)
 		{
-			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+			if (abilitySpec.Ability && (abilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
 			{
-				InputReleasedSpecHandles.AddUnique(AbilitySpec.Handle);
-				InputHeldSpecHandles.Remove(AbilitySpec.Handle);
+				InputReleasedSpecHandles.AddUnique(abilitySpec.Handle);
+				InputHeldSpecHandles.Remove(abilitySpec.Handle);
 			}
 		}
 	}
@@ -238,6 +242,8 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
+
+	//@TODO: See if we can use FScopedServerAbilityRPCBatcher ScopedRPCBatcher in some of these loops
 
 	//
 	// Process all abilities that activate when the input is held.
@@ -335,14 +341,24 @@ void UMWAbilitySystemComponent::NotifyAbilityActivated(const FGameplayAbilitySpe
 {
 	Super::NotifyAbilityActivated(Handle, Ability);
 
-	UMWGameplayAbility* MWAbility = CastChecked<UMWGameplayAbility>(Ability);
-
-	//AddAbilityToActivationGroup(MWAbility->GetActivationGroup(), MWAbility);
+	//if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
+	//{
+	//	AddAbilityToActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
+	//}
 }
 
 void UMWAbilitySystemComponent::NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason)
 {
 	Super::NotifyAbilityFailed(Handle, Ability, FailureReason);
+
+	if (APawn* avatar = Cast<APawn>(GetAvatarActor()))
+	{
+		if (!avatar->IsLocallyControlled() && Ability->IsSupportedForNetworking())
+		{
+			//ClientNotifyAbilityFailed(Ability, FailureReason);
+			return;
+		}
+	}
 
 	HandleAbilityFailed(Ability, FailureReason);
 }
@@ -351,9 +367,10 @@ void UMWAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle Ha
 {
 	Super::NotifyAbilityEnded(Handle, Ability, bWasCancelled);
 
-	UMWGameplayAbility* MWAbility = CastChecked<UMWGameplayAbility>(Ability);
-
-	//RemoveAbilityFromActivationGroup(MWAbility->GetActivationGroup(), MWAbility);
+	//if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
+	//{
+	//	RemoveAbilityFromActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
+	//}
 }
 
 void UMWAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
@@ -396,9 +413,9 @@ void UMWAbilitySystemComponent::HandleAbilityFailed(const UGameplayAbility* Abil
 {
 	//UE_LOG(LogMWAbilitySystem, Warning, TEXT("Ability %s failed to activate (tags: %s)"), *GetPathNameSafe(Ability), *FailureReason.ToString());
 
-	if (const UMWGameplayAbility* MWAbility = Cast<const UMWGameplayAbility>(Ability))
+	if (const UMWGameplayAbility* mwAbility = Cast<const UMWGameplayAbility>(Ability))
 	{
-		//MWAbility->OnAbilityFailedToActivate(FailureReason);
+		//mwAbility->OnAbilityFailedToActivate(FailureReason);
 	}	
 }
 
@@ -408,27 +425,27 @@ void UMWAbilitySystemComponent::FindInstancedAbilityByTag(TArray<UMWGameplayAbil
 	OutAbilities.Empty();
 
 	// iterate through all Ability Specs
-	for (const FGameplayAbilitySpec& CurrentSpec : ActivatableAbilities.Items)
+	for (const FGameplayAbilitySpec& currentSpec : ActivatableAbilities.Items)
 	{
 		// try to get the ability instance
-		UGameplayAbility* AbilityInstance = CurrentSpec.GetPrimaryInstance();
+		UGameplayAbility* abilityInstance = currentSpec.GetPrimaryInstance();
 
 		// default to the CDO if we can't
-		if (!AbilityInstance)
+		if (!abilityInstance)
 		{
-			AbilityInstance = CurrentSpec.Ability;
+			abilityInstance = currentSpec.Ability;
 		}
 
 		// ensure the ability instance is valid
-		if (IsValid(AbilityInstance))
+		if (IsValid(abilityInstance))
 		{
-			if(UMWGameplayAbility* mw_ability = Cast<UMWGameplayAbility>(AbilityInstance))
+			if(UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(abilityInstance))
 			{
 				// check if we match all tags
-				if (mw_ability->AbilityTags.HasAll(Tags))
+				if (mwAbility->GetAssetTags().HasAll(Tags))
 				{
 					// add the matching handle
-					OutAbilities.Add(mw_ability);
+					OutAbilities.Add(mwAbility);
 				}
 			}
 		}
@@ -441,27 +458,27 @@ void UMWAbilitySystemComponent::FindInstancedAbilityByClass(TArray<UMWGameplayAb
 	OutAbilities.Empty();
 
 	// iterate through all Ability Specs
-	for (const FGameplayAbilitySpec& CurrentSpec : ActivatableAbilities.Items)
+	for (const FGameplayAbilitySpec& currentSpec : ActivatableAbilities.Items)
 	{
 		// try to get the ability instance
-		UGameplayAbility* AbilityInstance = CurrentSpec.GetPrimaryInstance();
+		UGameplayAbility* abilityInstance = currentSpec.GetPrimaryInstance();
 
 		// default to the CDO if we can't
-		if (!AbilityInstance)
+		if (!abilityInstance)
 		{
-			AbilityInstance = CurrentSpec.Ability;
+			abilityInstance = currentSpec.Ability;
 		}
 
 		// ensure the ability instance is valid
-		if (IsValid(AbilityInstance))
+		if (IsValid(abilityInstance))
 		{
-			if (UMWGameplayAbility* mw_ability = Cast<UMWGameplayAbility>(AbilityInstance))
+			if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(abilityInstance))
 			{
 				// check if we match all tags
-				if (mw_ability->GetClass() == InClass)
+				if (mwAbility->GetClass() == InClass)
 				{
 					// add the matching handle
-					OutAbilities.Add(mw_ability);
+					OutAbilities.Add(mwAbility);
 				}
 			}
 		}
@@ -598,10 +615,11 @@ void UMWAbilitySystemComponent::RemoveDynamicTagGameplayEffect(const FGameplayTa
 
 void UMWAbilitySystemComponent::GetAbilityTargetData(const FGameplayAbilitySpecHandle AbilityHandle, FGameplayAbilityActivationInfo ActivationInfo, FGameplayAbilityTargetDataHandle& OutTargetDataHandle)
 {
-	TSharedPtr<FAbilityReplicatedDataCache> ReplicatedData = AbilityTargetDataMap.Find(FGameplayAbilitySpecHandleAndPredictionKey(AbilityHandle, ActivationInfo.GetActivationPredictionKey()));
-	if (ReplicatedData.IsValid())
+	TSharedPtr<FAbilityReplicatedDataCache> replicatedData = AbilityTargetDataMap.Find(FGameplayAbilitySpecHandleAndPredictionKey(AbilityHandle, ActivationInfo.GetActivationPredictionKey()));
+	
+	if (replicatedData.IsValid())
 	{
-		OutTargetDataHandle = ReplicatedData->TargetData;
+		OutTargetDataHandle = replicatedData->TargetData;
 	}
 }
 

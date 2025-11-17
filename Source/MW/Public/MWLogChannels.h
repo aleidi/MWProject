@@ -33,7 +33,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogMWCommon, Log, All);
 static inline FString GetPIEClientID()
 {
 #if WITH_EDITOR
-    return FString::Printf(TEXT("[View:%d]"), static_cast<int32>(GPlayInEditorID));
+    return FString::Printf(TEXT("[View:%d]"), static_cast<int32>(UE::GetPlayInEditorID()));
 #else    
     return FString(TEXT(""));
 #endif
