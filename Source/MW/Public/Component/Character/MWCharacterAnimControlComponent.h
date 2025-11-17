@@ -62,7 +62,9 @@ public:
 	// Force stop approaching.
 	// 強制的に接近を停止する。
 	UFUNCTION(BlueprintCallable, Category = "ApproachTarget")
-	void EndApproach();
+	void EndApproach(bool bForceTeleportToDestination = true);
+
+	bool IsDoingApproach() const;
 
 protected:
 	// Name of the animation curve used for approaching the target.

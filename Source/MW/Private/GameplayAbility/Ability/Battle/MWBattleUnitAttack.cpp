@@ -12,8 +12,7 @@ UMWBattleUnitAttack::UMWBattleUnitAttack(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer)
 {
 	ActivateTag = MWGameplayTags::GP_Battle_Ability_UnitAttack;
-	ComboTag = MWGameplayTags::GP_Battle_ComboAttack;
-	AvatarChangeTag = MWGameplayTags::GP_Battle_Event_AvatarChanged;
+	AvatarChangeTag = MWGameplayTags::GP_Battle_AvatarChanged;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	ApproachStates.Reserve(MAX_COMBO_STEP);
 }
@@ -144,6 +143,16 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	if (ShouldPlayApproachAnim())
 	{
+		// If currently doing skill approach, end it before playing the approach animation.
+		// スキル接近を現在行っている場合、接近アニメーションを再生する前に終了する。
+		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		{
+			if (animControlComp->IsDoingApproach())
+			{
+				animControlComp->EndApproach(false);
+			}
+		}
+
 		if (PlayMontage(approachAnim, ApproachAnimBlendingOutDelegate, ApproachAnimEndedDelegate))
 		{
 			SetApproachState(ComboStep, true);
@@ -164,6 +173,16 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	if(skillAnim)
 	{
+		// If currently doing approach, end it before playing the skill animation.
+		// スキルアニメーションを再生する前に、現在接近している場合は終了する。
+		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		{
+			if (animControlComp->IsDoingApproach())
+			{
+				animControlComp->EndApproach(false);
+			}
+		}
+
 		if (PlaySkillAnim(skillAnim))
 		{
 			// Maybe the skill has approach curve.
@@ -233,16 +252,6 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnApproachAnimEnded: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
 
-	// Force end approach if the stop approach is not triggered yet.
-	// 接近が停止しない場合は強制的に終了する。
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
-	{
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
-		{
-			animControlComp->EndApproach();
-		}
-	}
-
 	const FMWCharacterSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
 
 	if (!skillGroup)
@@ -272,14 +281,6 @@ void UMWBattleUnitAttack::OnReturnAnimBlendingOut(UAnimMontage* Montage, bool bI
 
 void UMWBattleUnitAttack::OnReturnAnimEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
-	{
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
-		{
-			animControlComp->EndApproach();
-		}
-	}
-
 	ResetApproachStates();
 
 	SetOriginalPositionFlag(false);
@@ -335,8 +336,8 @@ void UMWBattleUnitAttack::ResetCombo()
 
 void UMWBattleUnitAttack::BindDelegates()
 {
-	ComboEventHandle = GetAbilitySystemComponentFromActorInfo_Checked()->GenericGameplayEventCallbacks.FindOrAdd(ComboTag).AddUObject(this, &ThisClass::OnCombo);
-	AvatarChangeEventHandle = GetAbilitySystemComponentFromActorInfo_Checked()->GenericGameplayEventCallbacks.FindOrAdd(AvatarChangeTag).AddUObject(this, &ThisClass::OnAvatarChange);
+	ComboEventHandle = GetAbilitySystemComponentFromActorInfo_Ensured()->GenericGameplayEventCallbacks.FindOrAdd(ComboTag).AddUObject(this, &ThisClass::OnCombo);
+	AvatarChangeEventHandle = GetAbilitySystemComponentFromActorInfo_Ensured()->GenericGameplayEventCallbacks.FindOrAdd(AvatarChangeTag).AddUObject(this, &ThisClass::OnAvatarChange);
 
 	SkillAnimBlendingOutDelegate.BindUObject(this, &ThisClass::OnSkillAnimBlendingOut);
 	SkillAnimEndedDelegate.BindUObject(this, &ThisClass::OnSkillAnimEnded);

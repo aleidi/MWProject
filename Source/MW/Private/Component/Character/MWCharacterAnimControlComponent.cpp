@@ -205,14 +205,17 @@ void UMWCharacterAnimControlComponent::StartApproachPoint(const FVector& InPoint
 	DrawDebugShapeForApprachTarget();
 }
 
-void UMWCharacterAnimControlComponent::EndApproach()
+void UMWCharacterAnimControlComponent::EndApproach(bool bForceTeleportToDestination)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("ApproachProgress end: %f"), ApproachProgress));
 
 	// Ignore Z axis change.
 	// Z軸の変化を無視する。
-	ApproachEndLocation.Z = ApproachStartLocation.Z;
-	GetOwner()->SetActorLocation(ApproachEndLocation);
+	if (bForceTeleportToDestination)
+	{
+		ApproachEndLocation.Z = ApproachStartLocation.Z;
+		GetOwner()->SetActorLocation(ApproachEndLocation);
+	}
 
 	ApproachTarget = nullptr;
 
@@ -221,4 +224,9 @@ void UMWCharacterAnimControlComponent::EndApproach()
 	bCanDoApproach = false;
 
 	ResetApproachProgress();
+}
+
+bool UMWCharacterAnimControlComponent::IsDoingApproach() const
+{
+	return CanApproach();
 }
