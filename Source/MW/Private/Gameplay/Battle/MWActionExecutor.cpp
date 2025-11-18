@@ -1,4 +1,4 @@
-#include "Gameplay/Battle/MWTurnAction.h"
+#include "Gameplay/Battle/MWActionExecutor.h"
 #include "Input/MWInputUtility.h"
 #include "Kismet/GameplayStatics.h"
 #include "Input/MWInputConfig.h"
@@ -6,19 +6,19 @@
 #include "Data/MWMasterData.h"
 UE_DISABLE_OPTIMIZATION
 
-void UMWTurnAction::SetActionUnits(const FMWTeam& InPlayerTeam, const FMWTeam& InEnemyTeam)
+void UMWActionExecutor::SetActionUnits(const FMWTeam& InPlayerTeam, const FMWTeam& InEnemyTeam)
 {
     PlayerTeam = InPlayerTeam;
     EnemyTeam = InEnemyTeam;
 }
 
-void UMWEnemyTurnAction::Init()
+void UMWEnemyActionExecutor::Init()
 {
     // TODO : init action points of align dynamically
     GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Enemy Turn"));
 }
 
-void UMWEnemyTurnAction::Update(const FMWTurnActionData& InInfo, bool& OutIsFin)
+void UMWEnemyActionExecutor::Update(const FMWActionExecutorData& InInfo, bool& OutIsFin)
 {
 	OutIsFin = false;
 
@@ -29,7 +29,7 @@ void UMWEnemyTurnAction::Update(const FMWTurnActionData& InInfo, bool& OutIsFin)
     }
 }
 
-void UMWPlayerTurnAction::Init()
+void UMWPlayerActionExecutor::Init()
 {
     // TODO : init action points of align dynamically
 
@@ -41,27 +41,34 @@ void UMWPlayerTurnAction::Init()
 
 }
 
-void UMWPlayerTurnAction::Uninit()
+void UMWPlayerActionExecutor::Uninit()
 {
     UMWInputUtility::ClearBindingsForObject(this);
 
     UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand);
 }
 
-void UMWPlayerTurnAction::Update(const FMWTurnActionData& InInfo, bool& OutIsFin)
+void UMWPlayerActionExecutor::Update(const FMWActionExecutorData& InInfo, bool& OutIsFin)
 {
 	OutIsFin = bActionFinished;
 
+    OutIsFin = false;
+
+    time += 0.0167f;
+    if (time > 2.f)
+    {
+        OutIsFin = true;
+    }
 	// action points all used
 	// enemy all died
 }
 
-void UMWPlayerTurnAction::DisplayUI()
+void UMWPlayerActionExecutor::DisplayUI()
 {
 
 }
 
-void UMWPlayerTurnAction::SetupInput()
+void UMWPlayerActionExecutor::SetupInput()
 {
     UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand);
 
@@ -73,7 +80,7 @@ void UMWPlayerTurnAction::SetupInput()
     UMWInputUtility::BindInputAction(MWGameplayTags::IMC_Basic, MWGameplayTags::IATag_Basic_Direction, ETriggerEvent::Triggered, this, &ThisClass::OnSelectEnemy);
 }
 
-void UMWPlayerTurnAction::OnMove(const FInputActionValue& Value)
+void UMWPlayerActionExecutor::OnMove(const FInputActionValue& Value)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, TEXT("OnMove"));
 
@@ -88,28 +95,28 @@ void UMWPlayerTurnAction::OnMove(const FInputActionValue& Value)
     UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCharacterAction);
 }
 
-void UMWPlayerTurnAction::OnChangeLeader(const FInputActionValue& Value)
+void UMWPlayerActionExecutor::OnChangeLeader(const FInputActionValue& Value)
 {
     bActionFinished = true;
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, TEXT("OnChangeLeader"));
 }
 
-void UMWPlayerTurnAction::OnUseItem(const FInputActionValue& Value)
+void UMWPlayerActionExecutor::OnUseItem(const FInputActionValue& Value)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, TEXT("OnUseItem"));
 }
 
-void UMWPlayerTurnAction::OnUseSpirit(const FInputActionValue& Value)
+void UMWPlayerActionExecutor::OnUseSpirit(const FInputActionValue& Value)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, TEXT("OnUseSpirit"));
 }
 
-void UMWPlayerTurnAction::OnSelectEnemy(const FInputActionValue& Value)
+void UMWPlayerActionExecutor::OnSelectEnemy(const FInputActionValue& Value)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, TEXT("OnSelectEnemy"));
 }
 
-void UMWPlayerTurnAction::OnCharacterActionControl(FGameplayTag Tag)
+void UMWPlayerActionExecutor::OnCharacterActionControl(FGameplayTag Tag)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, FString::Printf(TEXT("OnCharacterAction : %s"), *Tag.GetTagName().ToString()));
 }

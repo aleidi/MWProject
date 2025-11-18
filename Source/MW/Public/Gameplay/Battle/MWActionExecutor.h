@@ -6,30 +6,30 @@
 #include "InputActionValue.h"
 #include "Define/MWDefineGameplay.h"
 #include "Gameplay/MWGameplayTags.h"
-#include "MWTurnAction.generated.h"
+#include "MWActionExecutor.generated.h"
 
 // Forward Declare
 
 // Define
 
-struct FMWTurnActionData
+struct FMWActionExecutorData
 {
 };
 
 /*
- * @class FMWTurnAction
+ * @class FMWActionExecutor
  * 
  * @brief
  *
  * @note
  */
  UCLASS()
-class UMWTurnAction : public UObject
+class UMWActionExecutor : public UObject
 {
 	 GENERATED_BODY()
 
 public:
-	UMWTurnAction() = default;
+	UMWActionExecutor() = default;
 
 	virtual void Init() {}
 	virtual void Uninit() {}
@@ -40,7 +40,7 @@ public:
 	 * @param InInfo : the info that used to check if the action is finished.
 	 * @param OutIsFin : true means the action is finished, false means it's still going on.
 	 */
-	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin) {}
+	virtual void Update(const FMWActionExecutorData& InInfo, bool& OutIsFin) {}
 
 	void SetActionUnits(const FMWTeam& InPlayerTeam, const FMWTeam& InEnemyTeam);
 
@@ -61,18 +61,18 @@ protected:
 };
 
 UCLASS()
-class UMWEnemyTurnAction : public UMWTurnAction
+class UMWEnemyActionExecutor : public UMWActionExecutor
 {
 	GENERATED_BODY()
 
 public:
 	virtual void Init() override;
 
-	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin);
+	virtual void Update(const FMWActionExecutorData& InInfo, bool& OutIsFin);
 };
 
 UCLASS()
-class UMWPlayerTurnAction : public UMWTurnAction
+class UMWPlayerActionExecutor : public UMWActionExecutor
 {
 	GENERATED_BODY()
 
@@ -81,7 +81,7 @@ public:
 
 	virtual void Uninit() override;
 
-	virtual void Update(const FMWTurnActionData& InInfo, bool& OutIsFin);
+	virtual void Update(const FMWActionExecutorData& InInfo, bool& OutIsFin);
 
 private:
 	/* Display action related ui.*/

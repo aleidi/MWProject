@@ -47,7 +47,7 @@ void UMWBattleSystem::EndBattle(uint8 Winner)
 {
 	if (IsValid(BattleInst))
 	{
-		BattleInst->ForceEndBattle((EBattleResult)Winner);
+		BattleInst->EndBattle((EBattleResult)Winner);
 	}
 }
 

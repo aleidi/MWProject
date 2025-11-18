@@ -5,10 +5,13 @@
 #include "Common3DCameraComponent.h"
 #include "Input/MWInputUtility.h"
 #include "Gameplay/MWGameplayTags.h"
-#include "Gameplay/Battle/MWTurnAction.h"
+#include "Gameplay/Battle/MWActionExecutor.h"
 #include "GameDelegates.h"
-#include "Gameplay/Battle/BattleUnit/MWBattleUnit.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
+
+#if WITH_EDITOR
+#include "Editor.h"
+#endif
 
 UE_DISABLE_OPTIMIZATION
 
@@ -82,6 +85,7 @@ void MWBattle::MWBSBattleEnd::OnEnter()
 
 void MWBattle::MWBSBattleEnd::OnUpdate(float DeltaTime)
 {
+	GetFsm()->Stop(true);
 }
 
 void MWBattle::MWBSRoundBegin::OnEnter()
@@ -148,10 +152,9 @@ void MWBattle::MWBSRoundEnd::ResetActionState()
 
 void MWBattle::MWBSTurnBegin::OnEnter()
 {
-	if (!DHCleanup.IsValid())
-	{
-		DHCleanup = FWorldDelegates::OnPostWorldCleanup.AddRaw(this, &MWBattle::MWBSTurnBegin::OnCleanUp);
-	}
+#if WITH_EDITOR
+	DHEndPIE = FEditorDelegates::EndPIE.AddRaw(this, &MWBattle::MWBSTurnBegin::OnEndPIE);
+#endif
 
 	UMWBattle* context = this->GetOwner();
 
@@ -170,31 +173,34 @@ void MWBattle::MWBSTurnBegin::OnEnter()
 	// Change to battle camera
 	SetCharacterCameraAsMain();
 
-	// Create Turn Action
+	// Create Turn Action - TStrongObjectPtr automatically prevents GC
 	switch (currAlign)
 	{
 		case EMWTeamAlign::Player:
-			TurnAction = NewObject<UMWPlayerTurnAction>(context);
+			ActionExecutor = TStrongObjectPtr<UMWActionExecutor>(NewObject<UMWPlayerActionExecutor>(context));
 			break;
 		case EMWTeamAlign::Enemy:
-			TurnAction = NewObject<UMWEnemyTurnAction>(context);
+			ActionExecutor = TStrongObjectPtr<UMWActionExecutor>(NewObject<UMWEnemyActionExecutor>(context));
 			break;
 	}
 
-	TurnAction->Init();
-
-	TurnAction->SetActionUnits(context->GetPlayerTeam(), context->GetEnemyTeam());
-
-	TurnAction->AddToRoot();
+	if (ActionExecutor.IsValid())
+	{
+		ActionExecutor->Init();
+		ActionExecutor->SetActionUnits(context->GetPlayerTeam(), context->GetEnemyTeam());
+	}
 }
 
 void MWBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
 {
-	FMWTurnActionData data;
+	FMWActionExecutorData data;
 
 	if (!bIsActionComplete)
 	{
-		TurnAction->Update(data, bIsActionComplete);
+		if (ActionExecutor.IsValid())
+		{
+			ActionExecutor->Update(data, bIsActionComplete);
+		}
 	}
 
 	if (bIsActionComplete)
@@ -211,13 +217,7 @@ void MWBattle::MWBSTurnBegin::OnLeave(bool bShutDown)
 {
 	bIsActionComplete = false;
 
-	UMWBattle* context = this->GetOwner();
-
-	TurnAction->Uninit();
-
-	TurnAction->RemoveFromRoot();
-
-	TurnAction = nullptr;
+	CleanUp();
 }
 
 void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
@@ -226,7 +226,7 @@ void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 
 	const FMWTeam& team = context->GetCurrentTurnTeamAlign() == EMWTeamAlign::Player ? context->GetPlayerTeam() : context->GetEnemyTeam();
 
-	auto* actor = team.BattleUnits[0]->GetAvatar();
+	auto* actor = team.BattleUnits[0].Get();
 
 	if (actor == nullptr)
 	{
@@ -246,18 +246,7 @@ void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 
 void MWBattle::MWBSTurnBegin::OnDestroy()
 {
-	if (IsValid(TurnAction))
-	{
-		TurnAction->RemoveFromRoot();
-
-		TurnAction = nullptr;
-	}
-
-	if (DHCleanup.IsValid())
-	{
-		FWorldDelegates::OnPostWorldCleanup.Remove(DHCleanup);
-	}
-
+	CleanUp();
 }
 
 void MWBattle::MWBSTurnBegin::OnActionComplete()
@@ -265,21 +254,40 @@ void MWBattle::MWBSTurnBegin::OnActionComplete()
 	bIsActionComplete = true;
 }
 
-void MWBattle::MWBSTurnBegin::OnCleanUp(UWorld* World, bool bSessionEnded, bool bCleanupResources)
+void MWBattle::MWBSTurnBegin::CleanUp()
 {
-	if (this->GetOwner() && this->GetOwner()->GetWorld() == World)
+	if (ActionExecutor.IsValid())
 	{
-		if (this->GetOwner()->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
-		{
-			this->GetOwner()->GetBattleSystem().OnActionComplete.Remove(DHActionComplete);
-		}
+		ActionExecutor->Uninit();
+		ActionExecutor.Reset();
 	}
 
-	if (IsValid(TurnAction))
+	// Clean up delegate binding if not already done
+	UMWBattle* context = this->GetOwner();
+	if (context && DHActionComplete.IsValid())
 	{
-		TurnAction->RemoveFromRoot();
+		if (context->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
+		{
+			context->GetBattleSystem().OnActionComplete.Remove(DHActionComplete);
+		}
+		DHActionComplete.Reset();
 	}
+
+#if WITH_EDITOR
+	if (DHEndPIE.IsValid())
+	{
+		FEditorDelegates::EndPIE.Remove(DHEndPIE);
+		DHEndPIE.Reset();
+	}
+#endif
 }
+
+#if WITH_EDITOR
+void MWBattle::MWBSTurnBegin::OnEndPIE(bool bIsSimulating)
+{
+	CleanUp();
+}
+#endif
 
 void MWBattle::MWBSTurnEnd::OnEnter()
 {
@@ -383,6 +391,17 @@ void MWBattle::MWBSTurnEnd::CheckShouldRoundEnd()
 
 UMWBattle::UMWBattle()
 {
+	// Init state machine
+	Fsm = MakeShared<FFsm<UMWBattle>>(
+		TEXT("BattleFsm"),
+		this,
+		new MWBattle::MWBSIdle,
+		new MWBattle::MWBSBattleBegin,
+		new MWBattle::MWBSBattleEnd,
+		new MWBattle::MWBSRoundBegin,
+		new MWBattle::MWBSRoundEnd,
+		new MWBattle::MWBSTurnBegin,
+		new MWBattle::MWBSTurnEnd);
 }
 
 void UMWBattle::StartBattle(const FMWBattleData& InData)
@@ -414,19 +433,7 @@ void UMWBattle::StartBattle(const FMWBattleData& InData)
 		UMWInputUtility::DisableMappingContext(PC.Get(), MWGameplayTags::IMC_TPDefault);
 	}
 
-	// Init state machine
-	//CurrState = MakeUnique<MWBattle::FMWBSIdle>();
-
-	Fsm = MakeShared<FFsm<UMWBattle>>(
-	TEXT("BattleFsm"), 
-	this, 
-	new MWBattle::MWBSIdle,
-	new MWBattle::MWBSBattleBegin,
-	new MWBattle::MWBSBattleEnd,
-	new MWBattle::MWBSRoundBegin,
-	new MWBattle::MWBSRoundEnd,
-	new MWBattle::MWBSTurnBegin,
-	new MWBattle::MWBSTurnEnd);
+	
 
 	// Init action state
 	for (uint8 i = 0; i < (uint8)EMWTeamAlign::Max; ++i)
@@ -462,6 +469,21 @@ void UMWBattle::Tick(float DeltaTime)
 		if (Fsm.IsValid())
 		{
 			auto* currState = Fsm->GetCurrentState();
+
+			if (!currState)
+			{
+				return;
+			}
+
+			// Force end battle
+			// 強制的にバトルを終了させる
+			if (bIsBattleEnd && currState->GetName() != TEXT("MWBSBattleEnd"))
+			{
+				Fsm->ChangeState(TEXT("MWBSBattleEnd"));
+
+				return;
+			}
+
 			Fsm->Update(DeltaTime);
 			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, FString::Printf(TEXT("state[%s,%f] - round : %d"), *currState->GetName().ToString(), Fsm->GetCurrentStateTime(), CurrRound));
 		}
@@ -512,9 +534,9 @@ FMWActionState& UMWBattle::GetCurrentTurnActionState()
 	return FMWActionState::Null;
 }
 
-void UMWBattle::ForceEndBattle(EBattleResult InWinner)
+void UMWBattle::EndBattle(EBattleResult InWinner)
 {
-	bForceEndBattle = true;
+	bIsBattleEnd = true;
 	BattleResult = InWinner;
 }
 
@@ -531,4 +553,3 @@ UMWBattleSystem& UMWBattle::GetBattleSystem()
 	return  *UMWBattleSystem::Get(this);
 }
 UE_ENABLE_OPTIMIZATION
-

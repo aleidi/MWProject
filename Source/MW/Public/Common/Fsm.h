@@ -23,12 +23,17 @@ public:
 	virtual FFsmState<T>* GetCurrentState() const = 0;
 	virtual FFsmState<T>* GetLastState() const = 0;
 	virtual FFsmState<T>* GetState(FName) const = 0;
+	// Start the fsm from the specified state. If a state is running, stop it first.
 	virtual void Start(FName) = 0;
 	virtual bool HasState(FName) = 0;
 	virtual void ChangeState(FName) = 0;
 	virtual void ChangeToLastState() = 0;
 	virtual void Update(float DeltaTime) = 0;
 	virtual void ShutDown() = 0;
+	// Temporarily stop the fsm at the current state. If bExitState is true, exit the current state.
+	virtual void Stop(bool bExitState) = 0;
+	// Resume the fsm from current state.
+	virtual void Resume() = 0;
 };
 
 /*
@@ -93,7 +98,7 @@ public:
 
 	virtual bool IsRunning() const override 
 	{ 
-		return CurrentState != nullptr;
+		return CurrentState != nullptr && bIsRunning;
 	}
 
 	virtual bool IsDestroyed() const override
@@ -124,17 +129,18 @@ public:
 		return nullptr;
 	}
 
+	
 	virtual void Start(FName StateName) override
 	{
 		if (IsRunning())
 		{
-			UE_LOG(LogMWCommon, Warning, TEXT("FSM has aleady run."));
+			MW_LOG_WARNING(TEXT("FSM has aleady run."));
 		}
 
 		auto* state = GetState(StateName);
 		if (!state)
 		{
-			UE_LOG(LogMWCommon, Warning, TEXT("FSM[%s] can not start state \"%s\" which is not exist."), *Name.ToString(), *state->GetName().ToString());
+			MW_LOG_WARNING(TEXT("FSM[%s] can not start state \"%s\" which is not exist."), *Name.ToString(), *state->GetName().ToString());
 		}
 
 		CurrentStateTime = 0.f;
@@ -142,6 +148,8 @@ public:
 		CurrentState = state;
 
 		CurrentState->OnEnter();
+
+		Resume();
 	}
 
 	virtual bool HasState(FName StateName) override
@@ -161,7 +169,7 @@ public:
 
 	virtual void Update(float DeltaTime) override
 	{
-		if (nullptr == CurrentState)
+		if (!IsRunning())
 		{
 			return;
 		}
@@ -192,6 +200,37 @@ public:
 		States.Empty();
 
 		bDestroyed = true;
+	}
+
+	virtual void Stop(bool bExitState = false) override
+	{
+		if (!IsRunning())
+		{
+			return;
+		}
+
+		bIsRunning = false;
+
+		if (bExitState && CurrentState != nullptr)
+		{
+			CurrentState->OnLeave(false);
+			CurrentState = nullptr;
+			CurrentStateTime = 0.f;
+		}
+
+		MW_LOG_DEFAULT(TEXT("FSM[%s] is stopped at state[%s]."), *Name.ToString(), CurrentState ? *CurrentState->GetName().ToString() : TEXT("None"));
+	}
+
+	virtual void Resume() override
+	{
+		if (IsRunning())
+		{
+			return;
+		}
+
+		bIsRunning = true;
+
+		MW_LOG_DEFAULT(TEXT("FSM[%s] is resumed at state[%s]."), *Name.ToString(), CurrentState ? *CurrentState->GetName().ToString() : TEXT("None"));
 	}
 
 private:
@@ -229,7 +268,7 @@ private:
 		}
 		else
 		{
-			UE_LOG(LogMWCommon, Warning, TEXT("State[%s] to change is not found"), *(NewState->GetName().ToString()));
+			MW_LOG_WARNING(TEXT("State[%s] to change is not found"), *(NewState->GetName().ToString()));
 		}
 	}
 
@@ -242,6 +281,9 @@ protected:
 
 	/* Is the state machine destroyed. */
 	bool bDestroyed = false;
+
+	/* Is the state machine running. */
+	bool bIsRunning = false;
 
 	/* How long current state is running. */
 	float CurrentStateTime = 0.f;

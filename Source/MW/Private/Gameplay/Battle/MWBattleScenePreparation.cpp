@@ -3,7 +3,6 @@
 #include "Data/MWBattleData.h"
 #include "EngineUtils.h"
 #include "Gameplay/Battle/MWBattleUnitPosition.h"
-#include "Gameplay/Battle/BattleUnit/MWBattleUnit.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 
 FMWBattleScenePreparation::FMWBattleScenePreparation()
@@ -25,7 +24,7 @@ void FMWBattleScenePreparation::PrepareScene(const FMWBattleSceneParam& Param)
 
 	check(enemyNo > 0 && playerNo > 0);
 
-	UWorld* world = playerTeam.BattleUnits[0]->GetAvatar()->GetWorld();
+	UWorld* world = playerTeam.BattleUnits[0]->GetWorld();
 
 	// collect battle unit position and set character to right location
 	for (TActorIterator<AMWBattleUnitPosition> iter(world); iter; ++iter)
@@ -67,7 +66,7 @@ void FMWBattleScenePreparation::TrySetTeamPositionFromBattleUnitPos(FMWTeam& Tea
 		//	worldPos = BattleUnitPos->GetTransform().TransformPosition(BattleUnitPos->Position[1 + memNo++]);
 		//}
 
-		auto* actor = Team.BattleUnits[BattleUnitPos->Index]->GetAvatar();
+		auto* actor = Team.BattleUnits[BattleUnitPos->Index].Get();
 
 		actor->SetActorLocation(worldPos);
 

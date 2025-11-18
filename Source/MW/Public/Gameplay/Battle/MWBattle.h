@@ -5,6 +5,7 @@
 #include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
 #include "Util/FsmUtil.h"
+#include "UObject/StrongObjectPtr.h"
 #include "MWBattle.generated.h"
 
 // Forward Declare
@@ -96,13 +97,19 @@ private:
 	virtual void OnDestroy() override;
 	void SetCharacterCameraAsMain();
 	void OnActionComplete();
+	void CleanUp();
 
 	bool bIsActionComplete = false;
 	FDelegateHandle DHActionComplete;
-	TObjectPtr<UMWTurnAction> TurnAction;
 
-	FDelegateHandle DHCleanup;
-	void OnCleanUp(UWorld* World, bool bSessionEnded, bool bCleanupResources);
+	// Use TStrongObjectPtr to prevent GC without manual AddToRoot/RemoveFromRoot
+	TStrongObjectPtr<UMWActionExecutor> ActionExecutor;
+
+#if WITH_EDITOR
+	FDelegateHandle DHEndPIE;
+
+	void OnEndPIE(bool bIsSimulating);
+#endif
 	DECLARE_FSM_STATE_END()
 
 	DECLARE_FSM_STATE_START(UMWBattle, MWBSTurnEnd)
@@ -178,10 +185,10 @@ public:
 
 	EBattleResult GetBattleResult() const { return BattleResult; }
 
-	/* Force to end a battle and decide which force is the winner.
+	/* To end a battle.
 	* @param Winner : 0 = player win, 1 = enemy win, 2 = draw
 	*/
-	void ForceEndBattle(EBattleResult InWinner);
+	void EndBattle(EBattleResult InWinner);
 
 private:
 	/* Cache the teams in the battle. */
@@ -202,8 +209,7 @@ private:
 
 	EBattleResult BattleResult = EBattleResult::Draw;
 
-	/* used to force end a battle. */
-	bool bForceEndBattle = false;
+	bool bIsBattleEnd = false;
 
 	/* The align is acting in current turn. */
 	EMWTeamAlign CurrentTurnAlign;
@@ -218,6 +224,8 @@ private:
 public:
 	TWeakObjectPtr<class AMWPlayerController> PC;
 
+
+// ===== Turn Control FSM =====
 private:
 	TSharedPtr<FFsm<UMWBattle>> Fsm;
 };

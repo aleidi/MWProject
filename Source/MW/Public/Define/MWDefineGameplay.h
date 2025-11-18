@@ -2,7 +2,7 @@
 
 #include "MWDefineGameplay.generated.h"
 
-class UMWBattleUnit;
+class AMWBattleUnitAvatar;
 class AMWCharacter;
 
 UENUM(BlueprintType)
@@ -120,7 +120,7 @@ public:
 	EMWTeamAlign Align = EMWTeamAlign::Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMWBattleUnit>> BattleUnits;
+	TArray<TObjectPtr<AMWBattleUnitAvatar>> BattleUnits;
 };
 
 bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs);
