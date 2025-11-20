@@ -90,7 +90,7 @@ protected:
 	// skills table
 	// スキルテーブル
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Battle|UnitAttack")
-	FMWCharacterSkillTable SkillTable;
+	FMWCharacterBattleSkillTable SkillTable;
 
 	// The tag to receive combo event after ability activated.
 	// アビリティ発動後にコンボイベントを受信するタグ

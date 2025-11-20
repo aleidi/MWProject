@@ -31,8 +31,6 @@ public:
 protected:
 	void DoApproach(float DeltaTime);
 
-	bool CanApproach() const;
-
 	void ResetApproachProgress();
 
 	/**
@@ -64,7 +62,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ApproachTarget")
 	void EndApproach(bool bForceTeleportToDestination = true);
 
-	bool IsDoingApproach() const;
+	bool IsApproaching() const;
 
 protected:
 	// Name of the animation curve used for approaching the target.
@@ -103,6 +101,6 @@ protected:
 	FVector ApproachEndLocation;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ApproachTarget")
-	bool bCanDoApproach = false;
+	bool bIsApproaching = false;
 
 };

@@ -5,8 +5,9 @@
 #include "MWBattleUnitAvatar.generated.h"
 
 // Forward Declare
-class UMWBattleAttributeSet;
 class UMWAbilitySet;
+class UMWBattleAttributeSet;
+class UMWBattleUnitComponent;
 struct FMWAbilitySetGrantedHandles;
 
 // Define
@@ -27,24 +28,16 @@ class MW_API AMWBattleUnitAvatar : public AMWCharacter
 public:
 	AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer);
 
-	// Give a new mesh and animation instance to this avatar.
-	// このアバターに新しいメッシュとアニメーションインスタンスを与えます。
-	void SetNewMesh(USkeletalMesh* NewMesh, UClass* NewAnimInst);
-
-	void SetNewSkillTable(const FMWCharacterSkillTable& NewSkillTable);
-
-	FMWCharacterSkillTable* GetSkillTable();
-
 protected:
 	void InitAbility();
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Ability")
+	UPROPERTY(BlueprintReadOnly, Category = "Battle")
+	TObjectPtr<UMWBattleUnitComponent> BattleUnitComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UMWAbilitySet> AbilitySet;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FMWCharacterSkillTable SkillTable;
-	
 	/* Cache the granted abilities */
 	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
 

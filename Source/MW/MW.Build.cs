@@ -26,20 +26,19 @@ public class MW : ModuleRules
 			"Slate",
 			"SlateCore",
 			"CommonUI",
+			"Paper2D",
             //"ModularGameplayActors",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] 
 		{
-            "Common3DCamera"
-        });
+			"Common3DCamera"
+		});
 
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
-		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
-
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+        // This adds editor module dependencies (only when building for the editor)
+        if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.Add("UnrealEd");
+		}
 	}
 }

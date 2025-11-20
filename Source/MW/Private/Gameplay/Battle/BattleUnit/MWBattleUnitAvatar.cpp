@@ -1,34 +1,13 @@
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
+#include "Component/Character/MWBattleUnitComponent.h"
 #include "GameplayAbility/MWAbilitySet.h"
 
 AMWBattleUnitAvatar::AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	BattleUnitComponent = CreateDefaultSubobject<UMWBattleUnitComponent>(TEXT("BattleUnitComponent"));
+
 	PrimaryActorTick.bCanEverTick = false;
-}
-
-void AMWBattleUnitAvatar::SetNewMesh(USkeletalMesh* NewMesh, UClass* NewAnimInst)
-{
-	auto* meshComp = GetMesh();
-
-	if (!meshComp)
-	{
-		return;
-	}
-
-	meshComp->SetSkeletalMesh(NewMesh);
-
-	meshComp->SetAnimInstanceClass(NewAnimInst);
-}
-
-void AMWBattleUnitAvatar::SetNewSkillTable(const FMWCharacterSkillTable& NewSkillTable)
-{
-	SkillTable = NewSkillTable;
-}
-
-FMWCharacterSkillTable* AMWBattleUnitAvatar::GetSkillTable()
-{
-	return &SkillTable;
 }
 
 void AMWBattleUnitAvatar::InitAbility()

@@ -1,10 +1,11 @@
 #include "GameplayAbility/Ability/Battle/MWBattleUnitAttack.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Character/MWCharacterAnimControlComponent.h"
+#include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "MWLogChannels.h"
-#include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
-#include "Component/Character/MWCharacterAnimControlComponent.h"
 
 #define MAX_COMBO_STEP 4
 
@@ -90,7 +91,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		return;
 	}
 
-	const FMWCharacterSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
+	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
 
 	if (!skillGroup)
 	{
@@ -99,7 +100,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		return;
 	}
 
-	const FMWCharacterSkillData* skillData = skillGroup->GetSkill(ComboType);
+	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(ComboType);
 
 	if (!skillData)
 	{
@@ -147,7 +148,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		// スキル接近を現在行っている場合、接近アニメーションを再生する前に終了する。
 		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
 		{
-			if (animControlComp->IsDoingApproach())
+			if (animControlComp->IsApproaching())
 			{
 				animControlComp->EndApproach(false);
 			}
@@ -177,7 +178,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		// スキルアニメーションを再生する前に、現在接近している場合は終了する。
 		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
 		{
-			if (animControlComp->IsDoingApproach())
+			if (animControlComp->IsApproaching())
 			{
 				animControlComp->EndApproach(false);
 			}
@@ -252,7 +253,7 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnApproachAnimEnded: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
 
-	const FMWCharacterSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
+	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
 
 	if (!skillGroup)
 	{
@@ -261,7 +262,7 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 		return;
 	}
 
-	const FMWCharacterSkillData* skillData = skillGroup->GetSkill(ComboType);
+	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(ComboType);
 
 	if (!skillData)
 	{
@@ -314,12 +315,17 @@ void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
 	// If your avatar exposes a skill table, cast and read it:
 	if (AvatarActor)
 	{
-		if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(AvatarActor))
+		if (UMWBattleUnitComponent* battleUnitComp = AvatarActor->FindComponentByClass<UMWBattleUnitComponent>())
 		{
-			if (auto* table = avatar->GetSkillTable())
+			if (auto* table = battleUnitComp->GetSkillData())
 			{
-				// Maybe good to use pointer assignment to avoid copy, to do later.
-				SkillTable = *table;
+				SkillTable.ApproachAnimation = table->ApproachAnimation;
+				SkillTable.ReturnAnimation = table->ReturnAnimation;
+				const int32 maxComboNum  = table->SkillCombos.Num();
+				for (int32 i = 0; i < maxComboNum; ++i)
+				{
+					SkillTable.SetComboAt(i, table->SkillCombos[i]);
+				}
 			}
 			else
 			{

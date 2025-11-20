@@ -19,14 +19,14 @@ UMWEntity* UMWEntityManager::FindEntity(const FObjectId EntityId)
 	return nullptr;
 }
 
-UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(const FVector& Location, const FRotator& Rotation, const FMWCharacterResourceData* ResData)
+UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(const FVector& Location, const FRotator& Rotation, const FMWCharacterSpawnResourceData* ResData)
 {
 	FObjectId newId = AllocateEntityId();
 
 	return CreateCharacterEntity(newId, Location, Rotation, ResData);
 }
 
-UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(FObjectId EntityId, const FVector& Location, const FRotator& Rotation, const FMWCharacterResourceData* ResData)
+UMWCharacterEntity* UMWEntityManager::CreateCharacterEntity(FObjectId EntityId, const FVector& Location, const FRotator& Rotation, const FMWCharacterSpawnResourceData* ResData)
 {
 	UMWCharacterEntity* characterEntity = NewObject<UMWCharacterEntity>(this);
 

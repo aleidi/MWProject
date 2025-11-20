@@ -72,7 +72,7 @@ void UMWCharacterEntity::OnActorLoaded(AActor* InLoadedActor)
 	}
 }
 
-void UMWCharacterEntity::SetCharacterData(const FMWCharacterResourceData* InData)
+void UMWCharacterEntity::SetCharacterData(const FMWCharacterSpawnResourceData* InData)
 {
 	if(InData == nullptr)
 	{

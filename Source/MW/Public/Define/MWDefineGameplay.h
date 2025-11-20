@@ -153,7 +153,7 @@ struct FMWBattleData
 };
 
 USTRUCT(BlueprintType)
-struct FMWCharacterSkillData
+struct FMWCharacterBattleSkillData
 {
 	GENERATED_BODY()
 
@@ -189,7 +189,7 @@ struct FMWCharacterSkillData
  * 　　　　←→＋〇 ーーー ←→＋〇 ーーー ←→＋〇 ーーー ←→＋〇
  */
 USTRUCT(BlueprintType)
-struct MW_API FMWCharacterSkillGroup
+struct FMWCharacterBattleSkillGroup
 {
 	GENERATED_BODY()
 
@@ -197,10 +197,10 @@ struct MW_API FMWCharacterSkillGroup
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TMap<EMWCharacterSkillComboType, FMWCharacterSkillData> Skills;
+	TMap<EMWCharacterSkillComboType, FMWCharacterBattleSkillData> Skills;
 
 public:
-	bool SetSkill(EMWCharacterSkillComboType Type, FMWCharacterSkillData* NewData)
+	bool SetSkill(EMWCharacterSkillComboType Type, FMWCharacterBattleSkillData* NewData)
 	{
 		if (!NewData)
 		{
@@ -225,9 +225,9 @@ public:
 		return false;
 	}
 
-	const FMWCharacterSkillData* GetSkill(EMWCharacterSkillComboType Type) const
+	const FMWCharacterBattleSkillData* GetSkill(EMWCharacterSkillComboType Type) const
 	{
-		if (const FMWCharacterSkillData* Found = Skills.Find(Type))
+		if (const FMWCharacterBattleSkillData* Found = Skills.Find(Type))
 		{
 			return Found;
 		}
@@ -247,13 +247,13 @@ public:
 
 	int32 Num() const { return Skills.Num(); }
 
-	const FMWCharacterSkillData* GetCentralSkill() const { return GetSkill(EMWCharacterSkillComboType::Central); }
-	const FMWCharacterSkillData* GetUpDownSkill() const { return GetSkill(EMWCharacterSkillComboType::UpDown); }
-	const FMWCharacterSkillData* GetLeftRightSkill() const { return GetSkill(EMWCharacterSkillComboType::LeftRight); }
+	const FMWCharacterBattleSkillData* GetCentralSkill() const { return GetSkill(EMWCharacterSkillComboType::Central); }
+	const FMWCharacterBattleSkillData* GetUpDownSkill() const { return GetSkill(EMWCharacterSkillComboType::UpDown); }
+	const FMWCharacterBattleSkillData* GetLeftRightSkill() const { return GetSkill(EMWCharacterSkillComboType::LeftRight); }
 };
 
 USTRUCT(BlueprintType)
-struct MW_API FMWCharacterSkillTable
+struct FMWCharacterBattleSkillTable
 {
 	GENERATED_BODY()
 
@@ -267,10 +267,10 @@ struct MW_API FMWCharacterSkillTable
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<FMWCharacterSkillGroup> SkillCombos;
+	TArray<FMWCharacterBattleSkillGroup> SkillCombos;
 
 public:
-	bool AddCombo(const FMWCharacterSkillGroup& Group)
+	bool AddCombo(const FMWCharacterBattleSkillGroup& Group)
 	{
 		if (SkillCombos.Num() >= MaxCombos)
 		{
@@ -282,7 +282,7 @@ public:
 		return true;
 	}
 
-	bool SetComboAt(int32 Index, const FMWCharacterSkillGroup& Group)
+	bool SetComboAt(int32 Index, const FMWCharacterBattleSkillGroup& Group)
 	{
 		if (Index < 0 || Index >= MaxCombos)
 		{
@@ -302,7 +302,7 @@ public:
 		return true;
 	}
 
-	const FMWCharacterSkillGroup* GetComboAt(int32 Index) const
+	const FMWCharacterBattleSkillGroup* GetComboAt(int32 Index) const
 	{
 		if (Index >= 0 && Index < SkillCombos.Num())
 		{
@@ -313,14 +313,14 @@ public:
 
 	int32 Num() const { return SkillCombos.Num(); }
 
-	const FMWCharacterSkillGroup* GetSkillCombo1() const { return GetComboAt(0); }
-	const FMWCharacterSkillGroup* GetSkillCombo2() const { return GetComboAt(1); }
-	const FMWCharacterSkillGroup* GetSkillCombo3() const { return GetComboAt(2); }
-	const FMWCharacterSkillGroup* GetSkillCombo4() const { return GetComboAt(3); }
+	const FMWCharacterBattleSkillGroup* GetSkillCombo1() const { return GetComboAt(0); }
+	const FMWCharacterBattleSkillGroup* GetSkillCombo2() const { return GetComboAt(1); }
+	const FMWCharacterBattleSkillGroup* GetSkillCombo3() const { return GetComboAt(2); }
+	const FMWCharacterBattleSkillGroup* GetSkillCombo4() const { return GetComboAt(3); }
 };
 
 USTRUCT(BlueprintType)
-struct FMWCharacterResourceData
+struct FMWCharacterSpawnResourceData
 {
 	GENERATED_BODY()
 

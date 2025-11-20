@@ -10,7 +10,7 @@ void UMWCharacterAnimControlComponent::TickComponent(float DeltaTime, enum ELeve
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (CanApproach())
+	if (IsApproaching())
 	{
 		DoApproach(DeltaTime);
 	}
@@ -50,11 +50,6 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 	}
 }
 
-bool UMWCharacterAnimControlComponent::CanApproach() const
-{
-	return	bCanDoApproach;
-}
-
 void UMWCharacterAnimControlComponent::ResetApproachProgress()
 {
 	ApproachProgress = 0.f;
@@ -85,7 +80,7 @@ void UMWCharacterAnimControlComponent::DrawDebugShapeForApprachTarget() const
 void UMWCharacterAnimControlComponent::StartApproachTarget(const AActor* InTarget)
 {
 	// If the owner is doing approach, stop approaching.
-	if (bCanDoApproach)
+	if (IsApproaching())
 	{
 		return;
 	}
@@ -165,7 +160,7 @@ void UMWCharacterAnimControlComponent::StartApproachTarget(const AActor* InTarge
 
 	ResetApproachProgress();
 
-	bCanDoApproach = true;
+	bIsApproaching = true;
 
 	DrawDebugShapeForApprachTarget();
 }
@@ -173,7 +168,7 @@ void UMWCharacterAnimControlComponent::StartApproachTarget(const AActor* InTarge
 void UMWCharacterAnimControlComponent::StartApproachPoint(const FVector& InPoint)
 {
 	// If the owner is doing approach, stop approaching.
-	if (bCanDoApproach)
+	if (IsApproaching())
 	{
 		return;
 	}
@@ -200,7 +195,7 @@ void UMWCharacterAnimControlComponent::StartApproachPoint(const FVector& InPoint
 
 	ResetApproachProgress();
 
-	bCanDoApproach = true;
+	bIsApproaching = true;
 
 	DrawDebugShapeForApprachTarget();
 }
@@ -221,12 +216,12 @@ void UMWCharacterAnimControlComponent::EndApproach(bool bForceTeleportToDestinat
 
 	OwnerAnimInst = nullptr;
 
-	bCanDoApproach = false;
+	bIsApproaching = false;
 
 	ResetApproachProgress();
 }
 
-bool UMWCharacterAnimControlComponent::IsDoingApproach() const
+bool UMWCharacterAnimControlComponent::IsApproaching() const
 {
-	return CanApproach();
+	return bIsApproaching;
 }

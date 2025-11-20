@@ -6,7 +6,7 @@
 
 // Forward Declare
 class AMWCharacter;
-struct FMWCharacterResourceData;
+struct FMWCharacterSpawnResourceData;
 
 // Define
 
@@ -29,13 +29,13 @@ public:
 	virtual void OnActorLoaded(AActor* InLoadedActor) override;
 	virtual FVector GetLocation() const override;
 
-	void SetCharacterData(const FMWCharacterResourceData* InData);
+	void SetCharacterData(const FMWCharacterSpawnResourceData* InData);
 
 	AMWCharacter* GetCharacterActor();
 	const AMWCharacter* GetCharacterActor() const;
 
 protected:
-	const FMWCharacterResourceData* ResourceDataPtr;
+	const FMWCharacterSpawnResourceData* ResourceDataPtr;
 
 	TSubclassOf<AMWCharacter> CharacterClass;
 };

@@ -8,7 +8,7 @@
 // Forward Declare
 class UMWEntity;
 class UMWCharacterEntity;
-struct FMWCharacterResourceData;
+struct FMWCharacterSpawnResourceData;
 
 // Define
 #define ENTITYMANAGER(WorldContext) (UMWEntityManager::Get(WorldContext))
@@ -44,9 +44,9 @@ public:
 	// Character
 	//===============================================================
 public:
-	UMWCharacterEntity* CreateCharacterEntity(FObjectId EntityId, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator, const FMWCharacterResourceData* ResData = nullptr);
+	UMWCharacterEntity* CreateCharacterEntity(FObjectId EntityId, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator, const FMWCharacterSpawnResourceData* ResData = nullptr);
 
-	UMWCharacterEntity* CreateCharacterEntity(const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator, const FMWCharacterResourceData* ResData = nullptr);
+	UMWCharacterEntity* CreateCharacterEntity(const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator, const FMWCharacterSpawnResourceData* ResData = nullptr);
 
 	UMWCharacterEntity* FindCharacter(const FObjectId& EntityId);
 
