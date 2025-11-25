@@ -144,16 +144,6 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	if (ShouldPlayApproachAnim())
 	{
-		// If currently doing skill approach, end it before playing the approach animation.
-		// スキル接近を現在行っている場合、接近アニメーションを再生する前に終了する。
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
-		{
-			if (animControlComp->IsApproaching())
-			{
-				animControlComp->EndApproach(false);
-			}
-		}
-
 		if (PlayMontage(approachAnim, ApproachAnimBlendingOutDelegate, ApproachAnimEndedDelegate))
 		{
 			SetApproachState(ComboStep, true);
@@ -174,16 +164,6 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	if(skillAnim)
 	{
-		// If currently doing approach, end it before playing the skill animation.
-		// スキルアニメーションを再生する前に、現在接近している場合は終了する。
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
-		{
-			if (animControlComp->IsApproaching())
-			{
-				animControlComp->EndApproach(false);
-			}
-		}
-
 		if (PlaySkillAnim(skillAnim))
 		{
 			// Maybe the skill has approach curve.
@@ -247,6 +227,14 @@ void UMWBattleUnitAttack::OnAvatarChange(const FGameplayEventData* Payload)
 void UMWBattleUnitAttack::OnApproachAnimBlendingOut(UAnimMontage* Montage, bool bInterrupted)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnApproachAnimBlendingOut: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
+
+	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	{
+		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		{
+			animControlComp->EndApproach(true);
+		}
+	}
 }
 
 void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -278,10 +266,20 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 
 void UMWBattleUnitAttack::OnReturnAnimBlendingOut(UAnimMontage* Montage, bool bInterrupted)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnReturnAnimBlendingOut: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
+
+	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	{
+		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		{
+			animControlComp->EndApproach(true);
+		}
+	}
 }
 
 void UMWBattleUnitAttack::OnReturnAnimEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+
 	ResetApproachStates();
 
 	SetOriginalPositionFlag(false);

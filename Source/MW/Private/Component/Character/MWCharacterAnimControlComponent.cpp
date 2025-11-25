@@ -21,6 +21,10 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 	// No animation curve found, stop approaching.
 	// アニメーションカーブが見つからない、接近を中止。
 	bool bHasCurve = OwnerAnimInst->GetCurveValue(ApproachTargetCurveName, ApproachProgress);
+	if(FMath::IsNearlyZero(ApproachProgress))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Approach progress : %f"), ApproachProgress));
+	}
 	if (!bHasCurve)
 	{
 		return;
@@ -33,19 +37,9 @@ void UMWCharacterAnimControlComponent::DoApproach(float DeltaTime)
 
 	GetOwner()->SetActorLocation(targetLoc);
 
-	if(ApproachProgress > 0.99f)
+	if (ApproachProgress >= 0.99f || FVector::Dist(targetLoc, ApproachEndLocation) < ApproachEndLocTolerance)
 	{
-		EndApproach();
-
-		return;
-	}
-
-	const float distance = FVector::Dist(targetLoc, ApproachEndLocation);
-
-	if (distance < ApproachEndLocTolerance)
-	{
-		EndApproach();
-
+		EndApproach(true);
 		return;
 	}
 }
@@ -217,8 +211,6 @@ void UMWCharacterAnimControlComponent::EndApproach(bool bForceTeleportToDestinat
 	OwnerAnimInst = nullptr;
 
 	bIsApproaching = false;
-
-	ResetApproachProgress();
 }
 
 bool UMWCharacterAnimControlComponent::IsApproaching() const
