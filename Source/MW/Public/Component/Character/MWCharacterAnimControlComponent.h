@@ -44,6 +44,16 @@ protected:
 
 	void DrawDebugShapeForApprachTarget() const;
 
+	/**
+	 * @brief Get distance between two actors considering their capsule collision.
+	 *
+	 * @param SourceActor : The source actor.
+	 * @param TargetActor : The target actor.
+	 * @param OutClosestPoint : The closest point on the target actor's capsule collision.
+	 * @return : The distance between the two actors.
+	 */
+	float GetDistanceBetweenCapsules(const AActor* SourceActor, const AActor* TargetActor, FVector& OutClosestPoint);
+	
 public:
 	// Sets the target actor to approach and starts approaching.
 	// ターゲットアクターを設定し、接近を開始する。
@@ -94,10 +104,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAnimInstance> OwnerAnimInst;
 
-	UPROPERTY()
 	FVector ApproachStartLocation;
 
-	UPROPERTY()
 	FVector ApproachEndLocation;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ApproachTarget")
