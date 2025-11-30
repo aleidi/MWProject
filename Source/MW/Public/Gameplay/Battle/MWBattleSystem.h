@@ -181,5 +181,6 @@ private:
 private:
 	FDelegateHandle DHBattleEnd;
 
+	UPROPERTY()
 	TObjectPtr<UMWBattle> BattleInst;
 };

@@ -2,7 +2,6 @@
 #include "Data/MWDataTableManager.h"
 #include "Define/MWDefineBattle.h"
 #include "Entity/MWEntityManager.h"
-#include "Gameplay/Battle/BattleUnit/MWAttributeManager.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Gameplay/Battle/BattleUnit/MWStatusEffect.h"
 #include "GameplayAbility/MWAbilitySet.h"

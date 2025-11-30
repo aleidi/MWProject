@@ -32,7 +32,6 @@ void UMWBattleSystem::StartBattle(const FMWBattleData& InData)
 	// Init battle instance
 	BattleInst = NewObject<UMWBattle>(this);
 	BattleInst->StartBattle(InData);
-	BattleInst->AddToRoot();
 
 	if (DHBattleEnd.IsValid())
 	{
@@ -55,7 +54,6 @@ void UMWBattleSystem::OnBattleEndCallback(EBattleResult Result)
 {
 	if (IsValid(BattleInst))
 	{
-		BattleInst->RemoveFromRoot();
 		BattleInst = nullptr;
 	}
 

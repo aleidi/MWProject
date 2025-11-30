@@ -102,7 +102,8 @@ private:
 	bool bIsActionComplete = false;
 	FDelegateHandle DHActionComplete;
 
-	// Use TStrongObjectPtr to prevent GC without manual AddToRoot/RemoveFromRoot
+	// Use TStrongObjectPtr to prevent GC without manual AddToRoot/RemoveFromRoot.
+	// TStrongObjectPtrを使用して、AddToRoot/RemoveFromRootなしでGCを防止する.
 	TStrongObjectPtr<UMWActionExecutor> ActionExecutor;
 
 #if WITH_EDITOR
