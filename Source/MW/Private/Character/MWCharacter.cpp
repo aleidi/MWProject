@@ -140,6 +140,11 @@ void AMWCharacter::SetOwnerEntity(UMWCharacterEntity* InOwnerEntity)
 	OwnerEntity = InOwnerEntity;
 }
 
+UMWCharacterEntity* AMWCharacter::GetOwnerEntity() const
+{
+	return OwnerEntity;
+}
+
 void AMWCharacter::BeginPlay()
 {
 	Super::BeginPlay();

@@ -2,12 +2,13 @@
 
 // Include Header
 #include "GameplayAbility/Ability/Battle/MWBattleMoveCommand.h"
+#include "Define/MWDefineBattle.h"
 #include "Define/MWDefineGameplay.h"
 #include "MWBattleUnitAttack.generated.h"
 
 // Forward Declare
 struct FGameplayEventData;
-
+class UGameplayEffect;
 // Define
 
 /*
@@ -42,9 +43,15 @@ protected:
 
 	void OnCombo(const FGameplayEventData* Payload);
 
+	void OnComboHit(const FGameplayEventData* Payload);
+
 	void OnComboEnd();
 
 	void OnAvatarChange(const FGameplayEventData* Payload);
+
+	void BindDelegates();
+
+	void UnbindDelegates();
 
 	UFUNCTION()
 	void OnSkillAnimBlendingOut(UAnimMontage* Montage, bool bInterrupted);
@@ -66,25 +73,41 @@ protected:
 
 	void SetupSkillTable(AActor* AvatarActor);
 
+	// Reset combo state
+	// コンボ状態をリセットする
 	void ResetCombo();
 
-	void BindDelegates();
-
-	void UnbindDelegates();
-
+	// Play montage with blending out and end delegates.
+	// ブレンディングアウトと終了デリゲートを設定してモンタージュを再生する.
 	bool PlayMontage(UAnimMontage* InMontage, FOnMontageBlendingOutStarted& BlendingOutDelegate, FOnMontageEnded& EndDelegate);
 
+	// Play skill animation montage.
+	// スキルアニメーションモンタージュを再生する.
+	bool PlaySkillAnim(UAnimMontage* InAnimation);
+
+	// Check if currently doing approach.
+	// 今接近中か確認する.
 	bool IsDoingApproach() const;
 
+	// Set approach state for the current combo step.
+	// 現在のコンボステップのアプローチ状態を設定する.
 	void SetApproachState(int32 CurrentComboStep, bool NewSetate);
 
 	void ResetApproachStates();
 
+	// Check if the original position flag is set.
+	// 元の位置フラグが設定されているかどうかを確認する.
 	bool IsOriginalPositionFlagSet() const;
 
 	void SetOriginalPositionFlag(bool NewSetate);
 
-	bool PlaySkillAnim(UAnimMontage* InAnimation);
+	void CalculateComboDamage();
+
+	void CalcualteComboHitNum(UAnimSequenceBase* InAnim);
+
+	void ApplyComboTotalDamageToSource();
+
+	void ApplyComboDamageToTarget(const AActor* InTargetActor, float ComboHitRatio);
 
 protected:
 	// skills table
@@ -97,6 +120,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|UnitAttack")
 	FGameplayTag ComboTag;
 
+	// The tag to receive combo event after ability activated.
+	// アビリティ発動後にコンボイベントを受信するタグ
+	UPROPERTY(BlueprintReadOnly, Category = "Battle|UnitAttack")
+	FGameplayTag ComboHitTag = MWGameplayTags::GP_Battle_ComboHit;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|UnitAttack")
 	FGameplayTag AvatarChangeTag;
 
@@ -107,26 +135,39 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|UnitAttack")
 	float MaxDistanceFromInitialPosition = 0.1f;
 
+	TObjectPtr<const AActor> AttackTargetActor = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Battle|UnitAttack")
+	TSubclassOf<UGameplayEffect> GE_ComboTotalDamage;
+
+	UPROPERTY(EditAnywhere, Category = "Battle|UnitAttack")
+	TSubclassOf<UGameplayEffect> GE_ComboHit;
+
 	// Current Combo Index
 	// 現在のコンボインデックス
-	UPROPERTY(BlueprintReadOnly)
-	int32 ComboStep = 0;
+	int32 CurrComboStep = 0;
 
-	UPROPERTY(BlueprintReadOnly)
-	EMWCharacterSkillComboType ComboType;
+	int32 CurrComboTotalDmg = 0;
+
+	int32 ComboHitNum = 0;
+
+	int32 CurrComboHitIdx = 0;
+
+	EMWCharacterSkillComboType CurrComboType;
+
+	EMWAttackResult CurrComboResult = EMWAttackResult::Max;
 
 	// Approach states for each combo step.
 	// 各コンボステップのアプローチ状態。
-	UPROPERTY()
 	TMap<int32, bool> ApproachStates;
 
-	UPROPERTY()
 	bool bIsOriginalPositionSet = false;
 
-	UPROPERTY()
 	FVector OriginalPosition;
 
 	FDelegateHandle ComboEventHandle;
+
+	FDelegateHandle ComboHitEventHandle;
 
 	FDelegateHandle AvatarChangeEventHandle;
 

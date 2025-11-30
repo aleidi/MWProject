@@ -62,5 +62,5 @@ public:
 	void SpawnCharacter(int32 CharacterId);
 
 	UFUNCTION(exec)
-	void SpawnBattleUnit(int32 CharacterId);
+	void SpawnBattleUnit(int32 C1, int32 C2, int32 C3);
 };

@@ -10,23 +10,17 @@ namespace MWGameplayTags
 {
 	MW_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-//**********************//
-//      Action Tag      //
-//**********************//
+	//==== Action Tag ====//
 #pragma region Input Action Tag
 
-//**********************//
-//        Basic         //
-//**********************//
+	//==== Basic ====//
 #pragma region Basic
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Direction);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Confirm);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Cancel);
 #pragma endregion
 
-//**********************//
-//   TPDefault Input    //
-//**********************//
+	//==== TPDefault Input ====//
 #pragma region TPDefault
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Debug);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Move);
@@ -34,9 +28,7 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_AutoRun);
 #pragma endregion
 
-//**********************//
-//    Battle Command    //
-//**********************//
+	//==== Battle Command ====//
 #pragma region Battle Command
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Move);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_ChangeLeader);
@@ -74,9 +66,7 @@ namespace MWGameplayTags
 
 #pragma endregion
 
-//**********************//
-//    Input Mapping     //
-//**********************//
+	//==== Input Mapping ====//
 #pragma region Input Mapping Tag
 	DECLARE_MW_GAMEPLAY_TAG(IMC_Basic);
 	DECLARE_MW_GAMEPLAY_TAG(IMC_TPDefault);
@@ -84,17 +74,25 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCharacterAction);
 #pragma endregion
 
-//**********************//
-//     Gameplay Tag     //
-//**********************//
+	//==== Gameplay Tag ====//
 #pragma region Gameplay Tag
+	// Gameplay Ability
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Ability_UnitAttack);
+	// Attack command
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P1);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P2);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P3);
+	// Combo
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboCentral);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboUpDown);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboLeftRight);
+	// Combo Hit
+	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboHit);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_AvatarChanged);
+#pragma endregion
+
+	//==== SetByCaller Tag ====//
+#pragma region SetByCaller Tag
+	DECLARE_MW_GAMEPLAY_TAG(GP_SetByCaller_ComboHitRatio);
 #pragma endregion
 };

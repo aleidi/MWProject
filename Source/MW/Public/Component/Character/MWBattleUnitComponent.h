@@ -2,18 +2,15 @@
 
 // Include Header
 #include "Component/Pawn/MWPawnComponent.h"
+#include "Gameplay/Battle/BattleUnit/MWStatusEffect.h"
 #include "MWBattleUnitComponent.generated.h"
 
 // Forward Declare
 class AMWBattleUnitAvatar;
+class UMWAbilitySet;
+class UMWBattleAttributeSet;
 class UMWCharacterBattleSkillDataAsset;
-
-namespace MWBattle
-{
-	class FMWStatusEffectManager;
-	class FMWAttributeManager;
-}
-
+struct FMWAbilitySetGrantedHandles;
 
 UENUM(BlueprintType)
 enum class EBattleUnitCharacterType : uint8
@@ -73,21 +70,31 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "MW|Battle|Unit")
 	void ChangeNextAvatar(bool bNext);
 
+	void OnCharacterDataChanged();
+
 	const UMWCharacterBattleSkillDataAsset* GetSkillData();
 
 private:
-	// Attribute manager handles the attributes of this battle unit.
-	// アトリビュートマネージャーはこの戦闘ユニットの属性を管理する.
-	TSharedPtr<MWBattle::FMWAttributeManager> AttributeManager = nullptr;
+	int32 FindEntityCharacterId() const;;
 
+private:
 	// Status effect manager handles the status effects of this battle unit.
 	// ステータスエフェクトマネージャーはこの戦闘ユニットのステータスエフェクトを管理する.
-	TSharedPtr<MWBattle::FMWStatusEffectManager> StatusEffectManager = nullptr;
+	TUniquePtr<MWBattle::FMWStatusEffectManager> StatusEffectManager = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	TArray<FMWBattleUnitCharacterData> CharacterData;
 
-	UPROPERTY()
 	int32 AvatarCharacterIdx = INDEX_NONE;
 
+	//==== Attribute Set ====//
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability", meta=(AllowPrivateAccess))
+	TObjectPtr<UMWAbilitySet> AbilitySet;
+
+	/* Cache the granted abilities */
+	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
+
+public:
+	void BeginPlay() override;
 };

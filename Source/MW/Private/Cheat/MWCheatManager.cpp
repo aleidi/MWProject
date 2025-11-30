@@ -1,7 +1,9 @@
 ﻿#include "Cheat/MWCheatManager.h"
+#include "Component/Character/MWBattleUnitComponent.h"
 #include "Data/MWDataTableManager.h"
 #include "Define/MWDefineDataTable.h"
 #include "Define/MWDefineGameplay.h"
+#include "Entity/Character/MWCharacterEntity.h"
 #include "Entity/MWEntityManager.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Kismet/GameplayStatics.h"
@@ -83,30 +85,12 @@ void UMWCheatManager::SpawnCharacter(int32 CharacterId)
 
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
-	if (data)
-	{
-		FMWCharacterResourceData resData;
-		resData.VisualAnimInst = data->CharacterAnimInst.LoadSynchronous();
-		resData.VisualMesh = data->CharacterMesh.LoadSynchronous();
-		resData.Height = data->Height;
-
-		ENTITYMANAGER(this)->CreateCharacterEntity(loc, FRotator::ZeroRotator, &resData);
-	}
+	ENTITYMANAGER(this)->SpawnCharacter(CharacterId, loc);
 }
 
-void UMWCheatManager::SpawnBattleUnit(int32 CharacterId)
+void UMWCheatManager::SpawnBattleUnit(int32 C1, int32 C2, int32 C3)
 {
-	const FMWCharacterData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
-
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
-	if (data)
-	{
-		FMWCharacterResourceData resData;
-		resData.VisualAnimInst = data->CharacterAnimInst.LoadSynchronous();
-		resData.VisualMesh = data->CharacterMesh.LoadSynchronous();
-		resData.CharacterClass = AMWBattleUnitAvatar::StaticClass();
-
-		ENTITYMANAGER(this)->CreateCharacterEntity(loc, FRotator::ZeroRotator, &resData);
-	}
+	ENTITYMANAGER(this)->SpawnBattleUnitCharacter(C1, C2, C3, loc);
 }

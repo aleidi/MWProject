@@ -34,6 +34,8 @@ public:
 	AMWCharacter* GetCharacterActor();
 	const AMWCharacter* GetCharacterActor() const;
 
+	const FMWCharacterSpawnResourceData* GetCharacterResourceData() const;
+
 protected:
 	const FMWCharacterSpawnResourceData* ResourceDataPtr;
 

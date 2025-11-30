@@ -76,12 +76,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Luck);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HP, Category = "MW", meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData HP;
-	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, HP);
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Health);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHP, Category = "MW", meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxHP;
-	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, MaxHP);
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, MaxHealth);
 
 	// -------------------------------------------------------------------
 	//	Temp Attribute
@@ -93,6 +93,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, Damage);
+
+	UPROPERTY(BlueprintReadOnly, Category="MW", meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ComboTotalDamage;
+	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, ComboTotalDamage);
 
 protected:
 	// These OnRep functions exist to make sure that the ability system internal representations are synchronized properly during replication

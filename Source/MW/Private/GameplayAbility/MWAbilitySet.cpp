@@ -102,26 +102,6 @@ void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbi
 		}
 	}
 
-	// Grant the gameplay effects.
-	for (int32 EffectIndex = 0; EffectIndex < GrantedGameplayEffects.Num(); ++EffectIndex)
-	{
-		const FMWAbilitySet_GameplayEffect& EffectToGrant = GrantedGameplayEffects[EffectIndex];
-
-		if (!IsValid(EffectToGrant.GameplayEffect))
-		{
-			UE_LOG(LogMWAbilitySystem, Error, TEXT("GrantedGameplayEffects[%d] on ability set [%s] is not valid"), EffectIndex, *GetNameSafe(this));
-			continue;
-		}
-
-		const UGameplayEffect* GameplayEffect = EffectToGrant.GameplayEffect->GetDefaultObject<UGameplayEffect>();
-		const FActiveGameplayEffectHandle GameplayEffectHandle = MWASC->ApplyGameplayEffectToSelf(GameplayEffect, EffectToGrant.EffectLevel, MWASC->MakeEffectContext());
-
-		if (OutGrantedHandles)
-		{
-			OutGrantedHandles->AddGameplayEffectHandle(GameplayEffectHandle);
-		}
-	}
-
 	// Grant the attribute sets.
 	for (int32 SetIndex = 0; SetIndex < GrantedAttributes.Num(); ++SetIndex)
 	{
@@ -139,6 +119,26 @@ void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbi
 		if (OutGrantedHandles)
 		{
 			OutGrantedHandles->AddAttributeSet(NewSet);
+		}
+	}
+
+	// Grant the gameplay effects.
+	for (int32 EffectIndex = 0; EffectIndex < GrantedGameplayEffects.Num(); ++EffectIndex)
+	{
+		const FMWAbilitySet_GameplayEffect& EffectToGrant = GrantedGameplayEffects[EffectIndex];
+
+		if (!IsValid(EffectToGrant.GameplayEffect))
+		{
+			UE_LOG(LogMWAbilitySystem, Error, TEXT("GrantedGameplayEffects[%d] on ability set [%s] is not valid"), EffectIndex, *GetNameSafe(this));
+			continue;
+		}
+
+		const UGameplayEffect* GameplayEffect = EffectToGrant.GameplayEffect->GetDefaultObject<UGameplayEffect>();
+		const FActiveGameplayEffectHandle GameplayEffectHandle = MWASC->ApplyGameplayEffectToSelf(GameplayEffect, EffectToGrant.EffectLevel, MWASC->MakeEffectContext());
+
+		if (OutGrantedHandles)
+		{
+			OutGrantedHandles->AddGameplayEffectHandle(GameplayEffectHandle);
 		}
 	}
 }

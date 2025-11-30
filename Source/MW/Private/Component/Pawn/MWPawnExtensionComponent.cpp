@@ -18,6 +18,15 @@ void UMWPawnExtensionComponent::BeginPlay()
 
     if (AMWCharacter* character = GetPawn<AMWCharacter>())
     {
+        // Initialize character data
+        if (auto* charEntity = character->GetOwnerEntity())
+        {
+            if (const auto* resData = charEntity->GetCharacterResourceData())
+            {
+				CharacterId = resData->Id;
+            }
+        }
+
         InitializeAbilitySystem(character->GetMWAbilitySystemComponent(), character);
     }
 }
@@ -124,9 +133,25 @@ void UMWPawnExtensionComponent::GiveAbility()
     const FMWCharacterData* characterData = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
 	if (characterData && characterData->BaseAbilitySets.Num() > 0)
 	{
-		for (auto& ability_set : characterData->BaseAbilitySets)
+		for (const TSoftObjectPtr<UMWAbilitySet>& ability_set_ptr : characterData->BaseAbilitySets)
 		{
-			ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
+			// Check if the ability set is loaded
+			UMWAbilitySet* ability_set = ability_set_ptr.Get();
+			if (!ability_set)
+			{
+				// Synchronously load the ability set if not loaded
+				ability_set = ability_set_ptr.LoadSynchronous();
+			}
+
+			// Verify the ability set was loaded successfully before using it
+			if (ability_set)
+			{
+				ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
+			}
+			else
+			{
+				UE_LOG(LogMWComponent, Warning, TEXT("Failed to load ability set for character %d in %s"), CharacterId, *GetNameSafe(GetOwner()));
+			}
 		}
 	}
 }

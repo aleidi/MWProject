@@ -10,10 +10,10 @@ namespace MWDataTableName
 }
 
 class UDataTable;
-struct FTableRowBase;
 struct FMWCharacterData;
+struct FTableRowBase;
 
-#define DATATABLEMANAGER				(UMWDataTableManager::Get())
+#define DATATABLEMANAGER (UMWDataTableManager::Get())
 
 /*
  * @class UMWDataTableManager

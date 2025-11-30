@@ -1,12 +1,15 @@
 #include "GameplayAbility/Ability/Battle/MWBattleUnitAttack.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Animation/AnimSequenceBase.h"
+#include "Animation/Notify/Battle/Combat/AN_ComboHit.h"
 #include "Component/Character/MWBattleUnitComponent.h"
 #include "Component/Character/MWCharacterAnimControlComponent.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "MWLogChannels.h"
 
+#include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 #define MAX_COMBO_STEP 4
 
 UMWBattleUnitAttack::UMWBattleUnitAttack(const FObjectInitializer& ObjectInitializer)
@@ -20,30 +23,30 @@ UMWBattleUnitAttack::UMWBattleUnitAttack(const FObjectInitializer& ObjectInitial
 
 void UMWBattleUnitAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	BindDelegates();
-
 	AActor* avatar = ActorInfo ? ActorInfo->AvatarActor.Get() : GetAvatarActorFromActorInfo(); 
 	SetupSkillTable(avatar);
 
+	// Setup skill table should be before reset approach states.
+	// スキルテーブルの設定は、アプローチ状態のリセットの前に行う必要がある.
+	BindDelegates();
 	ResetApproachStates();
-
 	ResetCombo();
 }
 
 void UMWBattleUnitAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	UnbindDelegates();
-
+	ResetApproachStates();
 	ResetCombo();
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
-UE_DISABLE_OPTIMIZATION
+
 void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 {	
 	// Combo is finished, do nothing.
 	// コンボが終了した場合、何もしない。
-	if (ComboStep >= SkillTable.Num())
+	if (CurrComboStep >= SkillTable.Num())
 	{
 		return;
 	}
@@ -60,6 +63,8 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		return;
 	}
 
+	AttackTargetActor = Payload->Target;
+
 	AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo());
 
 	if (!avatar)
@@ -67,23 +72,26 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		return;
 	}
 
+	// Calculate total damage for the combo.
+	CalculateComboDamage();
+
 	// TODO : Check action points before executing the combo.
 
-	ComboType = EMWCharacterSkillComboType::Max;
+	CurrComboType = EMWCharacterSkillComboType::Max;
 
 	// Check the combo type and play the corresponding skill animation.
 	// コンボタイプを確認して、対応するスキルアニメーションを再生する。
 	if (Payload->EventTag == MWGameplayTags::GP_Battle_ComboCentral)
 	{
-		ComboType = EMWCharacterSkillComboType::Central;
+		CurrComboType = EMWCharacterSkillComboType::Central;
 	}
 	else if( Payload->EventTag == MWGameplayTags::GP_Battle_ComboUpDown)
 	{
-		ComboType = EMWCharacterSkillComboType::UpDown;
+		CurrComboType = EMWCharacterSkillComboType::UpDown;
 	}
 	else if (Payload->EventTag == MWGameplayTags::GP_Battle_ComboLeftRight)
 	{
-		ComboType = EMWCharacterSkillComboType::LeftRight;
+		CurrComboType = EMWCharacterSkillComboType::LeftRight;
 	}
 	else
 	{
@@ -91,16 +99,16 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		return;
 	}
 
-	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
+	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(CurrComboStep);
 
 	if (!skillGroup)
 	{
-		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill group not found for combo step[%d]"), ComboStep);
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill group not found for combo step[%d]"), CurrComboStep);
 
 		return;
 	}
 
-	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(ComboType);
+	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(CurrComboType);
 
 	if (!skillData)
 	{
@@ -120,7 +128,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 	// ターゲットがスキル範囲内にいるか確認する。
 	bool bIsTargetInRange = false;
 	{
-		const float distance = FVector::Dist(Payload->Target->GetActorLocation(), avatar->GetActorLocation());
+		const float distance = FVector::Dist(AttackTargetActor->GetActorLocation(), avatar->GetActorLocation());
 
 		bIsTargetInRange = distance <= skillData->CastRange;
 	}
@@ -129,7 +137,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	if(skillData->bUseApproachAnimation && approachAnim == nullptr)
 	{
-		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Approach animation is null for combo type[%d] step[%d]"), (int)ComboType, ComboStep);
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Approach animation is null for combo type[%d] step[%d]"), (int)CurrComboType, CurrComboStep);
 	}
 
 	// If the target is out of range and requires approach, handle the approach logic first.
@@ -146,13 +154,13 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 	{
 		if (PlayMontage(approachAnim, ApproachAnimBlendingOutDelegate, ApproachAnimEndedDelegate))
 		{
-			SetApproachState(ComboStep, true);
+			SetApproachState(CurrComboStep, true);
 
 			// Get CharacterAnimControlComponent to start approach logic.
 			// キャラクターアニメーションコントロールコンポーネントを取得して、接近ロジックを開始する。
 			if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
 			{
-				animControlComp->StartApproachTarget(Payload->Target.Get());
+				animControlComp->StartApproachTarget(AttackTargetActor.Get());
 			}
 		}
 		// Early return to wait for approach animation to finish before playing the skill animation.
@@ -162,27 +170,44 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	UAnimMontage* skillAnim = skillData->Animation;
 
-	if(skillAnim)
+	CalcualteComboHitNum(skillAnim);
+
+	if (PlaySkillAnim(skillAnim))
 	{
-		if (PlaySkillAnim(skillAnim))
+		// Maybe the skill has approach curve.
+		// スキルにアプローチカーブがあるかもしれない。
+		if (!bIsTargetInRange && skillData->bRequiresApproach && !skillData->bUseApproachAnimation)
 		{
-			// Maybe the skill has approach curve.
-			// スキルにアプローチカーブがあるかもしれない。
-			if (!bIsTargetInRange && skillData->bRequiresApproach && !skillData->bUseApproachAnimation)
+			// Get CharacterAnimControlComponent to start approach logic.
+			// キャラクターアニメーションコントロールコンポーネントを取得して、接近ロジックを開始する。
+			if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
 			{
-				// Get CharacterAnimControlComponent to start approach logic.
-				// キャラクターアニメーションコントロールコンポーネントを取得して、接近ロジックを開始する。
-				if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
-				{
-					animControlComp->StartApproachTarget(Payload->Target.Get());
-				}
+				animControlComp->StartApproachTarget(AttackTargetActor.Get());
 			}
 		}
 	}
-	else
-	{
-		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill animation not found for combo type[%d] step[%d]"), (int)ComboType, ComboStep);
-	}
+}
+
+void UMWBattleUnitAttack::OnComboHit(const FGameplayEventData* Payload)
+{
+	int32 hitDamage = 0;
+
+	// If it's the last hit, assign the remaining damage to ensure total damage consistency.
+	// 最後のヒットの場合、残りのダメージを割り当てて、総ダメージの一貫性を確保する。
+	const UAN_ComboHit* hitObj = Cast<const UAN_ComboHit>(Payload->OptionalObject);
+
+	float damageWeight = hitObj->DamageWeight;
+
+	hitDamage = FMath::Floor(CurrComboTotalDmg * damageWeight);
+
+	++CurrComboHitIdx;
+
+	FString ename = StaticEnum<EMWAttackResult>()->GetNameStringByValue((int64)CurrComboResult);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("UMWBattleUnitAttack::OnComboHit: HitDamage[%d], HitRes[%s]"), hitDamage, *ename));
+
+	// Apply damage to the target.
+	// ターゲットにダメージを適用する.
+	ApplyComboDamageToTarget(AttackTargetActor.Get(), hitObj->DamageWeight);
 }
 
 void UMWBattleUnitAttack::OnComboEnd()
@@ -204,7 +229,7 @@ void UMWBattleUnitAttack::OnComboEnd()
 
 				if (PlayMontage(returnApproachAnim, ReturnAnimBlendingOutDelegate, ReturnAnimEndedDelegate))
 				{
-					SetApproachState(ComboStep, true);
+					SetApproachState(CurrComboStep, true);
 
 					return;
 				}
@@ -213,9 +238,7 @@ void UMWBattleUnitAttack::OnComboEnd()
 	}
 
 	SetOriginalPositionFlag(false);
-
 	ResetApproachStates();
-
 	ResetCombo();
 }
 
@@ -241,16 +264,16 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnApproachAnimEnded: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
 
-	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(ComboStep);
+	const FMWCharacterBattleSkillGroup* skillGroup = SkillTable.GetComboAt(CurrComboStep);
 
 	if (!skillGroup)
 	{
-		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill group not found for combo step[%d]"), ComboStep);
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill group not found for combo step[%d]"), CurrComboStep);
 
 		return;
 	}
 
-	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(ComboType);
+	const FMWCharacterBattleSkillData* skillData = skillGroup->GetSkill(CurrComboType);
 
 	if (!skillData)
 	{
@@ -259,9 +282,11 @@ void UMWBattleUnitAttack::OnApproachAnimEnded(UAnimMontage* Montage, bool bInter
 
 	UAnimMontage* skillAnim = skillData->Animation;
 
+	CalcualteComboHitNum(skillAnim);
+
 	PlaySkillAnim(skillAnim);
 
-	SetApproachState(ComboStep, false);
+	SetApproachState(CurrComboStep, false);
 }
 
 void UMWBattleUnitAttack::OnReturnAnimBlendingOut(UAnimMontage* Montage, bool bInterrupted)
@@ -279,11 +304,8 @@ void UMWBattleUnitAttack::OnReturnAnimBlendingOut(UAnimMontage* Montage, bool bI
 
 void UMWBattleUnitAttack::OnReturnAnimEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-
-	ResetApproachStates();
-
 	SetOriginalPositionFlag(false);
-
+	ResetApproachStates();
 	ResetCombo();
 }
 
@@ -300,7 +322,7 @@ void UMWBattleUnitAttack::OnSkillAnimEnded(UAnimMontage* Montage, bool bInterrup
 	
 	// If all combo steps are done, end the combo.
 	// すべてのコンボステップが完了した場合、コンボを終了する。
-	if (!bInterrupted && ComboStep >= SkillTable.Num())
+	if (!bInterrupted && CurrComboStep >= SkillTable.Num())
 	{
 		OnComboEnd();
 	}
@@ -310,7 +332,6 @@ void UMWBattleUnitAttack::OnSkillAnimEnded(UAnimMontage* Montage, bool bInterrup
 
 void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
 {
-	// If your avatar exposes a skill table, cast and read it:
 	if (AvatarActor)
 	{
 		if (UMWBattleUnitComponent* battleUnitComp = AvatarActor->FindComponentByClass<UMWBattleUnitComponent>())
@@ -335,12 +356,23 @@ void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
 
 void UMWBattleUnitAttack::ResetCombo()
 {
-	ComboStep = 0;
+	AttackTargetActor = nullptr;
+
+	CurrComboStep = 0;
+
+	CurrComboTotalDmg = 0;
+
+	CurrComboResult = EMWAttackResult::Max;
+
+	ComboHitNum = 0;
+
+	CurrComboHitIdx = 0;
 }
 
 void UMWBattleUnitAttack::BindDelegates()
 {
 	ComboEventHandle = GetAbilitySystemComponentFromActorInfo_Ensured()->GenericGameplayEventCallbacks.FindOrAdd(ComboTag).AddUObject(this, &ThisClass::OnCombo);
+	ComboHitEventHandle = GetAbilitySystemComponentFromActorInfo_Ensured()->GenericGameplayEventCallbacks.FindOrAdd(ComboHitTag).AddUObject(this, &ThisClass::OnComboHit);
 	AvatarChangeEventHandle = GetAbilitySystemComponentFromActorInfo_Ensured()->GenericGameplayEventCallbacks.FindOrAdd(AvatarChangeTag).AddUObject(this, &ThisClass::OnAvatarChange);
 
 	SkillAnimBlendingOutDelegate.BindUObject(this, &ThisClass::OnSkillAnimBlendingOut);
@@ -363,6 +395,11 @@ void UMWBattleUnitAttack::UnbindDelegates()
 		if (ComboEventHandle.IsValid())
 		{
 			asc->GenericGameplayEventCallbacks.FindOrAdd(ComboTag).Remove(ComboEventHandle);
+		}
+
+		if (ComboHitEventHandle.IsValid())
+		{
+			asc->GenericGameplayEventCallbacks.FindOrAdd(ComboHitTag).Remove(ComboHitEventHandle);
 		}
 	}
 }
@@ -394,7 +431,7 @@ bool UMWBattleUnitAttack::PlayMontage(UAnimMontage* InMontage, FOnMontageBlendin
 
 bool UMWBattleUnitAttack::IsDoingApproach() const
 {
-	return ApproachStates[ComboStep];
+	return ApproachStates[CurrComboStep];
 }
 
 void UMWBattleUnitAttack::SetApproachState(int32 CurrentComboStep, bool NewState)
@@ -431,16 +468,88 @@ bool UMWBattleUnitAttack::PlaySkillAnim(UAnimMontage* InAnimation)
 	{
 		if (PlayMontage(InAnimation, SkillAnimBlendingOutDelegate, SkillAnimEndedDelegate))
 		{
-			++ComboStep;
+			++CurrComboStep;
 
 			return true;
 		}
 	}
 	else
 	{
-		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill animation not found for combo type[%d] step[%d]"), (int)ComboType, ComboStep);
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::GameplayEventCallback: Skill animation not found for combo type[%d] step[%d]"), (int)CurrComboType, CurrComboStep);
 	}
 
 	return false;
 }
-UE_ENABLE_OPTIMIZATION
+
+void UMWBattleUnitAttack::CalculateComboDamage()
+{
+	CurrComboTotalDmg = 9999;
+
+	CurrComboResult = EMWAttackResult::Critical;
+
+	ApplyComboTotalDamageToSource();
+}
+
+void UMWBattleUnitAttack::CalcualteComboHitNum(UAnimSequenceBase* InAnim)
+{
+	if (InAnim)
+	{
+		for (auto& notify : InAnim->Notifies)
+		{
+			if (notify.Notify && notify.Notify->IsA<UAN_ComboHit>())
+			{
+				++ComboHitNum;
+			}
+		}
+	}
+}
+
+void UMWBattleUnitAttack::ApplyComboTotalDamageToSource()
+{
+	UAbilitySystemComponent* sourceASC = GetAbilitySystemComponentFromActorInfo();
+
+	if (sourceASC && GE_ComboTotalDamage)
+	{
+		FGameplayEffectContextHandle contextHandle = sourceASC->MakeEffectContext();
+		contextHandle.AddInstigator(GetAvatarActorFromActorInfo(), GetAvatarActorFromActorInfo());
+		
+		FGameplayEffectSpecHandle specHandle = sourceASC->MakeOutgoingSpec(GE_ComboTotalDamage, 1.f, contextHandle);
+		
+		if (specHandle.IsValid())
+		{	
+			sourceASC->ApplyGameplayEffectSpecToSelf(*specHandle.Data.Get());
+		}
+	}
+}
+
+void UMWBattleUnitAttack::ApplyComboDamageToTarget(const AActor* InTargetActor, float ComboHitRatio)
+{
+	if (!InTargetActor)
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* sourceASC = GetAbilitySystemComponentFromActorInfo();
+	UAbilitySystemComponent* targetASC = InTargetActor->GetComponentByClass<UAbilitySystemComponent>();
+
+	if (sourceASC && targetASC && GE_ComboHit)
+	{
+		FGameplayEffectContextHandle contextHandle = sourceASC->MakeEffectContext();
+		contextHandle.AddInstigator(GetAvatarActorFromActorInfo(), GetAvatarActorFromActorInfo());
+		
+		FGameplayEffectSpecHandle specHandle = sourceASC->MakeOutgoingSpec(GE_ComboHit, 1.f, contextHandle);
+		
+		if (specHandle.IsValid())
+		{
+			specHandle.Data->SetSetByCallerMagnitude(MWGameplayTags::GP_SetByCaller_ComboHitRatio, ComboHitRatio);
+			
+			sourceASC->ApplyGameplayEffectSpecToTarget(*specHandle.Data.Get(), targetASC);
+
+			auto* attrSet = targetASC->GetSet<UMWBattleAttributeSet>();
+			if (attrSet)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("UMWBattleUnitAttack::ApplyComboDamageToTarget: Target HP[%f]"), attrSet->GetHealth()));
+			}
+		}
+	}
+}

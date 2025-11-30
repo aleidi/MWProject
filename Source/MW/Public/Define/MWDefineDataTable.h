@@ -4,6 +4,8 @@
 #include "Data/MWCharacterData.h"
 #include "MWDefineDataTable.generated.h"
 
+class UMWAbilitySet;
+
 USTRUCT(BlueprintType)
 struct FMWCharacterData : public FTableRowBase
 {
@@ -30,11 +32,11 @@ struct FMWCharacterData : public FTableRowBase
 
 	/* character ability data */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
-	TArray<TObjectPtr<class UMWAbilitySet>> BaseAbilitySets;
+	TArray<TSoftObjectPtr<UMWAbilitySet>> BaseAbilitySets;
 
 	/* Abilities given to character at the beginning of battle. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|Ability")
-	TArray<TSoftClassPtr<class UMWAbilitySet>> BattleAbilitySets;
+	TArray<TSoftObjectPtr<UMWAbilitySet>> BattleAbilitySets;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|Ability")
 	TSoftObjectPtr<UMWCharacterBattleSkillDataAsset> BattleSkillTable;

@@ -112,6 +112,7 @@ public:
 #pragma region Entity
 public:
 	virtual void SetOwnerEntity(UMWCharacterEntity* InOwnerEntity);
+	UMWCharacterEntity* GetOwnerEntity() const;
 
 protected:
 	TObjectPtr<UMWCharacterEntity> OwnerEntity = nullptr;

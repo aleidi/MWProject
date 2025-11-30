@@ -86,8 +86,12 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,				"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,				"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,			"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,				"GameplayTag.Battle.AvatarChanged",						"Battle: Avatar changed / swapped event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboHit,					"GameplayTag.Battle.ComboHit",							"Battle Combo Hit.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,				"GameplayTag.Battle.AvatarChanged",						"Battle Avatar changed / swapped event.");
+#pragma endregion
 
+#pragma region SetByCaller Tag
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_SetByCaller_ComboHitRatio,		"GameplayTag.SetByCaller.ComboHitRatio",			"SetByCaller : Combo Hit Ratio.");
 #pragma endregion
 
 	TArray<FGameplayTag> BattleCommands = 

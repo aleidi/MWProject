@@ -14,8 +14,8 @@ UMWBattleAttributeSet::UMWBattleAttributeSet()
 	Dexterity = 0.f;
 	Agility = 0.f;
 	Luck = 0.f;
-	HP = 0.f;
-	MaxHP = 0.f;
+	Health = 0.f;
+	MaxHealth = 0.f;
 	HitRate = 0.f;
 	Damage = 0.f;
 }
@@ -47,8 +47,8 @@ void UMWBattleAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 		SetDamage(0.f);
 
 		// apply the damage to health
-		const float curr_hp = GetHP();
-		SetHP(FMath::Clamp(curr_hp - damage, 0.f, GetMaxHP()));
+		const float curr_hp = GetHealth();
+		SetHealth(FMath::Clamp(curr_hp - damage, 0.f, GetMaxHealth()));
 	}
 }
 
@@ -73,12 +73,12 @@ void UMWBattleAttributeSet::PostAttributeChange(const FGameplayAttribute& Attrib
 
 void UMWBattleAttributeSet::ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const
 {
-	if (Attribute == GetHPAttribute())
+	if (Attribute == GetHealthAttribute())
 	{
 		// Do not allow health to go negative or above max health.
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHP());
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
-	else if (Attribute == GetMaxHPAttribute())
+	else if (Attribute == GetMaxHealthAttribute())
 	{
 		// Do not allow max health to drop below 1.
 		NewValue = FMath::Max(NewValue, 1.0f);
@@ -112,10 +112,10 @@ void UMWBattleAttributeSet::OnRep_Luck(const FGameplayAttributeData& OldValue)
 
 void UMWBattleAttributeSet::OnRep_HP(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMWBattleAttributeSet, HP, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMWBattleAttributeSet, Health, OldValue);
 }
 
 void UMWBattleAttributeSet::OnRep_MaxHP(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMWBattleAttributeSet, MaxHP, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMWBattleAttributeSet, MaxHealth, OldValue);
 }

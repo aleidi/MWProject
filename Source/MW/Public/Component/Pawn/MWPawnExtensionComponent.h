@@ -31,6 +31,10 @@ public:
 
 #pragma region PawnSetting
 protected:
+	// CharacterId used to get character data from data table.
+	// Id is read when BeginPlay from character's owner entity's resource data.
+	// CharacterIdはデータテーブルからキャラクターデータを取得するために使用される。
+	// IdはBeginPlay時にキャラクターの所有エンティティのリソースデータから読み取られる。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setting")
 	int32 CharacterId;
 #pragma endregion

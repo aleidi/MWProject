@@ -6,6 +6,8 @@
 #include "MWEntityManager.generated.h"
 
 // Forward Declare
+class AMWCharacter;
+class AMWBattleUnitAvatar;
 class UMWEntity;
 class UMWCharacterEntity;
 struct FMWCharacterSpawnResourceData;
@@ -40,9 +42,7 @@ public:
 		return Cast<_EntityType>(FindEntity(EntityId));
 	}
 
-	//===============================================================
-	// Character
-	//===============================================================
+	//==== Character ====//
 public:
 	UMWCharacterEntity* CreateCharacterEntity(FObjectId EntityId, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator, const FMWCharacterSpawnResourceData* ResData = nullptr);
 
@@ -52,6 +52,9 @@ public:
 
 	void DespawnCharacter(const FObjectId& EntityId);
 
+	AMWCharacter* SpawnCharacter(int32 CharacterId, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator);
+
+	AMWBattleUnitAvatar* SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CCharacterId3, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator);
 private:
 	void RemoveCharacter(const FObjectId& EntityId);
 

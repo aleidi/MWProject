@@ -1,4 +1,5 @@
 #include "Entity/MWEntityManager.h"
+#include "Component/Character/MWBattleUnitComponent.h"
 #include "Entity/Character/MWCharacterEntity.h"
 #include "Entity/MWEntity.h"
 #include "MWLogChannels.h"
@@ -56,6 +57,91 @@ UMWCharacterEntity* UMWEntityManager::FindCharacter(const FObjectId& EntityId)
 void UMWEntityManager::DespawnCharacter(const FObjectId& EntityId)
 {
 	RemoveCharacter(EntityId);
+}
+
+AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector& Location, const FRotator& Rotation)
+{
+	const FMWCharacterData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+
+	if (data)
+	{
+		FMWCharacterSpawnResourceData resData;
+		resData.VisualAnimInst = data->CharacterAnimInst.LoadSynchronous();
+		resData.VisualMesh = data->CharacterMesh.LoadSynchronous();
+		resData.Height = data->Height;
+
+		auto* charEntity = ENTITYMANAGER(this)->CreateCharacterEntity(Location, Rotation, &resData);
+		check(charEntity);
+
+		return charEntity->GetCharacterActor();
+	}
+
+	return nullptr;
+}
+
+AMWBattleUnitAvatar* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CharacterId3, const FVector& Location, const FRotator& Rotation)
+{
+	const FMWCharacterData* data1 = DATATABLEMANAGER->GetCharacterDataById(CharacterId1);
+	const FMWCharacterData* data2 = DATATABLEMANAGER->GetCharacterDataById(CharacterId2);
+	const FMWCharacterData* data3 = DATATABLEMANAGER->GetCharacterDataById(CharacterId3);
+
+	if (data1 && data2 && data3)
+	{
+		FMWCharacterSpawnResourceData spawnData;
+		spawnData.VisualAnimInst = data1->CharacterAnimInst.LoadSynchronous();
+		spawnData.VisualMesh = data1->CharacterMesh.LoadSynchronous();
+		spawnData.CharacterClass = AMWBattleUnitAvatar::StaticClass();
+
+		UMWCharacterEntity* newEntity = ENTITYMANAGER(this)->CreateCharacterEntity(Location, Rotation, &spawnData);
+		check(newEntity);
+
+		AMWBattleUnitAvatar* character = Cast<AMWBattleUnitAvatar>(newEntity->GetCharacterActor());
+		check(character);
+
+		if (UMWBattleUnitComponent* unitComponent = character->FindComponentByClass<UMWBattleUnitComponent>())
+		{
+			TArray<FMWBattleUnitCharacterData> charDataArray;
+			// Characer1
+			{
+				FMWBattleUnitCharacterData charData;
+				charData.ID = CharacterId1;
+				charData.Type = EBattleUnitCharacterType::Entity;
+				charData.Mesh = data1->CharacterMesh.LoadSynchronous();
+				charData.AnimInst = data1->CharacterAnimInst.LoadSynchronous();
+				charData.SkillTable = data1->BattleSkillTable.LoadSynchronous();
+
+				charDataArray.Emplace(charData);
+			}
+			// Character2
+			{
+				FMWBattleUnitCharacterData charData;
+				charData.ID = CharacterId2;
+				charData.Type = EBattleUnitCharacterType::Possession;
+				charData.Mesh = data2->CharacterMesh.LoadSynchronous();
+				charData.AnimInst = data2->CharacterAnimInst.LoadSynchronous();
+				charData.SkillTable = data2->BattleSkillTable.LoadSynchronous();
+
+				charDataArray.Emplace(charData);
+			}
+			// Character3
+			{
+				FMWBattleUnitCharacterData charData;
+				charData.ID = CharacterId3;
+				charData.Type = EBattleUnitCharacterType::Possession;
+				charData.Mesh = data3->CharacterMesh.LoadSynchronous();
+				charData.AnimInst = data3->CharacterAnimInst.LoadSynchronous();
+				charData.SkillTable = data3->BattleSkillTable.LoadSynchronous();
+
+				charDataArray.Emplace(charData);
+			}
+
+			unitComponent->SetCharacterData(charDataArray);
+		}
+
+		return character;
+	}
+
+	return nullptr;
 }
 
 void UMWEntityManager::RemoveCharacter(const FObjectId& EntityId)

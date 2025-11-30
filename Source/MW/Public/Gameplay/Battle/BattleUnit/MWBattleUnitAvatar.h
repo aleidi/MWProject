@@ -6,9 +6,7 @@
 
 // Forward Declare
 class UMWAbilitySet;
-class UMWBattleAttributeSet;
 class UMWBattleUnitComponent;
-struct FMWAbilitySetGrantedHandles;
 
 // Define
 
@@ -27,19 +25,10 @@ class MW_API AMWBattleUnitAvatar : public AMWCharacter
 	
 public:
 	AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	void InitAbility();
 	
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Battle")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Battle")
 	TObjectPtr<UMWBattleUnitComponent> BattleUnitComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability")
-	TObjectPtr<UMWAbilitySet> AbilitySet;
-
-	/* Cache the granted abilities */
-	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
 
 protected:
 	virtual void BeginPlay() override;

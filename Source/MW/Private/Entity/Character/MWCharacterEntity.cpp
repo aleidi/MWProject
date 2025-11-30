@@ -94,6 +94,11 @@ const AMWCharacter* UMWCharacterEntity::GetCharacterActor() const
 	return Cast<const AMWCharacter>(GetActor());
 }
 
+const FMWCharacterSpawnResourceData* UMWCharacterEntity::GetCharacterResourceData() const
+{
+	return ResourceDataPtr;
+}
+
 FVector UMWCharacterEntity::GetLocation() const
 {
 	return GetCharacterActor() ? GetCharacterActor()->GetFloorLocation() : Location;

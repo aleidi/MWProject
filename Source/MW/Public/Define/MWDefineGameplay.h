@@ -325,6 +325,9 @@ struct FMWCharacterSpawnResourceData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Id = INDEX_NONE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AMWCharacter> CharacterClass = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
