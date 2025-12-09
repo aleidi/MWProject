@@ -9,6 +9,7 @@ class UMWUserWidget;
 /*
  *  Background	: Scene info
  *  Base		: Persistent UI such as character's state, map
+ *  Battle		: Damage numbers, combo indicators, skill cooldown, enemy health bars
  *  Interactive : Inventory, skill, task
  *  Popup		: Confirm window, rewards
  *  Notification: Instant message, prompt, achievement
@@ -20,9 +21,10 @@ enum class EMWUILayer : uint8
 {
 	Background,
 	Base,
+	Battle,
 	Interactive,
 	Popup,
-	Notifiaction,
+	Notification,
 	Topmost,
 	Debug
 };
@@ -71,12 +73,12 @@ enum class EMWWindowUIType : uint8
 	SkillLevelUpUI,
 	Respawn_MainUI,
 	FloatingTabUI,
-	MyLevelUpUI,	// 내 레벨이 올랐을때 UI
+	MyLevelUpUI,
 	SkillDetailPopupUI,
 	Debug_GameServerTimeUI,
 	APLevelupPopupUI,
 	OptionUI,
-	OptionContentUI,		// WindowUIType 이 아닌데 분리 해야 되나... TODO
+	OptionContentUI,
 	Common_ItemSelectPopupUI,
 	Common_BundlePopupUI,
 	CheatUI,

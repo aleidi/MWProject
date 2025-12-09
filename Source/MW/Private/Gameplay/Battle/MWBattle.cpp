@@ -199,7 +199,7 @@ void MWBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
 	{
 		if (ActionExecutor.IsValid())
 		{
-			ActionExecutor->Update(data, bIsActionComplete);
+			ActionExecutor->Update(DeltaTime, data, bIsActionComplete);
 		}
 	}
 

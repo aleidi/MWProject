@@ -13,6 +13,10 @@ public: \
 	} \
 private:
 
+#define DECLARE_FSM_STATE_START_NOCONSTR(OwnerClass, FsmState) \
+class FsmState : public FFsmState<OwnerClass> \
+{ \
+
 #define DECLARE_FSM_STATE_END() };
 
 /*** Use Template ***
