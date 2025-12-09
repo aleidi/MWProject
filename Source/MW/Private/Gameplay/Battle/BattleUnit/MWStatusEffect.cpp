@@ -1,6 +1,6 @@
 #include "Gameplay/Battle/BattleUnit/MWStatusEffect.h"
 
-bool MWBattle::FMWStatusEffect::OnTrigger(UMWBattleUnit* TargetUnit, ETriggerTiming Timing, void* Context)
+bool MWCommandBattle::FMWStatusEffect::OnTrigger(UMWBattleUnit* TargetUnit, ETriggerTiming Timing, void* Context)
 {
 	if (Timing == DurationUpdateTiming && Duration > 0)
 	{
@@ -20,19 +20,19 @@ bool MWBattle::FMWStatusEffect::OnTrigger(UMWBattleUnit* TargetUnit, ETriggerTim
 	return true;
 }
 
-void MWBattle::FMWStatusEffect::ForceExpire()
+void MWCommandBattle::FMWStatusEffect::ForceExpire()
 {
 	Duration = 0;
 }
 
-MWBattle::FMWStatusEffectManager::~FMWStatusEffectManager()
+MWCommandBattle::FMWStatusEffectManager::~FMWStatusEffectManager()
 {
 	ActiveEffects.Empty();
 
 	OwnerUnit = nullptr;
 }
 
-void MWBattle::FMWStatusEffectManager::AddEffect(TSharedPtr<FMWStatusEffect> NewEffect)
+void MWCommandBattle::FMWStatusEffectManager::AddEffect(TSharedPtr<FMWStatusEffect> NewEffect)
 {
 	if(!IsValid())
 	{
@@ -69,7 +69,7 @@ void MWBattle::FMWStatusEffectManager::AddEffect(TSharedPtr<FMWStatusEffect> New
 	}
 }
 
-void MWBattle::FMWStatusEffectManager::RemoveEffect(TSharedPtr<FMWStatusEffect> EffectToRemove)
+void MWCommandBattle::FMWStatusEffectManager::RemoveEffect(TSharedPtr<FMWStatusEffect> EffectToRemove)
 {
 	if (!IsValid())
 	{
@@ -93,7 +93,7 @@ void MWBattle::FMWStatusEffectManager::RemoveEffect(TSharedPtr<FMWStatusEffect> 
 	}
 }
 
-void MWBattle::FMWStatusEffectManager::TriggerEffects(ETriggerTiming Timing, void* Context)
+void MWCommandBattle::FMWStatusEffectManager::TriggerEffects(ETriggerTiming Timing, void* Context)
 {
 	if (!IsValid())
 	{

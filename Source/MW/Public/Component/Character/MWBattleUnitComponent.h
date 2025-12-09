@@ -80,7 +80,7 @@ private:
 private:
 	// Status effect manager handles the status effects of this battle unit.
 	// ステータスエフェクトマネージャーはこの戦闘ユニットのステータスエフェクトを管理する.
-	TUniquePtr<MWBattle::FMWStatusEffectManager> StatusEffectManager = nullptr;
+	TUniquePtr<MWCommandBattle::FMWStatusEffectManager> StatusEffectManager = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	TArray<FMWBattleUnitCharacterData> CharacterData;

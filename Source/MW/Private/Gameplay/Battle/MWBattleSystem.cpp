@@ -1,5 +1,5 @@
 #include "Gameplay/Battle/MWBattleSystem.h"
-#include "Gameplay/Battle/MWBattle.h"
+#include "Gameplay/Battle/MWCommandBattle.h"
 #include "GameFramework/GameModeBase.h"
 #include "System/MWGameInstanceSubsystem.h"
 

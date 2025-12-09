@@ -10,7 +10,7 @@ class UMWBattleUnit;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnStatusEffectAdded, const FName&);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnStatusEffectRemoved, const FName&);
 
-namespace MWBattle
+namespace MWCommandBattle
 {
 
 enum class ETriggerTiming : uint8

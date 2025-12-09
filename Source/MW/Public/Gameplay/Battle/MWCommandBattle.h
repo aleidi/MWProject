@@ -2,14 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "Define/MWDefineGameplay.h"
-#include "MWLogChannels.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
+#include "MWActionExecutor.h"
+#include "MWLogChannels.h"
 #include "Util/FsmUtil.h"
 #include "UObject/StrongObjectPtr.h"
-#include "MWBattle.generated.h"
+#include "MWCommandBattle.generated.h"
 
 // Forward Declare
-class UMWTurnAction;
 class UMWBattleUnit;
 
 struct FMWActionState
@@ -43,7 +43,7 @@ FORCEINLINE bool operator==(const FMWActionState& A, const FMWActionState& B)
 	return A.Align == B.Align && A.bActed == B.bActed && A.Priority == B.Priority;
 }
 
-namespace MWBattle
+namespace MWCommandBattle
 {
 	class IBattleState
 	{
@@ -205,7 +205,7 @@ private:
 
 	TArray<EMWBattleActionBuff> ActiveActionBuffs;
 
-	TUniquePtr<MWBattle::IBattleState> CurrState;
+	TUniquePtr<MWCommandBattle::IBattleState> CurrState;
 
 	EBattleResult BattleResult = EBattleResult::Draw;
 

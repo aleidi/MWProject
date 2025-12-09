@@ -1,4 +1,4 @@
-#include "Gameplay/Battle/MWBattle.h"
+#include "Gameplay/Battle/MWCommandBattle.h"
 #include "Controller/MWPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Gameplay/Battle/MWBattleScenePreparation.h"
@@ -19,12 +19,12 @@ FMWActionState FMWActionState::Player	{EMWTeamAlign::Player,	false,	200};
 FMWActionState FMWActionState::Enemy	{EMWTeamAlign::Enemy,	false,	100};
 FMWActionState FMWActionState::Null		{EMWTeamAlign::Max,		false,	-1};
 
-void MWBattle::MWBSIdle::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSIdle::OnUpdate(float DeltaTime)
 {
 	this->ChangeState(TEXT("MWBSBattleBegin"));
 }
 
-void MWBattle::MWBSBattleBegin::OnEnter()
+void MWCommandBattle::MWBSBattleBegin::OnEnter()
 {
 	UMWBattle* context = this->GetOwner();
 	check(context != nullptr);
@@ -54,7 +54,7 @@ void MWBattle::MWBSBattleBegin::OnEnter()
 	}
 }
 
-void MWBattle::MWBSBattleBegin::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSBattleBegin::OnUpdate(float DeltaTime)
 {
 	if (bBattlePrepared)
 	{
@@ -62,7 +62,7 @@ void MWBattle::MWBSBattleBegin::OnUpdate(float DeltaTime)
 	}
 }
 
-void MWBattle::MWBSBattleEnd::OnEnter()
+void MWCommandBattle::MWBSBattleEnd::OnEnter()
 {
 	// play battle result
 	// 游戏结算界面等等
@@ -83,12 +83,12 @@ void MWBattle::MWBSBattleEnd::OnEnter()
 	}
 }
 
-void MWBattle::MWBSBattleEnd::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSBattleEnd::OnUpdate(float DeltaTime)
 {
 	GetFsm()->Stop(true);
 }
 
-void MWBattle::MWBSRoundBegin::OnEnter()
+void MWCommandBattle::MWBSRoundBegin::OnEnter()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -109,12 +109,12 @@ void MWBattle::MWBSRoundBegin::OnEnter()
 	context->SetCurrentTurnTeamAlign(actionStates[0].Align);
 }
 
-void MWBattle::MWBSRoundBegin::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSRoundBegin::OnUpdate(float DeltaTime)
 {
 	this->ChangeState(TEXT("MWBSTurnBegin"));
 }
 
-void MWBattle::MWBSRoundEnd::OnEnter()
+void MWCommandBattle::MWBSRoundEnd::OnEnter()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -126,19 +126,19 @@ void MWBattle::MWBSRoundEnd::OnEnter()
 	ResetActionState();
 }
 
-void MWBattle::MWBSRoundEnd::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSRoundEnd::OnUpdate(float DeltaTime)
 {
 	this->ChangeState(TEXT("MWBSRoundBegin"));
 }
 
-void MWBattle::MWBSRoundEnd::OnLeave(bool bShutDown)
+void MWCommandBattle::MWBSRoundEnd::OnLeave(bool bShutDown)
 {
 	UMWBattle* context = this->GetOwner();
 
 	context->SetCurrentRound(context->GetCurrentRound() + 1);
 }
 
-void MWBattle::MWBSRoundEnd::ResetActionState()
+void MWCommandBattle::MWBSRoundEnd::ResetActionState()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -150,17 +150,17 @@ void MWBattle::MWBSRoundEnd::ResetActionState()
 	}
 }
 
-void MWBattle::MWBSTurnBegin::OnEnter()
+void MWCommandBattle::MWBSTurnBegin::OnEnter()
 {
 #if WITH_EDITOR
-	DHEndPIE = FEditorDelegates::EndPIE.AddRaw(this, &MWBattle::MWBSTurnBegin::OnEndPIE);
+	DHEndPIE = FEditorDelegates::EndPIE.AddRaw(this, &MWCommandBattle::MWBSTurnBegin::OnEndPIE);
 #endif
 
 	UMWBattle* context = this->GetOwner();
 
 	if (!context->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
 	{
-		DHActionComplete = context->GetBattleSystem().OnActionComplete.AddRaw(this, &MWBattle::MWBSTurnBegin::OnActionComplete);
+		DHActionComplete = context->GetBattleSystem().OnActionComplete.AddRaw(this, &MWCommandBattle::MWBSTurnBegin::OnActionComplete);
 	}
 
 	const EMWTeamAlign currAlign = context->GetCurrentTurnTeamAlign();
@@ -191,7 +191,7 @@ void MWBattle::MWBSTurnBegin::OnEnter()
 	}
 }
 
-void MWBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
 {
 	FMWActionExecutorData data;
 
@@ -213,14 +213,14 @@ void MWBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
 	}
 }
 
-void MWBattle::MWBSTurnBegin::OnLeave(bool bShutDown)
+void MWCommandBattle::MWBSTurnBegin::OnLeave(bool bShutDown)
 {
 	bIsActionComplete = false;
 
 	CleanUp();
 }
 
-void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
+void MWCommandBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -244,17 +244,17 @@ void MWBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 	}
 }
 
-void MWBattle::MWBSTurnBegin::OnDestroy()
+void MWCommandBattle::MWBSTurnBegin::OnDestroy()
 {
 	CleanUp();
 }
 
-void MWBattle::MWBSTurnBegin::OnActionComplete()
+void MWCommandBattle::MWBSTurnBegin::OnActionComplete()
 {
 	bIsActionComplete = true;
 }
 
-void MWBattle::MWBSTurnBegin::CleanUp()
+void MWCommandBattle::MWBSTurnBegin::CleanUp()
 {
 	if (ActionExecutor.IsValid())
 	{
@@ -283,13 +283,13 @@ void MWBattle::MWBSTurnBegin::CleanUp()
 }
 
 #if WITH_EDITOR
-void MWBattle::MWBSTurnBegin::OnEndPIE(bool bIsSimulating)
+void MWCommandBattle::MWBSTurnBegin::OnEndPIE(bool bIsSimulating)
 {
 	CleanUp();
 }
 #endif
 
-void MWBattle::MWBSTurnEnd::OnEnter()
+void MWCommandBattle::MWBSTurnEnd::OnEnter()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -325,7 +325,7 @@ void MWBattle::MWBSTurnEnd::OnEnter()
 	CheckShouldRoundEnd();
 }
 
-void MWBattle::MWBSTurnEnd::OnUpdate(float DeltaTime)
+void MWCommandBattle::MWBSTurnEnd::OnUpdate(float DeltaTime)
 {
 	if (bIsBattleOver)
 	{
@@ -343,7 +343,7 @@ void MWBattle::MWBSTurnEnd::OnUpdate(float DeltaTime)
 	this->ChangeState(TEXT("MWBSTurnBegin"));
 }
 
-void MWBattle::MWBSTurnEnd::CheckShouldEndBattle()
+void MWCommandBattle::MWBSTurnEnd::CheckShouldEndBattle()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -375,7 +375,7 @@ void MWBattle::MWBSTurnEnd::CheckShouldEndBattle()
 	bIsBattleOver = true;
 }
 
-void MWBattle::MWBSTurnEnd::CheckShouldRoundEnd()
+void MWCommandBattle::MWBSTurnEnd::CheckShouldRoundEnd()
 {
 	UMWBattle* context = this->GetOwner();
 
@@ -395,13 +395,13 @@ UMWBattle::UMWBattle()
 	Fsm = MakeShared<FFsm<UMWBattle>>(
 		TEXT("BattleFsm"),
 		this,
-		new MWBattle::MWBSIdle,
-		new MWBattle::MWBSBattleBegin,
-		new MWBattle::MWBSBattleEnd,
-		new MWBattle::MWBSRoundBegin,
-		new MWBattle::MWBSRoundEnd,
-		new MWBattle::MWBSTurnBegin,
-		new MWBattle::MWBSTurnEnd);
+		new MWCommandBattle::MWBSIdle,
+		new MWCommandBattle::MWBSBattleBegin,
+		new MWCommandBattle::MWBSBattleEnd,
+		new MWCommandBattle::MWBSRoundBegin,
+		new MWCommandBattle::MWBSRoundEnd,
+		new MWCommandBattle::MWBSTurnBegin,
+		new MWCommandBattle::MWBSTurnEnd);
 }
 
 void UMWBattle::StartBattle(const FMWBattleData& InData)
