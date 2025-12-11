@@ -42,7 +42,7 @@ public:
 		return EntityManager;
 	}
 
-	UMWBattleSystem* GetBattleSystem()
+	UMWBattleSystem* GetBattleManager()
 	{
 		return BattleSystem;
 	}

@@ -48,7 +48,7 @@ namespace MWCommandBattle
 	class IBattleState
 	{
 	protected:
-		typedef UMWBattle BattleContext;
+		typedef UMWCommandBattle BattleContext;
 
 	public:
 		virtual ~IBattleState() = default;
@@ -58,11 +58,11 @@ namespace MWCommandBattle
 		virtual FString GetName() const = 0;
 	};
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSIdle)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSIdle)
 	virtual void OnUpdate(float DeltaTime) override;
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSBattleBegin)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSBattleBegin)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 
@@ -70,7 +70,7 @@ private:
 	bool bBattlePrepared = false;
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSBattleEnd)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSBattleEnd)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 
@@ -78,19 +78,19 @@ private:
 	EBattleResult BattleResult = EBattleResult::Draw;
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSRoundBegin)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSRoundBegin)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSRoundEnd)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSRoundEnd)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 	virtual void OnLeave(bool bShutDown) override;
 	void ResetActionState();
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSTurnBegin)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSTurnBegin)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 	virtual void OnLeave(bool bShutDown) override;
@@ -112,7 +112,7 @@ private:
 #endif
 	DECLARE_FSM_STATE_END()
 
-	DECLARE_FSM_STATE_START(UMWBattle, MWBSTurnEnd)
+	DECLARE_FSM_STATE_START(UMWCommandBattle, MWBSTurnEnd)
 	virtual void OnEnter() override;
 	virtual void OnUpdate(float DeltaTime) override;
 	void CheckShouldEndBattle();
@@ -124,12 +124,12 @@ private:
 }
 
 UCLASS()
-class UMWBattle : public UObject, public FTickableGameObject
+class UMWCommandBattle : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 public:
-	UMWBattle();
+	UMWCommandBattle();
 
 	void StartBattle(const FMWBattleData& InData);
 
@@ -227,5 +227,5 @@ public:
 
 // ===== Turn Control FSM =====
 private:
-	TSharedPtr<FFsm<UMWBattle>> Fsm;
+	TSharedPtr<FFsm<UMWCommandBattle>> Fsm;
 };

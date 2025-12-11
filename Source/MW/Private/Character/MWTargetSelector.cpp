@@ -31,13 +31,6 @@ void FMWTargetSelector::CancelSelect()
 	}
 
 	SelectedTarget.Reset();
-	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
-	{
-		if (mwbs->OnTargetCancelSelected.IsBound())
-		{
-			mwbs->OnTargetCancelSelected.Broadcast(SelectedTarget);
-		}
-	}
 }
 
 void FMWTargetSelector::LockTarget()
@@ -83,13 +76,6 @@ void FMWTargetSelector::LockTarget()
 	LockedTarget = SelectedTarget;
 
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
-	{
-		if (mwbs->OnTargetLocked.IsBound())
-		{
-			mwbs->OnTargetLocked.Broadcast(LockedTarget);
-		}
-	}
 }
 
 void FMWTargetSelector::UnlockTarget()
@@ -104,13 +90,6 @@ void FMWTargetSelector::UnlockTarget()
 		LockedTarget.Reset();
 		
 		// broadcast unlock target event
-		if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
-		{
-			if (mwbs->OnTargetUnlocked.IsBound())
-			{
-				mwbs->OnTargetUnlocked.Broadcast(LockedTarget);
-			}
-		}
 	}
 }
 
@@ -165,13 +144,6 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 		return;
 	}
 
-	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
-	{
-		if (mwbs->OnTargetSelected.IsBound())
-		{
-			mwbs->OnTargetSelected.Broadcast(SelectedTarget);
-		}
-	}
 }
 
 FMWFoundActorInfo FMWTargetSelector::GetNearestTarget(TArray<FMWFoundActorInfo>& Targets)
@@ -225,13 +197,6 @@ void FMWTargetSelector::ForceLockIfNoTarget(const FMWFoundActorInfo& Target)
 
 	LockedTarget = Target;
 	// broadcast lock target event
-	if (UMWBattleSystem* mwbs = UMWBattleSystem::Get(Controller))
-	{
-		if (mwbs->OnTargetLocked.IsBound())
-		{
-			mwbs->OnTargetLocked.Broadcast(LockedTarget);
-		}
-	}
 }
 
 void FMWTargetSelector::OnTargetNotExisted(const FMWFoundActorInfo& Target)

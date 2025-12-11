@@ -26,13 +26,13 @@ void MWCommandBattle::MWBSIdle::OnUpdate(float DeltaTime)
 
 void MWCommandBattle::MWBSBattleBegin::OnEnter()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 	check(context != nullptr);
 
-	if (context->GetBattleSystem().OnBattleBegin.IsBound())
-	{
-		context->GetBattleSystem().OnBattleBegin.Broadcast();
-	}
+	//if (context->GetBattleSystem().OnBattleBegin.IsBound())
+	//{
+	//	context->GetBattleSystem().OnBattleBegin.Broadcast();
+	//}
 
 	// prepare scene
 	FMWBattleScenePreparation scenePrep;
@@ -69,12 +69,12 @@ void MWCommandBattle::MWBSBattleEnd::OnEnter()
 	// wait for battle end
 	// destroy battle
 
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
-	if (context->GetBattleSystem().OnBattleEnd.IsBound())
-	{
-		context->GetBattleSystem().OnBattleEnd.Broadcast(BattleResult);
-	}
+	//if (context->GetBattleSystem().OnBattleEnd.IsBound())
+	//{
+	//	context->GetBattleSystem().OnBattleEnd.Broadcast(BattleResult);
+	//}
 
 	// TODO : REMOVE
 	if (context->PC.IsValid())
@@ -90,12 +90,12 @@ void MWCommandBattle::MWBSBattleEnd::OnUpdate(float DeltaTime)
 
 void MWCommandBattle::MWBSRoundBegin::OnEnter()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
-	if (context->GetBattleSystem().OnRoundBegin.IsBound())
-	{
-		context->GetBattleSystem().OnRoundBegin.Broadcast(context->GetCurrentRound());
-	}
+	//if (context->GetBattleSystem().OnRoundBegin.IsBound())
+	//{
+	//	context->GetBattleSystem().OnRoundBegin.Broadcast(context->GetCurrentRound());
+	//}
 
 	// Sort action priority
 	auto& actionStates = context->GetActionStates();
@@ -116,12 +116,12 @@ void MWCommandBattle::MWBSRoundBegin::OnUpdate(float DeltaTime)
 
 void MWCommandBattle::MWBSRoundEnd::OnEnter()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
-	if (context->GetBattleSystem().OnRoundEnd.IsBound())
-	{
-		context->GetBattleSystem().OnRoundEnd.Broadcast(context->GetCurrentRound());
-	}
+	//if (context->GetBattleSystem().OnRoundEnd.IsBound())
+	//{
+	//	context->GetBattleSystem().OnRoundEnd.Broadcast(context->GetCurrentRound());
+	//}
 
 	ResetActionState();
 }
@@ -133,14 +133,14 @@ void MWCommandBattle::MWBSRoundEnd::OnUpdate(float DeltaTime)
 
 void MWCommandBattle::MWBSRoundEnd::OnLeave(bool bShutDown)
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
 	context->SetCurrentRound(context->GetCurrentRound() + 1);
 }
 
 void MWCommandBattle::MWBSRoundEnd::ResetActionState()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
 	auto& actionStates = context->GetActionStates();
 
@@ -156,19 +156,19 @@ void MWCommandBattle::MWBSTurnBegin::OnEnter()
 	DHEndPIE = FEditorDelegates::EndPIE.AddRaw(this, &MWCommandBattle::MWBSTurnBegin::OnEndPIE);
 #endif
 
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
-	if (!context->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
-	{
-		DHActionComplete = context->GetBattleSystem().OnActionComplete.AddRaw(this, &MWCommandBattle::MWBSTurnBegin::OnActionComplete);
-	}
+	//if (!context->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
+	//{
+	//	DHActionComplete = context->GetBattleSystem().OnActionComplete.AddRaw(this, &MWCommandBattle::MWBSTurnBegin::OnActionComplete);
+	//}
 
 	const EMWTeamAlign currAlign = context->GetCurrentTurnTeamAlign();
 
-	if (context->GetBattleSystem().OnTurnBegin.IsBound())
-	{
-		context->GetBattleSystem().OnTurnBegin.Broadcast(currAlign);
-	}
+	//if (context->GetBattleSystem().OnTurnBegin.IsBound())
+	//{
+	//	context->GetBattleSystem().OnTurnBegin.Broadcast(currAlign);
+	//}
 
 	// Change to battle camera
 	SetCharacterCameraAsMain();
@@ -205,7 +205,7 @@ void MWCommandBattle::MWBSTurnBegin::OnUpdate(float DeltaTime)
 
 	if (bIsActionComplete)
 	{
-		UMWBattle* context = this->GetOwner();
+		UMWCommandBattle* context = this->GetOwner();
 
 		context->GetCurrentTurnActionState().MarkAsActed();
 
@@ -222,7 +222,7 @@ void MWCommandBattle::MWBSTurnBegin::OnLeave(bool bShutDown)
 
 void MWCommandBattle::MWBSTurnBegin::SetCharacterCameraAsMain()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
 	const FMWTeam& team = context->GetCurrentTurnTeamAlign() == EMWTeamAlign::Player ? context->GetPlayerTeam() : context->GetEnemyTeam();
 
@@ -263,13 +263,9 @@ void MWCommandBattle::MWBSTurnBegin::CleanUp()
 	}
 
 	// Clean up delegate binding if not already done
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 	if (context && DHActionComplete.IsValid())
 	{
-		if (context->GetBattleSystem().OnActionComplete.IsBoundToObject(this))
-		{
-			context->GetBattleSystem().OnActionComplete.Remove(DHActionComplete);
-		}
 		DHActionComplete.Reset();
 	}
 
@@ -291,12 +287,12 @@ void MWCommandBattle::MWBSTurnBegin::OnEndPIE(bool bIsSimulating)
 
 void MWCommandBattle::MWBSTurnEnd::OnEnter()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
-	if (context->GetBattleSystem().OnTurnEnd.IsBound())
-	{
-		context->GetBattleSystem().OnTurnEnd.Broadcast(context->GetCurrentTurnTeamAlign());
-	}
+	//if (context->GetBattleSystem().OnTurnEnd.IsBound())
+	//{
+	//	context->GetBattleSystem().OnTurnEnd.Broadcast(context->GetCurrentTurnTeamAlign());
+	//}
 
 	// check if battle end
 	CheckShouldEndBattle();
@@ -345,7 +341,7 @@ void MWCommandBattle::MWBSTurnEnd::OnUpdate(float DeltaTime)
 
 void MWCommandBattle::MWBSTurnEnd::CheckShouldEndBattle()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
 	const FMWTeam& playerTeam = context->GetPlayerTeam();
 
@@ -377,7 +373,7 @@ void MWCommandBattle::MWBSTurnEnd::CheckShouldEndBattle()
 
 void MWCommandBattle::MWBSTurnEnd::CheckShouldRoundEnd()
 {
-	UMWBattle* context = this->GetOwner();
+	UMWCommandBattle* context = this->GetOwner();
 
 	bIsRoundEnd = true;
 
@@ -389,10 +385,10 @@ void MWCommandBattle::MWBSTurnEnd::CheckShouldRoundEnd()
 	}
 }
 
-UMWBattle::UMWBattle()
+UMWCommandBattle::UMWCommandBattle()
 {
 	// Init state machine
-	Fsm = MakeShared<FFsm<UMWBattle>>(
+	Fsm = MakeShared<FFsm<UMWCommandBattle>>(
 		TEXT("BattleFsm"),
 		this,
 		new MWCommandBattle::MWBSIdle,
@@ -404,7 +400,7 @@ UMWBattle::UMWBattle()
 		new MWCommandBattle::MWBSTurnEnd);
 }
 
-void UMWBattle::StartBattle(const FMWBattleData& InData)
+void UMWCommandBattle::StartBattle(const FMWBattleData& InData)
 {
 	check(GetWorld () != nullptr);
 
@@ -462,7 +458,7 @@ void UMWBattle::StartBattle(const FMWBattleData& InData)
 	Fsm->Start(TEXT("MWBSIdle"));
 }
 
-void UMWBattle::Tick(float DeltaTime)
+void UMWCommandBattle::Tick(float DeltaTime)
 {
 	if (GetWorld())
 	{
@@ -490,17 +486,17 @@ void UMWBattle::Tick(float DeltaTime)
 	}
 }
 
-TStatId UMWBattle::GetStatId() const
+TStatId UMWCommandBattle::GetStatId() const
 {
-	RETURN_QUICK_DECLARE_CYCLE_STAT(UMWBattle, STATGROUP_Tickables);
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UMWCommandBattle, STATGROUP_Tickables);
 }
 
-bool UMWBattle::IsTickable() const
+bool UMWCommandBattle::IsTickable() const
 {
 	return bIsTickable;
 }
 
-void UMWBattle::BeginDestroy()
+void UMWCommandBattle::BeginDestroy()
 {
 	if(Fsm.IsValid())
 	{
@@ -511,17 +507,17 @@ void UMWBattle::BeginDestroy()
 	Super::BeginDestroy();
 }
 
-void UMWBattle::SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool)
+void UMWCommandBattle::SetActionBuffPool(const TArray<EMWBattleActionBuff>& NewBuffPool)
 {
 	ActionBuffPool = NewBuffPool;
 }
 
-void UMWBattle::InitBattleUnits(const FMWBattleData& InData)
+void UMWCommandBattle::InitBattleUnits(const FMWBattleData& InData)
 {
 
 }
 
-FMWActionState& UMWBattle::GetCurrentTurnActionState()
+FMWActionState& UMWCommandBattle::GetCurrentTurnActionState()
 {
 	for(auto& state : ActionStates)
 	{
@@ -534,21 +530,21 @@ FMWActionState& UMWBattle::GetCurrentTurnActionState()
 	return FMWActionState::Null;
 }
 
-void UMWBattle::EndBattle(EBattleResult InWinner)
+void UMWCommandBattle::EndBattle(EBattleResult InWinner)
 {
 	bIsBattleEnd = true;
 	BattleResult = InWinner;
 }
 
-void UMWBattle::Initialize()
+void UMWCommandBattle::Initialize()
 {
 }
 
-void UMWBattle::Uninitialize()
+void UMWCommandBattle::Uninitialize()
 {
 }
 
-UMWBattleSystem& UMWBattle::GetBattleSystem()
+UMWBattleSystem& UMWCommandBattle::GetBattleSystem()
 {
 	return  *UMWBattleSystem::Get(this);
 }

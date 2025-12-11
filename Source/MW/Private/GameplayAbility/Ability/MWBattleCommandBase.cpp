@@ -3,8 +3,8 @@
 
 void UMWBattleCommandBase::OnCommandComplete()
 {
-	if (UMWBattleSystem * mwbs = UMWBattleSystem::Get(this))
-	{
-		mwbs->OnActionComplete.Broadcast();
-	}
+	//if (UMWBattleSystem * mwbs = UMWBattleSystem::Get(this))
+	//{
+	//	mwbs->OnActionComplete.Broadcast();
+	//}
 }

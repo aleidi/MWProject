@@ -4,7 +4,7 @@
 
 class FMWBattleCameraControl : public TSharedFromThis<FMWBattleCameraControl>
 {
-	friend class UMWBattle;
+	friend class UMWCommandBattle;
 
 public:
 	void SetCameraOnTurnBegin();
