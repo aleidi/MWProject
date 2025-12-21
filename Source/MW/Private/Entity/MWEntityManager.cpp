@@ -79,7 +79,7 @@ AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector&
 	return nullptr;
 }
 
-AMWBattleUnitAvatar* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CharacterId3, const FVector& Location, const FRotator& Rotation)
+AMWCharacter* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CharacterId3, const FVector& Location, const FRotator& Rotation)
 {
 	const FMWCharacterData* data1 = DATATABLEMANAGER->GetCharacterDataById(CharacterId1);
 	const FMWCharacterData* data2 = DATATABLEMANAGER->GetCharacterDataById(CharacterId2);
@@ -90,12 +90,12 @@ AMWBattleUnitAvatar* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterI
 		FMWCharacterSpawnResourceData spawnData;
 		spawnData.VisualAnimInst = data1->CharacterAnimInst.LoadSynchronous();
 		spawnData.VisualMesh = data1->CharacterMesh.LoadSynchronous();
-		spawnData.CharacterClass = AMWBattleUnitAvatar::StaticClass();
+		spawnData.CharacterClass = AMWCharacter::StaticClass();
 
 		UMWCharacterEntity* newEntity = ENTITYMANAGER(this)->CreateCharacterEntity(Location, Rotation, &spawnData);
 		check(newEntity);
 
-		AMWBattleUnitAvatar* character = Cast<AMWBattleUnitAvatar>(newEntity->GetCharacterActor());
+		AMWCharacter* character = Cast<AMWCharacter>(newEntity->GetCharacterActor());
 		check(character);
 
 		if (UMWBattleUnitComponent* unitComponent = character->FindComponentByClass<UMWBattleUnitComponent>())

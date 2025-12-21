@@ -10,7 +10,7 @@
 UMWBattleUnitComponent::UMWBattleUnitComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AvatarCharacterIdx = 0;
+	EntityCharacterIdx = 0;
 }
 
 void UMWBattleUnitComponent::SetCharacterData(const TArray<FMWBattleUnitCharacterData>& InData)
@@ -33,23 +33,23 @@ void UMWBattleUnitComponent::ChangeNextAvatar(bool bNext)
 	// キャラクターが一人だけの場合、変更しない.
 	if (charNum == 1)
 	{
-		AvatarCharacterIdx = 0;
+		EntityCharacterIdx = 0;
 
 		return;
 	}
 
 	int32 increment = bNext ? 1 : -1;
 
-	int32 newIdx = (AvatarCharacterIdx + increment + CharacterData.Num()) % CharacterData.Num();
+	int32 newIdx = (EntityCharacterIdx + increment + CharacterData.Num()) % CharacterData.Num();
 
 	const auto& data = CharacterData[newIdx];
 
-	// Change avatar's appearance.
+	// Change character's appearance.
 	// アバターの外観を変更する.
-	auto* avatar = GetPawn<AMWBattleUnitAvatar>();
-	if (avatar)
+	auto* character = GetPawn<AMWCharacter>();
+	if (character)
 	{
-		if (auto* mesh = avatar->GetVisualMesh())
+		if (auto* mesh = character->GetVisualMesh())
 		{
 			mesh->SetSkeletalMesh(data.Mesh);
 			mesh->SetAnimInstanceClass(data.AnimInst);
@@ -58,10 +58,10 @@ void UMWBattleUnitComponent::ChangeNextAvatar(bool bNext)
 
 	// Update character type
 	// キャラクタータイプを更新
-	CharacterData[AvatarCharacterIdx].Type = EBattleUnitCharacterType::Possession;
+	CharacterData[EntityCharacterIdx].Type = EBattleUnitCharacterType::Possession;
 	CharacterData[newIdx].Type = EBattleUnitCharacterType::Entity;
 
-	AvatarCharacterIdx = newIdx;
+	EntityCharacterIdx = newIdx;
 
 	//TODO: Reset attribute
 }
@@ -73,12 +73,12 @@ void UMWBattleUnitComponent::OnCharacterDataChanged()
 	int32 entityIdx = FindEntityCharacterId();
 	if (entityIdx != INDEX_NONE)
 	{
-		AvatarCharacterIdx = entityIdx;
+		EntityCharacterIdx = entityIdx;
 		const auto& data = CharacterData[entityIdx];
-		auto* avatar = GetPawn<AMWBattleUnitAvatar>();
-		if (avatar)
+		auto* character = GetPawn<AMWCharacter>();
+		if (character)
 		{
-			if (auto* mesh = avatar->GetVisualMesh())
+			if (auto* mesh = character->GetVisualMesh())
 			{
 				mesh->SetSkeletalMesh(data.Mesh);
 				mesh->SetAnimInstanceClass(data.AnimInst);
@@ -91,7 +91,116 @@ void UMWBattleUnitComponent::OnCharacterDataChanged()
 
 const UMWCharacterBattleSkillDataAsset* UMWBattleUnitComponent::GetSkillData()
 {
-	return CharacterData.IsValidIndex(AvatarCharacterIdx) ? CharacterData[AvatarCharacterIdx].SkillTable : nullptr;
+	return CharacterData.IsValidIndex(EntityCharacterIdx) ? CharacterData[EntityCharacterIdx].SkillTable : nullptr;
+}
+
+void UMWBattleUnitComponent::SetCombatState(bool bInCombat)
+{
+	// If the combat state is the same, do nothing.
+	// 今の戦闘状態と一致した場合、何もしない.
+	if(bIsInCombat == bInCombat)
+	{
+		return;
+	}
+
+	bIsInCombat = bInCombat;
+
+	if (AMWCharacter* character = GetPawn<AMWCharacter>())
+	{
+		if (UMWAbilitySystemComponent* asc = character->GetMWAbilitySystemComponent())
+		{
+			if (bInCombat)
+			{
+				asc->AddLooseGameplayTag(MWGameplayTags::GP_Character_CombatState);
+
+				OnCombatBegin();
+			}
+			else
+			{
+				asc->RemoveLooseGameplayTag(MWGameplayTags::GP_Character_CombatState);
+
+				OnCombatEnd();
+			}
+		}
+	}
+}
+
+bool UMWBattleUnitComponent::GetCombatState() const
+{
+	return bIsInCombat;
+}
+
+void UMWBattleUnitComponent::OnCombatBegin()
+{
+	// Grant combat abilities when entering combat
+	GrandCombatAbilities();
+}
+
+void UMWBattleUnitComponent::OnCombatEnd()
+{
+	// Remove combat abilities when exiting combat
+	RemoveCombatAbilities();
+}
+
+void UMWBattleUnitComponent::GrandCombatAbilities()
+{
+	AMWCharacter* owner = GetPawn<AMWCharacter>();
+	
+	if (!owner)
+	{
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitComponent::GrandCombatAbilities: Owner is null."));
+		return;
+	}
+
+	UMWAbilitySystemComponent* asc = owner->GetMWAbilitySystemComponent();
+	if (!asc)
+	{
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitComponent::GrandCombatAbilities: AbilitySystemComponent is null."));
+		return;
+	}
+
+	if (!AbilitySet)
+	{
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitComponent::GrandCombatAbilities: AbilitySet is null."));
+		return;
+	}
+
+	// Initialize the granted handles if not already done
+	if (!AbilityGranetedHandles.IsValid())
+	{
+		AbilityGranetedHandles = MakeShared<FMWAbilitySetGrantedHandles>();
+	}
+
+	// Grant abilities and store the handles
+	AbilitySet->GiveToAbilitySystem(asc, AbilityGranetedHandles.Get(), this);
+}
+
+void UMWBattleUnitComponent::RemoveCombatAbilities()
+{
+	AMWCharacter* owner = GetPawn<AMWCharacter>();
+	
+	if (!owner)
+	{
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitComponent::RemoveCombatAbilities: Owner is null."));
+		return;
+	}
+
+	UMWAbilitySystemComponent* asc = owner->GetMWAbilitySystemComponent();
+	if (!asc)
+	{
+		UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitComponent::RemoveCombatAbilities: AbilitySystemComponent is null."));
+		return;
+	}
+
+	// Check if we have granted handles to remove
+	if (!AbilityGranetedHandles.IsValid() || !AbilitySet)
+	{
+		UE_LOG(LogMWBattle, Log, TEXT("UMWBattleUnitComponent::RemoveCombatAbilities: No abilities to remove."));
+		return;
+	}
+
+	// Remove all granted abilities using the cached handles
+	AbilityGranetedHandles->RemoveFromAbilitySystem(asc);
 }
 
 int32 UMWBattleUnitComponent::FindEntityCharacterId() const
@@ -112,11 +221,4 @@ int32 UMWBattleUnitComponent::FindEntityCharacterId() const
 void UMWBattleUnitComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AMWBattleUnitAvatar* owner = GetPawn<AMWBattleUnitAvatar>();
-
-	if (AbilitySet)
-	{
-		AbilitySet->GiveToAbilitySystem(owner->GetMWAbilitySystemComponent(), AbilityGranetedHandles.Get(), this);
-	}
 }

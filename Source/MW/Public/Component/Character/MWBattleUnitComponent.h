@@ -6,18 +6,12 @@
 #include "MWBattleUnitComponent.generated.h"
 
 // Forward Declare
-class AMWBattleUnitAvatar;
+class AMWCharacter;
 class UMWAbilitySet;
 class UMWBattleAttributeSet;
 class UMWCharacterBattleSkillDataAsset;
 struct FMWAbilitySetGrantedHandles;
 
-UENUM(BlueprintType)
-enum class EBattleUnitCharacterType : uint8
-{
-	Entity,
-	Possession
-};
 
 USTRUCT(BlueprintType)
 struct FMWBattleUnitCharacterData
@@ -74,8 +68,27 @@ public:
 
 	const UMWCharacterBattleSkillDataAsset* GetSkillData();
 
-private:
-	int32 FindEntityCharacterId() const;;
+	// Activate or deactivate combat state.
+	UFUNCTION(BlueprintCallable, Category = "MW|Battle|Unit")
+	void SetCombatState(bool bInCombat);
+
+	// Return if battle unit is in combat state.
+	bool GetCombatState() const;
+
+protected:
+	// Called when entering combat state.
+	// 戦闘状態に入るときに呼び出される.
+	virtual void OnCombatBegin();
+
+	// Called when exiting combat state.
+	// 戦闘状態から出るときに呼び出される.
+	virtual void OnCombatEnd();
+
+	void GrandCombatAbilities();
+
+	void RemoveCombatAbilities();
+
+	int32 FindEntityCharacterId() const;
 
 private:
 	// Status effect manager handles the status effects of this battle unit.
@@ -85,15 +98,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	TArray<FMWBattleUnitCharacterData> CharacterData;
 
-	int32 AvatarCharacterIdx = INDEX_NONE;
+	int32 EntityCharacterIdx = INDEX_NONE;
 
-	//==== Attribute Set ====//
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MW | Ability", meta=(AllowPrivateAccess))
 	TObjectPtr<UMWAbilitySet> AbilitySet;
 
 	/* Cache the granted abilities */
 	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MW|Battle", meta=(AllowPrivateAccess))
+	bool bIsInCombat = false;
 
 public:
 	void BeginPlay() override;

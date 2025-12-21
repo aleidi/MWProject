@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class UC3DCameraComponent;
+class UMWBattleUnitComponent;
 class UMWCharacterEntity;
 class UMWPawnExtensionComponent;
 
@@ -116,6 +117,11 @@ public:
 
 protected:
 	TObjectPtr<UMWCharacterEntity> OwnerEntity = nullptr;
+#pragma endregion
+
+#pragma region Battle
+UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Battle")
+	TObjectPtr<UMWBattleUnitComponent> BattleUnitComponent;
 #pragma endregion
 
 };

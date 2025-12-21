@@ -35,10 +35,10 @@ void UMWSkillBase::PlayMontage()
 
 				bPlayedMontage = true;
 
-				// Block Cast Skill at the begining of the montage is playing
+				// Block Cast Skill at the beginning of the montage is playing
 				TSubclassOf<UGameplayEffect> blockcast = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GEBlockCastSkill);
-				FGameplayEffectSpecHandle spec_handle = asc->MakeOutgoingSpec(blockcast, 1.f, asc->MakeEffectContext());
-				BlockCastSkillEffectHandle = asc->ApplyGameplayEffectSpecToSelf(*spec_handle.Data.Get());
+				FGameplayEffectSpecHandle specHandle = asc->MakeOutgoingSpec(blockcast, 1.f, asc->MakeEffectContext());
+				BlockCastSkillEffectHandle = asc->ApplyGameplayEffectSpecToSelf(*specHandle.Data.Get());
 			}
 		}
 		else
@@ -78,8 +78,8 @@ void UMWSkillBase::OnMontageEnded(UAnimMontage* Anim, bool IsInterrupted)
 
 void UMWSkillBase::OnMontageBlendingOut(UAnimMontage* Anim, bool IsInterrupted)
 {
-	const bool is_playing_skill_anim = (Anim == SkillAnim) && (GetCurrentMontage() == SkillAnim);
-	if (is_playing_skill_anim)
+	const bool bPlayingSkillAnim = (Anim == SkillAnim) && (GetCurrentMontage() == SkillAnim);
+	if (bPlayingSkillAnim)
 	{
 		// Reset AnimRootMotionTranslationScale
 		ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
@@ -90,7 +90,7 @@ void UMWSkillBase::OnMontageBlendingOut(UAnimMontage* Anim, bool IsInterrupted)
 		}
 	}
 
-	if (is_playing_skill_anim && (IsInterrupted || !bAllowInterruptAfterBlendOut))
+	if (bPlayingSkillAnim && (IsInterrupted || !bAllowInterruptAfterBlendOut))
 	{
 		if (UAbilitySystemComponent* asc = GetAbilitySystemComponentFromActorInfo())
 		{
@@ -118,14 +118,14 @@ void UMWSkillBase::OnAbilityCancelled()
 
 bool UMWSkillBase::StopPlayingMontage()
 {
-	const FGameplayAbilityActorInfo* actor_info = GetCurrentActorInfo();
-	if (actor_info == nullptr)
+	const FGameplayAbilityActorInfo* actorInfo = GetCurrentActorInfo();
+	if (actorInfo == nullptr)
 	{
 		return false;
 	}
 
-	UAnimInstance* anim_inst = actor_info->GetAnimInstance();
-	if (anim_inst == nullptr)
+	UAnimInstance* animInst = actorInfo->GetAnimInstance();
+	if (animInst == nullptr)
 	{
 		return false;
 	}
@@ -138,11 +138,11 @@ bool UMWSkillBase::StopPlayingMontage()
 		if (asc->GetAnimatingAbility() == this && asc->GetCurrentMontage() == SkillAnim)
 		{
 			// Unbind delegates so they don't get called as well
-			FAnimMontageInstance* montage_inst = anim_inst->GetActiveInstanceForMontage(SkillAnim);
-			if (montage_inst)
+			FAnimMontageInstance* montageInst = animInst->GetActiveInstanceForMontage(SkillAnim);
+			if (montageInst)
 			{
-				montage_inst->OnMontageBlendingOutStarted.Unbind();
-				montage_inst->OnMontageEnded.Unbind();
+				montageInst->OnMontageBlendingOutStarted.Unbind();
+				montageInst->OnMontageEnded.Unbind();
 			}
 
 			asc->CurrentMontageStop();
@@ -151,6 +151,16 @@ bool UMWSkillBase::StopPlayingMontage()
 	}
 
 	return false;
+}
+
+void UMWSkillBase::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
+}
+
+void UMWSkillBase::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 }
 
 void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

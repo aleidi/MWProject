@@ -25,10 +25,6 @@ class MW_API AMWBattleUnitAvatar : public AMWCharacter
 	
 public:
 	AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer);
-	
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Battle")
-	TObjectPtr<UMWBattleUnitComponent> BattleUnitComponent;
 
 protected:
 	virtual void BeginPlay() override;

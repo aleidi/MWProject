@@ -145,6 +145,9 @@ namespace MWGameplayTags
 	// Combo Hit
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboHit,					"GameplayTag.Battle.ComboHit",							"Battle Combo Hit.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,				"GameplayTag.Battle.AvatarChanged",						"Battle Avatar changed / swapped event.");
+	
+	// Character
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Character_CombatState,			"GameplayTag.Character.CombatState",					"Character combat state.");
 #pragma endregion
 
 	// ==== SetByCaller Tag ====

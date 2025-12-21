@@ -4,7 +4,6 @@
 AMWBattleUnitAvatar::AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	BattleUnitComponent = CreateDefaultSubobject<UMWBattleUnitComponent>(TEXT("BattleUnitComponent"));
 
 	PrimaryActorTick.bCanEverTick = false;
 }

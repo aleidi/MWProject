@@ -23,8 +23,8 @@ UMWBattleUnitAttack::UMWBattleUnitAttack(const FObjectInitializer& ObjectInitial
 
 void UMWBattleUnitAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	AActor* avatar = ActorInfo ? ActorInfo->AvatarActor.Get() : GetAvatarActorFromActorInfo(); 
-	SetupSkillTable(avatar);
+	AActor* character = ActorInfo ? ActorInfo->AvatarActor.Get() : GetAvatarActorFromActorInfo(); 
+	SetupSkillTable(character);
 
 	// Setup skill table should be before reset approach states.
 	// スキルテーブルの設定は、アプローチ状態のリセットの前に行う必要がある.
@@ -65,9 +65,9 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	AttackTargetActor = Payload->Target;
 
-	AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo());
+	AMWCharacter* character = Cast<AMWCharacter>(GetAvatarActorFromActorInfo());
 
-	if (!avatar)
+	if (!character)
 	{
 		return;
 	}
@@ -119,7 +119,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 	// 最初のコンボステップで接近が必要な場合、OriginalPositionFlagを設定する。
 	if (!IsOriginalPositionFlagSet())
 	{
-		OriginalPosition = avatar->GetActorLocation();
+		OriginalPosition = character->GetActorLocation();
 
 		SetOriginalPositionFlag(true);
 	}
@@ -128,7 +128,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 	// ターゲットがスキル範囲内にいるか確認する。
 	bool bIsTargetInRange = false;
 	{
-		const float distance = FVector::Dist(AttackTargetActor->GetActorLocation(), avatar->GetActorLocation());
+		const float distance = FVector::Dist(AttackTargetActor->GetActorLocation(), character->GetActorLocation());
 
 		bIsTargetInRange = distance <= skillData->CastRange;
 	}
@@ -158,7 +158,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 			// Get CharacterAnimControlComponent to start approach logic.
 			// キャラクターアニメーションコントロールコンポーネントを取得して、接近ロジックを開始する。
-			if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+			if (auto* animControlComp = character->FindComponentByClass<UMWCharacterAnimControlComponent>())
 			{
 				animControlComp->StartApproachTarget(AttackTargetActor.Get());
 			}
@@ -180,7 +180,7 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 		{
 			// Get CharacterAnimControlComponent to start approach logic.
 			// キャラクターアニメーションコントロールコンポーネントを取得して、接近ロジックを開始する。
-			if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+			if (auto* animControlComp = character->FindComponentByClass<UMWCharacterAnimControlComponent>())
 			{
 				animControlComp->StartApproachTarget(AttackTargetActor.Get());
 			}
@@ -214,15 +214,15 @@ void UMWBattleUnitAttack::OnComboEnd()
 {
 	// Go back to the original position if approached.
 	// 接近した場合、元の位置に戻る。
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	if (AMWCharacter* character = Cast<AMWCharacter>(GetAvatarActorFromActorInfo()))
 	{
 		// If the owner has not moved, skip.
 		// オーナーが移動していない場合、スキップする。
-		if (FVector::DistXY(OriginalPosition, avatar->GetActorLocation()) > MaxDistanceFromInitialPosition)
+		if (FVector::DistXY(OriginalPosition, character->GetActorLocation()) > MaxDistanceFromInitialPosition)
 		{
 			if (UAnimMontage* returnApproachAnim = SkillTable.ReturnAnimation)
 			{
-				if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+				if (auto* animControlComp = character->FindComponentByClass<UMWCharacterAnimControlComponent>())
 				{
 					animControlComp->StartApproachPoint(OriginalPosition);
 				}
@@ -251,9 +251,9 @@ void UMWBattleUnitAttack::OnApproachAnimBlendingOut(UAnimMontage* Montage, bool 
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnApproachAnimBlendingOut: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
 
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	if (AMWCharacter* character = Cast<AMWCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		if (auto* animControlComp = character->FindComponentByClass<UMWCharacterAnimControlComponent>())
 		{
 			animControlComp->EndApproach(true);
 		}
@@ -293,9 +293,9 @@ void UMWBattleUnitAttack::OnReturnAnimBlendingOut(UAnimMontage* Montage, bool bI
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("UMWBattleUnitAttack::OnReturnAnimBlendingOut: Montage[%s] Interrupted[%s]"), *GetNameSafe(Montage), bInterrupted ? TEXT("True") : TEXT("False")));
 
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	if (AMWCharacter* character = Cast<AMWCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		if (auto* animControlComp = avatar->FindComponentByClass<UMWCharacterAnimControlComponent>())
+		if (auto* animControlComp = character->FindComponentByClass<UMWCharacterAnimControlComponent>())
 		{
 			animControlComp->EndApproach(true);
 		}
@@ -327,7 +327,7 @@ void UMWBattleUnitAttack::OnSkillAnimEnded(UAnimMontage* Montage, bool bInterrup
 		OnComboEnd();
 	}
 
-	// TODO : Check avatar's action point or any other conditions to decide whether to end combo.
+	// TODO : Check character's action point or any other conditions to decide whether to end combo.
 }
 
 void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
@@ -348,7 +348,7 @@ void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
 			}
 			else
 			{
-				UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::SetupSkillTable: SkillTable is null in Avatar=%s"), *AvatarActor->GetName());
+				UE_LOG(LogMWBattle, Warning, TEXT("UMWBattleUnitAttack::SetupSkillTable: SkillTable is null in character=%s"), *AvatarActor->GetName());
 			}
 		}
 	}
@@ -406,9 +406,9 @@ void UMWBattleUnitAttack::UnbindDelegates()
 
 bool UMWBattleUnitAttack::PlayMontage(UAnimMontage* InMontage, FOnMontageBlendingOutStarted& BlendingOutDelegate, FOnMontageEnded& EndDelegate)
 {
-	if (AMWBattleUnitAvatar* avatar = Cast<AMWBattleUnitAvatar>(GetAvatarActorFromActorInfo()))
+	if (AMWCharacter* character = Cast<AMWCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		if (USkeletalMeshComponent* skMeshComp = avatar->GetComponentByClass<USkeletalMeshComponent>())
+		if (USkeletalMeshComponent* skMeshComp = character->GetComponentByClass<USkeletalMeshComponent>())
 		{
 			if (UAnimInstance* animInst = Cast<UAnimInstance>(skMeshComp->GetAnimInstance()))
 			{

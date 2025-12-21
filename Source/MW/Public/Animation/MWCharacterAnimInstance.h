@@ -5,7 +5,7 @@
 #include "Interface/MWCharacterAnimInterface.h"
 #include "MWCharacterAnimInstance.generated.h"
 
-
+struct FGameplayTag;
 
 UCLASS()
 class UMWCharacterAnimInstance : public UAnimInstance
@@ -21,6 +21,8 @@ private:
 	UFUNCTION()
 	void ProcessOnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
+	void OnBattleStateTagChanged(const FGameplayTag Tag, int32 NewCount);
+		
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Anim")
 	TEnumAsByte<ECharacterBehaviorState> BehaviorState;
@@ -30,4 +32,6 @@ protected:
 	bool bCanNormalAtk;
 	UPROPERTY(BlueprintReadOnly, Category="Anim")
 	bool bCanCastSkill;
+
+	FDelegateHandle BattleStateTagHandle;
 };

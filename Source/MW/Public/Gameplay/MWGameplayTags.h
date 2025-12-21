@@ -107,6 +107,9 @@ namespace MWGameplayTags
 	// Combo Hit
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboHit);
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_AvatarChanged);
+
+	// Character
+	DECLARE_MW_GAMEPLAY_TAG(GP_Character_CombatState);
 #pragma endregion
 
 	// ==== SetByCaller Tag ====

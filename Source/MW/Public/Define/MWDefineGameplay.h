@@ -2,7 +2,7 @@
 
 #include "MWDefineGameplay.generated.h"
 
-class AMWBattleUnitAvatar;
+class AMWCharacter;
 class AMWCharacter;
 
 UENUM(BlueprintType)
@@ -44,6 +44,13 @@ enum class EMWCharacterSkillComboType : uint8
 	UpDown		= 1,
 	LeftRight	= 2,
 	Max			= 3
+};
+
+UENUM(BlueprintType)
+enum class EBattleUnitCharacterType : uint8
+{
+	Entity,
+	Possession
 };
 
 /* FMWFoundActorInfo
@@ -120,7 +127,7 @@ public:
 	EMWTeamAlign Align = EMWTeamAlign::Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<AMWBattleUnitAvatar>> BattleUnits;
+	TArray<TObjectPtr<AMWCharacter>> BattleUnits;
 };
 
 bool operator==(const FMWTeam& Lhs, const FMWTeam& Rhs);

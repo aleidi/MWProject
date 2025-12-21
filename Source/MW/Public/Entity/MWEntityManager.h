@@ -7,7 +7,7 @@
 
 // Forward Declare
 class AMWCharacter;
-class AMWBattleUnitAvatar;
+class AMWCharacter;
 class UMWEntity;
 class UMWCharacterEntity;
 struct FMWCharacterSpawnResourceData;
@@ -54,7 +54,7 @@ public:
 
 	AMWCharacter* SpawnCharacter(int32 CharacterId, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator);
 
-	AMWBattleUnitAvatar* SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CCharacterId3, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator);
+	AMWCharacter* SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CCharacterId3, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator);
 private:
 	void RemoveCharacter(const FObjectId& EntityId);
 
