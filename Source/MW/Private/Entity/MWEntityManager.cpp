@@ -1,5 +1,5 @@
 #include "Entity/MWEntityManager.h"
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 #include "Entity/Character/MWCharacterEntity.h"
 #include "Entity/MWEntity.h"
 #include "MWLogChannels.h"
@@ -61,7 +61,7 @@ void UMWEntityManager::DespawnCharacter(const FObjectId& EntityId)
 
 AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector& Location, const FRotator& Rotation)
 {
-	const FMWCharacterData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+	const FMWCharacterTempleteData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
 
 	if (data)
 	{
@@ -81,9 +81,9 @@ AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector&
 
 AMWCharacter* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CharacterId3, const FVector& Location, const FRotator& Rotation)
 {
-	const FMWCharacterData* data1 = DATATABLEMANAGER->GetCharacterDataById(CharacterId1);
-	const FMWCharacterData* data2 = DATATABLEMANAGER->GetCharacterDataById(CharacterId2);
-	const FMWCharacterData* data3 = DATATABLEMANAGER->GetCharacterDataById(CharacterId3);
+	const FMWCharacterTempleteData* data1 = DATATABLEMANAGER->GetCharacterDataById(CharacterId1);
+	const FMWCharacterTempleteData* data2 = DATATABLEMANAGER->GetCharacterDataById(CharacterId2);
+	const FMWCharacterTempleteData* data3 = DATATABLEMANAGER->GetCharacterDataById(CharacterId3);
 
 	if (data1 && data2 && data3)
 	{

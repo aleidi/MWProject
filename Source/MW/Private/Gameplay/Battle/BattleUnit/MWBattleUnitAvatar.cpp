@@ -1,5 +1,5 @@
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 
 AMWBattleUnitAvatar::AMWBattleUnitAvatar(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

@@ -72,7 +72,7 @@ UDataTable* UMWDataTableManager::GetDataTable(const FString& TableName)
 	return GetDataTable(SearchKey);
 }
 
-const FMWCharacterData* UMWDataTableManager::GetCharacterDataById(int32 Id)
+const FMWCharacterTempleteData* UMWDataTableManager::GetCharacterDataById(int32 Id)
 {
 	auto* data = CharacterDataMap.Find(Id);
 
@@ -95,10 +95,10 @@ void UMWDataTableManager::GenerateCharacterDataMap()
 		return;
 	}
 
-	TArray<FMWCharacterData*> tableRows;
-	characterDataTable->GetAllRows<FMWCharacterData>(FMWCharacterData::StaticStruct()->GetName(), tableRows);
+	TArray<FMWCharacterTempleteData*> tableRows;
+	characterDataTable->GetAllRows<FMWCharacterTempleteData>(FMWCharacterTempleteData::StaticStruct()->GetName(), tableRows);
 
-	for (const FMWCharacterData* data : tableRows)
+	for (const FMWCharacterTempleteData* data : tableRows)
 	{
 		CharacterDataMap.FindOrAdd(data->Id) = data;
 	}

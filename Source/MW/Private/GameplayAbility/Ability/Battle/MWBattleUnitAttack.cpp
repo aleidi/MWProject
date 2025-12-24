@@ -3,7 +3,7 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Animation/AnimSequenceBase.h"
 #include "Animation/Notify/Battle/Combat/AN_ComboHit.h"
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 #include "Component/Character/MWCharacterAnimControlComponent.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Gameplay/MWGameplayTags.h"

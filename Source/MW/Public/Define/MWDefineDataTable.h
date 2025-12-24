@@ -7,7 +7,7 @@
 class UMWAbilitySet;
 
 USTRUCT(BlueprintType)
-struct FMWCharacterData : public FTableRowBase
+struct FMWCharacterTempleteData : public FTableRowBase
 {
 	GENERATED_BODY()
 

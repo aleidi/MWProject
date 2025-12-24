@@ -1,5 +1,5 @@
 ﻿#include "Cheat/MWCheatManager.h"
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 #include "Data/MWDataTableManager.h"
 #include "Define/MWDefineDataTable.h"
 #include "Define/MWDefineGameplay.h"
@@ -81,7 +81,7 @@ void UMWCheatManager::PlaySequence()
 
 void UMWCheatManager::SpawnCharacter(int32 CharacterId)
 {
-	const FMWCharacterData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+	const FMWCharacterTempleteData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
 
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 

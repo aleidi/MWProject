@@ -1,4 +1,4 @@
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 #include "Data/MWDataTableManager.h"
 #include "Define/MWDefineBattle.h"
 #include "Entity/MWEntityManager.h"

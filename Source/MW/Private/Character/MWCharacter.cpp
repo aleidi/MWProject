@@ -1,7 +1,7 @@
 #include "Character/MWCharacter.h"
 #include "Component/Character/MWCharacterMovementComponent.h"
 #include "Controller/MWPlayerController.h"
-#include "Component/Character/MWBattleUnitComponent.h"
+#include "Component/Battle/MWBattleUnitComponent.h"
 #include "Component/Pawn/MWPawnExtensionComponent.h"
 #include "Components/InputComponent.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
