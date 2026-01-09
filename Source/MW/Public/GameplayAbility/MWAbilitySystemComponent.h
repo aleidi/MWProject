@@ -14,8 +14,44 @@ class UMWAbilityTagRelationshipMapping;
 class UObject;
 struct FFrame;
 struct FGameplayAbilityTargetDataHandle;
+struct FInputActionValue;
+struct FInputActionInstance;
 
 MW_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
+
+USTRUCT()
+struct FMWAbilityInputActionPayload 
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FInputActionValue Value;
+
+	// Total trigger processing/evaluation time (How long this action has been in event Started, Ongoing, or Triggered
+	UPROPERTY()
+	float ElapsedProcessedTime = 0.f;
+
+	// Triggered time (How long this action has been in event Triggered only)
+	UPROPERTY()
+	float ElapsedTriggeredTime = 0.f;
+};
+
+USTRUCT()
+struct FMWAbilityReleasedInput
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FGameplayAbilitySpecHandle SpecHandle;
+
+	UPROPERTY()
+	FMWAbilityInputActionPayload Payload;
+
+	FORCEINLINE bool operator==(const FMWAbilityReleasedInput& Other) const
+	{
+		return SpecHandle == Other.SpecHandle;
+	}
+};
 
 /**
  * UMWAbilitySystemComponent
@@ -43,6 +79,7 @@ public:
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FInputActionInstance& ActionInst, const FGameplayTag& InputTag);
 
 	/* Help function to call AbilityInputTagPressed of Actor. */
 	static bool ActorAbilityInputTagPressed(AActor* InActor, const FGameplayTag& InputTag);
@@ -73,6 +110,8 @@ protected:
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 
+	virtual void HandleAbilityInputReleasedWithPayload(FGameplayAbilitySpec& Spec, const FMWAbilityInputActionPayload& Payload);
+
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;
 	virtual void NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason) override;
 	virtual void NotifyAbilityEnded(FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, bool bWasCancelled) override;
@@ -86,7 +125,7 @@ protected:
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 
 	// Handles to abilities that had their input released this frame.
-	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
+	TArray<FMWAbilityReleasedInput> InputReleasedSpecHandlesWithPayload;
 
 	// Handles to abilities that have their input held.
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
@@ -98,7 +137,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	void FindInstancedAbilityByClass(TArray<UMWGameplayAbility*>& OutAbilities, TSubclassOf<UMWGameplayAbility> InClass);
 
-//****Interface for Actor****//
+	//****Interface for Actor****//
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	static bool ClearAllAbilitiesByActor(AActor* InActor);

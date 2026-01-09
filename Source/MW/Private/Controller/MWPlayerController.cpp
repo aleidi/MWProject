@@ -85,12 +85,12 @@ void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 	}
 }
 
-void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+void AMWPlayerController::Input_AbilityInputTagReleased(const FInputActionInstance& ActionInst, FGameplayTag InputTag)
 {
 	const APawn* pawn = GetPawn<APawn>();
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
-		mwasc->AbilityInputTagReleased(InputTag);
+		mwasc->AbilityInputTagReleased(ActionInst, InputTag);
 	}
 }
 
