@@ -63,18 +63,18 @@ void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, co
 		return;
 	}
 
-	for (const FMWInputAction& Action : abilityInputActions)
+	for (const FMWInputAction& action : abilityInputActions)
 	{
-		if (Action.InputAction && Action.InputTag.IsValid())
+		if (action.InputAction && action.InputTag.IsValid())
 		{
 			if (PressedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
+				BindHandles.Add(BindAction(action.InputAction, action.PressEventType, Object, PressedFunc, action.InputTag).GetHandle());
 			}
 
 			if (ReleasedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag).GetHandle());
+				BindHandles.Add(BindAction(action.InputAction, action.ReleaseEventType, Object, ReleasedFunc, action.InputTag).GetHandle());
 			}
 		}
 	}

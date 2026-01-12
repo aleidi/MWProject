@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GameplayTagContainer.h"
+#include "InputTriggers.h"
 #include "MWInputConfig.generated.h"
 
 
@@ -27,6 +28,16 @@ struct FMWInputAction
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
+
+	// Used for ability input actions to define which trigger events correspond to press and release.
+	// 入力アクションが押されたときと離されたときに対応するトリガーイベントを定義するために使用される。
+	UPROPERTY(EditDefaultsOnly)
+	ETriggerEvent PressEventType = ETriggerEvent::Started;
+
+	// Used for ability input actions to define which trigger events correspond to press and release.
+	// 入力アクションが押されたときと離されたときに対応するトリガーイベントを定義するために使用される。
+	UPROPERTY(EditDefaultsOnly)
+	ETriggerEvent ReleaseEventType = ETriggerEvent::Completed;
 };
 
 USTRUCT(BlueprintType)
