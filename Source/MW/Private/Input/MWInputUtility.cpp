@@ -96,21 +96,9 @@ void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UInp
 
 void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag)
 {
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
-	if (UMWInputConfig* input_config = data->InputConfig.Get())
+	if (const UInputAction* action = GetInputActionByTag(IMCTag, InputActionTag))
 	{
-		if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
-		{
-			UMWInputUtility::RemoveBindingInputAction(Object, action);
-		}
-		else
-		{
-			UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
-		}
-	}
-	else
-	{
-		UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+		UMWInputUtility::RemoveBindingInputAction(Object, action);
 	}
 }
 
@@ -131,4 +119,43 @@ void UMWInputUtility::DisableAllInputAction(const UObject* Object, const FGamepl
 	{
 		UMWInputUtility::RemoveBindingInputAction(Object, IMCTag, tag);
 	}
+}
+
+bool UMWInputUtility::RemoveBindingInputActionByHandle(const UObject* Object, uint32 Handle)
+{
+	if (!Object || !Object->GetWorld() || Handle == 0)
+	{
+		return false;
+	}
+
+	if (UMWWorldSubsystem* worldSubsys = Object->GetWorld()->GetSubsystem<UMWWorldSubsystem>())
+	{
+		if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
+		{
+			return inputHandler->RemoveBindingInputAction(Handle);
+		}
+	}
+
+	return false;
+}
+
+const UInputAction* UMWInputUtility::GetInputActionByTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag)
+{
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+
+	if (UMWInputConfig* input_config = data->InputConfig.Get())
+	{
+		if (const UInputAction* action = input_config->FindInputActionForTag(IMCTag, InputActionTag))
+		{
+			return action;
+		}
+
+		UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
+
+		return  nullptr;
+	}
+
+	UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+
+	return nullptr;
 }

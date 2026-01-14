@@ -8,16 +8,10 @@
 #include "InputTriggers.h"
 #include "MWInputConfig.generated.h"
 
-
 class UInputAction;
 class UInputMappingContext;
 class UMWLocalPlayer;
 
-/**
- * FMWInputAction
- *
- *	Struct used to map a input action to a gameplay input tag.
- */
 USTRUCT(BlueprintType)
 struct FMWInputAction
 {
@@ -63,32 +57,48 @@ struct FMWInputActionContainer
 {
 	GENERATED_BODY()
 
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and must be manually bound.
+	// Unified input actions list (native + ability).
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FMWInputAction> NativeInputActions;
-
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and are automatically bound to abilities with matching input tags.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FMWInputAction> AbilityInputActions;
+	TArray<FMWInputAction> InputActions;
 };
 
-/**
- * UMWInputConfig
- *
- *	Non-mutable data asset that contains input configuration properties.
- */
 UCLASS(BlueprintType, Const)
 class UMWInputConfig : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
-	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
-	bool GetAbilityInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const;
+	// Unified API
+	const UInputAction* FindInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
+	bool GetInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const;
+	bool GetInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, FMWInputAction& OutAction) const;
+
+	// Backward compatible API (temporary)
+	UE_DEPRECATED(5.6, "Use FindInputActionForTag")
+	FORCEINLINE const UInputAction* FindNativeInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const
+	{
+		return FindInputActionForTag(IMCTag, InputActionTag);
+	}
+
+	UE_DEPRECATED(5.6, "Use FindInputActionForTag")
+	FORCEINLINE const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const
+	{
+		return FindInputActionForTag(IMCTag, InputActionTag);
+	}
+
+	UE_DEPRECATED(5.6, "Use GetInputActionsForTag")
+	FORCEINLINE bool GetAbilityInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const
+	{
+		return GetInputActionsForTag(IMCTag, OutActions);
+	}
+
+	UE_DEPRECATED(5.6, "Use GetInputActionForTag")
+	FORCEINLINE bool GetAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, FMWInputAction& OutAction) const
+	{
+		return GetInputActionForTag(IMCTag, InputActionTag, OutAction);
+	}
 
 public:
-	/* Key is the input mapping context that owns the input actions. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<FGameplayTag, FMWInputActionContainer> InputActionsContainers;
 

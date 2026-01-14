@@ -28,9 +28,6 @@ protected:
 protected:
 	virtual void SetupInputComponent() override;
 
-	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
-	void Input_AbilityInputTagReleased(const FInputActionInstance& ActionInst, FGameplayTag InputTag);
-
 	// Default Input
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookAt(const FInputActionValue& InputActionValue);
