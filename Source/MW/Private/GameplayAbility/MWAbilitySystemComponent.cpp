@@ -4,8 +4,6 @@
 #include "GameplayAbility/MWGameplayAbility.h"
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
-#include "InputAction.h"
-#include "InputActionValue.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAbilitySystemComponent)
 
@@ -15,7 +13,7 @@ UMWAbilitySystemComponent::UMWAbilitySystemComponent(const FObjectInitializer& O
 	: Super(ObjectInitializer)
 {
 	InputPressedSpecHandles.Reset();
-	InputReleasedSpecHandlesWithPayload.Reset();;
+	InputReleasedSpecHandles.Reset();
 	InputHeldSpecHandles.Reset();
 
 	//FMemory::Memset(ActivationGroupCounts, 0, sizeof(ActivationGroupCounts));
@@ -180,11 +178,6 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	}
 }
 
-void UMWAbilitySystemComponent::HandleAbilityInputReleasedWithPayload(FGameplayAbilitySpec& Spec, const FMWAbilityInputActionPayload& Payload)
-{
-
-}
-
 void UMWAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	if (InputTag.IsValid())
@@ -200,45 +193,15 @@ void UMWAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Input
 	}
 }
 
-void UMWAbilitySystemComponent::AbilityInputTagReleased(const FInputActionInstance& ActionInst, const FGameplayTag& InputTag)
-{
-	if (InputTag.IsValid())
-	{
-		FMWAbilityInputActionPayload payload;
-		payload.Value = ActionInst.GetValue();
-		payload.ElapsedProcessedTime = ActionInst.GetElapsedTime();
-		payload.ElapsedTriggeredTime = ActionInst.GetTriggeredTime();
-
-		for (const FGameplayAbilitySpec& abilitySpec : ActivatableAbilities.Items)
-		{
-			if (abilitySpec.Ability && (abilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
-			{
-				FMWAbilityReleasedInput item;
-				item.SpecHandle = abilitySpec.Handle;
-				item.Payload = payload;
-
-				InputReleasedSpecHandlesWithPayload.AddUnique(MoveTemp(item));
-				InputHeldSpecHandles.Remove(abilitySpec.Handle);
-			}
-		}
-	}
-}
-
 void UMWAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
 {
 	if (InputTag.IsValid())
 	{
-		FMWAbilityInputActionPayload payload;
-
 		for (const FGameplayAbilitySpec& abilitySpec : ActivatableAbilities.Items)
 		{
 			if (abilitySpec.Ability && (abilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
 			{
-				FMWAbilityReleasedInput item;
-				item.SpecHandle = abilitySpec.Handle;
-				item.Payload = payload;
-
-				InputReleasedSpecHandlesWithPayload.AddUnique(MoveTemp(item));
+				InputReleasedSpecHandles.AddUnique(abilitySpec.Handle);
 				InputHeldSpecHandles.Remove(abilitySpec.Handle);
 			}
 		}
@@ -285,17 +248,17 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	//
 	// Process all abilities that activate when the input is held.
 	//
-	for (const FGameplayAbilitySpecHandle& specHandle : InputHeldSpecHandles)
+	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)
 	{
-		if (const FGameplayAbilitySpec* abilitySpec = FindAbilitySpecFromHandle(specHandle))
+		if (const FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
 		{
-			if (abilitySpec->Ability && !abilitySpec->IsActive())
+			if (AbilitySpec->Ability && !AbilitySpec->IsActive())
 			{
-				const UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(abilitySpec->Ability);
+				const UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(AbilitySpec->Ability);
 
 				if (MWAbilityCDO->GetActivationPolicy() == EMWAbilityActivationPolicy::WhileInputActive)
 				{
-					AbilitiesToActivate.AddUnique(abilitySpec->Handle);
+					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 				}
 			}
 		}
@@ -304,26 +267,26 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	//
 	// Process all abilities that had their input pressed this frame.
 	//
-	for (const FGameplayAbilitySpecHandle& specHandle : InputPressedSpecHandles)
+	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
-		if (FGameplayAbilitySpec* abilitySpec = FindAbilitySpecFromHandle(specHandle))
+		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
 		{
-			if (abilitySpec->Ability)
+			if (AbilitySpec->Ability)
 			{
-				abilitySpec->InputPressed = true;
+				AbilitySpec->InputPressed = true;
 
-				if (abilitySpec->IsActive())
+				if (AbilitySpec->IsActive())
 				{
 					// Ability is active so pass along the input event.
-					AbilitySpecInputPressed(*abilitySpec);
+					AbilitySpecInputPressed(*AbilitySpec);
 				}
 				else
 				{
-					const UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(abilitySpec->Ability);
+					const UMWGameplayAbility* MWAbilityCDO = CastChecked<UMWGameplayAbility>(AbilitySpec->Ability);
 
 					if (MWAbilityCDO->GetActivationPolicy() == EMWAbilityActivationPolicy::OnInputTriggered)
 					{
-						AbilitiesToActivate.AddUnique(abilitySpec->Handle);
+						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 					}
 				}
 			}
@@ -335,28 +298,26 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	// We do it all at once so that held inputs don't activate the ability
 	// and then also send a input event to the ability because of the press.
 	//
-	for (const FGameplayAbilitySpecHandle& abilitySpecHandle : AbilitiesToActivate)
+	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
-		TryActivateAbility(abilitySpecHandle);
+		TryActivateAbility(AbilitySpecHandle);
 	}
 
 	//
 	// Process all abilities that had their input released this frame.
 	//
-	for (const FMWAbilityReleasedInput& released : InputReleasedSpecHandlesWithPayload)
+	for (const FGameplayAbilitySpecHandle& SpecHandle : InputReleasedSpecHandles)
 	{
-		if (FGameplayAbilitySpec* abilitySpec = FindAbilitySpecFromHandle(released.SpecHandle))
+		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
 		{
-			if (abilitySpec->Ability)
+			if (AbilitySpec->Ability)
 			{
-				abilitySpec->InputPressed = false;
+				AbilitySpec->InputPressed = false;
 
-				if (abilitySpec->IsActive())
+				if (AbilitySpec->IsActive())
 				{
 					// Ability is active so pass along the input event.
-					AbilitySpecInputReleased(*abilitySpec);
-
-					HandleAbilityInputReleasedWithPayload(*abilitySpec, released.Payload);
+					AbilitySpecInputReleased(*AbilitySpec);
 				}
 			}
 		}
@@ -366,13 +327,13 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	// Clear the cached ability handles.
 	//
 	InputPressedSpecHandles.Reset();
-	InputReleasedSpecHandlesWithPayload.Reset();;
+	InputReleasedSpecHandles.Reset();
 }
 
 void UMWAbilitySystemComponent::ClearAbilityInput()
 {
 	InputPressedSpecHandles.Reset();
-	InputReleasedSpecHandlesWithPayload.Reset();;
+	InputReleasedSpecHandles.Reset();
 	InputHeldSpecHandles.Reset();
 }
 
@@ -661,3 +622,4 @@ void UMWAbilitySystemComponent::GetAbilityTargetData(const FGameplayAbilitySpecH
 		OutTargetDataHandle = replicatedData->TargetData;
 	}
 }
+

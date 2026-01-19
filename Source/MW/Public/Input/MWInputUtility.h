@@ -64,9 +64,22 @@ public:
 	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
 	static void BindInputAction(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
 	{
-		if (const UInputAction* action = GetInputActionByTag(IMCTag, InputActionTag))
+		const UMWMasterData* data = MWSINGLETON->GetMasterData();
+
+		if (UMWInputConfig* input_config = data->InputConfig.Get())
 		{
-			UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
+			if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
+			{
+				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
+			}
+			else
+			{
+				UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
+			}
+		}
+		else
+		{
+			UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
 		}
 	}
 
@@ -85,46 +98,4 @@ public:
 	static void DisableAllInputActionExcept(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag);
 
 	static void DisableAllInputAction(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer);
-
-	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
-	static uint32 BindInputActionWithHandle(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
-	{
-		if (!Object)
-		{
-			return 0;
-		}
-
-		if (!GetDefault<UEnhancedInputDeveloperSettings>()->bEnableWorldSubsystem)
-		{
-			UE_LOG(LogMWInput, Warning, TEXT("Please enable world subsystem of Enhanced Input Developer Settings in Editor->Project Settings or the bind action of Actor would not be used"));
-			return 0;
-		}
-
-		if (UMWWorldSubsystem* worldSubsys = Object->GetWorld()->GetSubsystem<UMWWorldSubsystem>())
-		{
-			if (AMWInputHandler* inputHandler = worldSubsys->GetInputHandler())
-			{
-				return inputHandler->BindInputActionWithHandle<UserClass>(Action, TriggerEvent, Object, Func, Params...);
-			}
-		}
-
-		return 0;
-	}
-
-	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
-	static uint32 BindInputActionWithHandle(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
-	{
-		if (const UInputAction* action = GetInputActionByTag(IMCTag, InputActionTag))
-		{
-			return UMWInputUtility::BindInputActionWithHandle(action, TriggerEvent, Object, Func, Params...);
-		}
-
-		return 0;	
-	}
-
-	static bool RemoveBindingInputActionByHandle(const UObject* Object, uint32 Handle);
-
-	/* Get an input action defined in input config(UMWInputConfig). */
-	UFUNCTION(BlueprintCallable, Category = "Input|Utility")
-	static const UInputAction* GetInputActionByTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag);
 };

@@ -67,11 +67,30 @@ void AMWPlayerController::SetupInputComponent()
 				TArray<uint32> bind_handles;
 
 				// default input
-				mwic->BindActionByTag(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-				mwic->BindActionByTag(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
-				mwic->BindActionByTag(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
+				mwic->BindAbilityActions(input_config, MWGameplayTags::IMC_TPDefault, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
+				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
 			}
 		}
+	}
+}
+
+void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	const APawn* pawn = GetPawn<APawn>();
+	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
+	{
+		mwasc->AbilityInputTagPressed(InputTag);
+	}
+}
+
+void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	const APawn* pawn = GetPawn<APawn>();
+	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
+	{
+		mwasc->AbilityInputTagReleased(InputTag);
 	}
 }
 
