@@ -1,9 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "GameplayAbility/MWAbilitySystemComponent.h"
-#include "GameplayAbility/MWGameplayAbility.h"
+
 #include "Engine/World.h"
+#include "MWGameSingleton.h"
 #include "GameFramework/Pawn.h"
+#include "GameplayAbility/MWGameplayAbility.h"
+#include "GameplayAbility/MWGlobalAbilitySystem.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAbilitySystemComponent)
 
@@ -16,15 +19,15 @@ UMWAbilitySystemComponent::UMWAbilitySystemComponent(const FObjectInitializer& O
 	InputReleasedSpecHandles.Reset();
 	InputHeldSpecHandles.Reset();
 
-	//FMemory::Memset(ActivationGroupCounts, 0, sizeof(ActivationGroupCounts));
+	FMemory::Memset(ActivationGroupCounts, 0, sizeof(ActivationGroupCounts));
 }
 
 void UMWAbilitySystemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	//if (UMWGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UMWGlobalAbilitySystem>(GetWorld()))
-	//{
-	//	GlobalAbilitySystem->UnregisterASC(this);
-	//}
+	if (UMWGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UMWGlobalAbilitySystem>(GetWorld()))
+	{
+		GlobalAbilitySystem->UnregisterASC(this);
+	}
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -55,16 +58,16 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				if (wmAbilityInstance)
 				{
 					// Ability instances may be missing for replays
-					//abilityInstance->OnPawnAvatarSet();
+					wmAbilityInstance->OnPawnAvatarSet();
 				}
 			}
 		}
 
-		//// Register with the global system once we actually have a pawn avatar. We wait until this time since some globally-applied effects may require an avatar.
-		//if (UMWGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UMWGlobalAbilitySystem>(GetWorld()))
-		//{
-		//	GlobalAbilitySystem->RegisterASC(this);
-		//}
+		// Register with the global system once we actually have a pawn avatar. We wait until this time since some globally-applied effects may require an avatar.
+		if (UMWGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UMWGlobalAbilitySystem>(GetWorld()))
+		{
+			GlobalAbilitySystem->RegisterASC(this);
+		}
 
 		//if (UMWAnimInstance* MWAnimInst = Cast<UMWAnimInstance>(ActorInfo->GetAnimInstance()))
 		//{
@@ -341,10 +344,10 @@ void UMWAbilitySystemComponent::NotifyAbilityActivated(const FGameplayAbilitySpe
 {
 	Super::NotifyAbilityActivated(Handle, Ability);
 
-	//if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
-	//{
-	//	AddAbilityToActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
-	//}
+	if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
+	{
+		AddAbilityToActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
+	}
 }
 
 void UMWAbilitySystemComponent::NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason)
@@ -355,7 +358,7 @@ void UMWAbilitySystemComponent::NotifyAbilityFailed(const FGameplayAbilitySpecHa
 	{
 		if (!avatar->IsLocallyControlled() && Ability->IsSupportedForNetworking())
 		{
-			//ClientNotifyAbilityFailed(Ability, FailureReason);
+			ClientNotifyAbilityFailed(Ability, FailureReason);
 			return;
 		}
 	}
@@ -367,10 +370,10 @@ void UMWAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle Ha
 {
 	Super::NotifyAbilityEnded(Handle, Ability, bWasCancelled);
 
-	//if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
-	//{
-	//	RemoveAbilityFromActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
-	//}
+	if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(Ability))
+	{
+		RemoveAbilityFromActivationGroup(mwAbility->GetActivationGroup(), mwAbility);
+	}
 }
 
 void UMWAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
@@ -394,6 +397,11 @@ void UMWAbilitySystemComponent::HandleChangeAbilityCanBeCanceled(const FGameplay
 	Super::HandleChangeAbilityCanBeCanceled(AbilityTags, RequestingAbility, bCanBeCanceled);
 
 	//@TODO: Apply any special logic like blocking input or movement
+}
+
+void UMWAbilitySystemComponent::ClientNotifyAbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason)
+{
+	HandleAbilityFailed(Ability, FailureReason);
 }
 
 void UMWAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const
@@ -500,117 +508,117 @@ bool UMWAbilitySystemComponent::ClearAllAbilitiesByActor(AActor* InActor)
 	return true;
 }
 
-//bool UMWAbilitySystemComponent::IsActivationGroupBlocked(EMWAbilityActivationGroup Group) const
-//{
-//	bool bBlocked = false;
-//
-//	switch (Group)
-//	{
-//	case EMWAbilityActivationGroup::Independent:
-//		// Independent abilities are never blocked.
-//		bBlocked = false;
-//		break;
-//
-//	case EMWAbilityActivationGroup::Exclusive_Replaceable:
-//	case EMWAbilityActivationGroup::Exclusive_Blocking:
-//		// Exclusive abilities can activate if nothing is blocking.
-//		bBlocked = (ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Blocking] > 0);
-//		break;
-//
-//	default:
-//		checkf(false, TEXT("IsActivationGroupBlocked: Invalid ActivationGroup [%d]\n"), (uint8)Group);
-//		break;
-//	}
-//
-//	return bBlocked;
-//}
-//
-//void UMWAbilitySystemComponent::AddAbilityToActivationGroup(EMWAbilityActivationGroup Group, UMWGameplayAbility* MWAbility)
-//{
-//	check(MWAbility);
-//	check(ActivationGroupCounts[(uint8)Group] < INT32_MAX);
-//
-//	ActivationGroupCounts[(uint8)Group]++;
-//
-//	const bool bReplicateCancelAbility = false;
-//
-//	switch (Group)
-//	{
-//	case EMWAbilityActivationGroup::Independent:
-//		// Independent abilities do not cancel any other abilities.
-//		break;
-//
-//	case EMWAbilityActivationGroup::Exclusive_Replaceable:
-//	case EMWAbilityActivationGroup::Exclusive_Blocking:
-//		CancelActivationGroupAbilities(EMWAbilityActivationGroup::Exclusive_Replaceable, MWAbility, bReplicateCancelAbility);
-//		break;
-//
-//	default:
-//		checkf(false, TEXT("AddAbilityToActivationGroup: Invalid ActivationGroup [%d]\n"), (uint8)Group);
-//		break;
-//	}
-//
-//	const int32 ExclusiveCount = ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Replaceable] + ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Blocking];
-//	if (!ensure(ExclusiveCount <= 1))
-//	{
-//		UE_LOG(LogMWAbilitySystem, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
-//	}
-//}
-//
-//void UMWAbilitySystemComponent::RemoveAbilityFromActivationGroup(EMWAbilityActivationGroup Group, UMWGameplayAbility* MWAbility)
-//{
-//	check(MWAbility);
-//	check(ActivationGroupCounts[(uint8)Group] > 0);
-//
-//	ActivationGroupCounts[(uint8)Group]--;
-//}
-//
-//void UMWAbilitySystemComponent::CancelActivationGroupAbilities(EMWAbilityActivationGroup Group, UMWGameplayAbility* IgnoreMWAbility, bool bReplicateCancelAbility)
-//{
-//	auto ShouldCancelFunc = [this, Group, IgnoreMWAbility](const UMWGameplayAbility* MWAbility, FGameplayAbilitySpecHandle Handle)
-//	{
-//		return ((MWAbility->GetActivationGroup() == Group) && (MWAbility != IgnoreMWAbility));
-//	};
-//
-//	CancelAbilitiesByFunc(ShouldCancelFunc, bReplicateCancelAbility);
-//}
+bool UMWAbilitySystemComponent::IsActivationGroupBlocked(EMWAbilityActivationGroup Group) const
+{
+	bool bBlocked = false;
+
+	switch (Group)
+	{
+	case EMWAbilityActivationGroup::Independent:
+		// Independent abilities are never blocked.
+		bBlocked = false;
+		break;
+
+	case EMWAbilityActivationGroup::Exclusive_Replaceable:
+	case EMWAbilityActivationGroup::Exclusive_Blocking:
+		// Exclusive abilities can activate if nothing is blocking.
+		bBlocked = (ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Blocking] > 0);
+		break;
+
+	default:
+		checkf(false, TEXT("IsActivationGroupBlocked: Invalid ActivationGroup [%d]\n"), (uint8)Group);
+		break;
+	}
+
+	return bBlocked;
+}
+
+void UMWAbilitySystemComponent::AddAbilityToActivationGroup(EMWAbilityActivationGroup Group, UMWGameplayAbility* MWAbility)
+{
+	check(MWAbility);
+	check(ActivationGroupCounts[(uint8)Group] < INT32_MAX);
+
+	ActivationGroupCounts[(uint8)Group]++;
+
+	const bool bReplicateCancelAbility = false;
+
+	switch (Group)
+	{
+	case EMWAbilityActivationGroup::Independent:
+		// Independent abilities do not cancel any other abilities.
+		break;
+
+	case EMWAbilityActivationGroup::Exclusive_Replaceable:
+	case EMWAbilityActivationGroup::Exclusive_Blocking:
+		CancelActivationGroupAbilities(EMWAbilityActivationGroup::Exclusive_Replaceable, MWAbility, bReplicateCancelAbility);
+		break;
+
+	default:
+		checkf(false, TEXT("AddAbilityToActivationGroup: Invalid ActivationGroup [%d]\n"), (uint8)Group);
+		break;
+	}
+
+	const int32 ExclusiveCount = ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Replaceable] + ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Blocking];
+	if (!ensure(ExclusiveCount <= 1))
+	{
+		UE_LOG(LogMWAbilitySystem, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
+	}
+}
+
+void UMWAbilitySystemComponent::RemoveAbilityFromActivationGroup(EMWAbilityActivationGroup Group, UMWGameplayAbility* MWAbility)
+{
+	check(MWAbility);
+	check(ActivationGroupCounts[(uint8)Group] > 0);
+
+	ActivationGroupCounts[(uint8)Group]--;
+}
+
+void UMWAbilitySystemComponent::CancelActivationGroupAbilities(EMWAbilityActivationGroup Group, UMWGameplayAbility* IgnoreMWAbility, bool bReplicateCancelAbility)
+{
+	auto ShouldCancelFunc = [this, Group, IgnoreMWAbility](const UMWGameplayAbility* MWAbility, FGameplayAbilitySpecHandle Handle)
+	{
+		return ((MWAbility->GetActivationGroup() == Group) && (MWAbility != IgnoreMWAbility));
+	};
+
+	CancelAbilitiesByFunc(ShouldCancelFunc, bReplicateCancelAbility);
+}
 
 void UMWAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	/*const TSubclassOf<UGameplayEffect> DynamicTagGE = UMWAssetManager::GetSubclass(UMWGameData::Get().DynamicTagGameplayEffect);
-	if (!DynamicTagGE)
+	const TSubclassOf<UGameplayEffect> dynamicTagGE = UMWAssetManager::GetSubclass(MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect);
+	if (!dynamicTagGE)
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to find DynamicTagGameplayEffect [%s]."), *UMWGameData::Get().DynamicTagGameplayEffect.GetAssetName());
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to find DynamicTagGameplayEffect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect.GetAssetName());
 		return;
 	}
 
-	const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(DynamicTagGE, 1.0f, MakeEffectContext());
+	const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(dynamicTagGE, 1.0f, MakeEffectContext());
 	FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 
 	if (!Spec)
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to make outgoing spec for [%s]."), *GetNameSafe(DynamicTagGE));
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to make outgoing spec for [%s]."), *GetNameSafe(dynamicTagGE));
 		return;
 	}
 
 	Spec->DynamicGrantedTags.AddTag(Tag);
 
-	ApplyGameplayEffectSpecToSelf(*Spec);*/
+	ApplyGameplayEffectSpecToSelf(*Spec);
 }
 
 void UMWAbilitySystemComponent::RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	/*const TSubclassOf<UGameplayEffect> DynamicTagGE = UMWAssetManager::GetSubclass(UMWGameData::Get().DynamicTagGameplayEffect);
+	const TSubclassOf<UGameplayEffect> DynamicTagGE = UMWAssetManager::GetSubclass(MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect);
 	if (!DynamicTagGE)
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("RemoveDynamicTagGameplayEffect: Unable to find gameplay effect [%s]."), *UMWGameData::Get().DynamicTagGameplayEffect.GetAssetName());
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("RemoveDynamicTagGameplayEffect: Unable to find gameplay effect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect.GetAssetName());
 		return;
 	}
 
 	FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(FGameplayTagContainer(Tag));
 	Query.EffectDefinition = DynamicTagGE;
 
-	RemoveActiveEffects(Query);*/
+	RemoveActiveEffects(Query);
 }
 
 void UMWAbilitySystemComponent::GetAbilityTargetData(const FGameplayAbilitySpecHandle AbilityHandle, FGameplayAbilityActivationInfo ActivationInfo, FGameplayAbilityTargetDataHandle& OutTargetDataHandle)

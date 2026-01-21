@@ -133,26 +133,28 @@ namespace MWGameplayTags
 	// ==== Gameplay Tag ====
 #pragma region Gameplay Tag
 	// Gameplay Ability
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,		"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup,	"Ability.ActivateFail.ActivationGroup",					"Ability failed to activate because of its activation group.");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,			"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
 	// Attack command
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P1,			"GameplayTag.Battle.ComboAttack.P1",					"Player 1 Battle Combo Attack.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P2,			"GameplayTag.Battle.ComboAttack.P2",					"Player 2 Battle Combo Attack.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P3,			"GameplayTag.Battle.ComboAttack.P3",					"Player 3 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P1,				"GameplayTag.Battle.ComboAttack.P1",					"Player 1 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P2,				"GameplayTag.Battle.ComboAttack.P2",					"Player 2 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P3,				"GameplayTag.Battle.ComboAttack.P3",					"Player 3 Battle Combo Attack.");
 	// Combo
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,				"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,				"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,			"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,					"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,					"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,				"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
 	// Combo Hit
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboHit,					"GameplayTag.Battle.ComboHit",							"Battle Combo Hit.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,				"GameplayTag.Battle.AvatarChanged",						"Battle Avatar changed / swapped event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboHit,						"GameplayTag.Battle.ComboHit",							"Battle Combo Hit.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,					"GameplayTag.Battle.AvatarChanged",						"Battle Avatar changed / swapped event.");
 	
 	// Character
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Character_CombatState,			"GameplayTag.Character.CombatState",					"Character combat state.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Character_CombatState,				"GameplayTag.Character.CombatState",					"Character combat state.");
 #pragma endregion
 
 	// ==== SetByCaller Tag ====
 #pragma region SetByCaller Tag
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_SetByCaller_ComboHitRatio,		"GameplayTag.SetByCaller.ComboHitRatio",				"SetByCaller : Combo Hit Ratio.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_SetByCaller_ComboHitRatio,			"GameplayTag.SetByCaller.ComboHitRatio",				"SetByCaller : Combo Hit Ratio.");
 #pragma endregion
 }
 

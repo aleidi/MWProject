@@ -95,6 +95,8 @@ namespace MWGameplayTags
 	// ==== Gameplay Tag ====
 #pragma region Gameplay Tag
 	// Gameplay Ability
+	DECLARE_MW_GAMEPLAY_TAG(Ability_ActivateFail_ActivationGroup);
+
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Ability_UnitAttack);
 	// Attack command
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P1);
