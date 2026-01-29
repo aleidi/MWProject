@@ -585,10 +585,10 @@ void UMWAbilitySystemComponent::CancelActivationGroupAbilities(EMWAbilityActivat
 
 void UMWAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	const TSubclassOf<UGameplayEffect> dynamicTagGE = UMWAssetManager::GetSubclass(MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect);
+	const TSubclassOf<UGameplayEffect> dynamicTagGE = MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect;
 	if (!dynamicTagGE)
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to find DynamicTagGameplayEffect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect.GetAssetName());
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("AddDynamicTagGameplayEffect: Unable to find DynamicTagGameplayEffect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect->GetName());
 		return;
 	}
 
@@ -608,10 +608,10 @@ void UMWAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& 
 
 void UMWAbilitySystemComponent::RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
-	const TSubclassOf<UGameplayEffect> DynamicTagGE = UMWAssetManager::GetSubclass(MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect);
+	const TSubclassOf<UGameplayEffect> DynamicTagGE = MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect;
 	if (!DynamicTagGE)
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("RemoveDynamicTagGameplayEffect: Unable to find gameplay effect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect.GetAssetName());
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("RemoveDynamicTagGameplayEffect: Unable to find gameplay effect [%s]."), *MWSINGLETON->GetGameplayData()->DynamicTagGameplayEffect->GetName());
 		return;
 	}
 

@@ -36,7 +36,7 @@ void UMWSkillBase::PlayMontage()
 				bPlayedMontage = true;
 
 				// Block Cast Skill at the beginning of the montage is playing
-				TSubclassOf<UGameplayEffect> blockcast = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GEBlockCastSkill);
+				TSubclassOf<UGameplayEffect> blockcast = MWSINGLETON->GetGameplayData()->GEBlockCastSkill;
 				FGameplayEffectSpecHandle specHandle = asc->MakeOutgoingSpec(blockcast, 1.f, asc->MakeEffectContext());
 				BlockCastSkillEffectHandle = asc->ApplyGameplayEffectSpecToSelf(*specHandle.Data.Get());
 			}

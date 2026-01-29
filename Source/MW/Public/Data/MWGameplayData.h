@@ -21,27 +21,27 @@ class UMWGameplayData : public UDataAsset
 public:
 	// Gameplay effect used to apply blocking skill cast.
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Block Cast Skill"))
-	TSoftClassPtr<UGameplayEffect> GEBlockCastSkill;
+	TSubclassOf<UGameplayEffect> GEBlockCastSkill;
 
 	// Gameplay effect used to apply unblocking skill cast.
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Unblock Cast Skill"))
-	TSoftClassPtr<UGameplayEffect> GEUnblockCastSkill;
+	TSubclassOf<UGameplayEffect> GEUnblockCastSkill;
 
 	// Gameplay effect used to enable skill combo. 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Combo"))
-	TSoftClassPtr<UGameplayEffect> GESkillCombo;
+	TSubclassOf<UGameplayEffect> GESkillCombo;
 
 	// Gameplay effect used to be appled when getting perfect combo in skill.
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects", meta = (DisplayName = "Gameplay Effect Skill Perfect Combo"))
-	TSoftClassPtr<UGameplayEffect> GESkillPerfectCombo;
+	TSubclassOf<UGameplayEffect> GESkillPerfectCombo;
 
 	// Gameplay effect used to add and remove dynamic tags.
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects")
-	TSoftClassPtr<UGameplayEffect> DynamicTagGameplayEffect;
+	TSubclassOf<UGameplayEffect> DynamicTagGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects")
+	TSubclassOf<UGameplayEffect> GEInputCharging;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Scene Setting")
 	TObjectPtr<UMWBattleSceneSetting> BattleSceneSetting;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|Party", meta = (ClampMin = 0))
-	int32 TeamsNumber = 3;
 };

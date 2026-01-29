@@ -22,7 +22,7 @@ MW_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
  *
  *	Base ability system component class used by this project.
  */
-UCLASS()
+UCLASS(meta = (BlueprintSpawnableComponent))
 class MW_API UMWAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()

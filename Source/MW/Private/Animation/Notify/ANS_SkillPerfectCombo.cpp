@@ -9,7 +9,7 @@ void UANS_SkillPerfectCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 {
 	if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
 	{
-		TSubclassOf<UGameplayEffect> perfect_combo = UMWAssetManager::Get().GetSubclass(MWSINGLETON->GetGameplayData()->GESkillPerfectCombo);
+		TSubclassOf<UGameplayEffect> perfect_combo = MWSINGLETON->GetGameplayData()->GESkillPerfectCombo;
 		if (!perfect_combo)
 		{
 			UE_LOG(LogMWAnimNotify, Warning, TEXT("GameplayEffect class asset is not existed."));

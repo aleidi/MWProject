@@ -9,13 +9,12 @@ void UMWChargeableAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	waitInputTask->OnRelease.AddDynamic(this, &UMWChargeableAbility::OnChargeComplete);
 	waitInputTask->ReadyForActivation();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Charging Ability..."));
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Charging Ability..."));
 }
 
 void UMWChargeableAbility::OnChargeComplete(float ChargeTime)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Charge Complete! Charge Time: %f"), ChargeTime));
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Charge Complete! Charge Time: %f"), ChargeTime));
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
-
