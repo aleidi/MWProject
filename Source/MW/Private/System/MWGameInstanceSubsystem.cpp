@@ -1,10 +1,10 @@
 #include "System/MWGameInstanceSubsystem.h"
-#include "MWGameInstance.h"
-#include "Gameplay/MWPartyManager.h"
 #include "Entity/MWEntityManager.h"
 #include "Gameplay/Battle/MWBattleSystem.h"
+#include "Gameplay/MWPartyManager.h"
+#include "MWGameInstance.h"
+#include "SaveGame/MWSaveGameManager.h"
 #include "UI/MWUIManager.h"
-#include "Data/MWRuntimeDataManager.h"
 
 #define INIT_MANAGER(VarName, ClassType)\
 	VarName = NewObject<ClassType>(this);\
@@ -22,7 +22,7 @@ void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	INIT_MANAGER(EntityManager, UMWEntityManager);
 	INIT_MANAGER(BattleSystem, UMWBattleSystem);
 	INIT_MANAGER(UIManager, UMWUIManager);
-	INIT_MANAGER(RuntimeDataManager, UMWRuntimeDataManager);
+	INIT_MANAGER(SaveGameManager, UMWSaveGameManager);
 }
 
 void UMWGameInstanceSubsystem::Deinitialize()
@@ -31,7 +31,7 @@ void UMWGameInstanceSubsystem::Deinitialize()
 	DEINIT_MANAGER(EntityManager);
 	DEINIT_MANAGER(BattleSystem);
 	DEINIT_MANAGER(UIManager);
-	DEINIT_MANAGER(RuntimeDataManager);
+	DEINIT_MANAGER(SaveGameManager);
 }
 
 UMWGameInstanceSubsystem* UMWGameInstanceSubsystem::Get(const UObject* WorldContext)

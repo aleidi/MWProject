@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
-#include "Data/DataAsset/MWDataAsset.h"
+#include "Data/MWDataAsset.h"
 #include "Define/MWDefineCommon.h"
 #include "MWLogChannels.h"
 #include "MWGameSingleton.h"

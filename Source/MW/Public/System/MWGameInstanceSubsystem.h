@@ -5,11 +5,11 @@
 #include "MWGameInstanceSubsystem.generated.h"
 
 // Forward Declare
-class UMWPartyManager;
-class UMWEntityManager;
 class UMWBattleSystem;
+class UMWEntityManager;
+class UMWPartyManager;
+class UMWSaveGameManager;
 class UMWUIManager;
-class UMWRuntimeDataManager;
 
 // Define
 
@@ -52,9 +52,9 @@ public:
 		return UIManager;
 	}
 
-	UMWRuntimeDataManager* GetRuntimeDataManager()
+	UMWSaveGameManager* GetSaveGameManager()
 	{
-		return RuntimeDataManager;
+		return SaveGameManager;
 	}
 
 private:
@@ -71,5 +71,5 @@ private:
 	TObjectPtr<UMWUIManager> UIManager;
 
 	UPROPERTY()
-	TObjectPtr<UMWRuntimeDataManager> RuntimeDataManager;
+	TObjectPtr<UMWSaveGameManager> SaveGameManager;
 };

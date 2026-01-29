@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Component/Skill/MWSkillLoadoutTypes.h"
 #include "MWDefineGameplay.generated.h"
 
 class AMWCharacter;
@@ -166,7 +167,6 @@ struct FMWCharacterBattleSkillData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	FName SkillId;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TObjectPtr<UAnimMontage> Animation = nullptr;
 
@@ -345,4 +345,56 @@ struct FMWCharacterSpawnResourceData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Height = 0.f;
+};
+
+USTRUCT(BlueprintType)
+struct FMWCharacterRuntimeData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Id = INDEX_NONE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Exp = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentHp = 0;
+
+	// Job class
+
+	// Equipped skills.
+	// 装備されているスキル.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TArray<FMWSkillSlot> EquippedSkills;
+};
+
+USTRUCT(BlueprintType)
+struct FMWPartySlot
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 CharacterId = INDEX_NONE; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 SlotIndex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bIsActive = false;
+};
+
+USTRUCT(BlueprintType)
+struct FMWPartyData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FMWPartySlot> ActiveMembers;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FMWPartySlot> ReserveMembers;
 };

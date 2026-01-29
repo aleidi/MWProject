@@ -134,7 +134,7 @@ namespace MWGameplayTags
 #pragma region Gameplay Tag
 	// Gameplay Ability
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup,	"Ability.ActivateFail.ActivationGroup",					"Ability failed to activate because of its activation group.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Input_Charging,					"Ability.Input.Charging",								"Input Chargine.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Input_Charging,					"Ability.Input.Charging",								"Ability's Input Charging.");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,			"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
 	// Attack command

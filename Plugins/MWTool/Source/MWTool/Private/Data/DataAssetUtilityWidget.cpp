@@ -1,6 +1,6 @@
 #include "Data/DataAssetUtilityWidget.h"
 #include "Components/Button.h"
-#include "Data/DataAsset/MWDataAsset.h"
+#include "Data/MWDataAsset.h"
 #include "Data/MWDataTableManager.h"
 
 void UDataAssetUtilityWidget::NativeConstruct()

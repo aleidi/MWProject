@@ -49,6 +49,4 @@ void AMWGameModeBase::CreateParty()
 	auto* partyMng = UMWPartyManager::Get(this);
 
 	check(partyMng);
-
-	partyMng->InitializeParty();
 }

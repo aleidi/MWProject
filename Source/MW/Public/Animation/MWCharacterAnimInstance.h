@@ -2,7 +2,7 @@
 
 #include "Animation/AnimInstance.h"
 #include "Define/MWDefineGameplay.h"
-#include "Interface/MWCharacterAnimInterface.h"
+#include "Interface/MWAbilityInputInterface.h"
 #include "MWCharacterAnimInstance.generated.h"
 
 struct FGameplayTag;

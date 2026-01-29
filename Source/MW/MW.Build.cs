@@ -27,6 +27,7 @@ public class MW : ModuleRules
 			"SlateCore",
 			"CommonUI",
 			"Paper2D",
+			"Niagara"
             //"ModularGameplayActors",
         });
 
