@@ -1,6 +1,7 @@
 #pragma once
 
 // Include Header
+#include "Define/MWDefineGameplay.h"
 #include "GameFramework/SaveGame.h"
 #include "MWPlayerSaveGame.generated.h"
 
