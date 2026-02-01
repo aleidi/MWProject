@@ -134,7 +134,12 @@ namespace MWGameplayTags
 #pragma region Gameplay Tag
 	// Gameplay Ability
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup,	"Ability.ActivateFail.ActivationGroup",					"Ability failed to activate because of its activation group.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Input_Charging,					"Ability.Input.Charging",								"Ability's Input Charging.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_Charging,			"Ability.Input.Charging",								"Ability's Input Charging.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_NoCharge,			"Ability.Input.NoCharge",								"Ability's Input No Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_Light,				"Ability.Input.Light",									"Ability's Input Light.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_Perfect,				"Ability.Input.Perfect",								"Ability's Input Perfect.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_OverCharge,			"Ability.Input.OverCharge",								"Ability's Input Over Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActionUninterruptible,			"Ability.ActionUninterruptible",						"Another action can't be performed while this tag is active.");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,			"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
 	// Attack command

@@ -2,25 +2,50 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Data/GameplayAbility/ChargeableSkillData.h"
+#include "GameplayTagContainer.h"
 #include "Gameplay/MWGameplayTags.h"
+#include "Gameplay/MWGameplayUtility.h"
 
 void UMWChargeableSkill::OnChargeComplete(float ChargeTime)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Charge Complete! Charge Time: %f"), *GetName(), ChargeTime));
+	UMWAbilitySystemComponent* mwASC = GetMWAbilitySystemComponentFromActorInfo();
+	if (!mwASC)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+
+		return;
+	}
 
 	// Remove the charging effect
 	if (ChargingEffectHandle.IsValid())
 	{
-		if(UMWAbilitySystemComponent* mwASC = GetMWAbilitySystemComponentFromActorInfo())
-		{
-			mwASC->RemoveActiveGameplayEffect(ChargingEffectHandle);
-			ChargingEffectHandle.Invalidate();
-		}
+		mwASC->RemoveActiveGameplayEffect(ChargingEffectHandle);
+		ChargingEffectHandle.Invalidate();
 	}
+
+	// Check if the avatar has interruptible tag
+	if (mwASC->HasMatchingGameplayTag(MWGameplayTags::Ability_ActionUninterruptible))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("[%s] Charge interrupted due to uninterruptible state."), *GetName()));
+
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+
+		return;
+	}	
+
+	mwASC->AddLooseGameplayTag(MWGameplayTags::Ability_ActionUninterruptible);
 
 	check(IsValid(Data));
 
 	EMWInputChargeStage inputChargeStage = CalculateChargeStage(ChargeTime);
+
+	// Add input charge stage tag to ability system component
+	AddedChargeStageTag = UWMGameplayUtility::GetInputChargeStageTag(inputChargeStage);
+	if (AddedChargeStageTag.IsValid())
+	{
+		mwASC->AddLooseGameplayTag(AddedChargeStageTag);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Applied charge stage tag: %s"), *GetName(), *AddedChargeStageTag.ToString()));
+	}
 
 	// 寻找动画然后播放
 	FMWInputChargeStageSkillAnim& skillAnim = Data->SkillAnims.FindOrAdd(inputChargeStage);
@@ -48,12 +73,20 @@ void UMWChargeableSkill::OnChargeComplete(float ChargeTime)
 
 	FString taskName = FString::Printf(TEXT("AT_%s[%s]"), *GetClass()->GetName(), *LoadedMontage->GetName());
 
-	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+	UAbilityTask_PlayMontageAndWait* animTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 	this, 
 	FName(*taskName),
 	LoadedMontage, 
 	skillAnim.PlayRate,
 	skillAnim.MontageSection);
+
+	animTask->OnCompleted.AddDynamic(this, &UMWChargeableSkill::OnMontageCompleted);
+	animTask->OnBlendedIn.AddDynamic(this, &UMWChargeableSkill::OnMontageBlendIn);
+	animTask->OnBlendOut.AddDynamic(this, &UMWChargeableSkill::OnMontageBlendOut);
+	animTask->OnInterrupted.AddDynamic(this, &UMWChargeableSkill::OnMontageInterrupted);
+	animTask->OnCancelled.AddDynamic(this, &UMWChargeableSkill::OnMontageCancelled);
+
+	animTask->ReadyForActivation();
 
 	// 蓄力完成的特效？
 }
@@ -62,11 +95,11 @@ void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	// Use "ActivationBlockTags" to prevent multiple chargeable abilities from being activated simultaneously.
 	// Double check here if "ActivationBlockTags" is not used.
+	//「ActivationBlockTags」を使用して、複数のチャージ可能なアビリティが同時にアクティブ化されるのを防ぐ。
+	// ここで「ActivationBlockTags」が使用されていない場合は、再度確認する。
  	UMWAbilitySystemComponent* mwASC = GetMWAbilitySystemComponentFromActorInfo();
-	if (mwASC->HasMatchingGameplayTag(MWGameplayTags::Ability_Input_Charging))
+	if (mwASC->HasMatchingGameplayTag(MWGameplayTags::Ability_InputCharge_Charging))
 	{
-		UE_LOG(LogMWAbilitySystem, Warning, TEXT("Ability is already charging."));
-
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 
 		return;
@@ -88,16 +121,13 @@ void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 		if (inputChargingEffectClass)
 		{
-			// 创建 Gameplay Effect Context
 			FGameplayEffectContextHandle EffectContext = mwASC->MakeEffectContext();
 			EffectContext.AddSourceObject(this);
 
-			// 创建 Gameplay Effect Spec
 			FGameplayEffectSpecHandle SpecHandle = mwASC->MakeOutgoingSpec(inputChargingEffectClass, GetAbilityLevel(), EffectContext);
 
 			if (SpecHandle.IsValid())
 			{
-				// 应用 Gameplay Effect 并保存 Handle
 				ChargingEffectHandle = mwASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 
 				if (!ChargingEffectHandle.IsValid())
@@ -117,6 +147,11 @@ void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);	
+}
+
+void UMWChargeableSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 EMWInputChargeStage UMWChargeableSkill::CalculateChargeStage(float ChargeTime) const
@@ -143,4 +178,64 @@ EMWInputChargeStage UMWChargeableSkill::CalculateChargeStage(float ChargeTime) c
 	}
 
 	return EMWInputChargeStage::NoCharge;
+}
+
+void UMWChargeableSkill::OnMontageCompleted()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Montage Completed!"), *GetName()));
+
+	ClearTagForThisAblity();
+
+	if (IsActive())
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+}
+
+void UMWChargeableSkill::OnMontageBlendIn()
+{
+}
+
+void UMWChargeableSkill::OnMontageBlendOut()
+{
+}
+
+void UMWChargeableSkill::OnMontageInterrupted()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Montage Interrupted!"), *GetName()));
+
+	if (IsActive())
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+}
+
+void UMWChargeableSkill::OnMontageCancelled()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Montage Cancelled!"), *GetName()));
+
+	if (IsActive())
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+}
+
+void UMWChargeableSkill::ClearTagForThisAblity()
+{
+	UMWAbilitySystemComponent* mwASC = GetMWAbilitySystemComponentFromActorInfo();
+	if (!mwASC)
+	{
+		return;
+	}
+
+	if (AddedChargeStageTag.IsValid() && mwASC->HasMatchingGameplayTag(AddedChargeStageTag))
+	{
+		mwASC->RemoveLooseGameplayTag(AddedChargeStageTag);
+	}
+
+	// Clear Uninterruptible tag if exists
+	if (mwASC->HasMatchingGameplayTag(MWGameplayTags::Ability_ActionUninterruptible))
+	{
+		mwASC->RemoveLooseGameplayTag(MWGameplayTags::Ability_ActionUninterruptible);
+	}	
 }

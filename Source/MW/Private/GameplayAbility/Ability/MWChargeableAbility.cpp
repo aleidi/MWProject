@@ -8,8 +8,6 @@ void UMWChargeableAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	UAbilityTask_WaitInputRelease* waitInputTask = UAbilityTask_WaitInputRelease::WaitInputRelease(this);
 	waitInputTask->OnRelease.AddDynamic(this, &UMWChargeableAbility::OnChargeComplete);
 	waitInputTask->ReadyForActivation();
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Charging Ability..."));
 }
 
 void UMWChargeableAbility::OnChargeComplete(float ChargeTime)

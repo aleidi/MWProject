@@ -96,7 +96,13 @@ namespace MWGameplayTags
 #pragma region Gameplay Tag
 	// Gameplay Ability
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActivateFail_ActivationGroup);
-	DECLARE_MW_GAMEPLAY_TAG(Ability_Input_Charging);
+	// Input Charge State
+	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Charging);
+	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_NoCharge);
+	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Light);
+	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Perfect);
+	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_OverCharge);
+	DECLARE_MW_GAMEPLAY_TAG(Ability_ActionUninterruptible);
 
 	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Ability_UnitAttack);
 	// Attack command

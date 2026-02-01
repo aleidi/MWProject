@@ -25,4 +25,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayAbility")
 	static void CastAbility(AActor* Actor, const FGameplayTag& AbilityTag);
+
+	/**
+	 * Converts EMWInputChargeStage to corresponding gameplay tag
+	 * @param ChargeStage The charge stage to convert
+	 * @return Corresponding FGameplayTag
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GameplayAbility")
+	static FGameplayTag GetInputChargeStageTag(EMWInputChargeStage ChargeStage);
 };
