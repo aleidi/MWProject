@@ -1,5 +1,6 @@
 #include "GameplayAbility/Ability/MWChargeableSkill.h"
 
+#include "AbilitySystemGlobals.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Data/GameplayAbility/ChargeableSkillData.h"
 #include "GameplayTagContainer.h"
@@ -37,18 +38,22 @@ void UMWChargeableSkill::OnChargeComplete(float ChargeTime)
 
 	check(IsValid(Data));
 
-	EMWInputChargeStage inputChargeStage = CalculateChargeStage(ChargeTime);
+	CurrentChargeStage = CalculateChargeStage(ChargeTime);
 
 	// Add input charge stage tag to ability system component
-	AddedChargeStageTag = UWMGameplayUtility::GetInputChargeStageTag(inputChargeStage);
+	AddedChargeStageTag = UWMGameplayUtility::GetInputChargeStageTag(CurrentChargeStage);
 	if (AddedChargeStageTag.IsValid())
 	{
 		mwASC->AddLooseGameplayTag(AddedChargeStageTag);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("[%s] Applied charge stage tag: %s"), *GetName(), *AddedChargeStageTag.ToString()));
 	}
 
+	// ==================== 攻击判定 ====================
+	// 在动画播放前就完成目标捕获（Hit Detection）
+	CaptureTargets();
+
 	// 寻找动画然后播放
-	FMWInputChargeStageSkillAnim& skillAnim = Data->SkillAnims.FindOrAdd(inputChargeStage);
+	FMWInputChargeStageSkillAnim& skillAnim = Data->SkillAnims.FindOrAdd(CurrentChargeStage);
 	if (skillAnim.Montage.IsNull())
 	{
 		UE_LOG(LogMWAbilitySystem, Warning, TEXT("Montage path is null"));
@@ -89,6 +94,10 @@ void UMWChargeableSkill::OnChargeComplete(float ChargeTime)
 	animTask->ReadyForActivation();
 
 	// 蓄力完成的特效？
+
+	// 攻击判定
+
+	// 伤害应用
 }
 
 void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -117,7 +126,7 @@ void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	// TODO: 蓄力提示用的特效是否应该在这里处理或者通过其他动画播放呢？
 	if (UMWGameplayData* GameplayData = MWSINGLETON->GetGameplayData())
 	{
-		TSubclassOf<UGameplayEffect> inputChargingEffectClass = GameplayData->GEInputCharging;
+		TSubclassOf<UGameplayEffect> inputChargingEffectClass = GameplayData->GE_InputCharging;
 
 		if (inputChargingEffectClass)
 		{
@@ -151,6 +160,9 @@ void UMWChargeableSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 void UMWChargeableSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	// 清理捕获的目标数据
+	ClearCapturedTargets();
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -238,4 +250,244 @@ void UMWChargeableSkill::ClearTagForThisAblity()
 	{
 		mwASC->RemoveLooseGameplayTag(MWGameplayTags::Ability_ActionUninterruptible);
 	}	
+}
+
+void UMWChargeableSkill::CaptureTargets()
+{
+	AActor* avatarActor = GetAvatarActorFromActorInfo();
+	if(!avatarActor)
+	{
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("[%s] Avatar actor is null, cannot capture targets"), *GetName());
+		return;
+	}
+
+	check(IsValid(Data));
+
+	// Get collision check parameters from skill data
+	FMWInputChargeStageSkillAnim& skillAnim = Data->SkillAnims.FindOrAdd(CurrentChargeStage);
+
+	// Use sphere collision
+	TArray<AActor*> hitActors;
+	TArray<AActor*> ignoreActors;
+	ignoreActors.Add(avatarActor);
+
+	// Perform sphere overlap check in front of character
+	FVector startLocation = avatarActor->GetActorLocation();
+	FVector forwardVector = avatarActor->GetActorForwardVector();
+
+	// 技能数据应该包含检测参数，这里暂时硬编码
+	float detectionRadius = 300.f;
+	float detectionDistance = 500.f;
+	TArray<TEnumAsByte<EObjectTypeQuery>> detectObjectTypes = {
+		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)
+	};
+
+	FVector detectionCenter = startLocation + forwardVector * detectionDistance * 0.5f;
+
+	bool bHit = UKismetSystemLibrary::SphereOverlapActors(
+		GetWorld(),
+		detectionCenter,
+		detectionRadius,
+		detectObjectTypes,
+		APawn::StaticClass(),
+		ignoreActors,
+		hitActors
+	);
+
+	if (bHit && hitActors.Num() > 0)
+	{
+		// Create TargetData to store hit actors
+		FGameplayAbilityTargetData_ActorArray* targetData = new FGameplayAbilityTargetData_ActorArray();
+
+		// Filter valid targets
+		for(AActor* hitActor : hitActors)
+		{
+			// 可以添加额外的过滤条件：
+			// 是否是敌对单位
+			// 是否拥有asc
+			// 是否在前方扇形范围
+			UAbilitySystemComponent* targetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(hitActor);
+			if (targetASC)
+			{
+				targetData->TargetActorArray.Add(hitActor);
+			}
+		}
+
+		if (targetData->TargetActorArray.Num() > 0)
+		{
+			CapturedTargetData.Add(targetData);
+
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan,
+				FString::Printf(TEXT("[%s] Captured %d targets"),
+					*GetName(), targetData->TargetActorArray.Num()));
+		}
+		else
+		{
+			delete targetData;
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
+			FString::Printf(TEXT("[%s] No targets in range"), *GetName()));
+	}
+
+
+	DrawDebugSphere(GetWorld(), detectionCenter, detectionRadius, 16,
+		bHit ? FColor::Green : FColor::Red, false, 2.f);
+}
+
+void UMWChargeableSkill::OnDamageNotify(FGameplayTag DamageEventTag, float DamageMultiplier, int32 HitIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
+		FString::Printf(TEXT("[%s] Damage Notify: %s, Multiplier: %.2f, Hit: %d"),
+			*GetName(), *DamageEventTag.ToString(), DamageMultiplier, HitIndex));
+
+	ApplyDamageToTargets(DamageEventTag, DamageMultiplier, HitIndex);
+}
+
+void UMWChargeableSkill::ApplyDamageToTargets(FGameplayTag DamageEventTag, float DamageMultiplier, int32 HitIndex)
+{
+	if(!CapturedTargetData.IsValid(0))
+	{
+		UE_LOG(LogMWAbilitySystem, Warning, TEXT("[%s] No captured targets for damage application"), *GetName());
+		return;
+	}
+
+	UMWAbilitySystemComponent* sourceASC = GetMWAbilitySystemComponentFromActorInfo();
+	if (!sourceASC)
+	{
+		return;
+	}
+
+	// Create damage effect spec
+	FGameplayEffectSpecHandle damageSpecHandle = MakeDamageEffectSpec(DamageMultiplier);
+	if(!damageSpecHandle.IsValid())
+	{
+		UE_LOG(LogMWAbilitySystem, Error, TEXT("[%s] Failed to create damage effect spec"), *GetName());
+		return;
+	}
+
+	// Get target data
+	const FGameplayAbilityTargetData* targetDataPtr = CapturedTargetData.Get(0);
+	if (!targetDataPtr)
+	{
+		return;
+	}
+
+	// convert to ActorArray type
+	const FGameplayAbilityTargetData_ActorArray* actorArrayData = static_cast<const FGameplayAbilityTargetData_ActorArray*>(targetDataPtr);
+	if (!actorArrayData)
+	{
+		return;
+	}
+
+	// Apply damage to each target actor
+	int32 damageAppliedCount = 0;
+	for (TWeakObjectPtr<AActor> targetActorPtr : actorArrayData->TargetActorArray)
+	{
+		AActor* targetActor = targetActorPtr.Get();
+		if (!IsValid(targetActor))
+		{
+			continue;
+		}
+
+		UAbilitySystemComponent* targetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(targetActor);
+		if (!targetASC)
+		{
+			continue;
+		}
+
+		// Apply damage effect spec
+		FActiveGameplayEffectHandle appliedHandle = sourceASC->ApplyGameplayEffectSpecToTarget(
+			*damageSpecHandle.Data.Get(),
+			targetASC
+		);
+
+		if (appliedHandle.WasSuccessfullyApplied())
+		{
+			++damageAppliedCount;
+
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange,
+				FString::Printf(TEXT("[%s] Applied damage to: %s"),
+					*GetName(), *targetActor->GetName()));
+		}
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green,
+		FString::Printf(TEXT("[%s] Total damage applied to %d targets"),
+			*GetName(), damageAppliedCount));
+}
+
+FGameplayEffectSpecHandle UMWChargeableSkill::MakeDamageEffectSpec(float DamageMultiplier)
+{
+	UMWAbilitySystemComponent* sourceASC = GetMWAbilitySystemComponentFromActorInfo();
+	if (!sourceASC)
+	{
+		return FGameplayEffectSpecHandle();
+	}
+
+	// Get GameplayEffect class from skill data or GameplayData
+	TSubclassOf<UGameplayEffect> damageEffectClass = nullptr;
+
+	if(UMWGameplayData* gameplayData = MWSINGLETON->GetGameplayData())
+	{
+		damageEffectClass = gameplayData->GE_Damage;
+	}
+
+	if (!damageEffectClass)
+	{
+		UE_LOG(LogMWAbilitySystem, Error, TEXT("[%s] Damage GameplayEffect class is null"), *GetName());
+		return FGameplayEffectSpecHandle();
+	}
+
+	// Create effect context
+	FGameplayEffectContextHandle effectContext = sourceASC->MakeEffectContext();
+	effectContext.AddSourceObject(this);
+	effectContext.AddInstigator(GetAvatarActorFromActorInfo(), GetAvatarActorFromActorInfo());
+
+	// Create effect spec
+	FGameplayEffectSpecHandle specHandle = sourceASC->MakeOutgoingSpec(
+		damageEffectClass,
+		GetAbilityLevel(),
+		effectContext
+	);
+
+	if (specHandle.IsValid())
+	{
+		// Set damage multiplier based on charge stage
+		float chargeStageDamageMultiplier = 1.f;
+		switch (CurrentChargeStage)
+		{
+			case EMWInputChargeStage::NoCharge:
+				chargeStageDamageMultiplier = 0.5f;
+				break;
+			case EMWInputChargeStage::Light:
+				chargeStageDamageMultiplier = 1.0f;
+				break;
+			case EMWInputChargeStage::Perfect:
+				chargeStageDamageMultiplier = 1.5f;
+				break;
+			case EMWInputChargeStage::Overcharge:
+				chargeStageDamageMultiplier = 2.0f;
+				break;
+		}
+
+		// Apply to total multiplier
+		float FinalMultiplier = chargeStageDamageMultiplier * DamageMultiplier;
+
+		// 通过 SetByCaller 或 Modifier 设置伤害值
+		// 方式1: 使用 SetByCaller (需要在 GE 中配置对应的 DataTag)
+		// SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("Data.Damage"), FinalMultiplier);
+
+		// 方式2: 直接修改 Modifier
+		// SpecHandle.Data->Modifiers[0].ModifierMagnitude.SetValue(FinalMultiplier);
+	}
+
+	return specHandle;
+}
+
+void UMWChargeableSkill::ClearCapturedTargets()
+{
+	CapturedTargetData.Clear();
 }

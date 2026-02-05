@@ -7,7 +7,7 @@
 
 void UANS_SkillCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
-	if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
+	/*if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
 	{
 		TSubclassOf<UGameplayEffect> skill_combo = MWSINGLETON->GetGameplayData()->GESkillCombo;
 		if (!skill_combo)
@@ -17,7 +17,7 @@ void UANS_SkillCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenc
 		}
 		FGameplayEffectSpecHandle spec_handle = asc->MakeOutgoingSpec(skill_combo, 1.f, asc->MakeEffectContext());
 		EffectSpecHandle = asc->ApplyGameplayEffectSpecToSelf(*spec_handle.Data.Get());
-	}
+	}*/
 }
 
 void UANS_SkillCombo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
