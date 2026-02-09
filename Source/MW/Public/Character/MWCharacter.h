@@ -1,10 +1,10 @@
 #pragma once
 
 #include "AbilitySystemInterface.h"
-#include "CoreMinimal.h"
 #include "Define/MWDefineGameplay.h"
 #include "GameFramework/Character.h"
 #include "Interface/MWSelectableInterface.h"
+#include "ModularCharacter.h"
 #include "MWCharacter.generated.h"
 
 class UCameraComponent;
@@ -14,7 +14,7 @@ class UMWCharacterEntity;
 class UMWPawnExtensionComponent;
 
 UCLASS()
-class MW_API AMWCharacter : public ACharacter,
+class MW_API AMWCharacter : public AModularCharacter,
 							public IMWSelectableInterface,
 							public IAbilitySystemInterface
 {

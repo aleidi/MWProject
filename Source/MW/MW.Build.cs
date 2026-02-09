@@ -27,8 +27,9 @@ public class MW : ModuleRules
 			"SlateCore",
 			"CommonUI",
 			"Paper2D",
-			"Niagara"
-            //"ModularGameplayActors",
+			"Niagara",
+			"ModularGameplay",
+            "ModularGameplayActors"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] 

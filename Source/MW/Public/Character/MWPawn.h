@@ -1,13 +1,12 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/MWSelectableInterface.h"
+#include "ModularPawn.h"
 #include "MWPawn.generated.h"
 
 UCLASS()
-class MW_API AMWPawn : public APawn, public IAbilitySystemInterface, public IMWSelectableInterface
+class MW_API AMWPawn : public AModularPawn, public IAbilitySystemInterface, public IMWSelectableInterface
 {
 	GENERATED_BODY()
 

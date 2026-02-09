@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Components/ActorComponent.h"
+#include "Components/GameFrameworkComponent.h"
 #include "MWPawnComponent.generated.h"
 
 class APawn;
 class APlayerController;
 
 UCLASS(Abstract)
-class UMWPawnComponent : public UActorComponent
+class UMWPawnComponent : public UGameFrameworkComponent
 {
     GENERATED_BODY()
 
