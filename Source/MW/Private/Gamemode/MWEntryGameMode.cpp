@@ -1,12 +1,11 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "Gamemode/MWEntryGameMode.h"
-#include "MWLogChannels.h"
-#include "Controller/MWPlayerController.h"
-#include "Player/MWPlayerState.h"
+
 #include "Character/MWCharacter.h"
-#include "Character/MWPawnData.h"
+#include "Controller/MWPlayerController.h"
+#include "Data/Character/MWPawnData.h"
 #include "Kismet/GameplayStatics.h"
+#include "MWLogChannels.h"
+#include "Player/MWPlayerState.h"
 #include "System/MWAssetManager.h"
 #include "UI/MWUIManager.h"
 

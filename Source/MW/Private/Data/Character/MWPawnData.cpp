@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Character/MWPawnData.h"
+#include "Data/Character/MWPawnData.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWPawnData)
 

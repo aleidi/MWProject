@@ -1,7 +1,8 @@
 #include "Component/Pawn/MWPawnExtensionComponent.h"
-#include "Character/MWPawnData.h"
+
 #include "Character/MWCharacter.h"
 #include "Character/MWTargetSelector.h"
+#include "Data/Character/MWPawnData.h"
 #include "Data/MWDataTableManager.h"
 #include "Data/MWMasterData.h"
 #include "Define/MWDefineDataTable.h"

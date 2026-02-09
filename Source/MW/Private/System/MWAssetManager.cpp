@@ -1,13 +1,12 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "System/MWAssetManager.h"
-#include "MWLogChannels.h"
-#include "Gameplay/MWGameplayTags.h"
-#include "Character/MWPawnData.h"
-#include "Stats/StatsMisc.h"
-#include "Engine/Engine.h"
-#include "Misc/ScopedSlowTask.h"
+
+#include "Data/Character/MWPawnData.h"
 #include "Data/MWMasterData.h"
+#include "Engine/Engine.h"
+#include "Gameplay/MWGameplayTags.h"
+#include "Misc/ScopedSlowTask.h"
+#include "MWLogChannels.h"
+#include "Stats/StatsMisc.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAssetManager)
 
