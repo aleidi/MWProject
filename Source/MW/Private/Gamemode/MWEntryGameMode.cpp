@@ -2,7 +2,6 @@
 
 #include "Character/MWCharacter.h"
 #include "Controller/MWPlayerController.h"
-#include "Data/Character/MWPawnData.h"
 #include "Kismet/GameplayStatics.h"
 #include "MWLogChannels.h"
 #include "Player/MWPlayerState.h"

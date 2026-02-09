@@ -1,6 +1,5 @@
 #include "System/MWAssetManager.h"
 
-#include "Data/Character/MWPawnData.h"
 #include "Data/MWMasterData.h"
 #include "Engine/Engine.h"
 #include "Gameplay/MWGameplayTags.h"
