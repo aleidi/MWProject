@@ -10,7 +10,7 @@ namespace MWDataTableName
 }
 
 class UDataTable;
-struct FMWCharacterTempleteData;
+struct FMWCharacterTemplateData;
 struct FTableRowBase;
 
 #define DATATABLEMANAGER (UMWDataTableManager::Get())
@@ -66,7 +66,7 @@ public:
 		return nullptr;
 	}
 
-	const FMWCharacterTempleteData* GetCharacterDataById(int32 Id);
+	const FMWCharacterTemplateData* GetCharacterDataById(int32 Id);
 
 private:
 	void CacheDataTables();
@@ -80,5 +80,5 @@ private:
 	UPROPERTY(Transient)
 	bool bInit = false;
 
-	TMap<int32, const FMWCharacterTempleteData*> CharacterDataMap;
+	TMap<int32, const FMWCharacterTemplateData*> CharacterDataMap;
 };

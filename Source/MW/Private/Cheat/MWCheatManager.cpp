@@ -81,7 +81,7 @@ void UMWCheatManager::PlaySequence()
 
 void UMWCheatManager::SpawnCharacter(int32 CharacterId)
 {
-	const FMWCharacterTempleteData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+	const FMWCharacterTemplateData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
 
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
