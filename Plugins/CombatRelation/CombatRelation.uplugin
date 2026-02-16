@@ -1,0 +1,31 @@
+{
+  "FileVersion": 3,
+  "Version": 5,
+  "VersionName": "1.0",
+  "FriendlyName": "CombatRelation",
+  "Description": "Centralized faction matrix + UPawnComponent relation component + GAS targeting. Tick-based expiry cleanup. Lightly reformatted.",
+  "Category": "Gameplay",
+  "CanContainContent": true,
+  "EnabledByDefault": true,
+  "Modules": [
+    {
+      "Name": "CombatRelation",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ModularGameplay",
+      "Enabled": true
+    },
+    {
+      "Name": "ModularGameplayActors",
+      "Enabled": true
+    },
+    {
+      "Name": "GameplayAbilities",
+      "Enabled": true
+    }
+  ]
+}
