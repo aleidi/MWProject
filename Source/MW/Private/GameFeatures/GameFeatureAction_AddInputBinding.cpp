@@ -25,10 +25,10 @@
 
 void UGameFeatureAction_AddInputBinding::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
-	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
-	if (!ensure(ActiveData.ExtensionRequestHandles.IsEmpty()) || !ensure(ActiveData.PawnInputBindHandles.IsEmpty()))
+	FPerContextData& activeData = ContextData.FindOrAdd(Context);
+	if (!ensure(activeData.ExtensionRequestHandles.IsEmpty()) || !ensure(activeData.PawnInputBindHandles.IsEmpty()))
 	{
-		Reset(ActiveData);
+		Reset(activeData);
 	}
 
 	Super::OnGameFeatureActivating(Context);
@@ -37,51 +37,51 @@ void UGameFeatureAction_AddInputBinding::OnGameFeatureActivating(FGameFeatureAct
 void UGameFeatureAction_AddInputBinding::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
 	Super::OnGameFeatureDeactivating(Context);
-	FPerContextData* ActiveData = ContextData.Find(Context);
+	FPerContextData* activeData = ContextData.Find(Context);
 
-	if (ensure(ActiveData))
+	if (ensure(activeData))
 	{
-		Reset(*ActiveData);
+		Reset(*activeData);
 	}
 }
 
 #if WITH_EDITOR
 EDataValidationResult UGameFeatureAction_AddInputBinding::IsDataValid(FDataValidationContext& Context) const
 {
-	EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
+	EDataValidationResult result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
 
-	int32 Index = 0;
+	int32 index = 0;
 
-	for (const TSoftObjectPtr<const UMWInputConfig>& Entry : InputConfigs)
+	for (const TSoftObjectPtr<const UMWInputConfig>& entry : InputConfigs)
 	{
-		if (Entry.IsNull())
+		if (entry.IsNull())
 		{
-			Result = EDataValidationResult::Invalid;
-			Context.AddError(FText::Format(LOCTEXT("NullInputConfig", "Null InputConfig at index {0}."), Index));
+			result = EDataValidationResult::Invalid;
+			Context.AddError(FText::Format(LOCTEXT("NullInputConfig", "Null InputConfig at index {0}."), index));
 		}
-		++Index;
+		++index;
 	}
 
-	return Result;
+	return result;
 }
 #endif
 
 void UGameFeatureAction_AddInputBinding::AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext)
 {
-	UWorld* World = WorldContext.World();
-	UGameInstance* GameInstance = WorldContext.OwningGameInstance;
-	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
+	UWorld* world = WorldContext.World();
+	UGameInstance* gameInstance = WorldContext.OwningGameInstance;
+	FPerContextData& activeData = ContextData.FindOrAdd(ChangeContext);
 
-	if ((GameInstance != nullptr) && (World != nullptr) && World->IsGameWorld())
+	if ((gameInstance != nullptr) && (world != nullptr) && world->IsGameWorld())
 	{
-		if (UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
+		if (UGameFrameworkComponentManager* componentManager = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(gameInstance))
 		{
-			UGameFrameworkComponentManager::FExtensionHandlerDelegate AddAbilitiesDelegate =
+			UGameFrameworkComponentManager::FExtensionHandlerDelegate addAbilitiesDelegate =
 				UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(this, &ThisClass::HandlePawnExtension, ChangeContext);
-			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle =
-				ComponentManager->AddExtensionHandler(APawn::StaticClass(), AddAbilitiesDelegate);
+			TSharedPtr<FComponentRequestHandle> extensionRequestHandle =
+				componentManager->AddExtensionHandler(APawn::StaticClass(), addAbilitiesDelegate);
 
-			ActiveData.ExtensionRequestHandles.Add(ExtensionRequestHandle);
+			activeData.ExtensionRequestHandles.Add(extensionRequestHandle);
 		}
 	}
 }
@@ -92,46 +92,46 @@ void UGameFeatureAction_AddInputBinding::Reset(FPerContextData& ActiveData)
 
 	while (!ActiveData.PawnInputBindHandles.IsEmpty())
 	{
-		auto BindIt = ActiveData.PawnInputBindHandles.CreateIterator();
-		RemoveInputMapping(BindIt->Key, ActiveData);
+		auto bindIt = ActiveData.PawnInputBindHandles.CreateIterator();
+		RemoveInputMapping(bindIt->Key, ActiveData);
 	}
 }
 
 void UGameFeatureAction_AddInputBinding::HandlePawnExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)
 {
-	APawn* AsPawn = CastChecked<APawn>(Actor);
-	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
+	APawn* asPawn = CastChecked<APawn>(Actor);
+	FPerContextData& activeData = ContextData.FindOrAdd(ChangeContext);
 
 	if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved) || (EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved))
 	{
-		RemoveInputMapping(AsPawn, ActiveData);
+		RemoveInputMapping(asPawn, activeData);
 	}
 	else if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded) /*|| (EventName == UMWHeroComponent::NAME_BindInputsNow)*/)
 	{
-		AddInputMappingForPlayer(AsPawn, ActiveData);
+		AddInputMappingForPlayer(asPawn, activeData);
 	}
 }
 
 void UGameFeatureAction_AddInputBinding::AddInputMappingForPlayer(APawn* Pawn, FPerContextData& ActiveData)
 {
-	APlayerController* PlayerController = Cast<APlayerController>(Pawn->GetController());
+	APlayerController* playerController = Cast<APlayerController>(Pawn->GetController());
 
-	if (ULocalPlayer* LocalPlayer = PlayerController ? PlayerController->GetLocalPlayer() : nullptr)
+	if (ULocalPlayer* localPlayer = playerController ? playerController->GetLocalPlayer() : nullptr)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		if (UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			if (AMWPlayerController* mwPlayerController = Cast<AMWPlayerController>(PlayerController))
+			if (AMWPlayerController* mwPlayerController = Cast<AMWPlayerController>(playerController))
 			{
-				for (const TSoftObjectPtr<const UMWInputConfig>& Entry : InputConfigs)
+				for (const TSoftObjectPtr<const UMWInputConfig>& entry : InputConfigs)
 				{
-					if (const UMWInputConfig* BindSet = Entry.Get())
+					if (const UMWInputConfig* bindSet = entry.Get())
 					{
 						TArray<uint32>& inputBindHandles = ActiveData.PawnInputBindHandles.FindOrAdd(Pawn);
 
-						for (const auto& actionContainer : BindSet->InputActionsContainers)
+						for (const auto& actionContainer : bindSet->InputActionsContainers)
 						{
 							TArray<uint32> outBindHandles;
-							mwPlayerController->AddAdditionalInputConfig(BindSet, actionContainer.Key, outBindHandles);
+							mwPlayerController->AddAdditionalInputConfig(bindSet, actionContainer.Key, outBindHandles);
 							inputBindHandles.Append(outBindHandles);
 						}
 					}
@@ -147,21 +147,21 @@ void UGameFeatureAction_AddInputBinding::AddInputMappingForPlayer(APawn* Pawn, F
 
 void UGameFeatureAction_AddInputBinding::RemoveInputMapping(APawn* Pawn, FPerContextData& ActiveData)
 {
-	TArray<uint32>* BindHandles = ActiveData.PawnInputBindHandles.Find(Pawn);
-	if (!BindHandles)
+	TArray<uint32>* bindHandles = ActiveData.PawnInputBindHandles.Find(Pawn);
+	if (!bindHandles)
 	{
 		return;
 	}
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Pawn->GetController()))
+	if (APlayerController* playerController = Cast<APlayerController>(Pawn->GetController()))
 	{
-		if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
+		if (ULocalPlayer* localPlayer = playerController->GetLocalPlayer())
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			if (UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
-				if (AMWPlayerController* mwPlayerController = Cast<AMWPlayerController>(PlayerController))
+				if (AMWPlayerController* mwPlayerController = Cast<AMWPlayerController>(playerController))
 				{
-					mwPlayerController->RemoveAdditionalInputConfig(*BindHandles);
+					mwPlayerController->RemoveAdditionalInputConfig(*bindHandles);
 				}
 			}
 		}

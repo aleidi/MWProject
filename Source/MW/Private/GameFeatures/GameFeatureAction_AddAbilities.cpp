@@ -20,12 +20,12 @@
 
 void UGameFeatureAction_AddAbilities::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
-	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
+	FPerContextData& activeData = ContextData.FindOrAdd(Context);
 
-	if (!ensureAlways(ActiveData.ActiveExtensions.IsEmpty()) ||
-		!ensureAlways(ActiveData.ComponentRequests.IsEmpty()))
+	if (!ensureAlways(activeData.ActiveExtensions.IsEmpty()) ||
+		!ensureAlways(activeData.ComponentRequests.IsEmpty()))
 	{
-		Reset(ActiveData);
+		Reset(activeData);
 	}
 	Super::OnGameFeatureActivating(Context);
 }
@@ -33,70 +33,70 @@ void UGameFeatureAction_AddAbilities::OnGameFeatureActivating(FGameFeatureActiva
 void UGameFeatureAction_AddAbilities::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
 	Super::OnGameFeatureDeactivating(Context);
-	FPerContextData* ActiveData = ContextData.Find(Context);
+	FPerContextData* activeData = ContextData.Find(Context);
 
-	if (ensure(ActiveData))
+	if (ensure(activeData))
 	{
-		Reset(*ActiveData);
+		Reset(*activeData);
 	}
 }
 
 #if WITH_EDITOR
 EDataValidationResult UGameFeatureAction_AddAbilities::IsDataValid(FDataValidationContext& Context) const
 {
-	EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
+	EDataValidationResult result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
 
-	int32 EntryIndex = 0;
-	for (const FGameFeatureAbilitiesEntry& Entry : AbilitiesList)
+	int32 entryIndex = 0;
+	for (const FGameFeatureAbilitiesEntry& entry : AbilitiesList)
 	{
-		if (Entry.ActorClass.IsNull())
+		if (entry.ActorClass.IsNull())
 		{
-			Result = EDataValidationResult::Invalid;
-			Context.AddError(FText::Format(LOCTEXT("EntryHasNullActor", "Null ActorClass at index {0} in AbilitiesList"), FText::AsNumber(EntryIndex)));
+			result = EDataValidationResult::Invalid;
+			Context.AddError(FText::Format(LOCTEXT("EntryHasNullActor", "Null ActorClass at index {0} in AbilitiesList"), FText::AsNumber(entryIndex)));
 		}
 
-		if (Entry.GrantedAbilities.IsEmpty() && Entry.GrantedAttributes.IsEmpty() && Entry.GrantedAbilitySets.IsEmpty())
+		if (entry.GrantedAbilities.IsEmpty() && entry.GrantedAttributes.IsEmpty() && entry.GrantedAbilitySets.IsEmpty())
 		{
-			Result = EDataValidationResult::Invalid;
-			Context.AddError(FText::Format(LOCTEXT("EntryHasNoAddOns", "Index {0} in AbilitiesList will do nothing (no granted abilities, attributes, or ability sets)"), FText::AsNumber(EntryIndex)));
+			result = EDataValidationResult::Invalid;
+			Context.AddError(FText::Format(LOCTEXT("EntryHasNoAddOns", "Index {0} in AbilitiesList will do nothing (no granted abilities, attributes, or ability sets)"), FText::AsNumber(entryIndex)));
 		}
 
-		int32 AbilityIndex = 0;
-		for (const FMWAbilityGrant& Ability : Entry.GrantedAbilities)
+		int32 abilityIndex = 0;
+		for (const FMWAbilityGrant& ability : entry.GrantedAbilities)
 		{
-			if (Ability.AbilityType.IsNull())
+			if (ability.AbilityType.IsNull())
 			{
-				Result = EDataValidationResult::Invalid;
-				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAbility", "Null AbilityType at index {0} in AbilitiesList[{1}].GrantedAbilities"), FText::AsNumber(AbilityIndex), FText::AsNumber(EntryIndex)));
+				result = EDataValidationResult::Invalid;
+				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAbility", "Null AbilityType at index {0} in AbilitiesList[{1}].GrantedAbilities"), FText::AsNumber(abilityIndex), FText::AsNumber(entryIndex)));
 			}
-			++AbilityIndex;
+			++abilityIndex;
 		}
 
-		int32 AttributesIndex = 0;
-		for (const FMWAttributeSetGrant& Attributes : Entry.GrantedAttributes)
+		int32 attributesIndex = 0;
+		for (const FMWAttributeSetGrant& attributes : entry.GrantedAttributes)
 		{
-			if (Attributes.AttributeSetType.IsNull())
+			if (attributes.AttributeSetType.IsNull())
 			{
-				Result = EDataValidationResult::Invalid;
-				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAttributeSet", "Null AttributeSetType at index {0} in AbilitiesList[{1}].GrantedAttributes"), FText::AsNumber(AttributesIndex), FText::AsNumber(EntryIndex)));
+				result = EDataValidationResult::Invalid;
+				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAttributeSet", "Null AttributeSetType at index {0} in AbilitiesList[{1}].GrantedAttributes"), FText::AsNumber(attributesIndex), FText::AsNumber(entryIndex)));
 			}
-			++AttributesIndex;
+			++attributesIndex;
 		}
 
-		int32 AttributeSetIndex = 0;
-		for (const TSoftObjectPtr<const UMWAbilitySet>& AttributeSetPtr : Entry.GrantedAbilitySets)
+		int32 attributeSetIndex = 0;
+		for (const TSoftObjectPtr<const UMWAbilitySet>& attributeSetPtr : entry.GrantedAbilitySets)
 		{
-			if (AttributeSetPtr.IsNull())
+			if (attributeSetPtr.IsNull())
 			{
-				Result = EDataValidationResult::Invalid;
-				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAttributeSet", "Null AbilitySet at index {0} in AbilitiesList[{1}].GrantedAbilitySets"), FText::AsNumber(AttributeSetIndex), FText::AsNumber(EntryIndex)));
+				result = EDataValidationResult::Invalid;
+				Context.AddError(FText::Format(LOCTEXT("EntryHasNullAttributeSet", "Null AbilitySet at index {0} in AbilitiesList[{1}].GrantedAbilitySets"), FText::AsNumber(attributeSetIndex), FText::AsNumber(entryIndex)));
 			}
-			++AttributeSetIndex;
+			++attributeSetIndex;
 		}
-		++EntryIndex;
+		++entryIndex;
 	}
 
-	return Result;
+	return result;
 
 	return EDataValidationResult::NotValidated;
 }
@@ -104,25 +104,25 @@ EDataValidationResult UGameFeatureAction_AddAbilities::IsDataValid(FDataValidati
 
 void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext)
 {
-	UWorld* World = WorldContext.World();
-	UGameInstance* GameInstance = WorldContext.OwningGameInstance;
-	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
+	UWorld* world = WorldContext.World();
+	UGameInstance* gameInstance = WorldContext.OwningGameInstance;
+	FPerContextData& activeData = ContextData.FindOrAdd(ChangeContext);
 
-	if ((GameInstance != nullptr) && (World != nullptr) && World->IsGameWorld())
+	if ((gameInstance != nullptr) && (world != nullptr) && world->IsGameWorld())
 	{
-		if (UGameFrameworkComponentManager* ComponentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
-		{			
-			int32 EntryIndex = 0;
-			for (const FGameFeatureAbilitiesEntry& Entry : AbilitiesList)
+		if (UGameFrameworkComponentManager* componentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(gameInstance))
+		{
+			int32 entryIndex = 0;
+			for (const FGameFeatureAbilitiesEntry& entry : AbilitiesList)
 			{
-				if (!Entry.ActorClass.IsNull())
+				if (!entry.ActorClass.IsNull())
 				{
-					UGameFrameworkComponentManager::FExtensionHandlerDelegate AddAbilitiesDelegate = UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(
-						this, &UGameFeatureAction_AddAbilities::HandleActorExtension, EntryIndex, ChangeContext);
-					TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentMan->AddExtensionHandler(Entry.ActorClass, AddAbilitiesDelegate);
+					UGameFrameworkComponentManager::FExtensionHandlerDelegate addAbilitiesDelegate = UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(
+						this, &UGameFeatureAction_AddAbilities::HandleActorExtension, entryIndex, ChangeContext);
+					TSharedPtr<FComponentRequestHandle> extensionRequestHandle = componentMan->AddExtensionHandler(entry.ActorClass, addAbilitiesDelegate);
 
-					ActiveData.ComponentRequests.Add(ExtensionRequestHandle);
-					EntryIndex++;
+					activeData.ComponentRequests.Add(extensionRequestHandle);
+					entryIndex++;
 				}
 			}
 		}
@@ -133,8 +133,8 @@ void UGameFeatureAction_AddAbilities::Reset(FPerContextData& ActiveData)
 {
 	while (!ActiveData.ActiveExtensions.IsEmpty())
 	{
-		auto ExtensionIt = ActiveData.ActiveExtensions.CreateIterator();
-		RemoveActorAbilities(ExtensionIt->Key, ActiveData);
+		auto extensionIt = ActiveData.ActiveExtensions.CreateIterator();
+		RemoveActorAbilities(extensionIt->Key, ActiveData);
 	}
 
 	ActiveData.ComponentRequests.Empty();
@@ -142,17 +142,17 @@ void UGameFeatureAction_AddAbilities::Reset(FPerContextData& ActiveData)
 
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Actor, FName EventName, int32 EntryIndex, FGameFeatureStateChangeContext ChangeContext)
 {
-	FPerContextData* ActiveData = ContextData.Find(ChangeContext);
-	if (AbilitiesList.IsValidIndex(EntryIndex) && ActiveData)
+	FPerContextData* activeData = ContextData.Find(ChangeContext);
+	if (AbilitiesList.IsValidIndex(EntryIndex) && activeData)
 	{
-		const FGameFeatureAbilitiesEntry& Entry = AbilitiesList[EntryIndex];
+		const FGameFeatureAbilitiesEntry& entry = AbilitiesList[EntryIndex];
 		if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved) || (EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved))
 		{
-			RemoveActorAbilities(Actor, *ActiveData);
+			RemoveActorAbilities(Actor, *activeData);
 		}
 		else if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded) /*|| (EventName == AMWPlayerState::NAME_MWAbilityReady)*/)
 		{
-			AddActorAbilities(Actor, Entry, *ActiveData);
+			AddActorAbilities(Actor, entry, *activeData);
 		}
 	}
 }
@@ -171,61 +171,62 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities(AActor* Actor, const FGa
 		return;	
 	}
 
-	if (UAbilitySystemComponent* AbilitySystemComponent = FindOrAddComponentForActor<UAbilitySystemComponent>(Actor, AbilitiesEntry, ActiveData))
+	if (UAbilitySystemComponent* abilitySystemComponent = FindOrAddComponentForActor<UAbilitySystemComponent>(Actor, AbilitiesEntry, ActiveData))
 	{
-		FActorExtensions AddedExtensions;
-		AddedExtensions.Abilities.Reserve(AbilitiesEntry.GrantedAbilities.Num());
-		AddedExtensions.Attributes.Reserve(AbilitiesEntry.GrantedAttributes.Num());
-		AddedExtensions.AbilitySetHandles.Reserve(AbilitiesEntry.GrantedAbilitySets.Num());
+		FActorExtensions addedExtensions;
+		addedExtensions.Abilities.Reserve(AbilitiesEntry.GrantedAbilities.Num());
+		addedExtensions.Attributes.Reserve(AbilitiesEntry.GrantedAttributes.Num());
+		addedExtensions.AbilitySetHandles.Reserve(AbilitiesEntry.GrantedAbilitySets.Num());
 
-		for (const FMWAbilityGrant& Ability : AbilitiesEntry.GrantedAbilities)
+		for (const FMWAbilityGrant& ability : AbilitiesEntry.GrantedAbilities)
 		{
-			if (!Ability.AbilityType.IsNull())
+			if (!ability.AbilityType.IsNull())
 			{
-				FGameplayAbilitySpec NewAbilitySpec(Ability.AbilityType.LoadSynchronous());
-				FGameplayAbilitySpecHandle AbilityHandle = AbilitySystemComponent->GiveAbility(NewAbilitySpec);
+				FGameplayAbilitySpec newAbilitySpec(ability.AbilityType.LoadSynchronous());
+				FGameplayAbilitySpecHandle abilityHandle = abilitySystemComponent->GiveAbility(newAbilitySpec);
 
-				AddedExtensions.Abilities.Add(AbilityHandle);
+				addedExtensions.Abilities.Add(abilityHandle);
 			}
 		}
 
-		for (const FMWAttributeSetGrant& Attributes : AbilitiesEntry.GrantedAttributes)
+		for (const FMWAttributeSetGrant& attributes : AbilitiesEntry.GrantedAttributes)
 		{
-			if (!Attributes.AttributeSetType.IsNull())
+			if (!attributes.AttributeSetType.IsNull())
 			{
-				TSubclassOf<UAttributeSet> SetType = Attributes.AttributeSetType.LoadSynchronous();
-				if (SetType)
+				TSubclassOf<UAttributeSet> setType = attributes.AttributeSetType.LoadSynchronous();
+				if (setType)
 				{
-					UAttributeSet* NewSet = NewObject<UAttributeSet>(AbilitySystemComponent->GetOwner(), SetType);
-					if (!Attributes.InitializationData.IsNull())
+					UAttributeSet* newSet = NewObject<UAttributeSet>(abilitySystemComponent->GetOwner(), setType);
+					if (!attributes.InitializationData.IsNull())
 					{
-						UDataTable* InitData = Attributes.InitializationData.LoadSynchronous();
-						if (InitData)
+						UDataTable* initData = attributes.InitializationData.LoadSynchronous();
+						if (initData)
 						{
-							NewSet->InitFromMetaDataTable(InitData);
+							newSet->InitFromMetaDataTable(initData);
 						}
 					}
 
-					AddedExtensions.Attributes.Add(NewSet);
-					AbilitySystemComponent->AddAttributeSetSubobject(NewSet);
+					addedExtensions.Attributes.Add(newSet);
+					abilitySystemComponent->AddAttributeSetSubobject(newSet);
 				}
 			}
 		}
 
-		UMWAbilitySystemComponent* MWASC = CastChecked<UMWAbilitySystemComponent>(AbilitySystemComponent);
-		if (!MWASC)
+		UMWAbilitySystemComponent* mwasc = CastChecked<UMWAbilitySystemComponent>(abilitySystemComponent);
+		if (!mwasc)
 		{
 			return;
 		}
-		for (const TSoftObjectPtr<const UMWAbilitySet>& SetPtr : AbilitiesEntry.GrantedAbilitySets)
+
+		for (const TSoftObjectPtr<const UMWAbilitySet>& setPtr : AbilitiesEntry.GrantedAbilitySets)
 		{
-			if (const UMWAbilitySet* Set = SetPtr.Get())
+			if (const UMWAbilitySet* set = setPtr.Get())
 			{
-				Set->GiveToAbilitySystem(MWASC, &AddedExtensions.AbilitySetHandles.AddDefaulted_GetRef());
+				set->GiveToAbilitySystem(mwasc, &addedExtensions.AbilitySetHandles.AddDefaulted_GetRef());
 			}
 		}
 
-		ActiveData.ActiveExtensions.Add(Actor, AddedExtensions);
+		ActiveData.ActiveExtensions.Add(Actor, addedExtensions);
 	}
 	else
 	{
@@ -235,24 +236,24 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities(AActor* Actor, const FGa
 
 void UGameFeatureAction_AddAbilities::RemoveActorAbilities(AActor* Actor, FPerContextData& ActiveData)
 {
-	if (FActorExtensions* ActorExtensions = ActiveData.ActiveExtensions.Find(Actor))
+	if (FActorExtensions* actorExtensions = ActiveData.ActiveExtensions.Find(Actor))
 	{
-		if (UAbilitySystemComponent* AbilitySystemComponent = Actor->FindComponentByClass<UAbilitySystemComponent>())
+		if (UAbilitySystemComponent* abilitySystemComponent = Actor->FindComponentByClass<UAbilitySystemComponent>())
 		{
-			for (UAttributeSet* AttribSetInstance : ActorExtensions->Attributes)
+			for (UAttributeSet* attribSetInstance : actorExtensions->Attributes)
 			{
-				AbilitySystemComponent->RemoveSpawnedAttribute(AttribSetInstance);
+				abilitySystemComponent->RemoveSpawnedAttribute(attribSetInstance);
 			}
 
-			for (FGameplayAbilitySpecHandle AbilityHandle : ActorExtensions->Abilities)
+			for (FGameplayAbilitySpecHandle abilityHandle : actorExtensions->Abilities)
 			{
-				AbilitySystemComponent->SetRemoveAbilityOnEnd(AbilityHandle);
+				abilitySystemComponent->SetRemoveAbilityOnEnd(abilityHandle);
 			}
 
-			UMWAbilitySystemComponent* MWASC = CastChecked<UMWAbilitySystemComponent>(AbilitySystemComponent);
-			for (FMWAbilitySet_GrantedHandles& SetHandle : ActorExtensions->AbilitySetHandles)
+			UMWAbilitySystemComponent* mwasc = CastChecked<UMWAbilitySystemComponent>(abilitySystemComponent);
+			for (FMWAbilitySet_GrantedHandles& setHandle : actorExtensions->AbilitySetHandles)
 			{
-				SetHandle.RemoveFromAbilitySystem(MWASC);
+				setHandle.RemoveFromAbilitySystem(mwasc);
 			}
 		}
 
@@ -262,41 +263,41 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities(AActor* Actor, FPerCo
 
 UActorComponent* UGameFeatureAction_AddAbilities::FindOrAddComponentForActor(UClass* ComponentType, AActor* Actor, const FGameFeatureAbilitiesEntry& AbilitiesEntry, FPerContextData& ActiveData)
 {
-	UActorComponent* Component = Actor->FindComponentByClass(ComponentType);
+	UActorComponent* component = Actor->FindComponentByClass(ComponentType);
 	
-	bool bMakeComponentRequest = (Component == nullptr);
-	if (Component)
+	bool bMakeComponentRequest = (component == nullptr);
+	if (component)
 	{
 		// Check to see if this component was created from a different `UGameFrameworkComponentManager` request.
 		// `Native` is what `CreationMethod` defaults to for dynamically added components.
-		if (Component->CreationMethod == EComponentCreationMethod::Native)
+		if (component->CreationMethod == EComponentCreationMethod::Native)
 		{
 			// Attempt to tell the difference between a true native component and one created by the GameFrameworkComponent system.
 			// If it is from the UGameFrameworkComponentManager, then we need to make another request (requests are ref counted).
-			UObject* ComponentArchetype = Component->GetArchetype();
-			bMakeComponentRequest = ComponentArchetype->HasAnyFlags(RF_ClassDefaultObject);
+			UObject* componentArchetype = component->GetArchetype();
+			bMakeComponentRequest = componentArchetype->HasAnyFlags(RF_ClassDefaultObject);
 		}
 	}
 
 	if (bMakeComponentRequest)
 	{
-		UWorld* World = Actor->GetWorld();
-		UGameInstance* GameInstance = World->GetGameInstance();
+		UWorld* world = Actor->GetWorld();
+		UGameInstance* gameInstance = world->GetGameInstance();
 
-		if (UGameFrameworkComponentManager* ComponentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
+		if (UGameFrameworkComponentManager* componentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(gameInstance))
 		{
-			TSharedPtr<FComponentRequestHandle> RequestHandle = ComponentMan->AddComponentRequest(AbilitiesEntry.ActorClass, ComponentType);
-			ActiveData.ComponentRequests.Add(RequestHandle);
+			TSharedPtr<FComponentRequestHandle> requestHandle = componentMan->AddComponentRequest(AbilitiesEntry.ActorClass, ComponentType);
+			ActiveData.ComponentRequests.Add(requestHandle);
 		}
 
-		if (!Component)
+		if (!component)
 		{
-			Component = Actor->FindComponentByClass(ComponentType);
-			ensureAlways(Component);
+			component = Actor->FindComponentByClass(ComponentType);
+			ensureAlways(component);
 		}
 	}
 
-	return Component;
+	return component;
 }
 
 #undef LOCTEXT_NAMESPACE
