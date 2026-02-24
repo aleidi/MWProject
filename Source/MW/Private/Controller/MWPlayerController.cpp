@@ -35,21 +35,51 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
+void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, TArray<uint32>& OutBindHandles)
+{
+	const ULocalPlayer* localPlayer = GetLocalPlayer();
+	check(localPlayer);
+
+	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(subsystem);
+
+	UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
+	if (ensureMsgf(mwic, TEXT("Unexpected Input Component class! The Gameplay Abilities will not be bound to their inputs. Change the input component to UMWInputComponent or a subclass of it.")))
+	{
+		mwic->BindAbilityActions(InputConfig, IMCTag, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, OutBindHandles);
+	}
+}
+
+void AMWPlayerController::RemoveAdditionalInputConfig(TArray<uint32>& BindHandles)
+{
+	const ULocalPlayer* localPlayer = GetLocalPlayer();
+	check(localPlayer);
+
+	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(subsystem);
+
+	UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
+	if (ensureMsgf(mwic, TEXT("Unexpected Input Component class! The Gameplay Abilities will not be bound to their inputs. Change the input component to UMWInputComponent or a subclass of it.")))
+	{
+		mwic->RemoveBinds(BindHandles);
+	}
+}
+
 void AMWPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	const ULocalPlayer* local_player = Cast<ULocalPlayer>(GetLocalPlayer());
-	check(local_player);
+	const ULocalPlayer* localPlayer = Cast<ULocalPlayer>(GetLocalPlayer());
+	check(localPlayer);
 
-	UEnhancedInputLocalPlayerSubsystem* subsystem = local_player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
 	subsystem->ClearAllMappings();
 
 	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	{
-		if (UMWInputConfig* input_config = data->InputConfig.Get())
+		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
 		{
 			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMC_TPDefault);
 
@@ -60,17 +90,17 @@ void AMWPlayerController::SetupInputComponent()
 			if (ensureMsgf(mwic, TEXT("Unexpected Input Component class! The Gameplay Abilities will not be bound to their inputs. Change the input component to UMWInputComponent or a subclass of it.")))
 			{
 				// Add the key mappings that may have been set by the player
-				mwic->AddInputMappings(input_config, subsystem);
+				mwic->AddInputMappings(inputConfig, subsystem);
 
 				// This is where we actually bind and input action to a gameplay tag, which means that Gameplay Ability Blueprints will
 				// be triggered directly by these input actions Triggered events. 
-				TArray<uint32> bind_handles;
+				TArray<uint32> bindHandles;
 
 				// default input
-				mwic->BindAbilityActions(input_config, MWGameplayTags::IMC_TPDefault, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bind_handles);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
-				mwic->BindNativeAction(input_config, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
+				mwic->BindAbilityActions(inputConfig, MWGameplayTags::IMC_TPDefault, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bindHandles);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
 			}
 		}
 	}

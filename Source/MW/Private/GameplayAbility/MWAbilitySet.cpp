@@ -5,7 +5,7 @@
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "GameplayAbility/MWGameplayAbility.h"
 
-void FMWAbilitySetGrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
+void FMWAbilitySet_GrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
 {
 	if (Handle.IsValid())
 	{
@@ -13,7 +13,7 @@ void FMWAbilitySetGrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpe
 	}
 }
 
-void FMWAbilitySetGrantedHandles::AddGameplayEffectHandle(const FActiveGameplayEffectHandle& Handle)
+void FMWAbilitySet_GrantedHandles::AddGameplayEffectHandle(const FActiveGameplayEffectHandle& Handle)
 {
 	if (Handle.IsValid())
 	{
@@ -21,12 +21,12 @@ void FMWAbilitySetGrantedHandles::AddGameplayEffectHandle(const FActiveGameplayE
 	}
 }
 
-void FMWAbilitySetGrantedHandles::AddAttributeSet(UAttributeSet* Set)
+void FMWAbilitySet_GrantedHandles::AddAttributeSet(UAttributeSet* Set)
 {
 	GrantedAttributeSets.Add(Set);
 }
 
-void FMWAbilitySetGrantedHandles::RemoveFromAbilitySystem(UMWAbilitySystemComponent* MWASC)
+void FMWAbilitySet_GrantedHandles::RemoveFromAbilitySystem(UMWAbilitySystemComponent* MWASC)
 {
 	check(MWASC);
 
@@ -67,7 +67,7 @@ UMWAbilitySet::UMWAbilitySet(const FObjectInitializer& ObjectInitializer)
 {
 }
 
-void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbilitySetGrantedHandles* OutGrantedHandles, UObject* SourceObject) const
+void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
 	check(MWASC);
 

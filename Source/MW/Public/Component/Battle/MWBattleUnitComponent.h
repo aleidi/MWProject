@@ -10,7 +10,7 @@ class AMWCharacter;
 class UMWAbilitySet;
 class UMWBattleAttributeSet;
 class UMWCharacterBattleSkillDataAsset;
-struct FMWAbilitySetGrantedHandles;
+struct FMWAbilitySet_GrantedHandles;
 
 
 USTRUCT(BlueprintType)
@@ -104,7 +104,7 @@ private:
 	TObjectPtr<UMWAbilitySet> AbilitySet;
 
 	/* Cache the granted abilities */
-	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
+	TSharedPtr<FMWAbilitySet_GrantedHandles> AbilityGranetedHandles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MW|Battle", meta=(AllowPrivateAccess))
 	bool bIsInCombat = false;

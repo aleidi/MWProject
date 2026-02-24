@@ -7,7 +7,7 @@ class APawn;
 class APlayerController;
 
 UCLASS(Abstract)
-class UMWPawnComponent : public UGameFrameworkComponent
+class MW_API UMWPawnComponent : public UGameFrameworkComponent
 {
     GENERATED_BODY()
 

@@ -27,13 +27,14 @@ public:
 	UMWInputComponent(const FObjectInitializer& ObjectInitializer);
 
 	void AddInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const;
+
 	void RemoveInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const;
 
 	template<class UserClass, typename FuncType>
 	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
 
 	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-	void BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles);
+	void BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles);
 
 	void RemoveBinds(TArray<uint32>& BindHandles);
 };
@@ -50,7 +51,7 @@ void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, cons
 }
 
 template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
+void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles)
 {
 	check(InputConfig);
 
@@ -63,18 +64,18 @@ void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, co
 		return;
 	}
 
-	for (const FMWInputAction& Action : abilityInputActions)
+	for (const FMWInputAction& action : abilityInputActions)
 	{
-		if (Action.InputAction && Action.InputTag.IsValid())
+		if (action.InputAction && action.InputTag.IsValid())
 		{
 			if (PressedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Started, Object, PressedFunc, Action.InputTag).GetHandle());
+				OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Started, Object, PressedFunc, action.InputTag).GetHandle());
 			}
 
 			if (ReleasedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag).GetHandle());
+				OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, action.InputTag).GetHandle());
 			}
 		}
 	}

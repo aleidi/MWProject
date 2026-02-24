@@ -8,7 +8,7 @@
 class UMWPawnData;
 class UMWAbilitySystemComponent;
 class FMWTargetSelector;
-struct FMWAbilitySetGrantedHandles;
+struct FMWAbilitySet_GrantedHandles;
 struct FMWFoundActorInfo;
 
 /* UMWPawnExtensionComponent
@@ -58,7 +58,7 @@ protected:
 	TObjectPtr<UMWAbilitySystemComponent> AbilitySystemComponent;
 
 	/* Cache the granted abilities */
-	TSharedPtr<FMWAbilitySetGrantedHandles> AbilityGranetedHandles;
+	TSharedPtr<FMWAbilitySet_GrantedHandles> AbilityGranetedHandles;
 #pragma endregion
 
 #pragma region Select

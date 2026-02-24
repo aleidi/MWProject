@@ -86,7 +86,7 @@ public:
  *	Data used to store handles to what has been granted by the ability set.
  */
 USTRUCT()
-struct FMWAbilitySetGrantedHandles
+struct FMWAbilitySet_GrantedHandles
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -128,7 +128,7 @@ public:
 
 	// Grants the ability set to the specified ability system component.
 	// The returned handles can be used later to take away anything that was granted.
-	void GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbilitySetGrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
+	void GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
 
 protected:
 

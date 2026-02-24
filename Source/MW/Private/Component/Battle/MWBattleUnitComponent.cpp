@@ -168,7 +168,7 @@ void UMWBattleUnitComponent::GrandCombatAbilities()
 	// Initialize the granted handles if not already done
 	if (!AbilityGranetedHandles.IsValid())
 	{
-		AbilityGranetedHandles = MakeShared<FMWAbilitySetGrantedHandles>();
+		AbilityGranetedHandles = MakeShared<FMWAbilitySet_GrantedHandles>();
 	}
 
 	// Grant abilities and store the handles
