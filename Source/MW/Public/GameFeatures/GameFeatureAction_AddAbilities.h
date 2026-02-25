@@ -58,7 +58,8 @@ struct FGameFeatureAbilitiesEntry
 	UPROPERTY(EditAnywhere, Category="Attributes")
 	TArray<FMWAttributeSetGrant> GrantedAttributes;
 
-	// List of ability sets to grant to actors of the specified class
+	// List of ability sets to grant to actors of the specified class.
+	// Abilities granted through ability sets will be bound to input actions.
 	UPROPERTY(EditAnywhere, Category="Attributes", meta=(AssetBundles="Client,Server"))
 	TArray<TSoftObjectPtr<const UMWAbilitySet>> GrantedAbilitySets;
 };
