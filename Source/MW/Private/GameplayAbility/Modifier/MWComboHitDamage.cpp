@@ -1,4 +1,6 @@
 #include "GameplayAbility/Modifier/MWComboHitDamage.h"
+
+#include "GameplayEffectExecutionCalculation.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 #include "GameplayAbility/Execution/MWCalculationTable.h"
 #include "Gameplay/MWGameplayTags.h"

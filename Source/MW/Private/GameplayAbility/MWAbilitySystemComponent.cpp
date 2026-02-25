@@ -1,12 +1,11 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 
+#include "Data/MWGameplayData.h"
 #include "Engine/World.h"
-#include "MWGameSingleton.h"
 #include "GameFramework/Pawn.h"
 #include "GameplayAbility/MWGameplayAbility.h"
 #include "GameplayAbility/MWGlobalAbilitySystem.h"
+#include "MWGameSingleton.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAbilitySystemComponent)
 
