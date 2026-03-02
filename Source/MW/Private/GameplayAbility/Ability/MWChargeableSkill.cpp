@@ -3,11 +3,13 @@
 #include "AbilitySystemGlobals.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Data/GameplayAbility/ChargeableSkillData.h"
+#include "Data/MWGameplayData.h"
 #include "GameplayTagContainer.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "Gameplay/MWGameplayUtility.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
 
-void UMWChargeableSkill::OnChargeComplete(float ChargeTime)
+void UMWChargeableSkill::OnInputReleased(float ChargeTime)
 {
 	UMWAbilitySystemComponent* mwASC = GetMWAbilitySystemComponentFromActorInfo();
 	if (!mwASC)

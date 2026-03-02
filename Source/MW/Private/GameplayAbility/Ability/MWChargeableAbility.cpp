@@ -6,11 +6,11 @@ void UMWChargeableAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	UAbilityTask_WaitInputRelease* waitInputTask = UAbilityTask_WaitInputRelease::WaitInputRelease(this);
-	waitInputTask->OnRelease.AddDynamic(this, &UMWChargeableAbility::OnChargeComplete);
+	waitInputTask->OnRelease.AddDynamic(this, &UMWChargeableAbility::OnInputReleased);
 	waitInputTask->ReadyForActivation();
 }
 
-void UMWChargeableAbility::OnChargeComplete(float ChargeTime)
+void UMWChargeableAbility::OnInputReleased(float ChargeTime)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Charge Complete! Charge Time: %f"), ChargeTime));
 

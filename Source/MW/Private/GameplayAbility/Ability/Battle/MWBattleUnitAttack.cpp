@@ -1,10 +1,12 @@
 #include "GameplayAbility/Ability/Battle/MWBattleUnitAttack.h"
+
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Animation/AnimSequenceBase.h"
 #include "Animation/Notify/Battle/Combat/AN_ComboHit.h"
 #include "Component/Battle/MWBattleUnitComponent.h"
 #include "Component/Character/MWCharacterAnimControlComponent.h"
+#include "Data/MWCharacterData.h"
 #include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "MWLogChannels.h"
@@ -336,7 +338,7 @@ void UMWBattleUnitAttack::SetupSkillTable(AActor* AvatarActor)
 	{
 		if (UMWBattleUnitComponent* battleUnitComp = AvatarActor->FindComponentByClass<UMWBattleUnitComponent>())
 		{
-			if (auto* table = battleUnitComp->GetSkillData())
+			if (const UMWCharacterBattleSkillDataAsset* table = battleUnitComp->GetSkillData())
 			{
 				SkillTable.ApproachAnimation = table->ApproachAnimation;
 				SkillTable.ReturnAnimation = table->ReturnAnimation;

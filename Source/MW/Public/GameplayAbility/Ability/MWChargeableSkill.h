@@ -26,7 +26,7 @@ class UMWChargeableSkill : public UMWChargeableAbility
 public:
 	//UMWChargeableSkill();
 
-	virtual void OnChargeComplete(float ChargeTime) override;
+	virtual void OnInputReleased(float ChargeTime) override;
 
 	/** Called by AnimNotify to trigger damage calculation at specific timestamps */
 	virtual void OnDamageNotify(FGameplayTag DamageEventTag, float DamageMultiplier, int32 HitIndex);
