@@ -1,7 +1,6 @@
 #include "Animation/Notify/Skill/AN_DamageCheck.h"
 
 #include "AbilitySystemGlobals.h"
-#include "GameplayAbility/Ability/MWChargeableSkill.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 
 void UAN_DamageCheck::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -30,15 +29,15 @@ void UAN_DamageCheck::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase
 		if (spec.IsActive())
 		{
 			// Try to cast to MWChargeableSkill
-			UMWChargeableSkill* chargeableSkill = Cast<UMWChargeableSkill>(spec.GetPrimaryInstance());
-			if (chargeableSkill)
-			{
-				// Trigger damage calculation with configured parameters
-				chargeableSkill->OnDamageNotify(DamageEventTag, DamageMultiplier, HitIndex);
-				
-				// Found and triggered the skill, no need to continue
-				return;
-			}
+			//UMWChargeableSkill* chargeableSkill = Cast<UMWChargeableSkill>(spec.GetPrimaryInstance());
+			//if (chargeableSkill)
+			//{
+			//	// Trigger damage calculation with configured parameters
+			//	chargeableSkill->OnDamageNotify(DamageEventTag, DamageMultiplier, HitIndex);
+			//	
+			//	// Found and triggered the skill, no need to continue
+			//	return;
+			//}
 		}
 	}
 

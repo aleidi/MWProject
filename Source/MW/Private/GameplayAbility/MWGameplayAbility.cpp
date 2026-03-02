@@ -1,5 +1,10 @@
 #include "GameplayAbility/MWGameplayAbility.h"
+
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+#include "Gameplay/MWGameplayTags.h"
+#include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "MWLogChannels.h"
 
 #define ENSURE_ABILITY_IS_INSTANTIATED_OR_RETURN(FunctionName, ReturnValue)																				\
 {																																						\
