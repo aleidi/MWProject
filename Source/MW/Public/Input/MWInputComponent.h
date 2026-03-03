@@ -70,12 +70,12 @@ void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, co
 		{
 			if (PressedFunc)
 			{
-				OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Started, Object, PressedFunc, action.InputTag).GetHandle());
+				OutBindHandles.Add(BindAction(action.InputAction, action.PressedTriggerEvent, Object, PressedFunc, action.InputTag).GetHandle());
 			}
 
 			if (ReleasedFunc)
 			{
-				OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, action.InputTag).GetHandle());
+				OutBindHandles.Add(BindAction(action.InputAction, action.ReleasedTriggerEvent, Object, ReleasedFunc, action.InputTag).GetHandle());
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "EnhancedPlayerInput.h"
 #include "GameplayTagContainer.h"
 #include "MWInputConfig.generated.h"
 
@@ -27,6 +28,12 @@ struct FMWInputAction
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	ETriggerEvent PressedTriggerEvent = ETriggerEvent::Started;
+
+	UPROPERTY(EditDefaultsOnly)
+	ETriggerEvent ReleasedTriggerEvent = ETriggerEvent::Completed;
 };
 
 USTRUCT(BlueprintType)
