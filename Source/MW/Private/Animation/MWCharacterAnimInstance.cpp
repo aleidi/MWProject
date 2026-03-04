@@ -15,7 +15,7 @@ void UMWCharacterAnimInstance::NativeBeginPlay()
 			if (UAbilitySystemComponent* asc = asi->GetAbilitySystemComponent())
 			{
 				BattleStateTagHandle = asc->RegisterGameplayTagEvent(
-					MWGameplayTags::GP_Character_CombatState,
+					MWGameplayTags::Character_CombatState,
 					EGameplayTagEventType::NewOrRemoved
 				).AddUObject(this, &UMWCharacterAnimInstance::OnBattleStateTagChanged);
 			}

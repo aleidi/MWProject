@@ -50,6 +50,21 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_AutoRun,				"InputTag.TPDefault.AutoRun",							"Third-Person default action Auto-run.");
 #pragma endregion
 
+	// ==== Battle Input ====
+#pragma region Battle Input
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_Battle,							"InputTag.MappingContext.Battle",						"Input Mapping Context Battle.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot1,				"InputTag.Battle.SkillSlot1",							"Battle Input Skill Slot 1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot2,				"InputTag.Battle.SkillSlot2",							"Battle Input Skill Slot 2.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot3,				"InputTag.Battle.SkillSlot3",							"Battle Input Skill Slot 3.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot4,				"InputTag.Battle.SkillSlot4",							"Battle Input Skill Slot 4.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot5,				"InputTag.Battle.SkillSlot5",							"Battle Input Skill Slot 5.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot6,				"InputTag.Battle.SkillSlot6",							"Battle Input Skill Slot 6.");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot1_Charge,		"InputTag.Battle.SkillSlot1.Charge",					"Battle Input Skill Slot 1 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot2_Charge,		"InputTag.Battle.SkillSlot2.Charge",					"Battle Input Skill Slot 2 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Battle_SkillSlot3_Charge,		"InputTag.Battle.SkillSlot3.Charge",					"Battle Input Skill Slot 3 Charge.");
+#pragma endregion
+
 	// ==== Battle Command ====
 #pragma region Battle Command
 
@@ -141,21 +156,24 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_OverCharge,			"Ability.Input.OverCharge",								"Ability's Input Over Charge.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActionUninterruptible,			"Ability.ActionUninterruptible",						"Another action can't be performed while this tag is active.");
 	
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_Ability_UnitAttack,			"GameplayTag.Battle.Ability.UnitAttack",				"Activate UMWBattleUnitAttack ability.");
+	// Skill
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Skill_Chainable,					"Ability.Skill.Chainable",								"Ability's Skill Chainable.");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_Ability_UnitAttack,				"Battle.Ability.UnitAttack",							"Activate UMWBattleUnitAttack ability.");
 	// Attack command
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P1,				"GameplayTag.Battle.ComboAttack.P1",					"Player 1 Battle Combo Attack.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P2,				"GameplayTag.Battle.ComboAttack.P2",					"Player 2 Battle Combo Attack.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboAttack_P3,				"GameplayTag.Battle.ComboAttack.P3",					"Player 3 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P1,					"Battle.ComboAttack.P1",								"Player 1 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P2,					"Battle.ComboAttack.P2",								"Player 2 Battle Combo Attack.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P3,					"Battle.ComboAttack.P3",								"Player 3 Battle Combo Attack.");
 	// Combo
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboCentral,					"GameplayTag.Battle.ComboCentral",						"Battle Combo Central.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboUpDown,					"GameplayTag.Battle.ComboUpDown",						"Battle Combo ComboUpDown.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboLeftRight,				"GameplayTag.Battle.ComboLeftRight",					"Battle Combo ComboLeftRight.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboCentral,						"Battle.ComboCentral",									"Battle Combo Central.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboUpDown,						"Battle.ComboUpDown",									"Battle Combo ComboUpDown.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboLeftRight,					"Battle.ComboLeftRight",								"Battle Combo ComboLeftRight.");
 	// Combo Hit
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_ComboHit,						"GameplayTag.Battle.ComboHit",							"Battle Combo Hit.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Battle_AvatarChanged,					"GameplayTag.Battle.AvatarChanged",						"Battle Avatar changed / swapped event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboHit,							"Battle.ComboHit",										"Battle Combo Hit.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_AvatarChanged,					"Battle.AvatarChanged",									"Battle Avatar changed / swapped event.");
 	
 	// Character
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_Character_CombatState,				"GameplayTag.Character.CombatState",					"Character combat state.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Character_CombatState,					"Character.CombatState",								"Character combat state.");
 #pragma endregion
 
 	// ==== SetByCaller Tag ====

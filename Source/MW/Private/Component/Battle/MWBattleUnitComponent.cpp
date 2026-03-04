@@ -111,13 +111,13 @@ void UMWBattleUnitComponent::SetCombatState(bool bInCombat)
 		{
 			if (bInCombat)
 			{
-				asc->AddLooseGameplayTag(MWGameplayTags::GP_Character_CombatState);
+				asc->AddLooseGameplayTag(MWGameplayTags::Character_CombatState);
 
 				OnCombatBegin();
 			}
 			else
 			{
-				asc->RemoveLooseGameplayTag(MWGameplayTags::GP_Character_CombatState);
+				asc->RemoveLooseGameplayTag(MWGameplayTags::Character_CombatState);
 
 				OnCombatEnd();
 			}

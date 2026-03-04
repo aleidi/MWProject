@@ -8,7 +8,7 @@ void UAN_ComboHit::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* A
 	check(ownerActor);
 
 	FGameplayEventData eventData;
-	eventData.EventTag = MWGameplayTags::GP_Battle_ComboHit;
+	eventData.EventTag = MWGameplayTags::Battle_ComboHit;
 	eventData.Instigator = ownerActor;
 	eventData.Target = ownerActor;
 	eventData.OptionalObject = this;

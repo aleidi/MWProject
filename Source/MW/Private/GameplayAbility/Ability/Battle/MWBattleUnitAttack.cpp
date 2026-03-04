@@ -17,8 +17,8 @@
 UMWBattleUnitAttack::UMWBattleUnitAttack(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	ActivateTag = MWGameplayTags::GP_Battle_Ability_UnitAttack;
-	AvatarChangeTag = MWGameplayTags::GP_Battle_AvatarChanged;
+	ActivateTag = MWGameplayTags::Battle_Ability_UnitAttack;
+	AvatarChangeTag = MWGameplayTags::Battle_AvatarChanged;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	ApproachStates.Reserve(MAX_COMBO_STEP);
 }
@@ -83,15 +83,15 @@ void UMWBattleUnitAttack::OnCombo(const FGameplayEventData* Payload)
 
 	// Check the combo type and play the corresponding skill animation.
 	// コンボタイプを確認して、対応するスキルアニメーションを再生する。
-	if (Payload->EventTag == MWGameplayTags::GP_Battle_ComboCentral)
+	if (Payload->EventTag == MWGameplayTags::Battle_ComboCentral)
 	{
 		CurrComboType = EMWCharacterSkillComboType::Central;
 	}
-	else if( Payload->EventTag == MWGameplayTags::GP_Battle_ComboUpDown)
+	else if( Payload->EventTag == MWGameplayTags::Battle_ComboUpDown)
 	{
 		CurrComboType = EMWCharacterSkillComboType::UpDown;
 	}
-	else if (Payload->EventTag == MWGameplayTags::GP_Battle_ComboLeftRight)
+	else if (Payload->EventTag == MWGameplayTags::Battle_ComboLeftRight)
 	{
 		CurrComboType = EMWCharacterSkillComboType::LeftRight;
 	}

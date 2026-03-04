@@ -10,8 +10,8 @@ namespace MWGameplayTags
 {
 	MW_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-	// ==== Basic ====
-#pragma region Basic
+	// ==== Basic Input ====
+#pragma region Basic Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_Basic);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Direction);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Confirm);
@@ -19,7 +19,7 @@ namespace MWGameplayTags
 #pragma endregion
 
 	// ==== TPDefault Input ====
-#pragma region TPDefault
+#pragma region TPDefault Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_TPDefault);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Debug);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Move);
@@ -27,8 +27,24 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_AutoRun);
 #pragma endregion
 
-	// ==== Battle Command ====
-#pragma region Battle Command
+// ==== Battle Input ====
+#pragma region Battle Input
+	DECLARE_MW_GAMEPLAY_TAG(IMC_Battle);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot3);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot4);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot5);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot6);
+
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot1_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot2_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot3_Charge);
+
+#pragma endregion
+
+	// ==== RPG Battle Command Input ====
+#pragma region RPG Battle Command Input
 
 	// == General ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand);
@@ -96,6 +112,7 @@ namespace MWGameplayTags
 #pragma region Gameplay Tag
 	// Gameplay Ability
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActivateFail_ActivationGroup);
+
 	// Input Charge State
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Charging);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_NoCharge);
@@ -104,21 +121,31 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_OverCharge);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActionUninterruptible);
 
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_Ability_UnitAttack);
+
+	// Skill
+	DECLARE_MW_GAMEPLAY_TAG(Ability_Skill_Chainable);
+
+
+	// ==== RPG Battle Command ====
+#pragma region RPG Battle Command
+	DECLARE_MW_GAMEPLAY_TAG(Battle_Ability_UnitAttack);
 	// Attack command
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P1);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P2);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboAttack_P3);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P1);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P2);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P3);
 	// Combo
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboCentral);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboUpDown);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboLeftRight);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboCentral);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboUpDown);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboLeftRight);
 	// Combo Hit
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_ComboHit);
-	DECLARE_MW_GAMEPLAY_TAG(GP_Battle_AvatarChanged);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboHit);
+	DECLARE_MW_GAMEPLAY_TAG(Battle_AvatarChanged);
 
 	// Character
-	DECLARE_MW_GAMEPLAY_TAG(GP_Character_CombatState);
+	DECLARE_MW_GAMEPLAY_TAG(Character_CombatState);
+#pragma endregion
+
+
 #pragma endregion
 
 	// ==== SetByCaller Tag ====

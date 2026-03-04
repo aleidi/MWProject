@@ -123,7 +123,7 @@ protected:
 	// The tag to receive combo event after ability activated.
 	// アビリティ発動後にコンボイベントを受信するタグ
 	UPROPERTY(BlueprintReadOnly, Category = "Battle|UnitAttack")
-	FGameplayTag ComboHitTag = MWGameplayTags::GP_Battle_ComboHit;
+	FGameplayTag ComboHitTag = MWGameplayTags::Battle_ComboHit;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle|UnitAttack")
 	FGameplayTag AvatarChangeTag;
