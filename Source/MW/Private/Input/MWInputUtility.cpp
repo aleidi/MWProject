@@ -1,4 +1,5 @@
 #include "Input/MWInputUtility.h"
+
 #include "Data/MWMasterData.h"
 #include "EnhancedInputSubsystems.h"
 #include "Gameplay/MWGameplayTags.h"
@@ -6,9 +7,9 @@
 #include "Input/MWInputConfig.h"
 #include "MWGameSingleton.h"
 
-void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& MappingOption)
+void UMWInputUtility::EnableMappingContext(APlayerController* PC, const UMWInputConfig* InputConfig, const FModifyContextOptions& MappingOption)
 {
-	if (!PC)
+	if (!PC || !InputConfig)
 	{
 		return;
 	}
@@ -19,24 +20,16 @@ void UMWInputUtility::EnableMappingContext(APlayerController* PC, const FGamepla
 	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const FMWInputMappingContextWithPriority& mapping = InputConfig->InputMappingContext;
+	if (mapping.Mapping.Get())
 	{
-		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
-		{
-			if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
-			{
-				if (mapping->Mapping.Get())
-				{
-					subsystem->AddMappingContext(mapping->Mapping, mapping->Priority, MappingOption);
-				}
-			}
-		}
+		subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
 	}
 }
 
-void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& MappingOption)
+void UMWInputUtility::DisableMappingContext(APlayerController* PC, const UMWInputConfig* InputConfig, const FModifyContextOptions& MappingOption)
 {
-	if (!PC)
+	if (!PC || !InputConfig)
 	{
 		return;
 	}
@@ -47,18 +40,10 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const FGamepl
 	UEnhancedInputLocalPlayerSubsystem* subsystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(subsystem);
 
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const FMWInputMappingContextWithPriority& mapping = InputConfig->InputMappingContext;
+	if (mapping.Mapping.Get())
 	{
-		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
-		{
-			if (FMWInputMappingContextWithPriority* mapping = inputConfig->InputMappingContext.Find(Tag))
-			{
-				if (mapping->Mapping.Get())
-				{
-					subsystem->RemoveMappingContext(mapping->Mapping, MappingOption);
-				}
-			}
-		}
+		subsystem->RemoveMappingContext(mapping.Mapping, MappingOption);
 	}
 }
 
@@ -94,41 +79,39 @@ void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UInp
 	}
 }
 
-void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag)
+void UMWInputUtility::RemoveBindingInputAction(const UObject* Object, const UMWInputConfig* InputConfig, const FGameplayTag& InputActionTag)
 {
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
-	if (UMWInputConfig* input_config = data->InputConfig.Get())
+	if (!InputConfig)
 	{
-		if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
-		{
-			UMWInputUtility::RemoveBindingInputAction(Object, action);
-		}
-		else
-		{
-			UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
-		}
+		UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+		return;
+	}
+
+	if (const UInputAction* action = InputConfig->FindNativeInputActionForTag(InputActionTag))
+	{
+		UMWInputUtility::RemoveBindingInputAction(Object, action);
 	}
 	else
 	{
-		UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+		UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
 	}
 }
 
-void UMWInputUtility::DisableAllInputActionExcept(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag)
+void UMWInputUtility::DisableAllInputActionExcept(const UObject* Object, const UMWInputConfig* InputConfig, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag)
 {
 	for (const auto& tag : TagContainer)
 	{
 		if (tag != ExceptTag)
 		{
-			UMWInputUtility::RemoveBindingInputAction(Object, IMCTag, tag);
+			UMWInputUtility::RemoveBindingInputAction(Object, InputConfig, tag);
 		}
 	}
 }
 
-void UMWInputUtility::DisableAllInputAction(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer)
+void UMWInputUtility::DisableAllInputAction(const UObject* Object, const UMWInputConfig* InputConfig, const TArray<FGameplayTag>& TagContainer)
 {
 	for (const auto& tag : TagContainer)
 	{
-		UMWInputUtility::RemoveBindingInputAction(Object, IMCTag, tag);
+		UMWInputUtility::RemoveBindingInputAction(Object, InputConfig, tag);
 	}
 }

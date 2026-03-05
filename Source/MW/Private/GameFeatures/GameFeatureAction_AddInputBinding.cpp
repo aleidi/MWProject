@@ -128,12 +128,9 @@ void UGameFeatureAction_AddInputBinding::AddInputMappingForPlayer(APawn* Pawn, F
 					{
 						TArray<uint32>& inputBindHandles = ActiveData.PawnInputBindHandles.FindOrAdd(Pawn);
 
-						for (const auto& actionContainer : bindSet->InputActionsContainers)
-						{
-							TArray<uint32> outBindHandles;
-							mwPlayerController->AddAdditionalInputConfig(bindSet, actionContainer.Key, outBindHandles);
-							inputBindHandles.Append(outBindHandles);
-						}
+						TArray<uint32> outBindHandles;
+						mwPlayerController->AddAdditionalInputConfig(bindSet, outBindHandles);
+						inputBindHandles.Append(outBindHandles);
 					}
 				}
 			}

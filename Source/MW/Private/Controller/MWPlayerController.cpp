@@ -1,7 +1,8 @@
 #include "Controller/MWPlayerController.h"
+
+#include "Camera/CameraComponent.h"
 #include "Character/MWCharacter.h"
 #include "Character/MWTargetSelector.h"
-#include "Camera/CameraComponent.h"
 #include "Common3DCameraComponent.h"
 #include "Common3DCameraModeDataAsset.h"
 #include "Component/Pawn/MWPawnExtensionComponent.h"
@@ -35,7 +36,7 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
-void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, TArray<uint32>& OutBindHandles)
+void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles)
 {
 	const ULocalPlayer* localPlayer = GetLocalPlayer();
 	check(localPlayer);
@@ -46,7 +47,7 @@ void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputCo
 	UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
 	if (ensureMsgf(mwic, TEXT("Unexpected Input Component class! The Gameplay Abilities will not be bound to their inputs. Change the input component to UMWInputComponent or a subclass of it.")))
 	{
-		mwic->BindAbilityActions(InputConfig, IMCTag, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, OutBindHandles);
+		mwic->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, OutBindHandles);
 	}
 }
 
@@ -79,28 +80,21 @@ void AMWPlayerController::SetupInputComponent()
 
 	const UMWMasterData* data = MWSINGLETON->GetMasterData();
 	{
-		if (UMWInputConfig* inputConfig = data->InputConfig.Get())
+		if (UMWInputConfig* inputConfig = data->FindInputConfig(MWGameplayTags::IMC_TPDefault))
 		{
-			UMWInputUtility::EnableMappingContext(this, MWGameplayTags::IMC_TPDefault);
+			UMWInputUtility::EnableMappingContext(this, inputConfig, MappingOption);
 
-			// The MW Input Component has some additional functions to map Gameplay Tags to an Input Action.
-			// If you want this functionality but still want to change your input component class, make it a subclass
-			// of the UMWInputComponent or modify this component accordingly.
 			UMWInputComponent* mwic = Cast<UMWInputComponent>(InputComponent);
 			if (ensureMsgf(mwic, TEXT("Unexpected Input Component class! The Gameplay Abilities will not be bound to their inputs. Change the input component to UMWInputComponent or a subclass of it.")))
 			{
-				// Add the key mappings that may have been set by the player
 				mwic->AddInputMappings(inputConfig, subsystem);
 
-				// This is where we actually bind and input action to a gameplay tag, which means that Gameplay Ability Blueprints will
-				// be triggered directly by these input actions Triggered events. 
 				TArray<uint32> bindHandles;
 
-				// default input
-				mwic->BindAbilityActions(inputConfig, MWGameplayTags::IMC_TPDefault, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bindHandles);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IMC_TPDefault, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
+				mwic->BindAbilityActions(inputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bindHandles);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
 			}
 		}
 	}

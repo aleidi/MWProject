@@ -29,10 +29,9 @@ protected:
 public:
 	/** Bind Additional input config.
 	 *  @param InputConfig The input config to bind.
-	 *  @param IMCTag The tag of the input mapping context that contains the input actions to bind.
 	 *  @param OutBindHandles The handles of the binds that were added. These handles can be used to remove the binds later.
 	 */
-	void AddAdditionalInputConfig(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, TArray<uint32>& OutBindHandles);
+	void AddAdditionalInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles);
 	void RemoveAdditionalInputConfig(TArray<uint32>& BindHandles);
 
 protected:

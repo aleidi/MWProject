@@ -68,26 +68,28 @@ struct FMWInputActionContainer
 	TArray<FMWInputAction> AbilityInputActions;
 };
 
-/**
- * UMWInputConfig
- *
- *	Non-mutable data asset that contains input configuration properties.
- */
-UCLASS(BlueprintType, Const)
-class UMWInputConfig : public UDataAsset
-{
-	GENERATED_BODY()
+ /**
+  * UMWInputConfig
+  *
+  *	Non-mutable data asset that contains input configuration properties.
+  *	Each UMWInputConfig instance is responsible for exactly one IMC and its associated input actions.
+  */
+ UCLASS(BlueprintType, Const)
+ class UMWInputConfig : public UDataAsset
+ {
+ 	GENERATED_BODY()
 
-public:
-	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
-	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const;
-	bool GetAbilityInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const;
+ public:
+ 	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& InputActionTag) const;
+ 	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputActionTag) const;
+ 	bool GetAbilityInputActions(TArray<FMWInputAction>& OutActions) const;
 
-public:
-	/* Key is the input mapping context that owns the input actions. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TMap<FGameplayTag, FMWInputActionContainer> InputActionsContainers;
+ public:
+ 	/* The input mapping context owned by this config. */
+ 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+ 	FMWInputMappingContextWithPriority InputMappingContext;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "Mapping"))
-	TMap<FGameplayTag, FMWInputMappingContextWithPriority> InputMappingContext;
-};
+ 	/* The input actions owned by this config. */
+ 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+ 	FMWInputActionContainer InputActionsContainer;
+ };

@@ -3,6 +3,7 @@
 #include "Input/MWInputConfig.h"
 #include "Input/MWInputUtility.h"
 #include "Kismet/GameplayStatics.h"
+#include "MWGameSingleton.h"
 #include "MWLogChannels.h"
 #include "System/MWAssetManager.h"
 
@@ -259,25 +260,24 @@ void UMWPlayerActionExecutor::OnEnterPhase_Idle()
 
 void UMWPlayerActionExecutor::OnEnterPhase_WaitingCommand()
 {
-    LogPhaseInfo(FString::Printf(TEXT("Enter WaitingCommand - AP: %d"), ActionContext.ActionPoints));
+	LogPhaseInfo(FString::Printf(TEXT("Enter WaitingCommand - AP: %d"), ActionContext.ActionPoints));
 
-    ActionContext.bCanCancelCurrentAction = false;
-
-	// Reset action type
-	// アクションタイプをリセット
+	ActionContext.bCanCancelCurrentAction = false;
 	ActionContext.CurrentActionType = EPlayerActionType::None;
 
-    UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand));
 }
 
 void UMWPlayerActionExecutor::OnEnterPhase_AttackPreparing()
 {
-    LogPhaseInfo(TEXT("Enter AttackPreparing (选择攻击目标)"));
+	LogPhaseInfo(TEXT("Enter AttackPreparing (选择攻击目标)"));
 
     ActionContext.CurrentActionType = EPlayerActionType::Attack;
     ActionContext.bCanCancelCurrentAction = true;
 
-    UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_Attack);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack));
 }
 
 
@@ -292,12 +292,13 @@ void UMWPlayerActionExecutor::OnEnterPhase_AttackExecuting()
 
 void UMWPlayerActionExecutor::OnEnterPhase_SelectingAvatar()
 {
-    LogPhaseInfo(TEXT("Enter SelectingAvatar"));
+	LogPhaseInfo(TEXT("Enter SelectingAvatar"));
 
     ActionContext.CurrentActionType = EPlayerActionType::ChangeAvatar;
     ActionContext.bCanCancelCurrentAction = true;
 
-    UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_ChangeAvatar);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar));
 }
 
 void UMWPlayerActionExecutor::OnEnterPhase_ChangingAvatar()
@@ -309,14 +310,13 @@ void UMWPlayerActionExecutor::OnEnterPhase_ChangingAvatar()
 
 void UMWPlayerActionExecutor::OnEnterPhase_SelectingItem()
 {
-    LogPhaseInfo(TEXT("Enter SelectingItem"));
+	LogPhaseInfo(TEXT("Enter SelectingItem"));
 
     ActionContext.CurrentActionType = EPlayerActionType::UseItem;
     ActionContext.bCanCancelCurrentAction = true;
 
-	// TODO : Display item selection UI
-
-    UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseItem);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem));
 }
 
 void UMWPlayerActionExecutor::OnEnterPhase_SelectingItemTarget()
@@ -339,14 +339,13 @@ void UMWPlayerActionExecutor::OnEnterPhase_UsingItem()
 
 void UMWPlayerActionExecutor::OnEnterPhase_SelectingSpirit()
 {
-    LogPhaseInfo(TEXT("Enter SelectingSpirit"));
+	LogPhaseInfo(TEXT("Enter SelectingSpirit"));
 
     ActionContext.CurrentActionType = EPlayerActionType::UseSpirit;
     ActionContext.bCanCancelCurrentAction = true;
 
-	// TODO : Display spirit skill selection UI
-
-    UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseSpirit);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit));
 }
 
 void UMWPlayerActionExecutor::OnEnterPhase_SelectingSpiritTarget()
@@ -405,7 +404,8 @@ void UMWPlayerActionExecutor::OnExitPhase_WaitingCommand()
 {
     LogPhaseInfo(TEXT("Exit WaitingCommand"));
 
-    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand));
 }
 
 void UMWPlayerActionExecutor::OnExitPhase_AttackPreparing()
@@ -417,14 +417,16 @@ void UMWPlayerActionExecutor::OnExitPhase_AttackExecuting()
 {
     LogPhaseInfo(TEXT("Exit AttackExecuting"));
 
-    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_Attack);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack));
 }
 
 void UMWPlayerActionExecutor::OnExitPhase_SelectingAvatar()
 {
     LogPhaseInfo(TEXT("Exit SelectingAvatar"));
 
-    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_ChangeAvatar);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar));
 }
 
 void UMWPlayerActionExecutor::OnExitPhase_ChangingAvatar()
@@ -446,7 +448,8 @@ void UMWPlayerActionExecutor::OnExitPhase_UsingItem()
 {
     LogPhaseInfo(TEXT("Exit UsingItem"));
 
-    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseItem);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem));
 }
 
 void UMWPlayerActionExecutor::OnExitPhase_SelectingSpirit()
@@ -463,7 +466,8 @@ void UMWPlayerActionExecutor::OnExitPhase_UsingSpirit()
 {
 	LogPhaseInfo(TEXT("Exit UsingSpirit"));
 
-    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseSpirit);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit));
 }
 
 void UMWPlayerActionExecutor::OnExitPhase_Escaping()
@@ -642,43 +646,45 @@ void UMWPlayerActionExecutor::DisplayUI()
 
 void UMWPlayerActionExecutor::SetupInput()
 {
-    // ==== Base Commands ====
-    UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand, MWGameplayTags::IATag_BC_Attack, ETriggerEvent::Triggered, this, &ThisClass::OnCmdAttack);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand, MWGameplayTags::IATag_BC_ChangeAvatar, ETriggerEvent::Triggered, this, &ThisClass::OnCmdChangeAvatar);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand, MWGameplayTags::IATag_BC_UseItem, ETriggerEvent::Triggered, this, &ThisClass::OnCmdUseItem);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand, MWGameplayTags::IATag_BC_UseSpirit, ETriggerEvent::Triggered, this, &ThisClass::OnCmdUseSpirit);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand, MWGameplayTags::IATag_BC_Escape, ETriggerEvent::Triggered, this, &ThisClass::OnCmdEscape);
+	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+
+	// ==== Base Commands ====
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand), MWGameplayTags::IATag_BC_Attack, ETriggerEvent::Triggered, this, &ThisClass::OnCmdAttack);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand), MWGameplayTags::IATag_BC_ChangeAvatar, ETriggerEvent::Triggered, this, &ThisClass::OnCmdChangeAvatar);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand), MWGameplayTags::IATag_BC_UseItem, ETriggerEvent::Triggered, this, &ThisClass::OnCmdUseItem);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand), MWGameplayTags::IATag_BC_UseSpirit, ETriggerEvent::Triggered, this, &ThisClass::OnCmdUseSpirit);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand), MWGameplayTags::IATag_BC_Escape, ETriggerEvent::Triggered, this, &ThisClass::OnCmdEscape);
 
 	// ==== Attack Commands ====
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnAttackCancel);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectAttackTarget);
-    UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C1, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C1UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1UD));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C1LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1LR));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C2, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C2UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2UD));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C2LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2LR));
-    UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C3, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C3UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3UD));
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_Attack, MWGameplayTags::IATag_BC_Attack_C3LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3LR));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnAttackCancel);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectAttackTarget);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C1, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C1UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1UD));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C1LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C1LR));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C2, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C2UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2UD));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C2LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C2LR));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C3, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C3UD, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3UD));
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack), MWGameplayTags::IATag_BC_Attack_C3LR, ETriggerEvent::Triggered, this, &ThisClass::OnExecuteAttack, FGameplayTag(MWGameplayTags::IATag_BC_Attack_C3LR));
 
 	// ==== Change Avatar Commands ====
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_ChangeAvatar, MWGameplayTags::IATag_BC_ChangeAvatar_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectChangeAvatarTarget);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_ChangeAvatar, MWGameplayTags::IATag_BC_ChangeAvatar_ChangeAvatar, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatar);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_ChangeAvatar, MWGameplayTags::IATag_BC_ChangeAvatar_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatarConfirm);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_ChangeAvatar, MWGameplayTags::IATag_BC_ChangeAvatar_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatarCancel);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar), MWGameplayTags::IATag_BC_ChangeAvatar_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectChangeAvatarTarget);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar), MWGameplayTags::IATag_BC_ChangeAvatar_ChangeAvatar, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatar);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar), MWGameplayTags::IATag_BC_ChangeAvatar_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatarConfirm);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar), MWGameplayTags::IATag_BC_ChangeAvatar_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnChangeAvatarCancel);
 
 	// ==== Use Item Commands ====
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseItem, MWGameplayTags::IATag_BC_UseItem_SelectItem, ETriggerEvent::Triggered, this, &ThisClass::OnSelectItem);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseItem, MWGameplayTags::IATag_BC_UseItem_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectItemTarget);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseItem, MWGameplayTags::IATag_BC_UseItem_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnUseItemConfirm);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseItem, MWGameplayTags::IATag_BC_UseItem_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnUseItemCancel);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem), MWGameplayTags::IATag_BC_UseItem_SelectItem, ETriggerEvent::Triggered, this, &ThisClass::OnSelectItem);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem), MWGameplayTags::IATag_BC_UseItem_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectItemTarget);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem), MWGameplayTags::IATag_BC_UseItem_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnUseItemConfirm);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem), MWGameplayTags::IATag_BC_UseItem_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnUseItemCancel);
 
 	// ==== Use Spirit Commands ====
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseSpirit, MWGameplayTags::IATag_BC_UseSpirit_SelectSpirit, ETriggerEvent::Triggered, this, &ThisClass::OnSelectSpirit);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseSpirit, MWGameplayTags::IATag_BC_UseSpirit_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectSpiritTarget);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseSpirit, MWGameplayTags::IATag_BC_UseSpirit_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnUseSpiritConfirm);
-	UMWInputUtility::BindInputAction(MWGameplayTags::IMC_BattleCommand_UseSpirit, MWGameplayTags::IATag_BC_UseSpirit_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnUseSpiritCancel);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit), MWGameplayTags::IATag_BC_UseSpirit_SelectSpirit, ETriggerEvent::Triggered, this, &ThisClass::OnSelectSpirit);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit), MWGameplayTags::IATag_BC_UseSpirit_SelectTarget, ETriggerEvent::Triggered, this, &ThisClass::OnSelectSpiritTarget);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit), MWGameplayTags::IATag_BC_UseSpirit_Confirm, ETriggerEvent::Triggered, this, &ThisClass::OnUseSpiritConfirm);
+	UMWInputUtility::BindInputAction(data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit), MWGameplayTags::IATag_BC_UseSpirit_Cancel, ETriggerEvent::Triggered, this, &ThisClass::OnUseSpiritCancel);
 }
 
 void UMWPlayerActionExecutor::OnCmdAttack(const FInputActionValue& Value)
@@ -722,7 +728,8 @@ void UMWPlayerActionExecutor::OnAttackCancel(const FInputActionValue& Value)
 
     if (TryCancelCurrentAction())
     {
-        UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_Attack);
+		const UMWMasterData* data = MWSINGLETON->GetMasterData();
+		UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_Attack));
     }
 }
 
@@ -774,7 +781,8 @@ void UMWPlayerActionExecutor::OnChangeAvatarCancel(const FInputActionValue& Valu
     {
         if (CurrentPhase == EPlayerActionPhase::SelectingAvatar)
         {
-		    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_ChangeAvatar);
+			const UMWMasterData* data = MWSINGLETON->GetMasterData();
+		    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_ChangeAvatar));
         }
     }
 }
@@ -802,7 +810,8 @@ void UMWPlayerActionExecutor::OnUseItemCancel(const FInputActionValue& Value)
     {
         if(CurrentPhase == EPlayerActionPhase::SelectingItem)
         {
-		    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseItem);
+			const UMWMasterData* data = MWSINGLETON->GetMasterData();
+		    UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseItem));
 		}
     }
 }
@@ -830,7 +839,8 @@ void UMWPlayerActionExecutor::OnUseSpiritCancel(const FInputActionValue& Value)
     {
         if (CurrentPhase == EPlayerActionPhase::SelectingSpirit)
         {
-            UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), MWGameplayTags::IMC_BattleCommand_UseSpirit);
+			const UMWMasterData* data = MWSINGLETON->GetMasterData();
+            UMWInputUtility::DisableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_BattleCommand_UseSpirit));
 		}
     }
 }

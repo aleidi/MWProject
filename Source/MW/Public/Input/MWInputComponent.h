@@ -31,35 +31,33 @@ public:
 	void RemoveInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const;
 
 	template<class UserClass, typename FuncType>
-	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
+	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
 
 	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-	void BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles);
+	void BindAbilityActions(const UMWInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles);
 
 	void RemoveBinds(TArray<uint32>& BindHandles);
 };
 
 
 template<class UserClass, typename FuncType>
-void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func)
+void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func)
 {
 	check(InputConfig);
-	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(IMCTag, InputTag))
+	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag))
 	{
-		BindAction(IA, TriggerEvent, Object, Func); 
+		BindAction(IA, TriggerEvent, Object, Func);
 	}
 }
 
 template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
-void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, const FGameplayTag& IMCTag, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles)
+void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles)
 {
 	check(InputConfig);
 
 	TArray<FMWInputAction> abilityInputActions;
 
-	bool res = InputConfig->GetAbilityInputActionsForTag(IMCTag, abilityInputActions);
-
-	if (!res)
+	if (!InputConfig->GetAbilityInputActions(abilityInputActions))
 	{
 		return;
 	}

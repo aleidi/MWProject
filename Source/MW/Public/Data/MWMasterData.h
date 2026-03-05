@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/DataAsset.h"
+#include "GameplayTagContainer.h"
 #include "MWMasterData.generated.h"
 
 // Forward Declare
@@ -31,13 +32,27 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	TObjectPtr<USkeletalMesh> DummyMesh;
 
-	// Input configuration used by player controlled pawns to create input mappings and bind input actions.
+	/**
+	 * Map of all input configurations, keyed by IMC GameplayTag.
+	 * Use FindInputConfig() to retrieve a specific config at runtime.
+	 *
+	 * Recommended tag naming convention:
+	 *   IMC.TPDefault, IMC.Basic, IMC.BattleCommand, IMC.BattleCommand.Attack, etc.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<UMWInputConfig> InputConfig;
+	TMap<FGameplayTag, TObjectPtr<UMWInputConfig>> InputConfigs;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UMWUIConfigData> UIConfig;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	TArray<TObjectPtr<UC3DCameraModeDataAsset>> DefaultCameraModesAssets;
+
+public:
+	/**
+	 * Find an InputConfig by its IMC GameplayTag.
+	 * @return nullptr if not found.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Input")
+	UMWInputConfig* FindInputConfig(const FGameplayTag& IMCTag) const;
 };

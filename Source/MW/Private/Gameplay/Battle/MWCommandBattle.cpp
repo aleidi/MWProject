@@ -426,9 +426,9 @@ void UMWCommandBattle::StartBattle(const FMWBattleData& InData)
 
 	if (PC.IsValid())
 	{
-		UMWInputUtility::DisableMappingContext(PC.Get(), MWGameplayTags::IMC_TPDefault);
+		const UMWMasterData* data = MWSINGLETON->GetMasterData();
+		UMWInputUtility::DisableMappingContext(PC.Get(), data->FindInputConfig(MWGameplayTags::IMC_TPDefault));
 	}
-
 	
 
 	// Init action state

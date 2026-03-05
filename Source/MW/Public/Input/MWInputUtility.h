@@ -2,18 +2,17 @@
 
 // Include
 #include "CoreMinimal.h"
-#include "Data/MWMasterData.h"
 #include "Define/MWDefineCommon.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputDeveloperSettings.h"
 #include "EnhancedInputSubsystemInterface.h"
-#include "MWGameSingleton.h"
 #include "MWInputHandler.h"
 #include "MWLogChannels.h"
 #include "System/MWWorldSubsystem.h"
 #include "MWInputUtility.generated.h"
 
 // Forward Declare
+class UMWInputConfig;
 
 // Define
 
@@ -25,17 +24,17 @@
  *
  * @note
  */
- UCLASS()
+UCLASS()
 class UMWInputUtility : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	static void EnableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+	UFUNCTION(BlueprintCallable, Category="Input")
+	static void EnableMappingContext(APlayerController* PC, const UMWInputConfig* InputConfig, const FModifyContextOptions& Options = FModifyContextOptions());
 
-	UFUNCTION(BlueprintCallable)
-	static void DisableMappingContext(APlayerController* PC, const FGameplayTag& Tag, const FModifyContextOptions& Options = FModifyContextOptions());
+	UFUNCTION(BlueprintCallable, Category="Input")
+	static void DisableMappingContext(APlayerController* PC, const UMWInputConfig* InputConfig, const FModifyContextOptions& Options = FModifyContextOptions());
 
 	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
 	static void BindInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
@@ -60,26 +59,23 @@ public:
 			}
 		}
 	}
-	
-	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
-	static void BindInputAction(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
-	{
-		const UMWMasterData* data = MWSINGLETON->GetMasterData();
 
-		if (UMWInputConfig* input_config = data->InputConfig.Get())
+	template<DerivedFromUObject UserClass, typename FuncType, typename... VarTypes>
+	static void BindInputAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputActionTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, VarTypes... Params)
+	{
+		if (!InputConfig)
 		{
-			if (const UInputAction* action = input_config->FindNativeInputActionForTag(IMCTag, InputActionTag))
-			{
-				UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
-			}
-			else
-			{
-				UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
-			}
+			UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+			return;
+		}
+
+		if (const UInputAction* action = InputConfig->FindNativeInputActionForTag(InputActionTag))
+		{
+			UMWInputUtility::BindInputAction(action, TriggerEvent, Object, Func, Params...);
 		}
 		else
 		{
-			UE_LOG(LogMWInput, Warning, TEXT("Input config is not set."));
+			UE_LOG(LogMWInput, Warning, TEXT("InputActionTag[%s] does not bind an action."), *InputActionTag.ToString());
 		}
 	}
 
@@ -87,15 +83,16 @@ public:
 
 	static void RemoveBindingInputAction(const UObject* Object, const UInputAction* Action);
 
-	static void RemoveBindingInputAction(const UObject* Object, const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag);
+	static void RemoveBindingInputAction(const UObject* Object, const UMWInputConfig* InputConfig, const FGameplayTag& InputActionTag);
 
-	/* 
+	/*
 	 * Disable all input action in the tag container except the except tag.
-	 * @Param Object : Object binds the actions.
+	 * @Param Object       : Object binds the actions.
+	 * @Param InputConfig  : The input config that owns the input actions.
 	 * @Param TagContainer : The tag container of input actions to be disabled.
 	 * @Param ExceptTag    : The input action tag that will not be disabled.
 	*/
-	static void DisableAllInputActionExcept(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag);
+	static void DisableAllInputActionExcept(const UObject* Object, const UMWInputConfig* InputConfig, const TArray<FGameplayTag>& TagContainer, const FGameplayTag& ExceptTag);
 
-	static void DisableAllInputAction(const UObject* Object, const FGameplayTag& IMCTag, const TArray<FGameplayTag>& TagContainer);
+	static void DisableAllInputAction(const UObject* Object, const UMWInputConfig* InputConfig, const TArray<FGameplayTag>& TagContainer);
 };

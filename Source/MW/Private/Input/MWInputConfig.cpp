@@ -5,18 +5,9 @@
 #include "InputAction.h"
 #include "MWLogChannels.h"
 
-const UInputAction* UMWInputConfig::FindNativeInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const
+const UInputAction* UMWInputConfig::FindNativeInputActionForTag(const FGameplayTag& InputActionTag) const
 {
-	const FMWInputActionContainer* container = InputActionsContainers.Find(IMCTag);
-
-	if (!container)
-	{
-		UE_LOG(LogMWInput, Error, TEXT("Can't find Input Action Container for the mapping context [%s]."), *IMCTag.GetTagName().ToString());
-
-		return nullptr;
-	}
-
-	for (const FMWInputAction& action : container->NativeInputActions)
+	for (const FMWInputAction& action : InputActionsContainer.NativeInputActions)
 	{
 		if (action.InputAction && (action.InputTag == InputActionTag))
 		{
@@ -29,18 +20,9 @@ const UInputAction* UMWInputConfig::FindNativeInputActionForTag(const FGameplayT
 	return nullptr;
 }
 
-const UInputAction* UMWInputConfig::FindAbilityInputActionForTag(const FGameplayTag& IMCTag, const FGameplayTag& InputActionTag) const
+const UInputAction* UMWInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputActionTag) const
 {
-	const FMWInputActionContainer* container = InputActionsContainers.Find(IMCTag);
-
-	if (!container)
-	{
-		UE_LOG(LogMWInput, Error, TEXT("Can't find Input Action Container for the mapping context [%s]."), *IMCTag.GetTagName().ToString());
-
-		return nullptr;
-	}
-
-	for (const FMWInputAction& Action : container->AbilityInputActions)
+	for (const FMWInputAction& Action : InputActionsContainer.AbilityInputActions)
 	{
 		if (Action.InputAction && (Action.InputTag == InputActionTag))
 		{
@@ -53,16 +35,14 @@ const UInputAction* UMWInputConfig::FindAbilityInputActionForTag(const FGameplay
 	return nullptr;
 }
 
-bool UMWInputConfig::GetAbilityInputActionsForTag(const FGameplayTag& IMCTag, TArray<FMWInputAction>& OutActions) const
+bool UMWInputConfig::GetAbilityInputActions(TArray<FMWInputAction>& OutActions) const
 {
-	const FMWInputActionContainer* container = InputActionsContainers.Find(IMCTag);
-
-	if (!container)
+	if (InputActionsContainer.AbilityInputActions.IsEmpty())
 	{
 		return false;
 	}
 
-	OutActions = container->AbilityInputActions;
+	OutActions = InputActionsContainer.AbilityInputActions;
 
 	return true;
 }
