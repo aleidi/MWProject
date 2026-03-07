@@ -61,6 +61,3 @@ xcuserdata/
 #忽略Plugins目录下Developer的临时内容
 /Plugins/*/Binaries/
 /Plugins/*/Intermediate/
-
-#visual studio tool
-/Plugins/VisualStudioTools
