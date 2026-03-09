@@ -29,17 +29,25 @@ namespace MWGameplayTags
 
 // ==== Battle Input ====
 #pragma region Battle Input
-	DECLARE_MW_GAMEPLAY_TAG(IMC_Battle);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot1);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot2);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot3);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot4);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot5);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot6);
-
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot1_Charge);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot2_Charge);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_Battle_SkillSlot3_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IMC_TPBattle);
+	// Used for skill of character
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot3);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot4);
+	// Used for skill of partner
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot5);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot6);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot7);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot8);
+	// Used for extra skill of character
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot9);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot10);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot11);
+	// Used for charge skill of character
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot1_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot2_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot3_Charge);
 
 #pragma endregion
 
