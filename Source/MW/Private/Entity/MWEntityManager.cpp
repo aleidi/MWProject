@@ -1,5 +1,8 @@
 #include "Entity/MWEntityManager.h"
+
 #include "Component/Battle/MWBattleUnitComponent.h"
+#include "Data/MWDataTableManager.h"
+#include "Define/MWDefineDataTable.h"
 #include "Entity/Character/MWCharacterEntity.h"
 #include "Entity/MWEntity.h"
 #include "MWLogChannels.h"

@@ -32,7 +32,14 @@ public:
 	 *  @param OutBindHandles The handles of the binds that were added. These handles can be used to remove the binds later.
 	 */
 	void AddAdditionalInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles);
+
 	void RemoveAdditionalInputConfig(TArray<uint32>& BindHandles);
+
+	UFUNCTION(BlueprintCallable, Category="Input", meta=(DisplayName="Add Additional Input Config"))
+	void K2_AddAdditionalInputConfig(UObject* Context, const UMWInputConfig* InputConfig);
+
+	UFUNCTION(BlueprintCallable, Category="Input", meta=(DisplayName="Remove Additional Input Config"))
+	void K2_RemoveAdditionalInputConfig(UObject* Context);
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -51,6 +58,9 @@ private:
 	TArray<FMWInputMappingContextWithPriority> MappingContextStack;
 
 	FModifyContextOptions MappingOption;
+
+	/** Cache of bind handles for each input config. */
+	TMap<UObject*, TArray<uint32>> BindHandlesCache;
 
 #pragma endregion
 

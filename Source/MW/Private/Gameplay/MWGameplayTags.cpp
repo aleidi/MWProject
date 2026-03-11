@@ -52,22 +52,23 @@ namespace MWGameplayTags
 
 	// ==== Battle Input ====
 #pragma region Battle Input
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPBattle,						"InputTag.MappingContext.TPBattle",						"Input Mapping Context Third-Person-Battle.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot1,			"InputTag.TPBattle.SkillSlot1",							"Third-Person Battle Input Skill Slot 1.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot2,			"InputTag.TPBattle.SkillSlot2",							"Third-Person Battle Input Skill Slot 2.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot3,			"InputTag.TPBattle.SkillSlot3",							"Third-Person Battle Input Skill Slot 3.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot4,			"InputTag.TPBattle.SkillSlot4",							"Third-Person Battle Input Skill Slot 4.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot5,			"InputTag.TPBattle.SkillSlot5",							"Third-Person Battle Input Skill Slot 5.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot6,			"InputTag.TPBattle.SkillSlot6",							"Third-Person Battle Input Skill Slot 6.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot7,			"InputTag.TPBattle.SkillSlot7",							"Third-Person Battle Input Skill Slot 7.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot8,			"InputTag.TPBattle.SkillSlot8",							"Third-Person Battle Input Skill Slot 8.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot9,			"InputTag.TPBattle.SkillSlot9",							"Third-Person Battle Input Skill Slot 9.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot10,			"InputTag.TPBattle.SkillSlot10",						"Third-Person Battle Input Skill Slot 10.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot11,			"InputTag.TPBattle.SkillSlot11",						"Third-Person Battle Input Skill Slot 11.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPBattle,									"InputTag.MappingContext.TPBattle",							"Input Mapping Context Third-Person-Battle.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot1,				"InputTag.TPBattle.CharacterSkillSlot1",					"Third-Person Battle Input Character Skill Slot 1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot2,				"InputTag.TPBattle.CharacterSkillSlot2",					"Third-Person Battle Input Character Skill Slot 2.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot3,				"InputTag.TPBattle.CharacterSkillSlot3",					"Third-Person Battle Input Character Skill Slot 3.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot4,				"InputTag.TPBattle.CharacterSkillSlot4",					"Third-Person Battle Input Character Skill Slot 4.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_PartnerSkillSlot1,				"InputTag.TPBattle.PartnerSkillSlot1",						"Third-Person Battle Input Partner Skill Slot 1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_PartnerSkillSlot2,				"InputTag.TPBattle.PartnerSkillSlot2",						"Third-Person Battle Input Partner Skill Slot 2.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_PartnerSkillSlot3,				"InputTag.TPBattle.PartnerSkillSlot3",						"Third-Person Battle Input Partner Skill Slot 3.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_PartnerSkillSlot4,				"InputTag.TPBattle.PartnerSkillSlot4",						"Third-Person Battle Input Partner Skill Slot 4.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterExtraSkillSlot1,			"InputTag.TPBattle.CharacterExtraSkillSlot1",				"Third-Person Battle Input Character Extra Skill Slot 1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterExtraSkillSlot2,			"InputTag.TPBattle.CharacterExtraSkillSlot2",				"Third-Person Battle Input Character Extra Skill Slot 2.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterExtraSkillSlot3,			"InputTag.TPBattle.CharacterExtraSkillSlot3",				"Third-Person Battle Input Character Extra Skill Slot 3.");
 
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot1_Charge,	"InputTag.TPBattle.SkillSlot1.Charge",					"Third-Person Battle Input Skill Slot 1 Charge.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot2_Charge,	"InputTag.TPBattle.SkillSlot2.Charge",					"Third-Person Battle Input Skill Slot 2 Charge.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_SkillSlot3_Charge,	"InputTag.TPBattle.SkillSlot3.Charge",					"Third-Person Battle Input Skill Slot 3 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot1_Charge,		"InputTag.TPBattle.CharacterSkillSlot1.Charge",				"Third-Person Battle Input Character Skill Slot 1 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot2_Charge,		"InputTag.TPBattle.CharacterSkillSlot2.Charge",				"Third-Person Battle Input Character Skill Slot 2 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot3_Charge,		"InputTag.TPBattle.CharacterSkillSlot3.Charge",				"Third-Person Battle Input Character Skill Slot 3 Charge.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_ChargeSkillTriggered,				"InputTag.TPBattle.ChargeSkillTriggered",					"Third-Person Battle Input Charge Skill Triggered.");
 #pragma endregion
 
 	// ==== Battle Command ====

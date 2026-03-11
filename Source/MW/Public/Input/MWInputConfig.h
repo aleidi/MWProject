@@ -30,10 +30,15 @@ struct FMWInputAction
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly)
-	ETriggerEvent PressedTriggerEvent = ETriggerEvent::Started;
+	ETriggerEvent PressedTriggerEvent = ETriggerEvent::Triggered;
 
 	UPROPERTY(EditDefaultsOnly)
 	ETriggerEvent ReleasedTriggerEvent = ETriggerEvent::Completed;
+
+	/* This is used for gamepad and you don't need it in most case.
+	   Chord action will prevent the completed event of gamepad input from being triggered in some special case. */
+	UPROPERTY(EditDefaultsOnly)
+	bool bBindCancelToReleasedEvent = false;
 };
 
 USTRUCT(BlueprintType)

@@ -31,7 +31,7 @@ public:
 	void RemoveInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const;
 
 	template<class UserClass, typename FuncType>
-	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
+	void BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, uint32& OutBindHandle);
 
 	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
 	void BindAbilityActions(const UMWInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& OutBindHandles);
@@ -41,12 +41,12 @@ public:
 
 
 template<class UserClass, typename FuncType>
-void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func)
+void UMWInputComponent::BindNativeAction(const UMWInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, uint32& OutBindHandle)
 {
 	check(InputConfig);
 	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag))
 	{
-		BindAction(IA, TriggerEvent, Object, Func);
+		OutBindHandle = BindAction(IA, TriggerEvent, Object, Func).GetHandle();
 	}
 }
 
@@ -74,6 +74,14 @@ void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, Us
 			if (ReleasedFunc)
 			{
 				OutBindHandles.Add(BindAction(action.InputAction, action.ReleasedTriggerEvent, Object, ReleasedFunc, action.InputTag).GetHandle());
+
+				// Special process for gamepad input.
+				// The completed event of gamepad input may not be triggered in some special case when the chord action is used. 
+				// So we also bind the canceled event to make sure the released func can be called when the input is canceled.
+				if (action.bBindCancelToReleasedEvent)
+				{
+					OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Canceled, Object, ReleasedFunc, action.InputTag).GetHandle());
+				}
 			}
 		}
 	}

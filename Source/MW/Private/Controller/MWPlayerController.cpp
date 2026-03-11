@@ -66,6 +66,31 @@ void AMWPlayerController::RemoveAdditionalInputConfig(TArray<uint32>& BindHandle
 	}
 }
 
+void AMWPlayerController::K2_AddAdditionalInputConfig(UObject* Context, const UMWInputConfig* InputConfig)
+{
+	TArray<uint32> bindHandles;
+
+	AddAdditionalInputConfig(InputConfig, bindHandles);
+
+	if(bindHandles.Num() > 0)
+	{
+		TArray<uint32>& cachedBindHandles = BindHandlesCache.FindOrAdd(Context);
+		cachedBindHandles.Append(bindHandles);
+	}
+}
+
+void AMWPlayerController::K2_RemoveAdditionalInputConfig(UObject* Context)
+{
+	if (Context)
+	{
+		if (TArray<uint32>* bindHandles = BindHandlesCache.Find(Context))
+		{
+			RemoveAdditionalInputConfig(*bindHandles);
+			BindHandlesCache.Remove(Context);
+		}
+	}
+}
+
 void AMWPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -90,11 +115,17 @@ void AMWPlayerController::SetupInputComponent()
 				mwic->AddInputMappings(inputConfig, subsystem);
 
 				TArray<uint32> bindHandles;
+				uint32 tmpBindHandle = 0;
 
 				mwic->BindAbilityActions(inputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ bindHandles);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt);
-				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, tmpBindHandle);
+				bindHandles.Add(tmpBindHandle);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_LookAt, ETriggerEvent::Triggered, this, &ThisClass::Input_LookAt, tmpBindHandle);
+				bindHandles.Add(tmpBindHandle);
+				mwic->BindNativeAction(inputConfig, MWGameplayTags::IATag_TPDefault_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, tmpBindHandle);
+				bindHandles.Add(tmpBindHandle);
+
+				BindHandlesCache.Add(this, bindHandles);
 			}
 		}
 	}

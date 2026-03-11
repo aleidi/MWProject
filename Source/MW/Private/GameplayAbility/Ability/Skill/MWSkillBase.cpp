@@ -16,6 +16,19 @@ void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	FString debugMsg = TEXT("No Ability Spec");
+
+	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
+	if (Spec)
+	{
+		// 读取 DynamicSpecSourceTags（UE5.5+ 推荐 API）
+		const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
+		// ... 使用 SourceTags
+		debugMsg = FString::Printf(TEXT("Default Ability Tag: %s"), *SourceTags.First().ToString());
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Turquoise, *debugMsg);
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);

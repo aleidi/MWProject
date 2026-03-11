@@ -1,5 +1,7 @@
 #include "Gamemode/MWGameModeBase.h"
+
 #include "Data/MWMasterData.h"
+#include "Gameplay/MWGameplayTags.h"
 #include "Gameplay/MWPartyManager.h"
 #include "Input/MWInputConfig.h"
 #include "Input/MWInputUtility.h"

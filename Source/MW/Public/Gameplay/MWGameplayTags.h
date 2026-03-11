@@ -31,23 +31,25 @@ namespace MWGameplayTags
 #pragma region Battle Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_TPBattle);
 	// Used for skill of character
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot1);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot2);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot3);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot4);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot4);
 	// Used for skill of partner
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot5);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot6);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot7);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot8);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot3);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot4);
 	// Used for extra skill of character
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot9);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot10);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot11);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot1);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot2);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot3);
 	// Used for charge skill of character
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot1_Charge);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot2_Charge);
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_SkillSlot3_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot1_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot2_Charge);
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3_Charge);
+	// Tag for triggered charged skill
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_ChargeSkillTriggered);
 
 #pragma endregion
 
