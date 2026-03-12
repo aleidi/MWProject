@@ -1,10 +1,7 @@
 #include "GameplayAbility/Task/AbilityTask_ChargeTick.h"
 
-#define DEBUG_PRINT(Time, Format, ...) \
-	if (GEngine) \
-	{ \
-		GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Yellow, FString::Printf(TEXT(Format), ##__VA_ARGS__)); \
-	}
+#include "System/MWConsoleVars.h"
+#include "Util/UEDebugUtils.h"
 
 UAbilityTask_ChargeTick::UAbilityTask_ChargeTick()
 {
@@ -86,7 +83,7 @@ void UAbilityTask_ChargeTick::TickTask(float DeltaTime)
 	{
 		bWasFull = true;
 		OnFull.Broadcast();
-		DEBUG_PRINT(2.f, "Charge Full!");
+		UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 2.f, FColor::Green, TEXT("Charge Full!"));
 	}
 	else if (!bNowFull)
 	{
@@ -99,7 +96,7 @@ void UAbilityTask_ChargeTick::TickTask(float DeltaTime)
 	{
 		bWasZero = true;
 		OnZero.Broadcast();
-		DEBUG_PRINT(2.f, "Charge Depleted!");
+		UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 2.f, FColor::Red, TEXT("Charge Depleted!"));
 	}
 	else if (!bNowZero)
 	{

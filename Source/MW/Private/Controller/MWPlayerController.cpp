@@ -16,10 +16,9 @@
 #include "Input/MWInputConfig.h"
 #include "Input/MWInputUtility.h"
 #include "MWGameSingleton.h"
+#include "System/MWConsoleVars.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
-
-#define DEBUG_PRINT_FUNC(Time) \
-if(GEngine) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Cyan, FString::Printf(TEXT("%s called"), UTF8_TO_TCHAR(__FUNCTION__)));
+#include "Util/UEDebugUtils.h"
 
 AMWPlayerController::AMWPlayerController()
 {
@@ -190,17 +189,17 @@ void AMWPlayerController::Input_LookAt(const FInputActionValue& InputActionValue
 
 void AMWPlayerController::Input_LookStick(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC(2.f);
+	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowPlayerControllerDebug, 2.f, FColor::Cyan, TEXT("Input_LookStick: %s"), *InputActionValue.ToString());
 }
 
 void AMWPlayerController::Input_Crouch(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC(2.f);
+	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowPlayerControllerDebug, 2.f, FColor::Cyan, TEXT("Input_Crouch: %s"), *InputActionValue.ToString());
 }
 
 void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
-	DEBUG_PRINT_FUNC(2.f);
+	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowPlayerControllerDebug, 2.f, FColor::Cyan, TEXT("Input_AutoRun: %s"), *InputActionValue.ToString());
 }
 
 void AMWPlayerController::SwitchToLeftTarget()

@@ -6,12 +6,8 @@
 #include "GameplayAbility/Task/AbilityTask_ChargeTick.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "MWLogChannels.h"
-
-#define DEBUG_PRINT(Time, Format, ...) \
-	if (GEngine) \
-	{ \
-		GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Yellow, FString::Printf(TEXT(Format), ##__VA_ARGS__)); \
-	}
+#include "System/MWConsoleVars.h"
+#include "Util/UEDebugUtils.h"
 
 UMWChargeSkillInput::UMWChargeSkillInput(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -75,7 +71,7 @@ void UMWChargeSkillInput::InputReleased(const FGameplayAbilitySpecHandle Handle,
 void UMWChargeSkillInput::OnChargeValueChanged(float NewValue, float Percent)
 {
 	CurrentChargeValue = NewValue;
-	DEBUG_PRINT(0.f, "Charge Value: %.1f (%.0f%%)", NewValue, Percent * 100.f);
+	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 0.f, FColor::Yellow, TEXT("Charge Value Changed: %.1f (%.0f%%)"), NewValue, Percent * 100.f);
 }
 
 void UMWChargeSkillInput::OnChargeFull()

@@ -5,6 +5,8 @@
 #include "Animation/AnimInstance.h"
 #include "GameplayAbility/Task/AbilityTask_ChargeTick.h"
 #include "Gameplay/MWGameplayTags.h"
+#include "System/MWConsoleVars.h"
+#include "Util/UEDebugUtils.h"
 
 UMWSkillBase::UMWSkillBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -18,16 +20,16 @@ void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 
 	FString debugMsg = TEXT("No Ability Spec");
 
+#if !UE_BUILD_SHIPPING
 	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
 	if (Spec)
 	{
-		// 读取 DynamicSpecSourceTags（UE5.5+ 推荐 API）
 		const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
-		// ... 使用 SourceTags
 		debugMsg = FString::Printf(TEXT("Default Ability Tag: %s"), *SourceTags.First().ToString());
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Turquoise, *debugMsg);
+	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 5.f, FColor::Turquoise, TEXT("[%s] %s"), *GetName(), *debugMsg);
+#endif
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
