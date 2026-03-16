@@ -38,7 +38,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	const UMWMasterData* GetMasterData() { return MasterData; }
 
-	UMWAssetRegistry* GetDataAsset() { return DataAsset; }
+	UMWAssetRegistry* GetDataAsset() { return AssetRegistry; }
 
 	FORCEINLINE UMWGameplayData* GetGameplayData() { return GameplayData; }
 
@@ -50,7 +50,7 @@ protected:
 	TObjectPtr<UMWMasterData> MasterData;
 
 	UPROPERTY(EditAnywhere, Category = "MWAssetRegistry")
-	TObjectPtr<UMWAssetRegistry> DataAsset;
+	TObjectPtr<UMWAssetRegistry> AssetRegistry;
 
 	UPROPERTY(EditAnywhere, Category = "MWGameplayData")
 	TObjectPtr<UMWGameplayData> GameplayData;

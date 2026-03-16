@@ -20,7 +20,7 @@ class UObject;
  *	Non-mutable data asset that contains properties used to define a pawn.
  */
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "MW Pawn Data", ShortTooltip = "Data asset used to define a Pawn."))
-class MW_API UMWPawnData : public UPrimaryDataAsset
+class MW_API UMWPawnData : public UDataAsset
 {
 	GENERATED_BODY()
 

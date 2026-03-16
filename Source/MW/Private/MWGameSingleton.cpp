@@ -27,9 +27,9 @@ void UMWGameSingleton::Initialize()
 
 	DataTableManager = NewObject<UMWDataTableManager>(this);
 
-	if (DataAsset)
+	if (AssetRegistry)
 	{
-		DataAsset->Initialize();
+		AssetRegistry->Initialize();
 
 		DataTableManager->Initialize();
 	}
