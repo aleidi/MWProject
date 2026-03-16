@@ -15,6 +15,6 @@ void UDataAssetUtilityWidget::NativeConstruct()
 
 void UDataAssetUtilityWidget::ReloadDataAsset()
 {
-	DATAASSET->Reload();
-	DATATABLEMANAGER->Reload();
+	DATAASSET()->Reload();
+	DATATABLEMANAGER()->Reload();
 }

@@ -64,7 +64,7 @@ void UMWEntityManager::DespawnCharacter(const FObjectId& EntityId)
 
 AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector& Location, const FRotator& Rotation)
 {
-	const FMWCharacterTemplateData* data = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+	const FMWCharacterTemplateData* data = DATATABLEMANAGER()->GetCharacterDataById(CharacterId);
 
 	if (data)
 	{
@@ -84,9 +84,9 @@ AMWCharacter* UMWEntityManager::SpawnCharacter(int32 CharacterId, const FVector&
 
 AMWCharacter* UMWEntityManager::SpawnBattleUnitCharacter(int32 CharacterId1, int32 CharacterId2, int32 CharacterId3, const FVector& Location, const FRotator& Rotation)
 {
-	const FMWCharacterTemplateData* data1 = DATATABLEMANAGER->GetCharacterDataById(CharacterId1);
-	const FMWCharacterTemplateData* data2 = DATATABLEMANAGER->GetCharacterDataById(CharacterId2);
-	const FMWCharacterTemplateData* data3 = DATATABLEMANAGER->GetCharacterDataById(CharacterId3);
+	const FMWCharacterTemplateData* data1 = DATATABLEMANAGER()->GetCharacterDataById(CharacterId1);
+	const FMWCharacterTemplateData* data2 = DATATABLEMANAGER()->GetCharacterDataById(CharacterId2);
+	const FMWCharacterTemplateData* data3 = DATATABLEMANAGER()->GetCharacterDataById(CharacterId3);
 
 	if (data1 && data2 && data3)
 	{

@@ -12,7 +12,7 @@ void UMWDataTableManager::Initialize()
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(MWDataTableManager_Initialize);
 
-	if (DATAASSET == nullptr)
+	if (DATAASSET() == nullptr)
 	{
 		return;
 	}
@@ -21,7 +21,7 @@ void UMWDataTableManager::Initialize()
 
 	DataTableMap.Empty();
 
-	if (const FMWSoftPath* softPathData = DATAASSET->GetMWSoftPathData(UMWDataAsset::EDataAssetType::DataTable))
+	if (const FMWSoftPath* softPathData = DATAASSET()->GetMWSoftPathData(UMWDataAsset::EDataAssetType::DataTable))
 	{
 		for (const auto& Pair : softPathData->PathMap)
 		{
@@ -39,7 +39,7 @@ void UMWDataTableManager::Reload()
 
 UDataTable* UMWDataTableManager::GetDataTable(const FName& TableName)
 {
-	if (DATAASSET == nullptr)
+	if (DATAASSET() == nullptr)
 	{
 		return nullptr;
 	}
@@ -54,7 +54,7 @@ UDataTable* UMWDataTableManager::GetDataTable(const FName& TableName)
 		return *FoundDataTable;
 	}
 
-	FSoftObjectPath* DataTablePath = DATAASSET->GetObjectPath(UMWDataAsset::EDataAssetType::DataTable, TableName);
+	FSoftObjectPath* DataTablePath = DATAASSET()->GetObjectPath(UMWDataAsset::EDataAssetType::DataTable, TableName);
 	if (DataTablePath)
 	{
 		UDataTable* DataTable = Cast<UDataTable>(DataTablePath->TryLoad());

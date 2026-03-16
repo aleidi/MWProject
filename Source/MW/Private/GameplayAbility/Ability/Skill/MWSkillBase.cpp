@@ -37,10 +37,13 @@ void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		return;
 	}
 
-	// TODO:Get Animation Data
-
 	if(CanPlayAbilityAnimation())
 	{
+		// TODO:Get Animation Data
+		const FGameplayTag abilityTag = GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().First();
+		
+		// Get animation data by ability tag
+
 		PlayAbilityAnimation();
 	}
 	else

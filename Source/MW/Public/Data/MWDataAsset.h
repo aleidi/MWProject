@@ -8,7 +8,7 @@ enum class EMWSceneUIType : uint8;
 enum class EMWWindowUIType : uint8;
 enum class EMWPopupUIType;
 
-#define DATAASSET (UMWDataAsset::Get())
+#define DATAASSET() (UMWDataAsset::Get())
 
 USTRUCT()
 struct FMWSoftPath
@@ -19,6 +19,25 @@ struct FMWSoftPath
 	TMap<FName, FSoftObjectPath> PathMap;
 };
 
+/**
+ * UMWDataAsset
+ *
+ * Central asset path registry for the MW project.
+ * Inherits from UPrimaryDataAsset and acts as a global soft-reference lookup table,
+ * mapping asset names to their FSoftObjectPath / FSoftClassPath for every supported asset type.
+ *
+ * Usage:
+ *   - Access via the DATAASSET() macro or UMWDataAsset::Get().
+ *   - In Editor / Cook builds, call Initialize() once to populate the internal path table
+ *     by scanning content directories using UObjectLibrary.
+ *   - At runtime, query asset paths by name without loading the assets directly,
+ *     keeping memory usage minimal until assets are explicitly loaded.
+ *
+ * Naming conventions used when building keys:
+ *   - Widget classes  : WBP_<EnumName>
+ *   - Anim Montages   : AM_<AnimationName>
+ *   - Anim Schema     : ASA_Motion (fixed)
+ */
 UCLASS(BlueprintType, Blueprintable)
 class MW_API UMWDataAsset : public UPrimaryDataAsset
 {

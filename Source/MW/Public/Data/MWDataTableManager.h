@@ -13,7 +13,7 @@ class UDataTable;
 struct FMWCharacterTemplateData;
 struct FTableRowBase;
 
-#define DATATABLEMANAGER (UMWDataTableManager::Get())
+#define DATATABLEMANAGER() (UMWDataTableManager::Get())
 
 /*
  * @class UMWDataTableManager

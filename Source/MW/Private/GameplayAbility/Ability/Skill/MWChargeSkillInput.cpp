@@ -134,6 +134,7 @@ bool UMWChargeSkillInput::TryActivateSkill()
 
 	FGameplayEventData EventData;
 	EventData.OptionalObject = this;
+	EventData.InstigatorTags = GetCurrentAbilitySpec()->GetDynamicSpecSourceTags();
 
 	return ASC->HandleGameplayEvent(ChargeReleasedEventTag, &EventData) > 0;
 }

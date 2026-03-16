@@ -130,7 +130,7 @@ void UMWPawnExtensionComponent::GiveAbility()
         AbilityGranetedHandles->RemoveFromAbilitySystem(AbilitySystemComponent);
     }
 
-    const FMWCharacterTemplateData* characterData = DATATABLEMANAGER->GetCharacterDataById(CharacterId);
+    const FMWCharacterTemplateData* characterData = DATATABLEMANAGER()->GetCharacterDataById(CharacterId);
 	if (characterData && characterData->BaseAbilitySets.Num() > 0)
 	{
 		for (const TSoftObjectPtr<UMWAbilitySet>& ability_set_ptr : characterData->BaseAbilitySets)
