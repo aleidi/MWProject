@@ -6,7 +6,7 @@
 
 // Forward Declare
 class UMWMasterData;
-class UMWDataAsset;
+class UMWAssetRegistry;
 class UMWGameplayData;
 class UMWDataTableManager;
 
@@ -38,7 +38,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	const UMWMasterData* GetMasterData() { return MasterData; }
 
-	UMWDataAsset* GetDataAsset() { return DataAsset; }
+	UMWAssetRegistry* GetDataAsset() { return DataAsset; }
 
 	FORCEINLINE UMWGameplayData* GetGameplayData() { return GameplayData; }
 
@@ -49,8 +49,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "MWMasterData")
 	TObjectPtr<UMWMasterData> MasterData;
 
-	UPROPERTY(EditAnywhere, Category = "MWDataAsset")
-	TObjectPtr<UMWDataAsset> DataAsset;
+	UPROPERTY(EditAnywhere, Category = "MWAssetRegistry")
+	TObjectPtr<UMWAssetRegistry> DataAsset;
 
 	UPROPERTY(EditAnywhere, Category = "MWGameplayData")
 	TObjectPtr<UMWGameplayData> GameplayData;

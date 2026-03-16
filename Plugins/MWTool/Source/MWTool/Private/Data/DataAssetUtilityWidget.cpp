@@ -1,6 +1,6 @@
 #include "Data/DataAssetUtilityWidget.h"
 #include "Components/Button.h"
-#include "Data/MWDataAsset.h"
+#include "Data/MWAssetRegistry.h"
 #include "Data/MWDataTableManager.h"
 
 void UDataAssetUtilityWidget::NativeConstruct()
@@ -15,6 +15,6 @@ void UDataAssetUtilityWidget::NativeConstruct()
 
 void UDataAssetUtilityWidget::ReloadDataAsset()
 {
-	DATAASSET()->Reload();
+	ASSETREGISTRY()->Reload();
 	DATATABLEMANAGER()->Reload();
 }

@@ -1,5 +1,5 @@
 #include "MWGameSingleton.h"
-#include "Data/MWDataAsset.h"
+#include "Data/MWAssetRegistry.h"
 #include "Data/MWDataTableManager.h"
 #include "System/MWAssetManager.h"
 

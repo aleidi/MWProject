@@ -2,6 +2,7 @@
 
 // Include Header
 #include "Component/Pawn/MWPawnComponent.h"
+#include "Define/MWDefineGameplay.h"
 #include "Gameplay/Battle/BattleUnit/MWStatusEffect.h"
 #include "MWBattleUnitComponent.generated.h"
 

@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
-#include "Data/MWDataAsset.h"
+#include "Data/MWAssetRegistry.h"
 #include "Define/MWDefineCommon.h"
 #include "MWLogChannels.h"
 #include "MWGameSingleton.h"
@@ -23,87 +23,87 @@
 #include "Editor.h"
 #endif
 
-UMWDataAsset* UMWDataAsset::Get()
+UMWAssetRegistry* UMWAssetRegistry::Get()
 {
 	return MWSINGLETON->GetDataAsset();
 }
 
-void UMWDataAsset::Initialize()
+void UMWAssetRegistry::Initialize()
 {
 #if WITH_EDITOR
 	CreateLibrarys();
 #endif
 }
 
-UClass* UMWDataAsset::GetPathAndBaseClass(const EDataAssetType& DataAssetType, FString& DataPath)
+UClass* UMWAssetRegistry::GetPathAndBaseClass(const EDataAssetType& DataAssetType, FString& DataPath)
 {
 	switch (DataAssetType)
 	{
-	case UMWDataAsset::EDataAssetType::Widget:
+	case UMWAssetRegistry::EDataAssetType::Widget:
 		DataPath = TEXT("/Game/UI/");					
 		return UObject::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::Texture:
+	case UMWAssetRegistry::EDataAssetType::Texture:
 		DataPath = TEXT("/Game/Gfx/image/UIImages/Textures");
 		return UTexture::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::Sprite:
+	case UMWAssetRegistry::EDataAssetType::Sprite:
 		DataPath = TEXT("/Game/Gfx/image/UIImages/Textures");
 		return UPaperSprite::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::AnimSchemaAsset:
+	case UMWAssetRegistry::EDataAssetType::AnimSchemaAsset:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UObject::StaticClass();
 		//return UMWAnimSchemaAsset::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::AnimAsset:
+	case UMWAssetRegistry::EDataAssetType::AnimAsset:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UObject::StaticClass();
 		//return UMWAnimAsset::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::StaticMesh:
+	case UMWAssetRegistry::EDataAssetType::StaticMesh:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UStaticMesh::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::SkeletalMesh:
+	case UMWAssetRegistry::EDataAssetType::SkeletalMesh:
 		DataPath = TEXT("/Game/Asset/Character");
 		return USkeletalMesh::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::AnimSequence:
+	case UMWAssetRegistry::EDataAssetType::AnimSequence:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UAnimSequence::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::AnimMontage:
+	case UMWAssetRegistry::EDataAssetType::AnimMontage:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UAnimMontage::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::AnimationBP:
+	case UMWAssetRegistry::EDataAssetType::AnimationBP:
 		DataPath = TEXT("/Game/Asset/Character");
 		return UAnimBlueprint::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::DataTable:
+	case UMWAssetRegistry::EDataAssetType::DataTable:
 		DataPath = TEXT("/Game/Data/DataTable");
 		return UDataTable::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::PropStaticMesh:
+	case UMWAssetRegistry::EDataAssetType::PropStaticMesh:
 		DataPath = TEXT("/Game/Asset/BG");
 		return UStaticMesh::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::PropSkeletalMesh:
+	case UMWAssetRegistry::EDataAssetType::PropSkeletalMesh:
 		DataPath = TEXT("/Game/Asset/BG");
 		return USkeletalMesh::StaticClass();
 
 #if WITH_EDITOR
-	case UMWDataAsset::EDataAssetType::Map:
+	case UMWAssetRegistry::EDataAssetType::Map:
 		DataPath = TEXT("/Game/World");
 		return UWorld::StaticClass();
 #endif
 
-	case UMWDataAsset::EDataAssetType::WidgetStyle:		
+	case UMWAssetRegistry::EDataAssetType::WidgetStyle:		
 		DataPath = TEXT("/Game/GamePlay/Data/DataAsset/Theme");
 		return UDataAsset::StaticClass();
 
-	case UMWDataAsset::EDataAssetType::Environment:
+	case UMWAssetRegistry::EDataAssetType::Environment:
 		DataPath = TEXT("/Game/GamePlay/Data/DataAsset/Environment");
 		return UDataAsset::StaticClass();
 	default:
@@ -114,7 +114,7 @@ UClass* UMWDataAsset::GetPathAndBaseClass(const EDataAssetType& DataAssetType, F
 
 #if WITH_EDITOR
 
-void UMWDataAsset::CreateLibrarys()
+void UMWAssetRegistry::CreateLibrarys()
 {	
 	PathArray.Reserve((int32)EDataAssetType::DataAssetTypeMax);
 	PathArray.Init(FMWSoftPath(), (int32)EDataAssetType::DataAssetTypeMax);
@@ -158,21 +158,21 @@ void UMWDataAsset::CreateLibrarys()
 	}
 }
 
-void UMWDataAsset::Reload()
+void UMWAssetRegistry::Reload()
 {
 	PathArray.Empty();
 
 	CreateLibrarys();
 }
 
-void UMWDataAsset::BeginCacheForCookedPlatformData(const ITargetPlatform* TargetPlatform)
+void UMWAssetRegistry::BeginCacheForCookedPlatformData(const ITargetPlatform* TargetPlatform)
 {
 	Super::BeginCacheForCookedPlatformData(TargetPlatform);
 
 	CreateLibrarys();
 }
 
-const FMWSoftPath* UMWDataAsset::GetSelectedTypePathData(EDataAssetType InDataAssetType, const FString& SelectedFolderPath, TArray<FMWSoftPath>& OutPathArray)
+const FMWSoftPath* UMWAssetRegistry::GetSelectedTypePathData(EDataAssetType InDataAssetType, const FString& SelectedFolderPath, TArray<FMWSoftPath>& OutPathArray)
 {
 	FString dataPath;
 	EDataAssetType dataAssetType = (EDataAssetType)InDataAssetType;
@@ -213,35 +213,35 @@ const FMWSoftPath* UMWDataAsset::GetSelectedTypePathData(EDataAssetType InDataAs
 }
 #endif
 
-FSoftClassPath UMWDataAsset::GetSceneUIPath(EMWSceneUIType SceneUIType)
+FSoftClassPath UMWAssetRegistry::GetSceneUIPath(EMWSceneUIType SceneUIType)
 {
 	FString uiName = STRING_FORMAT(TEXT("WBP_%s"), *ENUM_TO_STRING(EMWSceneUIType, SceneUIType));
 
 	return GetClassPath(EDataAssetType::Widget, uiName);
 }
 
-FSoftClassPath UMWDataAsset::GetUIPath(EMWWindowUIType UIType)
+FSoftClassPath UMWAssetRegistry::GetUIPath(EMWWindowUIType UIType)
 {
 	FString uiName = STRING_FORMAT(TEXT("WBP_%s"), *ENUM_TO_STRING(EMWWindowUIType, UIType));
 
 	return GetClassPath(EDataAssetType::Widget, uiName);
 }
 
-FSoftClassPath UMWDataAsset::GetPopupUIPath(EMWPopupUIType UIType)
+FSoftClassPath UMWAssetRegistry::GetPopupUIPath(EMWPopupUIType UIType)
 {
 	FString uiName = STRING_FORMAT(TEXT("WBP_%s"), *ENUM_TO_STRING(EMWPopupUIType, UIType));
 
 	return GetClassPath(EDataAssetType::Widget, uiName);
 }
 
-FSoftObjectPath UMWDataAsset::GetAnimMontagePathByAniName(const FString& AnimationName)
+FSoftObjectPath UMWAssetRegistry::GetAnimMontagePathByAniName(const FString& AnimationName)
 {
 	FString animMontageName = STRING_FORMAT(TEXT("AM_%s"), *AnimationName);
 
 	return GetObjectPath(EDataAssetType::AnimMontage, animMontageName);
 }
 
-FSoftClassPath UMWDataAsset::GetClassPath(const EDataAssetType& DataAssetType, const FString& Name)
+FSoftClassPath UMWAssetRegistry::GetClassPath(const EDataAssetType& DataAssetType, const FString& Name)
 {
 	check(Name.IsEmpty() == false);
 
@@ -259,21 +259,21 @@ FSoftClassPath UMWDataAsset::GetClassPath(const EDataAssetType& DataAssetType, c
 	return FSoftClassPath(STRING_FORMAT(TEXT("%s_C"), *(pathData->GetAssetPathString())));
 }
 
-FSoftObjectPath UMWDataAsset::GetAnimSchemaAssetPath()
+FSoftObjectPath UMWAssetRegistry::GetAnimSchemaAssetPath()
 {
 	static const FString ASAName = TEXT("ASA_Motion");
 
 	return GetObjectPath(EDataAssetType::AnimSchemaAsset, ASAName);
 }
 
-FSoftObjectPath UMWDataAsset::GetAnimAssetPath(const FString& AnimClassName)
+FSoftObjectPath UMWAssetRegistry::GetAnimAssetPath(const FString& AnimClassName)
 {
 	FString animAssetName = "AnimAsset";/*UMEMotionUtil::ClassNameToAssetName(AnimClassName);*/
 
 	return GetObjectPath(EDataAssetType::AnimAsset, animAssetName);
 }
 
-FSoftObjectPath UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType, const FString& Name)
+FSoftObjectPath UMWAssetRegistry::GetObjectPath(const EDataAssetType& DataAssetType, const FString& Name)
 {
 	check(Name.IsEmpty() == false);
 
@@ -284,7 +284,7 @@ FSoftObjectPath UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType,
 	return softObjectPath ? *softObjectPath : FSoftObjectPath();
 }
 
-FSoftObjectPath* UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType, const FName& Name)
+FSoftObjectPath* UMWAssetRegistry::GetObjectPath(const EDataAssetType& DataAssetType, const FName& Name)
 {
 	FSoftObjectPath* pathData = PathArray[(int32)DataAssetType].PathMap.Find(Name);
 
@@ -296,7 +296,7 @@ FSoftObjectPath* UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType
 	return pathData;
 }
 
-FSoftObjectPath UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType, const FString& Name, const TArray<FMWSoftPath>& InPathArray)
+FSoftObjectPath UMWAssetRegistry::GetObjectPath(const EDataAssetType& DataAssetType, const FString& Name, const TArray<FMWSoftPath>& InPathArray)
 {
 	check(Name.IsEmpty() == false);
 
@@ -310,7 +310,7 @@ FSoftObjectPath UMWDataAsset::GetObjectPath(const EDataAssetType& DataAssetType,
 	return FSoftObjectPath();
 }
 
-const FMWSoftPath* UMWDataAsset::GetMWSoftPathData(const UMWDataAsset::EDataAssetType& DataAssetType)
+const FMWSoftPath* UMWAssetRegistry::GetMWSoftPathData(const UMWAssetRegistry::EDataAssetType& DataAssetType)
 {
 	int32 index = (int32)DataAssetType;
 	if (PathArray.IsValidIndex(index))
@@ -321,7 +321,7 @@ const FMWSoftPath* UMWDataAsset::GetMWSoftPathData(const UMWDataAsset::EDataAsse
 	return nullptr;
 }
 
-void UMWDataAsset::GatherObjectPathInFolder(const EDataAssetType& DataAssetType, const FString& InFolder, TArray<FSoftObjectPath>& OutPathArray, bool bIncludeSubFolder)
+void UMWAssetRegistry::GatherObjectPathInFolder(const EDataAssetType& DataAssetType, const FString& InFolder, TArray<FSoftObjectPath>& OutPathArray, bool bIncludeSubFolder)
 {
 	static const TCHAR* SLASH	= TEXT("/");
 	static const TCHAR SLASH_C	= TEXT('/');
