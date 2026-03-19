@@ -1,7 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "MWLogChannels.h"
-#include "GameFramework/Actor.h"
 
 DEFINE_LOG_CATEGORY(LogMW);
 DEFINE_LOG_CATEGORY(LogMWAbilitySystem);
@@ -10,6 +7,12 @@ DEFINE_LOG_CATEGORY(LogMWAnimNotify);
 DEFINE_LOG_CATEGORY(LogMWSkill);
 DEFINE_LOG_CATEGORY(LogMWBattle);
 DEFINE_LOG_CATEGORY(LogMWUI);
-DEFINE_LOG_CATEGORY(LogMWEntity);
 DEFINE_LOG_CATEGORY(LogMWInput);
 DEFINE_LOG_CATEGORY(LogMWCommon);
+
+IConsoleVariable* MWLOGVerbose = IConsoleManager::Get().RegisterConsoleVariable(
+    TEXT("MWLog.Verbose"),
+    0,
+    TEXT("Logs include the function name and line number.\n0-Clear\n1-WithFunc\n2-WIthView"),
+    ECVF_Default
+);

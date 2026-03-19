@@ -1,6 +1,5 @@
 #include "Character/MWTargetSelector.h"
 #include "Gameplay/MWGameplayUtility.h"
-#include "Gameplay/Battle/MWBattleSystem.h"
 
 FMWTargetSelector::FMWTargetSelector(const AController* InController)
 {

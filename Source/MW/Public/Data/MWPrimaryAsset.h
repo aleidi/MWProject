@@ -7,17 +7,6 @@
 // Forward Declare
 
 // Define
-UENUM()
-enum class EPrimaryAssetType : uint8
-{
-	Core,
-	Character,
-	Quest,
-	CutScene,
-	Region,
-	UI,
-	Max
-};
 
 /*
  * @class UMWPrimaryAsset
@@ -36,6 +25,5 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PrimaryData")
-	EPrimaryAssetType PrimaryType = EPrimaryAssetType::Max;
+
 };

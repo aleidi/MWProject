@@ -5,8 +5,6 @@
 #include "MWGameInstanceSubsystem.generated.h"
 
 // Forward Declare
-class UMWBattleSystem;
-class UMWEntityManager;
 class UMWPartyManager;
 class UMWSaveGameManager;
 class UMWUIManager;
@@ -37,16 +35,6 @@ public:
 		return PartyManager;
 	}
 
-	UMWEntityManager* GetEntityManager()
-	{
-		return EntityManager;
-	}
-
-	UMWBattleSystem* GetBattleManager()
-	{
-		return BattleSystem;
-	}
-
 	UMWUIManager* GetUIManager()
 	{
 		return UIManager;
@@ -60,12 +48,6 @@ public:
 private:
 	UPROPERTY()
 	TObjectPtr<UMWPartyManager> PartyManager;
-
-	UPROPERTY()
-	TObjectPtr<UMWEntityManager> EntityManager;
-
-	UPROPERTY()
-	TObjectPtr<UMWBattleSystem> BattleSystem;
 
 	UPROPERTY()
 	TObjectPtr<UMWUIManager> UIManager;

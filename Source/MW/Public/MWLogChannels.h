@@ -16,7 +16,6 @@ DECLARE_LOG_CATEGORY_EXTERN(LogMWAnimNotify, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogMWSkill, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogMWBattle, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogMWUI, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(LogMWEntity, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogMWInput, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogMWCommon, Log, All);
 
@@ -39,7 +38,7 @@ static inline FString GetPIEClientID()
 #endif
 }
 
-static IConsoleVariable* MWLOGVerbose = IConsoleManager::Get().RegisterConsoleVariable(TEXT("Log.Verbose"), 0, TEXT("Logs include the function name and line number.\n0-Clear\n1-WithFunc\n2-WIthView"), ECVF_Default);
+extern MW_API IConsoleVariable* MWLOGVerbose;
 
 
 #define MW_LOG_TRACE(LogCategory, LogType) \

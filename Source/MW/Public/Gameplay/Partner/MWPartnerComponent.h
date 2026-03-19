@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component/Pawn/MWPawnComponent.h"
+#include "Pawn/MWPawnComponent.h"
 #include "Gameplay/Partner/MWPartnerTypes.h"
 #include "MWPartnerComponent.generated.h"
 

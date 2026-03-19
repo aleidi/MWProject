@@ -1,7 +1,8 @@
 #pragma once
 
-#include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/PlayerController.h"
+#include "Input/MWInputConfig.h"
 #include "MWPlayerController.generated.h"
 
 class UAbilitySystemComponent;
@@ -10,7 +11,6 @@ class UMWAbilitySystemComponent;
 class UMWInputConfig;
 struct FGameplayTag;
 struct FInputActionValue;
-struct FMWInputMappingContextWithPriority;
 
 UCLASS()
 class AMWPlayerController : public APlayerController

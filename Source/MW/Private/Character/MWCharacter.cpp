@@ -1,8 +1,7 @@
 #include "Character/MWCharacter.h"
-#include "Component/Character/MWCharacterMovementComponent.h"
+#include "Character/Movement/MWCharacterMovementComponent.h"
 #include "Controller/MWPlayerController.h"
-#include "Component/Battle/MWBattleUnitComponent.h"
-#include "Component/Pawn/MWPawnExtensionComponent.h"
+#include "Pawn/MWPawnExtensionComponent.h"
 #include "Components/InputComponent.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -24,8 +23,6 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 
 	VisualMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VisualMesh"));
 	VisualMesh->SetupAttachment(DummyMesh);
-
-	BattleUnitComponent = CreateDefaultSubobject<UMWBattleUnitComponent>(TEXT("BattleUnitComponent"));
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -136,16 +133,6 @@ void AMWCharacter::SetCharacterLocation(FVector FloorLocation)
 {
 	const FVector loc = FloorLocation + FVector::UpVector * GetDefaultHalfHeight();
 	SetActorLocation(loc);
-}
-
-void AMWCharacter::SetOwnerEntity(UMWCharacterEntity* InOwnerEntity)
-{
-	OwnerEntity = InOwnerEntity;
-}
-
-UMWCharacterEntity* AMWCharacter::GetOwnerEntity() const
-{
-	return OwnerEntity;
 }
 
 void AMWCharacter::BeginPlay()

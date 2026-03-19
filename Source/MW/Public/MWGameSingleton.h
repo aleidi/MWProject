@@ -6,9 +6,7 @@
 
 // Forward Declare
 class UMWMasterData;
-class UMWAssetRegistry;
 class UMWGameplayData;
-class UMWDataTableManager;
 
 // Define
 #define MWSINGLETON (UMWGameSingleton::Get())
@@ -38,23 +36,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	const UMWMasterData* GetMasterData() { return MasterData; }
 
-	UMWAssetRegistry* GetDataAsset() { return AssetRegistry; }
-
 	FORCEINLINE UMWGameplayData* GetGameplayData() { return GameplayData; }
-
-	FORCEINLINE	UMWDataTableManager* GetDataTableManager() { return DataTableManager; }
 protected:
 	bool bInitialized = false;
 
 	UPROPERTY(EditAnywhere, Category = "MWMasterData")
 	TObjectPtr<UMWMasterData> MasterData;
 
-	UPROPERTY(EditAnywhere, Category = "MWAssetRegistry")
-	TObjectPtr<UMWAssetRegistry> AssetRegistry;
-
 	UPROPERTY(EditAnywhere, Category = "MWGameplayData")
 	TObjectPtr<UMWGameplayData> GameplayData;
-
-	UPROPERTY()
-	TObjectPtr<UMWDataTableManager> DataTableManager;
 };

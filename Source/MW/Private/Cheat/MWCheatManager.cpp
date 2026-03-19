@@ -1,11 +1,6 @@
 ﻿#include "Cheat/MWCheatManager.h"
-#include "Component/Battle/MWBattleUnitComponent.h"
-#include "Data/MWDataTableManager.h"
 #include "Define/MWDefineDataTable.h"
 #include "Define/MWDefineGameplay.h"
-#include "Entity/Character/MWCharacterEntity.h"
-#include "Entity/MWEntityManager.h"
-#include "Gameplay/Battle/BattleUnit/MWBattleUnitAvatar.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -81,16 +76,16 @@ void UMWCheatManager::PlaySequence()
 
 void UMWCheatManager::SpawnCharacter(int32 CharacterId)
 {
-	const FMWCharacterTemplateData* data = DATATABLEMANAGER()->GetCharacterDataById(CharacterId);
+	const FMWCharacterTemplateData* data = /*DATATABLEMANAGER()->GetCharacterDataById(CharacterId)*/nullptr;
 
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
-	ENTITYMANAGER(this)->SpawnCharacter(CharacterId, loc);
+	//ENTITYMANAGER(this)->SpawnCharacter(CharacterId, loc);
 }
 
 void UMWCheatManager::SpawnBattleUnit(int32 C1, int32 C2, int32 C3)
 {
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
-	ENTITYMANAGER(this)->SpawnBattleUnitCharacter(C1, C2, C3, loc);
+	//ENTITYMANAGER(this)->SpawnBattleUnitCharacter(C1, C2, C3, loc);
 }

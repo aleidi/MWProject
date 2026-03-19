@@ -1,6 +1,4 @@
 #include "System/MWGameInstanceSubsystem.h"
-#include "Entity/MWEntityManager.h"
-#include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/MWPartyManager.h"
 #include "MWGameInstance.h"
 #include "SaveGame/MWSaveGameManager.h"
@@ -19,8 +17,6 @@
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	INIT_MANAGER(PartyManager, UMWPartyManager);
-	INIT_MANAGER(EntityManager, UMWEntityManager);
-	INIT_MANAGER(BattleSystem, UMWBattleSystem);
 	INIT_MANAGER(UIManager, UMWUIManager);
 	INIT_MANAGER(SaveGameManager, UMWSaveGameManager);
 }
@@ -28,8 +24,6 @@ void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void UMWGameInstanceSubsystem::Deinitialize()
 {
 	DEINIT_MANAGER(PartyManager);
-	DEINIT_MANAGER(EntityManager);
-	DEINIT_MANAGER(BattleSystem);
 	DEINIT_MANAGER(UIManager);
 	DEINIT_MANAGER(SaveGameManager);
 }

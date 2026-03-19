@@ -2,7 +2,6 @@
 
 #include "Data/GameplayAbility/ChargeableSkillData.h"
 #include "Define/MWDefineGameplay.h"
-#include "Gameplay/Battle/MWBattleSystem.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Interface/MWSelectableInterface.h"

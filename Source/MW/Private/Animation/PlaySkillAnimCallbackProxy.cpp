@@ -1,9 +1,8 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "Animation/PlaySkillAnimCallbackProxy.h"
+
 #include "Animation/AnimMontage.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Animation/MWCharacterAnimInstance.h"
+#include "Character/MWCharacterAnimInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PlaySkillAnimCallbackProxy)
 

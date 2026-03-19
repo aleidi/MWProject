@@ -1,6 +1,4 @@
 #include "MWGameSingleton.h"
-#include "Data/MWAssetRegistry.h"
-#include "Data/MWDataTableManager.h"
 #include "System/MWAssetManager.h"
 
 UMWGameSingleton::UMWGameSingleton(const FObjectInitializer& ObjectInitializer)
@@ -23,15 +21,6 @@ void UMWGameSingleton::Initialize()
 	if (bInitialized)
 	{
 		return;
-	}
-
-	DataTableManager = NewObject<UMWDataTableManager>(this);
-
-	if (AssetRegistry)
-	{
-		AssetRegistry->Initialize();
-
-		DataTableManager->Initialize();
 	}
 
 	bInitialized = true;

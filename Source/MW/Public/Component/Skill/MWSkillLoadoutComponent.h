@@ -1,7 +1,7 @@
 #pragma once
 
 // Include Header
-#include "Component/Pawn/MWPawnComponent.h"
+#include "Pawn/MWPawnComponent.h"
 #include "Component/Skill/MWSkillLoadoutTypes.h"
 #include "MWSkillLoadoutComponent.generated.h"
 

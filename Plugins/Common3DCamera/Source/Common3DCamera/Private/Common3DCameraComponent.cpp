@@ -245,7 +245,9 @@ void UC3DCameraComponent::AddCameraMode(UC3DCameraModeDataAsset* CameraMode)
 	}
 	else
 	{
-		auto instancedCameraMode = DuplicateObject(CameraMode, this);
+		UC3DCameraModeDataAsset* instancedCameraMode = NewObject<UC3DCameraModeDataAsset>(this, UC3DCameraModeDataAsset::StaticClass());
+		instancedCameraMode->ModeTag = CameraMode->ModeTag;
+		instancedCameraMode->ModeSettings = CameraMode->ModeSettings;
 		SortedCameraModes.Add(instancedCameraMode->ModeTag, instancedCameraMode);
 	}
 }

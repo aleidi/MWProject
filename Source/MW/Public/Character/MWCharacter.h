@@ -9,8 +9,6 @@
 
 class UCameraComponent;
 class UC3DCameraComponent;
-class UMWBattleUnitComponent;
-class UMWCharacterEntity;
 class UMWPawnExtensionComponent;
 
 UCLASS()
@@ -109,19 +107,5 @@ public:
 	virtual FVector GetFloorLocation() const;
 
 	void SetCharacterLocation(FVector FloorLocation);
-
-#pragma region Entity
-public:
-	virtual void SetOwnerEntity(UMWCharacterEntity* InOwnerEntity);
-	UMWCharacterEntity* GetOwnerEntity() const;
-
-protected:
-	TObjectPtr<UMWCharacterEntity> OwnerEntity = nullptr;
-#pragma endregion
-
-#pragma region Battle
-UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Battle")
-	TObjectPtr<UMWBattleUnitComponent> BattleUnitComponent;
-#pragma endregion
 
 };
