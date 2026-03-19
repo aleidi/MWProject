@@ -5,7 +5,6 @@
 #include "MWGameSingleton.generated.h"
 
 // Forward Declare
-class UMWMasterData;
 class UMWGameplayData;
 
 // Define
@@ -34,14 +33,12 @@ public:
 	virtual void PostLoad() override;
 
 	UFUNCTION(BlueprintPure)
-	const UMWMasterData* GetMasterData() { return MasterData; }
+	const UMWGameplayData* GetGameplayData() const { return GameplayData; }
 
 	FORCEINLINE UMWGameplayData* GetGameplayData() { return GameplayData; }
+
 protected:
 	bool bInitialized = false;
-
-	UPROPERTY(EditAnywhere, Category = "MWMasterData")
-	TObjectPtr<UMWMasterData> MasterData;
 
 	UPROPERTY(EditAnywhere, Category = "MWGameplayData")
 	TObjectPtr<UMWGameplayData> GameplayData;

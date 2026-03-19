@@ -2,7 +2,7 @@
 
 #include "Character/MWCharacter.h"
 #include "Character/MWTargetSelector.h"
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "Define/MWDefineDataTable.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySet.h"

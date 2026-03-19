@@ -1,7 +1,7 @@
 #include "Gamemode/MWGameMode.h"
 #include "Character/MWCharacter.h"
 #include "Controller/MWPlayerController.h"
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "MWGameSingleton.h"
 #include "MWLogChannels.h"
 #include "Player/MWPlayerState.h"
@@ -35,9 +35,9 @@ void AMWGameMode::BeginPlay()
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	if (auto* masterData = MWSINGLETON->GetMasterData())
+	if (auto* data = MWSINGLETON->GetGameplayData())
 	{
-		return masterData->DefaultPawn.Get();
+		return data->DefaultPawn.Get();
 	}
 
 	return Super::GetDefaultPawnClassForController_Implementation(InController);

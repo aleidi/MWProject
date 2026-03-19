@@ -7,7 +7,7 @@
 #include "MWAssetManager.generated.h"
 
 class UPrimaryDataAsset;
-class UMWMasterData;
+class UMWGameplayData;
 class UMWGameplayData;
 
 struct FMWBundles
@@ -78,7 +78,7 @@ protected:
 	TMap<TObjectPtr<UClass>, TObjectPtr<UPrimaryDataAsset>> GameDataMap;
 
 	// master data of the game, should be loaded at game start
-	TSharedPtr<FStreamableHandle> MasterDataHandle = nullptr;
+	TSharedPtr<FStreamableHandle> GameplayDataHandle = nullptr;
 
 private:
 	// Assets loaded and tracked by the asset manager.

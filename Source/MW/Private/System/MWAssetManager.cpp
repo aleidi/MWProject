@@ -1,6 +1,6 @@
 #include "System/MWAssetManager.h"
 
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "Engine/Engine.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "Misc/ScopedSlowTask.h"

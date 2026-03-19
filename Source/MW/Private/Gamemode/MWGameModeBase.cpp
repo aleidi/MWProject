@@ -1,6 +1,6 @@
 #include "Gamemode/MWGameModeBase.h"
 
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "Gameplay/MWPartyManager.h"
 #include "Input/MWInputConfig.h"
@@ -45,7 +45,7 @@ void AMWGameModeBase::BeginPlay()
 	CreateParty();
 
 	// Enable Basic Input Mapping Context
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
 	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_Basic));
 }
 

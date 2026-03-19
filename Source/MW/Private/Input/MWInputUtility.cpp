@@ -1,6 +1,6 @@
 #include "Input/MWInputUtility.h"
 
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "EnhancedInputSubsystems.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "Input/MWInputComponent.h"

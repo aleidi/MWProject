@@ -1,5 +1,5 @@
 #include "UI/MWUIManager.h"
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "Data/MWUIConfigData.h"
 #include "Gamemode/MWGameModeBase.h"
 #include "MWGameSingleton.h"
@@ -155,7 +155,7 @@ bool UMWUIManager::HasRootCanvas()
 
 bool UMWUIManager::CreateCanvas()
 {
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
 	
 	if (data->UIConfig && data->UIConfig->RootCanvas)
 	{
@@ -178,7 +178,7 @@ bool UMWUIManager::CreateCanvas()
 
 void UMWUIManager::LoadDataConfig()
 {
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
 
 	if (data->UIConfig && data->UIConfig->ClassTable)
 	{

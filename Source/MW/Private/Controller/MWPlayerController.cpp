@@ -6,7 +6,7 @@
 #include "Common3DCameraComponent.h"
 #include "Common3DCameraModeDataAsset.h"
 #include "Pawn/MWPawnExtensionComponent.h"
-#include "Data/MWMasterData.h"
+#include "Data/MWGameplayData.h"
 #include "EnhancedInputSubsystems.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -100,7 +100,7 @@ void AMWPlayerController::SetupInputComponent()
 
 	subsystem->ClearAllMappings();
 
-	const UMWMasterData* data = MWSINGLETON->GetMasterData();
+	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
 	{
 		if (UMWInputConfig* inputConfig = data->FindInputConfig(MWGameplayTags::IMC_TPDefault))
 		{
@@ -346,7 +346,7 @@ void AMWPlayerController::SetupCameraComponents()
 		}
 
 		// Setup default camera modes
-		if (const UMWMasterData* data = MWSINGLETON->GetMasterData())
+		if (const UMWGameplayData* data = MWSINGLETON->GetGameplayData())
 		{
 			checkf(data->DefaultCameraModesAssets.Num() > 0, TEXT("No camera mode assets"));
 
