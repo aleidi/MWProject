@@ -1,0 +1,6 @@
+Key,SourceString
+string,string
+UI.StartMenu.Start,Start
+UI.StartMenu.Continue,Continue
+UI.StartMenu.Config,Config
+UI.StartMenu.Exit,Exit

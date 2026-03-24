@@ -5,6 +5,8 @@
 !Source/
 !Resource/
 !Model/
+!GameConfigs/
+!Tools/
 
 # Windows generated files
 [Bb]inaries/
