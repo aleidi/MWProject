@@ -3,7 +3,6 @@
 #include "Character/MWCharacter.h"
 #include "Character/MWTargetSelector.h"
 #include "Data/MWGameplayData.h"
-#include "Define/MWDefineDataTable.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -122,30 +121,30 @@ void UMWPawnExtensionComponent::GiveAbility()
         AbilityGranetedHandles->RemoveFromAbilitySystem(AbilitySystemComponent);
     }
 
-    const FMWCharacterTemplateData* characterData = /*DATATABLEMANAGER()->GetCharacterDataById(CharacterId)*/nullptr;
-	if (characterData && characterData->BaseAbilitySets.Num() > 0)
-	{
-		for (const TSoftObjectPtr<UMWAbilitySet>& ability_set_ptr : characterData->BaseAbilitySets)
-		{
-			// Check if the ability set is loaded
-			UMWAbilitySet* ability_set = ability_set_ptr.Get();
-			if (!ability_set)
-			{
-				// Synchronously load the ability set if not loaded
-				ability_set = ability_set_ptr.LoadSynchronous();
-			}
+ //   const FMWCharacterTemplateData* characterData = /*DATATABLEMANAGER()->GetCharacterDataById(CharacterId)*/nullptr;
+	//if (characterData && characterData->BaseAbilitySets.Num() > 0)
+	//{
+	//	for (const TSoftObjectPtr<UMWAbilitySet>& ability_set_ptr : characterData->BaseAbilitySets)
+	//	{
+	//		// Check if the ability set is loaded
+	//		UMWAbilitySet* ability_set = ability_set_ptr.Get();
+	//		if (!ability_set)
+	//		{
+	//			// Synchronously load the ability set if not loaded
+	//			ability_set = ability_set_ptr.LoadSynchronous();
+	//		}
 
-			// Verify the ability set was loaded successfully before using it
-			if (ability_set)
-			{
-				ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
-			}
-			else
-			{
-				UE_LOG(LogMWComponent, Warning, TEXT("Failed to load ability set for character %d in %s"), CharacterId, *GetNameSafe(GetOwner()));
-			}
-		}
-	}
+	//		// Verify the ability set was loaded successfully before using it
+	//		if (ability_set)
+	//		{
+	//			ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
+	//		}
+	//		else
+	//		{
+	//			UE_LOG(LogMWComponent, Warning, TEXT("Failed to load ability set for character %d in %s"), CharacterId, *GetNameSafe(GetOwner()));
+	//		}
+	//	}
+	//}
 }
 
 void UMWPawnExtensionComponent::InitializeTargetSelector(const AController* InControler)

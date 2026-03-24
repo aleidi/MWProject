@@ -18,13 +18,13 @@ class UMWRootCanvas;
  * @note
  */
 UCLASS()
-class MW_API UMWUIManager : public UObject
+class MW_API UMWUIManager : public UObject, public IMWManagerInterface
 {
 	GENERATED_BODY()
 
 public:
-    void Initialize();
-    void Deinitialize() {}
+    virtual void Initialize() override;
+    virtual void Deinitialize() override {}
 
     UFUNCTION(BlueprintPure, Category = "Manager", meta = (WorldContext="WorldContext", DisplayName = "GetUIManager"))
 	static UMWUIManager* Get(const UObject* WorldContext);

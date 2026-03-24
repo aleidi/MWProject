@@ -37,8 +37,6 @@ public:
 	USkeletalMeshComponent* GetVisualMesh() const;
 
 private:
-UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<USkeletalMeshComponent> DummyMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> VisualMesh;

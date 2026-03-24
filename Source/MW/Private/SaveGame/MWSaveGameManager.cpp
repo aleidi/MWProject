@@ -1,15 +1,17 @@
 #include "SaveGame/MWSaveGameManager.h"
 
+#include "SaveGame/MWSaveGame.h"
+
 #define GET_SAVESLOT_NAME(SlotIndex) FString::Printf(TEXT("MW%d"), SlotIndex)
 
 void UMWSaveGameManager::Initialize()
 {
-	PlayerSaveGame = NewObject<UMWPlayerSaveGame>(this);
+	SaveGameInstance = NewObject<UMWSaveGame>(this);
 }
 
 void UMWSaveGameManager::Deinitialize()
 {
-	PlayerSaveGame = nullptr;
+	SaveGameInstance = nullptr;
 }
 
 UMWSaveGameManager* UMWSaveGameManager::Get(const UObject* WorldContext)
@@ -26,7 +28,7 @@ void UMWSaveGameManager::SaveGameToSlot(int32 SlotIndex)
 {
 	const FString slotName = GET_SAVESLOT_NAME(SlotIndex);
 
-	if(UGameplayStatics::SaveGameToSlot(PlayerSaveGame, slotName, 0))
+	if(UGameplayStatics::SaveGameToSlot(SaveGameInstance, slotName, 0))
 	{
 		MW_LOG_DEFAULT(TEXT("Game saved successfully to slot: %s"), *slotName);
 	}
@@ -49,9 +51,9 @@ void UMWSaveGameManager::LoadGameFromSlot(int32 SlotIndex)
 
 	if(USaveGame* loadedSave = UGameplayStatics::LoadGameFromSlot(slotName, 0))
 	{
-		PlayerSaveGame = Cast<UMWPlayerSaveGame>(loadedSave);
+		SaveGameInstance = Cast<UMWSaveGame>(loadedSave);
 
-		if (PlayerSaveGame)
+		if (SaveGameInstance)
 		{
 			MW_LOG_DEFAULT(TEXT("Game loaded successfully from slot: %s"), *slotName);
 		}
@@ -80,7 +82,7 @@ bool UMWSaveGameManager::DeleteSaveSlot(int32 SlotIndex)
 	return UGameplayStatics::DeleteGameInSlot(slotName, 0);
 }
 
-UMWPlayerSaveGame* UMWSaveGameManager::GetPlayerSaveGame() const
+UMWSaveGame* UMWSaveGameManager::GetSaveGame() const
 {
-	return PlayerSaveGame;
+	return SaveGameInstance;
 }

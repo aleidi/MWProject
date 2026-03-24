@@ -17,7 +17,7 @@
  * @note
  */
 UCLASS()
-class MW_API UMWPartyManager : public UObject
+class MW_API UMWPartyManager : public UObject, public IMWManagerInterface
 {
 	GENERATED_BODY()
 
@@ -29,9 +29,6 @@ public:
 	static UMWPartyManager* Get(const UObject* WorldContext);
 
 private:
-	UPROPERTY()
-	FMWPartyData PartyData;
-
 	UPROPERTY()
     TMap<int32, FMWCharacterRuntimeData> CharacterDataCache;
 };

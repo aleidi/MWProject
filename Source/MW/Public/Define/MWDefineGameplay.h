@@ -386,15 +386,3 @@ struct FMWPartySlot
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bIsActive = false;
 };
-
-USTRUCT(BlueprintType)
-struct FMWPartyData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMWPartySlot> ActiveMembers;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMWPartySlot> ReserveMembers;
-};

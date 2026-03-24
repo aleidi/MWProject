@@ -2,6 +2,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "MWLogChannels.h"
 
 void UAN_DamageCheck::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {

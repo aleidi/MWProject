@@ -1,7 +1,5 @@
 ﻿#include "Cheat/MWCheatManager.h"
-#include "Define/MWDefineDataTable.h"
 #include "Define/MWDefineGameplay.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStatics.h"
 
 void UMWCheatManager::BeginDestroy()
@@ -76,8 +74,6 @@ void UMWCheatManager::PlaySequence()
 
 void UMWCheatManager::SpawnCharacter(int32 CharacterId)
 {
-	const FMWCharacterTemplateData* data = /*DATATABLEMANAGER()->GetCharacterDataById(CharacterId)*/nullptr;
-
 	FVector loc = UGameplayStatics::GetPlayerController(this, 0)->GetPawn()->GetActorLocation();
 
 	//ENTITYMANAGER(this)->SpawnCharacter(CharacterId, loc);

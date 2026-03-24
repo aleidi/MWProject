@@ -12,7 +12,6 @@ class UMWGameplayData;
 class UC3DCameraComponent;
 class UC3DCameraModeDataAsset;
 class UGameplayEffect;
-class UMWBattleSceneSetting;
 
 /*
  * @class UMWGameplayData
@@ -70,7 +69,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects")
 	TSubclassOf<UGameplayEffect> GE_Damage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Battle|Scene Setting")
-	TObjectPtr<UMWBattleSceneSetting> BattleSceneSetting;
 };

@@ -17,12 +17,11 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 
-	DummyMesh = GetMesh();
-	DummyMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
-	DummyMesh->SetVisibility(false);
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	GetMesh()->SetVisibility(false);
 
 	VisualMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VisualMesh"));
-	VisualMesh->SetupAttachment(DummyMesh);
+	VisualMesh->SetupAttachment(GetMesh());
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -152,7 +151,7 @@ void AMWCharacter::PostInitializeComponents()
 
 USkeletalMeshComponent* AMWCharacter::GetDummyMesh() const
 {
-	return DummyMesh;
+	return GetMesh();
 }
 
 USkeletalMeshComponent* AMWCharacter::GetVisualMesh() const

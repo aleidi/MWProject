@@ -16,6 +16,7 @@
 
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
+	INIT_MANAGER(GameDataManager, UMWGameDataManager);
 	INIT_MANAGER(PartyManager, UMWPartyManager);
 	INIT_MANAGER(UIManager, UMWUIManager);
 	INIT_MANAGER(SaveGameManager, UMWSaveGameManager);
@@ -23,6 +24,7 @@ void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UMWGameInstanceSubsystem::Deinitialize()
 {
+	DEINIT_MANAGER(GameDataManager);
 	DEINIT_MANAGER(PartyManager);
 	DEINIT_MANAGER(UIManager);
 	DEINIT_MANAGER(SaveGameManager);

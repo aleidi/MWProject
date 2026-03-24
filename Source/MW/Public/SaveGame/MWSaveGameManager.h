@@ -5,7 +5,7 @@
 #include "MWSaveGameManager.generated.h"
 
 // Forward Declare
-class UMWPlayerSaveGame;
+class UMWSaveGame;
 
 // Define
 #define SAVEGAMEMANAGER(WorldContext) (UMWSaveGameManager::Get(WorldContext))
@@ -18,7 +18,7 @@ class UMWPlayerSaveGame;
  * @note
  */
 UCLASS()
-class UMWSaveGameManager : public UObject
+class UMWSaveGameManager : public UObject, public IMWManagerInterface
 {
 	GENERATED_BODY()
 	
@@ -40,9 +40,9 @@ public:
 	bool DeleteSaveSlot(int32 SlotIndex);
 
 	UFUNCTION(BlueprintPure, Category = "SaveGame")
-	UMWPlayerSaveGame* GetPlayerSaveGame() const;
+	UMWSaveGame* GetSaveGame() const;
 
 private:
 	UPROPERTY()
-	TObjectPtr<UMWPlayerSaveGame> PlayerSaveGame;
+	TObjectPtr<UMWSaveGame> SaveGameInstance;
 };
