@@ -2,7 +2,6 @@
 
 #include "Camera/CameraComponent.h"
 #include "Character/MWCharacter.h"
-#include "Character/MWTargetSelector.h"
 #include "Common3DCameraComponent.h"
 #include "Common3DCameraModeDataAsset.h"
 #include "Pawn/MWPawnExtensionComponent.h"
@@ -100,7 +99,7 @@ void AMWPlayerController::SetupInputComponent()
 
 	subsystem->ClearAllMappings();
 
-	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
+	const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData();
 	{
 		if (UMWInputConfig* inputConfig = data->FindInputConfig(MWGameplayTags::IMC_TPDefault))
 		{
@@ -198,54 +197,6 @@ void AMWPlayerController::Input_Crouch(const FInputActionValue& InputActionValue
 void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValue)
 {
 	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowPlayerControllerDebug, 2.f, FColor::Cyan, TEXT("Input_AutoRun: %s"), *InputActionValue.ToString());
-}
-
-void AMWPlayerController::SwitchToLeftTarget()
-{
-	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	{
-		comp->SwitchToLeftTarget();
-	}
-}
-
-void AMWPlayerController::SwitchToRightTarget()
-{
-	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	{
-		comp->SwitchToRightTarget();
-	}
-}
-
-void AMWPlayerController::CancelSelect()
-{
-	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	{
-		comp->CancelSelect();
-	}
-}
-
-void AMWPlayerController::LockTarget()
-{
-	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	{
-		comp->LockTarget();
-	}
-}
-
-void AMWPlayerController::UnlockTarget()
-{
-	if (UMWPawnExtensionComponent* comp = UMWPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	{
-		comp->UnlockTarget();
-	}
-}
-
-void AMWPlayerController::OnBattleBegin()
-{
-}
-
-void AMWPlayerController::OnBattleEnd()
-{
 }
 
 void AMWPlayerController::BeginPlay()
@@ -346,7 +297,7 @@ void AMWPlayerController::SetupCameraComponents()
 		}
 
 		// Setup default camera modes
-		if (const UMWGameplayData* data = MWSINGLETON->GetGameplayData())
+		if (const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData())
 		{
 			checkf(data->DefaultCameraModesAssets.Num() > 0, TEXT("No camera mode assets"));
 

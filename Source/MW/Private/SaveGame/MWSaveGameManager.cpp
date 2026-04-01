@@ -1,8 +1,9 @@
 #include "SaveGame/MWSaveGameManager.h"
 
 #include "SaveGame/MWSaveGame.h"
+#include "System/MWGameInstanceSubsystem.h"
 
-#define GET_SAVESLOT_NAME(SlotIndex) FString::Printf(TEXT("MW%d"), SlotIndex)
+#define GET_SAVESLOTNAME(SlotIndex) FString::Printf(TEXT("MW%d"), SlotIndex)
 
 void UMWSaveGameManager::Initialize()
 {
@@ -26,7 +27,7 @@ UMWSaveGameManager* UMWSaveGameManager::Get(const UObject* WorldContext)
 
 void UMWSaveGameManager::SaveGameToSlot(int32 SlotIndex)
 {
-	const FString slotName = GET_SAVESLOT_NAME(SlotIndex);
+	const FString slotName = GET_SAVESLOTNAME(SlotIndex);
 
 	if(UGameplayStatics::SaveGameToSlot(SaveGameInstance, slotName, 0))
 	{
@@ -40,7 +41,7 @@ void UMWSaveGameManager::SaveGameToSlot(int32 SlotIndex)
 
 void UMWSaveGameManager::LoadGameFromSlot(int32 SlotIndex)
 {
-	const FString slotName = GET_SAVESLOT_NAME(SlotIndex);
+	const FString slotName = GET_SAVESLOTNAME(SlotIndex);
 
 	if (!UGameplayStatics::DoesSaveGameExist(slotName, 0))
 	{
@@ -70,14 +71,14 @@ void UMWSaveGameManager::LoadGameFromSlot(int32 SlotIndex)
 
 bool UMWSaveGameManager::DoesSaveExist(int32 SlotIndex) const
 {
-	const FString slotName = GET_SAVESLOT_NAME(SlotIndex);
+	const FString slotName = GET_SAVESLOTNAME(SlotIndex);
 
 	return UGameplayStatics::DoesSaveGameExist(slotName, 0);
 }
 
 bool UMWSaveGameManager::DeleteSaveSlot(int32 SlotIndex)
 {
-	const FString slotName = GET_SAVESLOT_NAME(SlotIndex);
+	const FString slotName = GET_SAVESLOTNAME(SlotIndex);
 
 	return UGameplayStatics::DeleteGameInSlot(slotName, 0);
 }

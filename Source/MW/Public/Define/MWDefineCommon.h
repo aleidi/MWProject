@@ -11,4 +11,4 @@ concept DerivedFromUObject = std::is_base_of_v<UObject, T>;
 
 // Path
 #define DATA_PATH TEXT("/Game/Data")
-#define CHARACTER_DATA_PATH TEXT("/Character/DT_CharacterRegistryTable")
+#define CHARACTER_DATA_PATH TEXT("/Character/DT_CharacterData")

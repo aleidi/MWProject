@@ -6,13 +6,12 @@
 
 // Forward Declare
 class AMWCharacter;
-class UMWInputConfig;
-class UMWUIConfigData;
-class UMWGameplayData;
 class UC3DCameraComponent;
 class UC3DCameraModeDataAsset;
 class UGameplayEffect;
-
+class UMWInputConfig;
+class UMWGameplayData;
+class UMWUIConfigData;
 /*
  * @class UMWGameplayData
  *
@@ -27,7 +26,10 @@ class UMWGameplayData : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	TSoftClassPtr<AMWCharacter> DefaultPawn;
+	TSubclassOf<AMWCharacter> DefaultPawn;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	//TObjectPtr<UMWCharacterData> DefaultPawnData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	TSubclassOf<UAnimInstance> DummyAnimClass;

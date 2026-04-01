@@ -1,5 +1,6 @@
 #include "System/MWGameInstanceSubsystem.h"
-#include "Gameplay/MWPartyManager.h"
+
+#include "Data/Character/MWCharacterDataManager.h"
 #include "MWGameInstance.h"
 #include "SaveGame/MWSaveGameManager.h"
 #include "UI/MWUIManager.h"
@@ -16,16 +17,14 @@
 
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	INIT_MANAGER(GameDataManager, UMWGameDataManager);
-	INIT_MANAGER(PartyManager, UMWPartyManager);
+	INIT_MANAGER(CharacterDataManager, UMWCharacterDataManager);
 	INIT_MANAGER(UIManager, UMWUIManager);
 	INIT_MANAGER(SaveGameManager, UMWSaveGameManager);
 }
 
 void UMWGameInstanceSubsystem::Deinitialize()
 {
-	DEINIT_MANAGER(GameDataManager);
-	DEINIT_MANAGER(PartyManager);
+	DEINIT_MANAGER(CharacterDataManager);
 	DEINIT_MANAGER(UIManager);
 	DEINIT_MANAGER(SaveGameManager);
 }

@@ -9,7 +9,7 @@ void UANS_SkillCombo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenc
 {
 	/*if (UMWAbilitySystemComponent* asc = GetAbilitySystemComponent(MeshComp))
 	{
-		TSubclassOf<UGameplayEffect> skill_combo = MWSINGLETON->GetGameplayData()->GESkillCombo;
+		TSubclassOf<UGameplayEffect> skill_combo = MWSINGLETON()->GetGameplayData()->GESkillCombo;
 		if (!skill_combo)
 		{
 			UE_LOG(LogMWAnimNotify, Warning, TEXT("GameplayEffect class asset is not existed."));

@@ -64,33 +64,6 @@ private:
 
 #pragma endregion
 
-#pragma region Select Target
-public:
-	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void SwitchToLeftTarget();
-	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void SwitchToRightTarget();
-	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void CancelSelect();
-	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void LockTarget();
-	UFUNCTION(BlueprintCallable, Category="TargetSelect")
-	void UnlockTarget();
-#pragma endregion
-
-#pragma region Battle
-public:
-	UFUNCTION(BlueprintCallable, Category = "Battle")
-	void OnBattleBegin();
-
-	UFUNCTION(BlueprintCallable, Category = "Battle")
-	void OnBattleEnd();
-
-private:
-	FDelegateHandle DHApplyBattleCommand;
-	FDelegateHandle DHRemoveBattleCommand;
-#pragma endregion
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

@@ -1,7 +1,6 @@
 #include "Data/Character/MWCharacterData.h"
 
-UMWCharacterData::UMWCharacterData()
+UMWCharacterDataBase::UMWCharacterDataBase()
 {
-	PrimaryAssetType = FName(TEXT("Character"));
+	PrimaryAssetType = FName("Character");
 }
-

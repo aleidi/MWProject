@@ -1,45 +1,43 @@
 #pragma once
 
 // Include Header
-#include "Data/MWGameDataTypes.h"
 #include "Interface/MWManagerInterface.h"
 #include "UObject/NoExportTypes.h"
-#include "MWGameDataManager.generated.h"
+#include "MWCharacterDataManager.generated.h"
 
 // Forward Declare
+struct FMWCharacterDataRow;
 
 // Define
+#define GET_CHARDATAMGR(WorldContext)  (UMWCharacterDataManager::Get(WorldContext))
 
 /*
- * @class UMWGameDataManager
+ * @class UMWCharacterDataManager
  * 
  * @brief 
  *
  * @note
  */
 UCLASS()
-class UMWGameDataManager : public UObject, public IMWManagerInterface
+class UMWCharacterDataManager : public UObject, public IMWManagerInterface
 {
 	GENERATED_BODY()
 	
 public:
-	UMWGameDataManager();
+	UMWCharacterDataManager();
 
 	virtual void Initialize() override;
 	virtual void Deinitialize() override {}
 
 	UFUNCTION(BlueprintPure, Category="Manager", meta=(WorldContext="WorldContext", DisplayName="GetGameDataManager"))
-	static UMWGameDataManager* Get(const UObject* WorldContext);
-
+	static UMWCharacterDataManager* Get(const UObject* WorldContext);
 	
-	FMWCharacterRegistryRow* GetCharacterData(int32 CharacterId) const;
+	FMWCharacterDataRow* GetCharacterData(int32 CharacterId) const;
 
 	UFUNCTION(BlueprintCallable, Category="Manager|Character", meta=(DisplayName="GetCharacterData"))
-	bool K2_GetCharacterData(int32 CharacterId, FMWCharacterRegistryRow& OutData) const;
+	bool K2_GetCharacterData(int32 CharacterId, FMWCharacterDataRow& OutData) const;
 
 private:
-	void LoadAllData();
-
 	bool LoadCharacterData();
 
 private:
@@ -47,7 +45,7 @@ private:
 	TObjectPtr<UDataTable> CharacterData;
 
 private:
-	FString DataPath = TEXT("");
+	static FString DataPath;
 
-	FString CharacterDataPath = TEXT("");
+	static FString CharacterDataPath;
 };

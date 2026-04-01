@@ -2,7 +2,6 @@
 
 #include "Data/MWGameplayData.h"
 #include "Gameplay/MWGameplayTags.h"
-#include "Gameplay/MWPartyManager.h"
 #include "Input/MWInputConfig.h"
 #include "Input/MWInputUtility.h"
 #include "Kismet/GameplayStatics.h"
@@ -41,17 +40,7 @@ void AMWGameModeBase::BeginPlay()
 		OnGameBeginPlay.Broadcast(this);
 	}
 
-	// Initialize party and team
-	CreateParty();
-
 	// Enable Basic Input Mapping Context
-	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
+	const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData();
 	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_Basic));
-}
-
-void AMWGameModeBase::CreateParty()
-{
-	auto* partyMng = UMWPartyManager::Get(this);
-
-	check(partyMng);
 }

@@ -10,6 +10,7 @@
 class UCameraComponent;
 class UC3DCameraComponent;
 class UMWPawnExtensionComponent;
+struct FMWAbilitySet_GrantedHandles;
 
 UCLASS()
 class MW_API AMWCharacter : public AModularCharacter,
@@ -49,9 +50,15 @@ public:
 	UMWAbilitySystemComponent* GetMWAbilitySystemComponent() const;
 
 protected:
+	void SetupDefaultAbilities();
+
+protected:
 	// The ability system component sub-object used by player characters.
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
+
+	/** Cache the granted abilities */
+	TSharedPtr<FMWAbilitySet_GrantedHandles> AbilityGranetedHandles;
 #pragma endregion 
 
 #pragma region Input
@@ -98,8 +105,11 @@ protected:
 #pragma endregion
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Hero")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMWAppearanceComponent> AppearanceComp;
 
 public:
 	virtual FVector GetFloorLocation() const;

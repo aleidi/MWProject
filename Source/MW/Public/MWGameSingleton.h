@@ -8,7 +8,7 @@
 class UMWGameplayData;
 
 // Define
-#define MWSINGLETON (UMWGameSingleton::Get())
+#define GET_MWSINGLETON() (UMWGameSingleton::Get())
 
 /*
  * @class UMWGameSingleton

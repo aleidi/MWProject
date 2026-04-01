@@ -5,8 +5,7 @@
 #include "MWGameInstanceSubsystem.generated.h"
 
 // Forward Declare
-class UMWGameDataManager;
-class UMWPartyManager;
+class UMWCharacterDataManager;
 class UMWSaveGameManager;
 class UMWUIManager;
 
@@ -31,14 +30,9 @@ public:
 
 	static UMWGameInstanceSubsystem* Get(const UObject* WorldContext);
 
-	UMWGameDataManager* GetGameDataManager()
+	UMWCharacterDataManager* GetCharacterDataManager()
 	{
-		return GameDataManager;
-	}
-
-	UMWPartyManager* GetPartyManager()
-	{
-		return PartyManager;
+		return CharacterDataManager;
 	}
 
 	UMWUIManager* GetUIManager()
@@ -52,11 +46,8 @@ public:
 	}
 
 private:
-UPROPERTY()
-	TObjectPtr<UMWGameDataManager> GameDataManager = nullptr;
-
 	UPROPERTY()
-	TObjectPtr<UMWPartyManager> PartyManager = nullptr;
+	TObjectPtr<UMWCharacterDataManager> CharacterDataManager = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<UMWUIManager> UIManager = nullptr;

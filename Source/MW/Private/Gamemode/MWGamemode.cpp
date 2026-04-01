@@ -1,9 +1,11 @@
 #include "Gamemode/MWGameMode.h"
+
 #include "Character/MWCharacter.h"
 #include "Controller/MWPlayerController.h"
 #include "Data/MWGameplayData.h"
 #include "MWGameSingleton.h"
 #include "MWLogChannels.h"
+#include "Pawn/MWPawnExtensionComponent.h"
 #include "Player/MWPlayerState.h"
 
 AMWGameMode::AMWGameMode(const FObjectInitializer& ObjectInitializer)
@@ -35,9 +37,9 @@ void AMWGameMode::BeginPlay()
 
 UClass* AMWGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	if (auto* data = MWSINGLETON->GetGameplayData())
+	if (auto* data = GET_MWSINGLETON()->GetGameplayData())
 	{
-		return data->DefaultPawn.Get();
+		return data->DefaultPawn;
 	}
 
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
@@ -50,10 +52,14 @@ APawn* AMWGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewP
 	SpawnInfo.ObjectFlags |= RF_Transient;	// Never save the default player pawns into a map.
 	SpawnInfo.bDeferConstruction = true;
 
-	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	if (UClass* pawnClass = GetDefaultPawnClassForController(NewPlayer))
 	{
-		if (APawn* spawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
+		if (APawn* spawnedPawn = GetWorld()->SpawnActor<APawn>(pawnClass, SpawnTransform, SpawnInfo))
 		{
+			if (UMWPawnExtensionComponent* pawnExtComp = UMWPawnExtensionComponent::FindPawnExtensionComponent(spawnedPawn))
+			{
+				pawnExtComp->SetPawnDataId(1);
+			}
 
 			spawnedPawn->FinishSpawning(SpawnTransform);
 
@@ -61,7 +67,7 @@ APawn* AMWGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewP
 		}
 		else
 		{
-			UE_LOG(LogMW, Error, TEXT("Game mode was unable to spawn Pawn of class [%s] at [%s]."), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
+			UE_LOG(LogMW, Error, TEXT("Game mode was unable to spawn Pawn of class [%s] at [%s]."), *GetNameSafe(pawnClass), *SpawnTransform.ToHumanReadableString());
 		}
 	}
 	else

@@ -8,7 +8,7 @@
 class UMWSaveGame;
 
 // Define
-#define SAVEGAMEMANAGER(WorldContext) (UMWSaveGameManager::Get(WorldContext))
+#define GET_SAVEGAMEMGR(WorldContext) (UMWSaveGameManager::Get(WorldContext))
 
 /*
  * @class UMWSaveGameManager

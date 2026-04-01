@@ -14,13 +14,13 @@ struct FMWSaveMetaData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 SaveId;
+	int32 SaveId = INDEX_NONE;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	FString Slot;
+	FString Slot = TEXT("");
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 SaveVersion;
+	int32 SaveVersion = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	float PlayTime = 0.f;
@@ -35,13 +35,13 @@ struct FMWCharacterSaveData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 CharacterId;
+	int32 CharacterId = INDEX_NONE;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 Level;
+	int32 Level = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 Experience;
+	int32 Experience = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	TArray<int32> LearnedSkills;
@@ -57,7 +57,7 @@ struct FMWPartyData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
-	int32 LeaderCharacterId;
+	int32 LeaderCharacterId = INDEX_NONE;
 
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	TArray<FMWCharacterSaveData> PartyMembers;

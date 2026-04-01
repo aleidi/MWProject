@@ -8,12 +8,6 @@
 #include "System/MWConsoleVars.h"
 #include "Util/UEDebugUtils.h"
 
-UMWSkillBase::UMWSkillBase(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-
-}
-
 void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -43,6 +37,7 @@ void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		const FGameplayTag abilityTag = GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().First();
 		
 		// Get animation data by ability tag
+		LoadSkillAssets();
 
 		PlayAbilityAnimation();
 	}
@@ -131,4 +126,9 @@ void UMWSkillBase::OnMontageCancelled()
 void UMWSkillBase::OnMontageInterrupted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void UMWSkillBase::LoadSkillAssets()
+{
+	// TODO : GET SKILL ASSET AND FILL IN AbilityAnim
 }

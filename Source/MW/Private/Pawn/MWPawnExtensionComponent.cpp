@@ -1,9 +1,5 @@
 #include "Pawn/MWPawnExtensionComponent.h"
 
-#include "Character/MWCharacter.h"
-#include "Character/MWTargetSelector.h"
-#include "Data/MWGameplayData.h"
-#include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -14,19 +10,16 @@ void UMWPawnExtensionComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (AMWCharacter* character = GetPawn<AMWCharacter>())
-    {
-        // Initialize character data
-
-        InitializeAbilitySystem(character->GetMWAbilitySystemComponent(), character);
-    }
+	AActor* owner = GetOwner();
+	UMWAbilitySystemComponent* asc = owner ? owner->FindComponentByClass<UMWAbilitySystemComponent>() : nullptr;
+    InitializeAbilitySystem(asc, owner);
 }
 
 void UMWPawnExtensionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    TargetSelector.Reset();
-
     Super::EndPlay(EndPlayReason);
+
+    UninitializeAbilitySystem();
 }
 
 UMWPawnExtensionComponent* UMWPawnExtensionComponent::FindPawnExtensionComponent(const AActor* Actor)
@@ -71,8 +64,6 @@ void UMWPawnExtensionComponent::InitializeAbilitySystem(UMWAbilitySystemComponen
     {
         OnAbilitySystemInitialized.Broadcast();
     }
-
-    GiveAbility();
 }
 
 void UMWPawnExtensionComponent::UninitializeAbilitySystem()
@@ -112,136 +103,12 @@ void UMWPawnExtensionComponent::UninitializeAbilitySystem()
     AbilitySystemComponent = nullptr;
 }
 
-void UMWPawnExtensionComponent::GiveAbility()
+int32 UMWPawnExtensionComponent::GetPawnDataId() const
 {
-    check(AbilitySystemComponent);
-
-    if (AbilityGranetedHandles.IsValid())
-    {
-        AbilityGranetedHandles->RemoveFromAbilitySystem(AbilitySystemComponent);
-    }
-
- //   const FMWCharacterTemplateData* characterData = /*DATATABLEMANAGER()->GetCharacterDataById(CharacterId)*/nullptr;
-	//if (characterData && characterData->BaseAbilitySets.Num() > 0)
-	//{
-	//	for (const TSoftObjectPtr<UMWAbilitySet>& ability_set_ptr : characterData->BaseAbilitySets)
-	//	{
-	//		// Check if the ability set is loaded
-	//		UMWAbilitySet* ability_set = ability_set_ptr.Get();
-	//		if (!ability_set)
-	//		{
-	//			// Synchronously load the ability set if not loaded
-	//			ability_set = ability_set_ptr.LoadSynchronous();
-	//		}
-
-	//		// Verify the ability set was loaded successfully before using it
-	//		if (ability_set)
-	//		{
-	//			ability_set->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), GetOwner());
-	//		}
-	//		else
-	//		{
-	//			UE_LOG(LogMWComponent, Warning, TEXT("Failed to load ability set for character %d in %s"), CharacterId, *GetNameSafe(GetOwner()));
-	//		}
-	//	}
-	//}
+    return PawnDataId;
 }
 
-void UMWPawnExtensionComponent::InitializeTargetSelector(const AController* InControler)
+void UMWPawnExtensionComponent::SetPawnDataId(int32 NewId)
 {
-    // set target selector
-    if (!TargetSelector.IsValid())
-    {
-        TargetSelector = MakeShared<FMWTargetSelector>(InControler);
-    }
-    else
-    {
-        TargetSelector->ChangeOwnerController(InControler);
-    }
-}
-
-void UMWPawnExtensionComponent::SwitchToLeftTarget()
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->SwitchToLeft();
-    }
-}
-
-void UMWPawnExtensionComponent::SwitchToRightTarget()
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->SwitchToRight();
-    }
-}
-
-void UMWPawnExtensionComponent::CancelSelect()
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->CancelSelect();
-    }
-}
-
-void UMWPawnExtensionComponent::LockTarget()
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->LockTarget();
-    }
-}
-
-void UMWPawnExtensionComponent::UnlockTarget()
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->UnlockTarget();
-    }
-}
-
-void UMWPawnExtensionComponent::ForceLockIfNoTarget(const FMWFoundActorInfo& Target)
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->ForceLockIfNoTarget(Target);
-    }
-}
-
-void UMWPawnExtensionComponent::OnTargetNotExisted(const FMWFoundActorInfo& Target)
-{
-    if (TargetSelector.IsValid())
-    {
-        TargetSelector->OnTargetNotExisted(Target);
-    }
-}
-
-void UMWPawnExtensionComponent::CastSkill(const FGameplayTag& SkillTag, FGameplayEventData Payload)
-{
-    if (AbilitySystemComponent.Get())
-    {
-        AbilitySystemComponent->HandleGameplayEvent(SkillTag, &Payload);
-    }
-}
-
-void UMWPawnExtensionComponent::AddForce(const FVector& Dir, float Intensity)
-{
-    if (auto* pawn = GetPawnChecked<APawn>())
-    {
-        if (auto* moveComp = pawn->GetComponentByClass<UCharacterMovementComponent>())
-        {
-            moveComp->AddImpulse(Dir * Intensity * 1000.f, true);
-        }
-    }
-}
-
-void UMWPawnExtensionComponent::AffectedByGravity(bool bAffect)
-{
-    if (auto* pawn = GetPawnChecked<APawn>())
-    {
-        if (auto* moveComp = pawn->GetComponentByClass<UCharacterMovementComponent>())
-        {
-            moveComp->SetMovementMode(bAffect ? EMovementMode::MOVE_Walking : EMovementMode::MOVE_None);
-        }
-    }
+    PawnDataId = NewId;
 }

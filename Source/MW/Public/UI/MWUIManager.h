@@ -1,8 +1,9 @@
 #pragma once
 
 // Include Header
-#include "UObject/NoExportTypes.h"
 #include "Define/MWDefineUI.h"
+#include "Interface/MWManagerInterface.h"
+#include "UObject/NoExportTypes.h"
 #include "MWUIManager.generated.h"
 
 // Forward Declare

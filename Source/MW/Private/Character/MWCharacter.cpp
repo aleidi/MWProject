@@ -1,10 +1,14 @@
 #include "Character/MWCharacter.h"
+
+#include "Character/MWAppearanceComponent.h"
 #include "Character/Movement/MWCharacterMovementComponent.h"
-#include "Controller/MWPlayerController.h"
-#include "Pawn/MWPawnExtensionComponent.h"
 #include "Components/InputComponent.h"
+#include "Controller/MWPlayerController.h"
+#include "Data/Character/MWCharacterData.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
+#include "GameplayAbility/MWAbilitySet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
+#include "Pawn/MWPawnExtensionComponent.h"
 
 AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<UMWCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -16,6 +20,7 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	ExtensionComp = CreateDefaultSubobject<UMWPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
+	AppearanceComp = CreateDefaultSubobject<UMWAppearanceComponent>(TEXT("AppearanceComponent"));
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	GetMesh()->SetVisibility(false);
@@ -60,6 +65,19 @@ UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+
+void AMWCharacter::SetupDefaultAbilities()
+{
+	if (UMWPawnExtensionComponent* pawnExtComp = FindComponentByClass<UMWPawnExtensionComponent>())
+	{
+		//const UMWCharacterData* data = pawnExtComp->GetPawnData<UMWCharacterData>();
+
+		//if (data && data->DefaultAbilitySet)
+		//{
+		//	data->DefaultAbilitySet->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), this);
+		//}
+	}
+}
 
 void AMWCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -137,6 +155,8 @@ void AMWCharacter::SetCharacterLocation(FVector FloorLocation)
 void AMWCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetupDefaultAbilities();
 }
 
 void AMWCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)

@@ -16,9 +16,6 @@ class MW_API UMWSkillBase : public UMWGameplayAbility
 {
 	GENERATED_BODY()
 
-public:
-	UMWSkillBase(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	//~UMWGameplayAbility interface
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
@@ -46,6 +43,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnMontageInterrupted();
+
+	virtual void LoadSkillAssets();
 
 protected:
 	/** 技能动画 */

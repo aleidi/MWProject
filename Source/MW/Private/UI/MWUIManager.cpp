@@ -155,7 +155,7 @@ bool UMWUIManager::HasRootCanvas()
 
 bool UMWUIManager::CreateCanvas()
 {
-	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
+	const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData();
 	
 	if (data->UIConfig && data->UIConfig->RootCanvas)
 	{
@@ -178,7 +178,7 @@ bool UMWUIManager::CreateCanvas()
 
 void UMWUIManager::LoadDataConfig()
 {
-	const UMWGameplayData* data = MWSINGLETON->GetGameplayData();
+	const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData();
 
 	if (data->UIConfig && data->UIConfig->ClassTable)
 	{
