@@ -250,7 +250,7 @@ UMaterialInstanceConstant* UMaterialInstUtility::CreateMaterialInstance(const FS
 	Factory->InitialParent = ParentMaterial;
 
 	FString PackageName = AssetPath + "/" + AssetName;
-	PackageName = PackageTools::SanitizePackageName(PackageName);
+	PackageName = UPackageTools::SanitizePackageName(PackageName);
 
 	UPackage* package = CreatePackage(*PackageName);
 

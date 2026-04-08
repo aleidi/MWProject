@@ -8,6 +8,8 @@
 !GameConfigs/
 !Tools/
 
+!*.bat
+
 # Windows generated files
 [Bb]inaries/
 [Bb]uild/
