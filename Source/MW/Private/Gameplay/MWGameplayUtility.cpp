@@ -1,6 +1,5 @@
 #include "Gameplay/MWGameplayUtility.h"
 
-#include "Data/GameplayAbility/ChargeableSkillData.h"
 #include "Define/MWDefineGameplay.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -76,22 +75,5 @@ void UWMGameplayUtility::CastAbility(AActor* Actor, const FGameplayTag& AbilityT
 	if (UMWAbilitySystemComponent* mwasc = Actor->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
 		mwasc->AbilityInputTagPressed(AbilityTag);
-	}
-}
-
-FGameplayTag UWMGameplayUtility::GetInputChargeStageTag(EMWInputChargeStage ChargeStage)
-{
-	switch (ChargeStage)
-	{
-		case EMWInputChargeStage::NoCharge:
-			return MWGameplayTags::Ability_InputCharge_NoCharge;
-		case EMWInputChargeStage::Light:
-			return MWGameplayTags::Ability_InputCharge_Light;
-		case EMWInputChargeStage::Perfect:
-			return MWGameplayTags::Ability_InputCharge_Perfect;
-		case EMWInputChargeStage::Overcharge:
-			return MWGameplayTags::Ability_InputCharge_OverCharge;
-		default:
-			return FGameplayTag::EmptyTag;
 	}
 }

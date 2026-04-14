@@ -1,7 +1,6 @@
 #pragma once
 
 // Include Header
-#include "Data/MWGameDataTypes.h"
 #include "Interface/MWManagerInterface.h"
 #include "UObject/NoExportTypes.h"
 #include "MWGameConfigManager.generated.h"
