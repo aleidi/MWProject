@@ -18,6 +18,15 @@ namespace MWConsoleVars
 
 	// ==== Input ====
 #pragma region Input
+	TAutoConsoleVariable<bool> CVarShowInputDebug(
+		TEXT("mw.ShowDebug.Input"),
+		false,
+		TEXT("Should display debug information for input.\n")
+		TEXT("  0 = Disable (Default)\n")
+		TEXT("  1 = Enable"),
+		ECVF_Cheat
+	);
+
 	TAutoConsoleVariable<bool> CVarShowPlayerControllerDebug(
 		TEXT("mw.ShowDebug.PlayerController"),
 		false,

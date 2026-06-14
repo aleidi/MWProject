@@ -32,7 +32,7 @@ AMWCharacter* AMWPlayerController::GetMWCharacter() const
 	return Cast<AMWCharacter>(GetPawn());
 }
 
-void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles)
+void AMWPlayerController::AddInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles)
 {
 	const ULocalPlayer* localPlayer = GetLocalPlayer();
 	check(localPlayer);
@@ -47,7 +47,7 @@ void AMWPlayerController::AddAdditionalInputConfig(const UMWInputConfig* InputCo
 	}
 }
 
-void AMWPlayerController::RemoveAdditionalInputConfig(TArray<uint32>& BindHandles)
+void AMWPlayerController::RemoveInputConfig(TArray<uint32>& BindHandles)
 {
 	const ULocalPlayer* localPlayer = GetLocalPlayer();
 	check(localPlayer);
@@ -62,11 +62,11 @@ void AMWPlayerController::RemoveAdditionalInputConfig(TArray<uint32>& BindHandle
 	}
 }
 
-void AMWPlayerController::K2_AddAdditionalInputConfig(UObject* Context, const UMWInputConfig* InputConfig)
+void AMWPlayerController::K2_AddInputConfig(AActor* Context, const UMWInputConfig* InputConfig)
 {
 	TArray<uint32> bindHandles;
 
-	AddAdditionalInputConfig(InputConfig, bindHandles);
+	AddInputConfig(InputConfig, bindHandles);
 
 	if(bindHandles.Num() > 0)
 	{
@@ -75,13 +75,13 @@ void AMWPlayerController::K2_AddAdditionalInputConfig(UObject* Context, const UM
 	}
 }
 
-void AMWPlayerController::K2_RemoveAdditionalInputConfig(UObject* Context)
+void AMWPlayerController::K2_RemoveInputConfig(AActor* Context)
 {
 	if (Context)
 	{
 		if (TArray<uint32>* bindHandles = BindHandlesCache.Find(Context))
 		{
-			RemoveAdditionalInputConfig(*bindHandles);
+			RemoveInputConfig(*bindHandles);
 			BindHandlesCache.Remove(Context);
 		}
 	}

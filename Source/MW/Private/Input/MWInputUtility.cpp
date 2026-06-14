@@ -5,7 +5,9 @@
 #include "Gameplay/MWGameplayTags.h"
 #include "Input/MWInputComponent.h"
 #include "Input/MWInputConfig.h"
+#include "InputMappingContext.h"
 #include "MWGameSingleton.h"
+#include "MWLogChannels.h"
 
 void UMWInputUtility::EnableMappingContext(APlayerController* PC, const UMWInputConfig* InputConfig, const FModifyContextOptions& MappingOption)
 {
@@ -23,6 +25,8 @@ void UMWInputUtility::EnableMappingContext(APlayerController* PC, const UMWInput
 	const FMWInputMappingContextWithPriority& mapping = InputConfig->InputMappingContext;
 	if (mapping.Mapping.Get())
 	{
+		UE_LOG(LogMWInput, Display, TEXT("EnableMappingContext: Add [%s] priority=%d  PC=[%s]  InputConfig=[%s]"), *mapping.Mapping->GetName(), mapping.Priority, *PC->GetName(), *InputConfig->GetName());
+
 		subsystem->AddMappingContext(mapping.Mapping, mapping.Priority, MappingOption);
 	}
 }
@@ -43,6 +47,8 @@ void UMWInputUtility::DisableMappingContext(APlayerController* PC, const UMWInpu
 	const FMWInputMappingContextWithPriority& mapping = InputConfig->InputMappingContext;
 	if (mapping.Mapping.Get())
 	{
+		UE_LOG(LogMWInput, Display, TEXT("EnableMappingContext: Remove [%s] priority=%d  PC=[%s]  InputConfig=[%s]"), *mapping.Mapping->GetName(), mapping.Priority, *PC->GetName(), *InputConfig->GetName());
+
 		subsystem->RemoveMappingContext(mapping.Mapping, MappingOption);
 	}
 }

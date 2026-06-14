@@ -5,6 +5,7 @@
 #include "Components/InputComponent.h"
 #include "Controller/MWPlayerController.h"
 #include "Data/Character/MWCharacterData.h"
+#include "Data/Character/MWCharacterDataManager.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 #include "GameplayAbility/MWAbilitySet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -70,12 +71,14 @@ void AMWCharacter::SetupDefaultAbilities()
 {
 	if (UMWPawnExtensionComponent* pawnExtComp = FindComponentByClass<UMWPawnExtensionComponent>())
 	{
-		//const UMWCharacterData* data = pawnExtComp->GetPawnData<UMWCharacterData>();
-
-		//if (data && data->DefaultAbilitySet)
-		//{
-		//	data->DefaultAbilitySet->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), this);
-		//}
+		if (FMWCharacterDataRow* data = UMWCharacterDataManager::Get(this)->GetCharacterData(GetCharacterId()))
+		{
+			if (data->DefaultAbilitySet)
+			{
+				AbilityGranetedHandles = MakeShared<FMWAbilitySet_GrantedHandles>();
+				data->DefaultAbilitySet->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), this);
+			}
+		}
 	}
 }
 

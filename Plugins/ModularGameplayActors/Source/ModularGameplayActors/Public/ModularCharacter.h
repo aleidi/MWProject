@@ -22,6 +22,14 @@ public:
 	UE_API virtual void BeginPlay() override;
 	UE_API virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ End AActor Interface
+
+public:
+	void SetCharacterId(int32 NewId) { CharacterId = NewId; }
+	int32 GetCharacterId() const { return CharacterId; }
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Character", meta=(AllowPrivateAccess = "True"))
+	int32 CharacterId = INDEX_NONE;
 };
 
 #undef UE_API

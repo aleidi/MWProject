@@ -129,7 +129,7 @@ void UGameFeatureAction_AddInputBinding::AddInputMappingForPlayer(APawn* Pawn, F
 						TArray<uint32>& inputBindHandles = ActiveData.PawnInputBindHandles.FindOrAdd(Pawn);
 
 						TArray<uint32> outBindHandles;
-						mwPlayerController->AddAdditionalInputConfig(bindSet, outBindHandles);
+						mwPlayerController->AddInputConfig(bindSet, outBindHandles);
 						inputBindHandles.Append(outBindHandles);
 					}
 				}
@@ -158,7 +158,7 @@ void UGameFeatureAction_AddInputBinding::RemoveInputMapping(APawn* Pawn, FPerCon
 			{
 				if (AMWPlayerController* mwPlayerController = Cast<AMWPlayerController>(playerController))
 				{
-					mwPlayerController->RemoveAdditionalInputConfig(*bindHandles);
+					mwPlayerController->RemoveInputConfig(*bindHandles);
 				}
 			}
 		}

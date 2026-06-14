@@ -6,6 +6,7 @@
 #include "GameplayAbility/MWGameplayAbility.h"
 #include "GameplayAbility/MWGlobalAbilitySystem.h"
 #include "MWGameSingleton.h"
+#include "MWLogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MWAbilitySystemComponent)
 
@@ -19,6 +20,11 @@ UMWAbilitySystemComponent::UMWAbilitySystemComponent(const FObjectInitializer& O
 	InputHeldSpecHandles.Reset();
 
 	FMemory::Memset(ActivationGroupCounts, 0, sizeof(ActivationGroupCounts));
+}
+
+void UMWAbilitySystemComponent::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void UMWAbilitySystemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

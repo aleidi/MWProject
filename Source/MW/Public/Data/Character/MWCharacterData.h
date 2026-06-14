@@ -4,6 +4,7 @@
 #include "MWCharacterData.generated.h"
 
 class UMWAbilitySet;
+class UMWCharacterAnimInstance;
 
 UCLASS()
 class UMWCharacterDataBase : public UMWPrimaryAsset

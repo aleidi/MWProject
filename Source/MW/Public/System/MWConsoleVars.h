@@ -22,6 +22,9 @@ namespace MWConsoleVars
 
 	// ==== Input ====
 #pragma region Input
+	/** 是否在屏幕上显示 Input 的调试信息 */
+	extern MW_API TAutoConsoleVariable<bool> CVarShowInputDebug;
+
 	/** 是否在屏幕上显示 PlayerControlller 的调试信息 */
 	extern MW_API TAutoConsoleVariable<bool> CVarShowPlayerControllerDebug;
 #pragma endregion

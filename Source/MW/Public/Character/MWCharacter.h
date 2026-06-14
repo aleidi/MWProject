@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class UC3DCameraComponent;
+class UMWAppearanceComponent;
 class UMWPawnExtensionComponent;
 struct FMWAbilitySet_GrantedHandles;
 
@@ -115,5 +116,4 @@ public:
 	virtual FVector GetFloorLocation() const;
 
 	void SetCharacterLocation(FVector FloorLocation);
-
 };

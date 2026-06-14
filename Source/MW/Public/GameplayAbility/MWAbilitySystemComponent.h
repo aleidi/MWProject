@@ -31,6 +31,7 @@ public:
 	UMWAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	//~UActorComponent interface
+	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~End of UActorComponent interface
 
@@ -116,6 +117,6 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	static bool ClearAllAbilitiesByActor(AActor* InActor);
+//****Interface for Actor****//
 
-	//****Interface for Actor****//
 };
