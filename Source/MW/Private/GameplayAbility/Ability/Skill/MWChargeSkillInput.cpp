@@ -56,6 +56,19 @@ void UMWChargeSkillInput::InputReleased(const FGameplayAbilitySpecHandle Handle,
 	{
 		if (TryActivateSkill())
 		{
+#if !UE_BUILD_SHIPPING
+			FString debugMsg = TEXT("No Ability Spec");
+
+			FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
+			if (Spec)
+			{
+				const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
+				debugMsg = FString::Printf(TEXT("Default Ability Tag: %s"), *SourceTags.First().ToString());
+			}
+
+			UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 5.f, FColor::Turquoise, TEXT("[%s] %s"), *GetName(), *debugMsg);
+#endif
+
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 
 			return;
