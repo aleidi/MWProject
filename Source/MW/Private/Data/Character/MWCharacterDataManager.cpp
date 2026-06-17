@@ -1,21 +1,11 @@
 #include "Data/Character/MWCharacterDataManager.h"
-
-#include "Data/Character/MWCharacterData.h"
-#include "Define/MWDefineCommon.h"
-#include "Engine/DataTable.h"
+#include "Data/Character/MWCharacterPrimaryData.h"
+#include "Engine/AssetManager.h"
 #include "MWLogChannels.h"
 #include "System/MWGameInstanceSubsystem.h"
 
-FString UMWCharacterDataManager::DataPath = DATA_PATH;
-FString UMWCharacterDataManager::CharacterDataPath = CHARACTER_DATA_PATH;
-
 UMWCharacterDataManager::UMWCharacterDataManager()
 {
-}
-
-void UMWCharacterDataManager::Initialize()
-{
-	LoadCharacterData();
 }
 
 UMWCharacterDataManager* UMWCharacterDataManager::Get(const UObject* WorldContext)
@@ -28,48 +18,78 @@ UMWCharacterDataManager* UMWCharacterDataManager::Get(const UObject* WorldContex
 	return nullptr;
 }
 
-bool UMWCharacterDataManager::LoadCharacterData()
+FPrimaryAssetId UMWCharacterDataManager::GetPrimaryAssetIdForCharacter(int32 CharacterId) const
 {
-	const FString dataPath = DataPath / CharacterDataPath;
-
-	UDataTable* loadedTable = LoadObject<UDataTable>(nullptr, *dataPath);
-	if (!IsValid(loadedTable))
+	if (CharacterId == INDEX_NONE)
 	{
-		UE_LOG(LogMWData, Warning, TEXT("UMWCharacterDataManager: LoadObject failed -> %s"), *dataPath);
-
-		return false;
+		return FPrimaryAssetId();
 	}
 
-	if (loadedTable->GetRowStruct() != FMWCharacterDataRow::StaticStruct())
-	{
-		UE_LOG(LogMWData, Warning, TEXT("UMWCharacterDataManager: RowStruct mismatch for %s"), *dataPath);
-
-		return false;
-	}
-
-	CharacterData = loadedTable;
-
-	UE_LOG(LogMWData, Log, TEXT("UMWCharacterDataManager: CharacterData loaded -> %s"), *dataPath);
-
-	return true;
+	return FPrimaryAssetId(FPrimaryAssetType(UMWCharacterPrimaryData::PrimaryAssetTypeName), FName(*FString::FromInt(CharacterId)));
 }
 
-FMWCharacterDataRow* UMWCharacterDataManager::GetCharacterData(int32 CharacterId) const
+UMWCharacterPrimaryData* UMWCharacterDataManager::GetLoadedCharacterPrimaryData(int32 CharacterId) const
 {
-	const FName rowName = FName(*FString::FromInt(CharacterId));
-
-	return CharacterData->FindRow<FMWCharacterDataRow>(rowName, TEXT("GetCharacterData"));
-}
-
-bool UMWCharacterDataManager::K2_GetCharacterData(int32 CharacterId, FMWCharacterDataRow& OutData) const
-{
-	const FMWCharacterDataRow* row = GetCharacterData(CharacterId);
-	if (!row)
+	const FPrimaryAssetId id = GetPrimaryAssetIdForCharacter(CharacterId);
+	if (!id.IsValid())
 	{
-		return false;
+		return nullptr;
 	}
 
-	OutData = *row;
+	return Cast<UMWCharacterPrimaryData>(UAssetManager::Get().GetPrimaryAssetObject(id));
+}
 
-	return true;
+TSharedPtr<FStreamableHandle> UMWCharacterDataManager::AsyncLoadCharacterBundles(
+	int32 CharacterId,
+	const TArray<FName>& BundlesToLoad,
+	FStreamableDelegate OnComplete)
+{
+	const FPrimaryAssetId id = GetPrimaryAssetIdForCharacter(CharacterId);
+	if (!id.IsValid())
+	{
+		UE_LOG(LogMWData, Warning, TEXT("AsyncLoadCharacterBundles: invalid CharacterId %d"), CharacterId);
+		OnComplete.ExecuteIfBound();
+		return nullptr;
+	}
+
+	return UAssetManager::Get().ChangeBundleStateForPrimaryAssets(
+		{ id },
+		BundlesToLoad,
+		{},
+		false,
+		OnComplete,
+		FStreamableManager::AsyncLoadHighPriority);
+}
+
+UMWCharacterPrimaryData* UMWCharacterDataManager::SyncLoadCharacterBundles(int32 CharacterId, const TArray<FName>& BundlesToLoad)
+{
+	const FPrimaryAssetId id = GetPrimaryAssetIdForCharacter(CharacterId);
+	if (!id.IsValid())
+	{
+		return nullptr;
+	}
+
+	TSharedPtr<FStreamableHandle> handle = UAssetManager::Get().ChangeBundleStateForPrimaryAssets(
+		{ id },
+		BundlesToLoad,
+		{},
+		false,
+		FStreamableDelegate(),
+		FStreamableManager::AsyncLoadHighPriority);
+
+	if (handle.IsValid() && !handle->HasLoadCompleted())
+	{
+		handle->WaitUntilComplete();
+	}
+
+	return Cast<UMWCharacterPrimaryData>(UAssetManager::Get().GetPrimaryAssetObject(id));
+}
+
+void UMWCharacterDataManager::UnloadCharacter(int32 CharacterId)
+{
+	const FPrimaryAssetId id = GetPrimaryAssetIdForCharacter(CharacterId);
+	if (id.IsValid())
+	{
+		UAssetManager::Get().UnloadPrimaryAsset(id);
+	}
 }

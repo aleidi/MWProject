@@ -4,8 +4,8 @@
 #include "Character/Movement/MWCharacterMovementComponent.h"
 #include "Components/InputComponent.h"
 #include "Controller/MWPlayerController.h"
-#include "Data/Character/MWCharacterData.h"
 #include "Data/Character/MWCharacterDataManager.h"
+#include "Data/Character/MWCharacterPrimaryData.h"
 #include "GameplayAbility/Attribute/MWBattleAttributeSet.h"
 #include "GameplayAbility/MWAbilitySet.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
@@ -69,16 +69,63 @@ UMWAbilitySystemComponent* AMWCharacter::GetMWAbilitySystemComponent() const
 
 void AMWCharacter::SetupDefaultAbilities()
 {
-	if (UMWPawnExtensionComponent* pawnExtComp = FindComponentByClass<UMWPawnExtensionComponent>())
+	UMWCharacterDataManager* dataMgr = UMWCharacterDataManager::Get(this);
+	if (!dataMgr)
 	{
-		if (FMWCharacterDataRow* data = UMWCharacterDataManager::Get(this)->GetCharacterData(GetCharacterId()))
+		return;
+	}
+
+	const int32 characterId = GetCharacterId();
+
+	// 1) 已加载 -> 立即授予
+	if (UMWCharacterPrimaryData* loaded = dataMgr->GetLoadedCharacterPrimaryData(characterId))
+	{
+		ApplyDefaultAbilitiesFromPrimaryData(loaded);
+		return;
+	}
+
+	// 2) 未加载 -> 异步加载 "Spawn" bundle，回调里授予
+	TWeakObjectPtr<AMWCharacter> weakThis(this);
+	dataMgr->AsyncLoadCharacterBundles(
+		characterId,
+		{ FName(TEXT("Spawn")) },
+		FStreamableDelegate::CreateLambda([weakThis, characterId]()
 		{
-			if (data->DefaultAbilitySet)
+			AMWCharacter* self = weakThis.Get();
+			if (!IsValid(self) || !IsValid(self->AbilitySystemComponent))
 			{
-				AbilityGranetedHandles = MakeShared<FMWAbilitySet_GrantedHandles>();
-				data->DefaultAbilitySet->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), this);
+				return;
 			}
-		}
+
+			UMWCharacterDataManager* mgr = UMWCharacterDataManager::Get(self);
+			if (!mgr)
+			{
+				return;
+			}
+
+			if (UMWCharacterPrimaryData* pd = mgr->GetLoadedCharacterPrimaryData(characterId))
+			{
+				self->ApplyDefaultAbilitiesFromPrimaryData(pd);
+			}
+		}));
+}
+
+void AMWCharacter::ApplyDefaultAbilitiesFromPrimaryData(UMWCharacterPrimaryData* PrimaryData)
+{
+	if (!PrimaryData || !AbilitySystemComponent)
+	{
+		return;
+	}
+
+	// Spawn bundle 已加载，DefaultAbilitySet.Get() 应当非空。
+	if (UMWAbilitySet* abilitySet = PrimaryData->DefaultAbilitySet.Get())
+	{
+		AbilityGranetedHandles = MakeShared<FMWAbilitySet_GrantedHandles>();
+		abilitySet->GiveToAbilitySystem(AbilitySystemComponent, AbilityGranetedHandles.Get(), this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ApplyDefaultAbilitiesFromPrimaryData: DefaultAbilitySet still not loaded after bundle load."));
 	}
 }
 
@@ -164,6 +211,11 @@ void AMWCharacter::BeginPlay()
 
 void AMWCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (UMWCharacterDataManager* dataMgr = UMWCharacterDataManager::Get(this))
+	{
+		dataMgr->UnloadCharacter(GetCharacterId());
+	}
+
 	Super::EndPlay(EndPlayReason);
 }
 

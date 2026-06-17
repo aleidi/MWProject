@@ -1,6 +1,7 @@
 #include "System/MWGameInstanceSubsystem.h"
 
 #include "Data/Character/MWCharacterDataManager.h"
+#include "Data/Skill/MWSkillDataManager.h"
 #include "MWGameInstance.h"
 #include "SaveGame/MWSaveGameManager.h"
 #include "UI/MWUIManager.h"
@@ -18,15 +19,17 @@
 void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	INIT_MANAGER(CharacterDataManager, UMWCharacterDataManager);
-	INIT_MANAGER(UIManager, UMWUIManager);
 	INIT_MANAGER(SaveGameManager, UMWSaveGameManager);
+	INIT_MANAGER(SkillDataManager, UMWSkillDataManager);
+	INIT_MANAGER(UIManager, UMWUIManager);
 }
 
 void UMWGameInstanceSubsystem::Deinitialize()
 {
 	DEINIT_MANAGER(CharacterDataManager);
-	DEINIT_MANAGER(UIManager);
 	DEINIT_MANAGER(SaveGameManager);
+	DEINIT_MANAGER(SkillDataManager);
+	DEINIT_MANAGER(UIManager);
 }
 
 UMWGameInstanceSubsystem* UMWGameInstanceSubsystem::Get(const UObject* WorldContext)

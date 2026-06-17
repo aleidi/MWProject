@@ -7,6 +7,7 @@
 // Forward Declare
 class UMWCharacterDataManager;
 class UMWSaveGameManager;
+class UMWSkillDataManager;
 class UMWUIManager;
 
 // Define
@@ -35,14 +36,19 @@ public:
 		return CharacterDataManager;
 	}
 
-	UMWUIManager* GetUIManager()
-	{
-		return UIManager;
-	}
-
 	UMWSaveGameManager* GetSaveGameManager()
 	{
 		return SaveGameManager;
+	}
+
+	UMWSkillDataManager* GetSkillDataManager()
+	{
+		return SkillDataManager;
+	}
+
+	UMWUIManager* GetUIManager()
+	{
+		return UIManager;
 	}
 
 private:
@@ -50,8 +56,11 @@ private:
 	TObjectPtr<UMWCharacterDataManager> CharacterDataManager = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<UMWUIManager> UIManager = nullptr;
+	TObjectPtr<UMWSaveGameManager> SaveGameManager = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<UMWSaveGameManager> SaveGameManager = nullptr;
+	TObjectPtr<UMWSkillDataManager> SkillDataManager = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UMWUIManager> UIManager = nullptr;
 };

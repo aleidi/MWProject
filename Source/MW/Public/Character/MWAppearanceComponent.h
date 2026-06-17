@@ -5,16 +5,12 @@
 #include "MWAppearanceComponent.generated.h"
 
 // Forward Declare
-struct FStreamableHandle;
-
-// Define
+class UMWCharacterPrimaryData;
 
 /*
  * @class UMWAppearanceComponent
- * 
- * @brief 
  *
- * @note
+ * @brief 在 character spawn 时根据 UMWCharacterPrimaryData 设置外观与 AnimInstance。
  */
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class MW_API UMWAppearanceComponent : public UMWPawnComponent
@@ -26,10 +22,7 @@ public:
 	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	void OnDefaultAppearanceLoaded(FPrimaryAssetId LoadedAssetId);
-	void OnAnimInstanceClassLoaded();
+	void ApplyAppearance(UMWCharacterPrimaryData* PrimaryData);
 
-	FPrimaryAssetId AppearancePrimaryAssetId;
-
-	TSharedPtr<FStreamableHandle> AnimInstanceStreamableHandle;
+	int32 CachedCharacterDataId = INDEX_NONE;
 };

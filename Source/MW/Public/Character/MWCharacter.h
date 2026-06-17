@@ -53,6 +53,9 @@ public:
 protected:
 	void SetupDefaultAbilities();
 
+	/** 命中已加载的 PDA 后真正授予 ability。 */
+	void ApplyDefaultAbilitiesFromPrimaryData(class UMWCharacterPrimaryData* PrimaryData);
+
 protected:
 	// The ability system component sub-object used by player characters.
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
