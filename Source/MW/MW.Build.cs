@@ -14,6 +14,7 @@ public class MW : ModuleRules
 			"Core",
 			"CoreUObject",
 			"Engine",
+			"DeveloperSettings",
 			"InputCore",
 			"GameplayTags",
 			"GameplayAbilities",

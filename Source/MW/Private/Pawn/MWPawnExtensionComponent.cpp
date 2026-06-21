@@ -102,13 +102,3 @@ void UMWPawnExtensionComponent::UninitializeAbilitySystem()
 
     AbilitySystemComponent = nullptr;
 }
-
-int32 UMWPawnExtensionComponent::GetPawnDataId() const
-{
-    return PawnDataId;
-}
-
-void UMWPawnExtensionComponent::SetPawnDataId(int32 NewId)
-{
-    PawnDataId = NewId;
-}

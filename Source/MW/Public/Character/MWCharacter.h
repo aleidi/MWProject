@@ -10,8 +10,11 @@
 class UCameraComponent;
 class UC3DCameraComponent;
 class UMWAppearanceComponent;
+class UMWCharacterAsset;
 class UMWPawnExtensionComponent;
 struct FMWAbilitySet_GrantedHandles;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FMWOnCharacterAssetReady, UMWCharacterAsset*);
 
 UCLASS()
 class MW_API AMWCharacter : public AModularCharacter,
@@ -25,7 +28,6 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 	
-	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
@@ -38,10 +40,42 @@ public:
 	USkeletalMeshComponent* GetDummyMesh() const;
 	USkeletalMeshComponent* GetVisualMesh() const;
 
-private:
+	UMWCharacterAsset* GetCharacterAsset() const
+	{
+		return CachedCharacterAsset;
+	}
 
+	FMWOnCharacterAssetReady& OnCharacterAssetReady()
+	{
+		return CharacterAssetReadyEvent;
+	}
+
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> VisualMesh;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMWAppearanceComponent> AppearanceComp;
+
+public:
+	virtual FVector GetFloorLocation() const;
+	void SetCharacterLocation(FVector FloorLocation);
+
+
+#pragma region Data
+protected:
+	void LoadCharacterSpawnData();
+	void HandleCharacterPrimaryDataLoaded(UMWCharacterAsset* PrimaryData);
+
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<UMWCharacterAsset> CachedCharacterAsset = nullptr;
+	FMWOnCharacterAssetReady CharacterAssetReadyEvent;
+#pragma endregion
 
 #pragma region GAS
 public:
@@ -52,16 +86,13 @@ public:
 
 protected:
 	void SetupDefaultAbilities();
+	void ApplyDefaultAbilitiesFromPrimaryData(UMWCharacterAsset* PrimaryData);
 
-	/** 命中已加载的 PDA 后真正授予 ability。 */
-	void ApplyDefaultAbilitiesFromPrimaryData(class UMWCharacterPrimaryData* PrimaryData);
 
 protected:
-	// The ability system component sub-object used by player characters.
 	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
 
-	/** Cache the granted abilities */
 	TSharedPtr<FMWAbilitySet_GrantedHandles> AbilityGranetedHandles;
 #pragma endregion 
 
@@ -80,7 +111,6 @@ private:
 private:
 	bool CanUpdatePawnRotation() const;
 
-	// temporary value
 	FRotator LastVelocityRotation;
 	FRotator DesiredPawnRotation;
 
@@ -107,16 +137,4 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category="Character|Behavior")
 	TEnumAsByte<ECharacterBehaviorState> BehaviorState;
 #pragma endregion
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMWPawnExtensionComponent> ExtensionComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMWAppearanceComponent> AppearanceComp;
-
-public:
-	virtual FVector GetFloorLocation() const;
-
-	void SetCharacterLocation(FVector FloorLocation);
 };

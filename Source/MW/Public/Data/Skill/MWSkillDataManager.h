@@ -7,7 +7,7 @@
 #include "MWSkillDataManager.generated.h"
 
 // Forward Declare
-class UMWSkillPrimaryData;
+class UMWSkillAsset;
 
 // Define
 #define GET_SKILLDATAMGR(WorldContext)  (UMWSkillDataManager::Get(WorldContext))
@@ -35,18 +35,15 @@ public:
 	FPrimaryAssetId GetPrimaryAssetIdForSkill(int32 SkillId) const;
 
 	UFUNCTION(BlueprintPure, Category="Manager|Skill")
-	UMWSkillPrimaryData* GetLoadedSkillPrimaryData(int32 SkillId) const;
+	UMWSkillAsset* GetLoadedSkillAsset(int32 SkillId) const;
 
 	TSharedPtr<FStreamableHandle> AsyncLoadSkillBundles(
 		int32 SkillId,
 		const TArray<FName>& BundlesToLoad,
 		FStreamableDelegate OnComplete = FStreamableDelegate());
 
-	UMWSkillPrimaryData* SyncLoadSkillBundles(int32 SkillId, const TArray<FName>& BundlesToLoad);
+	UMWSkillAsset* SyncLoadSkillBundles(int32 SkillId, const TArray<FName>& BundlesToLoad);
 
 	UFUNCTION(BlueprintCallable, Category="Manager|Skill")
 	void UnloadSkill(int32 SkillId);
-
-private:
-	static const FName SkillPrimaryAssetType;
 };

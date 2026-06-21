@@ -5,7 +5,7 @@
 #include "MWAppearanceComponent.generated.h"
 
 // Forward Declare
-class UMWCharacterPrimaryData;
+class UMWCharacterAsset;
 
 /*
  * @class UMWAppearanceComponent
@@ -22,7 +22,8 @@ public:
 	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	void ApplyAppearance(UMWCharacterPrimaryData* PrimaryData);
+	void HandleCharacterAssetReady(UMWCharacterAsset* Asset);
+	void ApplyAppearance(UMWCharacterAsset* Asset);
 
-	int32 CachedCharacterDataId = INDEX_NONE;
+	FDelegateHandle CharacterAssetReadyHandle;
 };

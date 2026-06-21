@@ -43,13 +43,4 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<UMWAbilitySystemComponent> AbilitySystemComponent = nullptr;
 #pragma endregion
-
-public:
-	int32 GetPawnDataId() const;
-
-	void SetPawnDataId(int32 NewId);
-
-protected:
-	UPROPERTY()
-	int32 PawnDataId = INDEX_NONE;
 };

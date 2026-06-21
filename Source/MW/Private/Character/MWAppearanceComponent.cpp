@@ -2,75 +2,50 @@
 
 #include "Character/MWCharacter.h"
 #include "Character/MWCharacterAnimInstance.h"
-#include "Data/Character/MWCharacterDataManager.h"
-#include "Data/Character/MWCharacterPrimaryData.h"
-#include "Pawn/MWPawnExtensionComponent.h"
+#include "Data/Character/MWCharacterAsset.h"
 
 void UMWAppearanceComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APawn* owner = GetPawn<APawn>();
-	if (!owner)
+	AMWCharacter* character = GetPawn<AMWCharacter>();
+	if (!character)
 	{
 		return;
 	}
 
-	UMWPawnExtensionComponent* pawnExtComp = owner->FindComponentByClass<UMWPawnExtensionComponent>();
-	if (!pawnExtComp)
-	{
-		return;
-	}
+	CharacterAssetReadyHandle = character->OnCharacterAssetReady().AddUObject(
+		this,
+		&UMWAppearanceComponent::HandleCharacterAssetReady);
 
-	UMWCharacterDataManager* dataMgr = UMWCharacterDataManager::Get(this);
-	if (!dataMgr)
-	{
-		return;
-	}
-
-	CachedCharacterDataId = pawnExtComp->GetPawnDataId();
-
-	if (UMWCharacterPrimaryData* loaded = dataMgr->GetLoadedCharacterPrimaryData(CachedCharacterDataId))
+	if (UMWCharacterAsset* loaded = character->GetCharacterAsset())
 	{
 		ApplyAppearance(loaded);
-		return;
 	}
-
-	TWeakObjectPtr<UMWAppearanceComponent> weakThis(this);
-	const int32 dataId = CachedCharacterDataId;
-
-	dataMgr->AsyncLoadCharacterBundles(
-		dataId,
-		{ FName(TEXT("Spawn")) },
-		FStreamableDelegate::CreateLambda([weakThis, dataId]()
-		{
-			UMWAppearanceComponent* self = weakThis.Get();
-			if (!IsValid(self))
-			{
-				return;
-			}
-
-			UMWCharacterDataManager* mgr = UMWCharacterDataManager::Get(self);
-			if (!mgr)
-			{
-				return;
-			}
-
-			if (UMWCharacterPrimaryData* pd = mgr->GetLoadedCharacterPrimaryData(dataId))
-			{
-				self->ApplyAppearance(pd);
-			}
-		}));
 }
 
 void UMWAppearanceComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (AMWCharacter* character = GetPawn<AMWCharacter>())
+	{
+		if (CharacterAssetReadyHandle.IsValid())
+		{
+			character->OnCharacterAssetReady().Remove(CharacterAssetReadyHandle);
+			CharacterAssetReadyHandle.Reset();
+		}
+	}
+
 	Super::EndPlay(EndPlayReason);
 }
 
-void UMWAppearanceComponent::ApplyAppearance(UMWCharacterPrimaryData* PrimaryData)
+void UMWAppearanceComponent::HandleCharacterAssetReady(UMWCharacterAsset* Asset)
 {
-	if (!PrimaryData)
+	ApplyAppearance(Asset);
+}
+
+void UMWAppearanceComponent::ApplyAppearance(UMWCharacterAsset* Asset)
+{
+	if (!Asset)
 	{
 		return;
 	}
@@ -87,12 +62,12 @@ void UMWAppearanceComponent::ApplyAppearance(UMWCharacterPrimaryData* PrimaryDat
 		return;
 	}
 
-	if (USkeletalMesh* mesh = PrimaryData->DefaultAppearance.Mesh_Body.Get())
+	if (USkeletalMesh* mesh = Asset->DefaultAppearance.Mesh_Body.Get())
 	{
 		visualMesh->SetSkeletalMesh(mesh);
 	}
 
-	if (UClass* animClass = PrimaryData->DefaultAnimation.AnimInstance.Get())
+	if (UClass* animClass = Asset->AnimInstance.Get())
 	{
 		visualMesh->SetAnimInstanceClass(animClass);
 	}

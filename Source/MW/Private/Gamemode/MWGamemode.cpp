@@ -56,11 +56,6 @@ APawn* AMWGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewP
 	{
 		if (APawn* spawnedPawn = GetWorld()->SpawnActor<APawn>(pawnClass, SpawnTransform, SpawnInfo))
 		{
-			if (UMWPawnExtensionComponent* pawnExtComp = UMWPawnExtensionComponent::FindPawnExtensionComponent(spawnedPawn))
-			{
-				pawnExtComp->SetPawnDataId(1);
-			}
-
 			spawnedPawn->FinishSpawning(SpawnTransform);
 
 			return spawnedPawn;

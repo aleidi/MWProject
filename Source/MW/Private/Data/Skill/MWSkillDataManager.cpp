@@ -1,11 +1,9 @@
 #include "Data/Skill/MWSkillDataManager.h"
 
-#include "Data/Skill/MWSkillPrimaryData.h"
+#include "Data/Skill/MWSkillAsset.h"
 #include "Engine/AssetManager.h"
 #include "MWLogChannels.h"
 #include "System/MWGameInstanceSubsystem.h"
-
-const FName UMWSkillDataManager::SkillPrimaryAssetType = FName(TEXT("SkillPrimaryData"));
 
 UMWSkillDataManager::UMWSkillDataManager()
 {
@@ -28,10 +26,10 @@ FPrimaryAssetId UMWSkillDataManager::GetPrimaryAssetIdForSkill(int32 SkillId) co
 		return FPrimaryAssetId();
 	}
 
-	return FPrimaryAssetId(FPrimaryAssetType(SkillPrimaryAssetType), FName(*FString::FromInt(SkillId)));
+	return FPrimaryAssetId(FPrimaryAssetType(UMWSkillAsset::PrimaryAssetTypeName), FName(*FString::FromInt(SkillId)));
 }
 
-UMWSkillPrimaryData* UMWSkillDataManager::GetLoadedSkillPrimaryData(int32 SkillId) const
+UMWSkillAsset* UMWSkillDataManager::GetLoadedSkillAsset(int32 SkillId) const
 {
 	const FPrimaryAssetId id = GetPrimaryAssetIdForSkill(SkillId);
 	if (!id.IsValid())
@@ -39,7 +37,7 @@ UMWSkillPrimaryData* UMWSkillDataManager::GetLoadedSkillPrimaryData(int32 SkillI
 		return nullptr;
 	}
 
-	return Cast<UMWSkillPrimaryData>(UAssetManager::Get().GetPrimaryAssetObject(id));
+	return Cast<UMWSkillAsset>(UAssetManager::Get().GetPrimaryAssetObject(id));
 }
 
 TSharedPtr<FStreamableHandle> UMWSkillDataManager::AsyncLoadSkillBundles(
@@ -64,7 +62,7 @@ TSharedPtr<FStreamableHandle> UMWSkillDataManager::AsyncLoadSkillBundles(
 		FStreamableManager::AsyncLoadHighPriority);
 }
 
-UMWSkillPrimaryData* UMWSkillDataManager::SyncLoadSkillBundles(int32 SkillId, const TArray<FName>& BundlesToLoad)
+UMWSkillAsset* UMWSkillDataManager::SyncLoadSkillBundles(int32 SkillId, const TArray<FName>& BundlesToLoad)
 {
 	const FPrimaryAssetId id = GetPrimaryAssetIdForSkill(SkillId);
 	if (!id.IsValid())
@@ -85,7 +83,7 @@ UMWSkillPrimaryData* UMWSkillDataManager::SyncLoadSkillBundles(int32 SkillId, co
 		handle->WaitUntilComplete();
 	}
 
-	return Cast<UMWSkillPrimaryData>(UAssetManager::Get().GetPrimaryAssetObject(id));
+	return Cast<UMWSkillAsset>(UAssetManager::Get().GetPrimaryAssetObject(id));
 }
 
 void UMWSkillDataManager::UnloadSkill(int32 SkillId)

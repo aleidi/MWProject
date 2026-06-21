@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Data/MWPrimaryAsset.h"
-#include "MWCharacterPrimaryData.generated.h"
+#include "MWCharacterAsset.generated.h"
 
 class UAnimSequenceBase;
 class USkeletalMesh;
@@ -23,9 +23,6 @@ USTRUCT(BlueprintType)
 struct FMWCharacterAnimSet
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftClassPtr<UMWCharacterAnimInstance> AnimInstance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftObjectPtr<UAnimSequenceBase> Anim_Idle;
@@ -65,14 +62,12 @@ struct FMWCharacterAnimSet
  *   "Spawn" - required to spawn the character (default mesh/anim/ability)
  *   "Extra" - on-demand extras (alternate appearances, ...)
  */
-UCLASS(BlueprintType)
-class MW_API UMWCharacterPrimaryData : public UMWPrimaryAsset
+UCLASS(BlueprintType, HideCategories = ("Asset"))
+class MW_API UMWCharacterAsset : public UMWPrimaryAsset
 {
 	GENERATED_BODY()
 
 public:
-	UMWCharacterPrimaryData();
-
 	/** Canonical PrimaryAssetType for character PDAs. Use this everywhere instead of literals. */
 	static const FName PrimaryAssetTypeName;
 
@@ -80,16 +75,13 @@ public:
 	static const FName BundleName_Spawn;
 	static const FName BundleName_Extra;
 
+public:
+	UMWCharacterAsset();
+
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AssetRegistrySearchable)
 	int32 Id = INDEX_NONE;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FName Name = NAME_None;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText DisplayName = FText::GetEmpty();
 
 	// ==================== Appearance ====================
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Appearance", meta=(AssetBundles="Spawn"))
@@ -100,6 +92,9 @@ public:
 	TMap<int32, FMWCharacterAppearance> ExtraAppearance;
 
 	// ==================== Animation ====================
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AssetBundles="Spawn"))
+	TSoftClassPtr<UMWCharacterAnimInstance> AnimInstance;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AssetBundles="Spawn"))
 	FMWCharacterAnimSet DefaultAnimation;
 
