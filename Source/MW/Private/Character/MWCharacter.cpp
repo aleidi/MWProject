@@ -1,7 +1,8 @@
 #include "Character/MWCharacter.h"
 
-#include "Character/MWAppearanceComponent.h"
 #include "Character/Movement/MWCharacterMovementComponent.h"
+#include "Character/MWAppearanceComponent.h"
+#include "Character/MWSkillComponent.h"
 #include "Components/InputComponent.h"
 #include "Controller/MWPlayerController.h"
 #include "Data/Character/MWCharacterAsset.h"
@@ -28,6 +29,8 @@ AMWCharacter::AMWCharacter(const FObjectInitializer& ObjectInitializer)
 
 	VisualMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VisualMesh"));
 	VisualMesh->SetupAttachment(GetMesh());
+
+	SkillComp = CreateDefaultSubobject<UMWSkillComponent>(TEXT("SkillComponent"));
 
 	PrimaryActorTick.bCanEverTick = true;
 }

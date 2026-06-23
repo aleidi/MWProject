@@ -12,6 +12,8 @@ class UC3DCameraComponent;
 class UMWAppearanceComponent;
 class UMWCharacterAsset;
 class UMWPawnExtensionComponent;
+class UMWSkillComponent;
+
 struct FMWAbilitySet_GrantedHandles;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FMWOnCharacterAssetReady, UMWCharacterAsset*);
@@ -61,6 +63,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMWAppearanceComponent> AppearanceComp;
 
+	UPROPERTY(Category=Ability, VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMWSkillComponent> SkillComp;
+
 public:
 	virtual FVector GetFloorLocation() const;
 	void SetCharacterLocation(FVector FloorLocation);
@@ -90,7 +95,7 @@ protected:
 
 
 protected:
-	UPROPERTY(Category=Camera, VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(Category=Ability, VisibleAnywhere, BlueprintReadOnly)
 	UMWAbilitySystemComponent* AbilitySystemComponent;
 
 	TSharedPtr<FMWAbilitySet_GrantedHandles> AbilityGranetedHandles;

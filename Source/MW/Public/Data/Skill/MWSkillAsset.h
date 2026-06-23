@@ -1,30 +1,18 @@
 #pragma once
 
 #include "Data/MWPrimaryAsset.h"
+#include "GameplayTagContainer.h"
 #include "MWSkillAsset.generated.h"
 
 class UAnimSequenceBase;
-class UMWAbilitySet;
+class UTexture2D;
 
 UENUM(BlueprintType)
 enum class EMWSkillType : uint8
 {
-	Active,    
-	Passive,   
-	Ultimate,   
-};
-
-/** Skill animation set, loaded via the "Cast" bundle. */
-USTRUCT(BlueprintType)
-struct FMWSkillAnimSet
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AssetBundles="Cast"))
-	TSoftObjectPtr<UAnimSequenceBase> Anim_Cast;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AssetBundles="Cast"))
-	TSoftObjectPtr<UAnimSequenceBase> Anim_HitReact;
+	Active,
+	Passive,
+	Ultimate,
 };
 
 /**
@@ -44,6 +32,10 @@ public:
 	/** Canonical PrimaryAssetType for Skill PDAs. Use this everywhere instead of literals. */
 	static const FName PrimaryAssetTypeName;
 
+	/** AssetBundle names used by skill loading. */
+	static const FName BundleName_Cast;
+	static const FName BundleName_UI;
+
 public:
 	UMWSkillAsset();
 
@@ -52,26 +44,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AssetRegistrySearchable)
 	int32 Id = INDEX_NONE;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FName Name = NAME_None;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Cast"))
+	TSoftObjectPtr<UAnimMontage> Animation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText DisplayName = FText::GetEmpty();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText Description = FText::GetEmpty();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	EMWSkillType Type = EMWSkillType::Active;
-
-	/** The animations of this skill. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	FMWSkillAnimSet AnimSet;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI", meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> Icon;
-
-	/** Max upgrade level. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Progression", meta=(ClampMin="1"))
-	int32 MaxLevel = 1;
 };

@@ -44,7 +44,9 @@ protected:
 	UFUNCTION()
 	virtual void OnMontageInterrupted();
 
-	virtual void LoadSkillAssets();
+	virtual void LoadSkillAssets(const FGameplayTag& InputTag);
+
+	virtual FName ResolveMontageSectionFromInputTag(const FGameplayTag& InputTag) const;
 
 protected:
 	/** 技能动画 */
@@ -58,6 +60,10 @@ protected:
 	/** Montage 起始段名称，为 None 则从头播放 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
 	FName MontageSectionName = NAME_None;
+
+	/** Charge 触发时使用的 Montage Section 名称 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
+	FName MontageChargeSectionName = TEXT("Charge");
 
 private:
 	UPROPERTY()
