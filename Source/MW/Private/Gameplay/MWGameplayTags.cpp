@@ -68,7 +68,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot1_Charge,		"InputTag.TPBattle.CharacterSkillSlot1.Charge",				"Third-Person Battle Input Character Skill Slot 1 Charge.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot2_Charge,		"InputTag.TPBattle.CharacterSkillSlot2.Charge",				"Third-Person Battle Input Character Skill Slot 2 Charge.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot3_Charge,		"InputTag.TPBattle.CharacterSkillSlot3.Charge",				"Third-Person Battle Input Character Skill Slot 3 Charge.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_ChargeSkillTriggered,				"InputTag.TPBattle.ChargeSkillTriggered",					"Third-Person Battle Input Charge Skill Triggered.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_ChargeSkill,						"InputTag.TPBattle.ChargeSkill",							"Third-Person Battle Input Charge Skill	.");
 #pragma endregion
 
 	// ==== Battle Command ====
@@ -164,6 +164,7 @@ namespace MWGameplayTags
 	
 	// Skill
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Skill_Chainable,					"Ability.Skill.Chainable",								"Ability's Skill Chainable.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Skill_Cast,						"Ability.Skill.Cast",									"Ability's Skill Cast.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_Ability_UnitAttack,				"Battle.Ability.UnitAttack",							"Activate UMWBattleUnitAttack ability.");
 	// Attack command

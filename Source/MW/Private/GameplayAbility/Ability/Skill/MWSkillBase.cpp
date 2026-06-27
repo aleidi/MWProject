@@ -4,27 +4,12 @@
 #include "AbilitySystemComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Character/MWSkillComponent.h"
-#include "GameplayAbility/Task/AbilityTask_ChargeTick.h"
+#include "GameplayAbility/Ability/Skill/MWSkillCastPayload.h"
 #include "Gameplay/MWGameplayTags.h"
-#include "System/MWConsoleVars.h"
-#include "Util/UEDebugUtils.h"
 
 void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-#if !UE_BUILD_SHIPPING
-	FString debugMsg = TEXT("No Ability Spec");
-
-	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
-	if (Spec)
-	{
-		const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
-		debugMsg = FString::Printf(TEXT("[UMWSkillBase] Ability Source Tag: %s"), *SourceTags.First().ToString());
-	}
-
-	UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 5.f, FColor::Turquoise, TEXT("[%s] %s"), *GetName(), *debugMsg);
-#endif
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
@@ -32,32 +17,31 @@ void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		return;
 	}
 
-	if(CanPlayAbilityAnimation())
-	{
-		FGameplayTag abilityTag;
-
-		// Charge skill's tag will be passed through the event triggered by the event.
-		// Normal skill's tag will be passed through the ability spec's source tag.
-		if (TriggerEventData && TriggerEventData->InstigatorTags.Num() > 0)
-		{
-			abilityTag = TriggerEventData->InstigatorTags.First();
-		}
-		else
-		{
-			abilityTag = Spec->GetDynamicSpecSourceTags().First();
-		}
-
-		LoadSkillAssets(abilityTag);
-		PlayAbilityAnimation();
-	}
-	else
+	if (!CanPlayAbilityAnimation())
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		return;
 	}
+
+	FMWSkillCastCommand CastCommand;
+	if (!TryResolveCastCommand(TriggerEventData, CastCommand))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	if (!TryResolveSkillPresentation(CastCommand))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	PlayAbilityAnimation();
 }
 
 void UMWSkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	ClearMontageTask();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -72,28 +56,88 @@ void UMWSkillBase::ClearMontageTask()
 
 bool UMWSkillBase::CanPlayAbilityAnimation() const
 {
-	const FGameplayAbilityActorInfo* currentActorInfo = GetCurrentActorInfo();
-
-	const UAnimInstance* animInst = currentActorInfo ? currentActorInfo->GetAnimInstance() : nullptr;
+	const FGameplayAbilityActorInfo* actorInfo = GetCurrentActorInfo();
+	const UAnimInstance* animInst = actorInfo ? actorInfo->GetAnimInstance() : nullptr;
 	if (!animInst)
 	{
 		return false;
 	}
 
-	const bool bIsPlayingMontage = animInst->IsAnyMontagePlaying();
-	if (!bIsPlayingMontage)
+	if (!animInst->IsAnyMontagePlaying())
 	{
 		return true;
 	}
 
 	const UAbilitySystemComponent* asc = GetAbilitySystemComponentFromActorInfo();
-	if (!asc)
+	return !asc || asc->HasMatchingGameplayTag(MWGameplayTags::Ability_Skill_Chainable);
+}
+
+bool UMWSkillBase::TryResolveCastCommand(const FGameplayEventData* TriggerEventData, FMWSkillCastCommand& OutCommand) const
+{
+	if (TriggerEventData && TriggerEventData->OptionalObject)
 	{
-		return true;
+		const UMWSkillCastPayload* payload = Cast<UMWSkillCastPayload>(TriggerEventData->OptionalObject);
+		if (payload)
+		{
+			OutCommand = payload->Command;
+			return true;
+		}
 	}
 
-	// 正在播放动画，检查是否处于连携窗口
-	return asc->HasMatchingGameplayTag(MWGameplayTags::Ability_Skill_Chainable);
+	FGameplayTag inputTag;
+	if (TriggerEventData && TriggerEventData->InstigatorTags.Num() > 0)
+	{
+		inputTag = TriggerEventData->InstigatorTags.First();
+	}
+	else if (const FGameplayAbilitySpec* spec = GetCurrentAbilitySpec())
+	{
+		const FGameplayTagContainer& sourceTags = spec->GetDynamicSpecSourceTags();
+		if (sourceTags.Num() > 0)
+		{
+			inputTag = sourceTags.First();
+		}
+	}
+
+	if (!inputTag.IsValid())
+	{
+		return false;
+	}
+
+	const AActor* sourceActor = GetAvatarActorFromActorInfo();
+	if (!sourceActor)
+	{
+		sourceActor = GetOwningActorFromActorInfo();
+	}
+
+	const UMWSkillComponent* skillComponent = sourceActor ? sourceActor->FindComponentByClass<UMWSkillComponent>() : nullptr;
+	return skillComponent ? skillComponent->TryBuildCastCommandFromInputTag(inputTag, OutCommand) : false;
+}
+
+bool UMWSkillBase::TryResolveSkillPresentation(const FMWSkillCastCommand& InCommand)
+{
+	AbilityAnim = nullptr;
+	MontageSectionName = NAME_None;
+
+	const AActor* sourceActor = GetAvatarActorFromActorInfo();
+	if (!sourceActor)
+	{
+		sourceActor = GetOwningActorFromActorInfo();
+	}
+
+	const UMWSkillComponent* skillComponent = sourceActor ? sourceActor->FindComponentByClass<UMWSkillComponent>() : nullptr;
+	if (!skillComponent)
+	{
+		return false;
+	}
+
+	UAnimMontage* resolvedMontage = nullptr;
+	if (!skillComponent->TryResolveMontageData(InCommand, resolvedMontage, MontageSectionName))
+	{
+		return false;
+	}
+
+	AbilityAnim = resolvedMontage;
+	return AbilityAnim != nullptr;
 }
 
 void UMWSkillBase::PlayAbilityAnimation()
@@ -101,25 +145,28 @@ void UMWSkillBase::PlayAbilityAnimation()
 	if (!AbilityAnim)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-
 		return;
 	}
+
+	ClearMontageTask();
 
 	MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
 		AbilityAnim,
 		MontagePlayRate,
-		MontageSectionName
-	);
+		MontageSectionName);
 
-	if (MontageTask)
+	if (!MontageTask)
 	{
-		MontageTask->OnCompleted.AddDynamic(this, &UMWSkillBase::OnMontageCompleted);
-		MontageTask->OnCancelled.AddDynamic(this, &UMWSkillBase::OnMontageCancelled);
-		MontageTask->OnInterrupted.AddDynamic(this, &UMWSkillBase::OnMontageInterrupted);
-		MontageTask->ReadyForActivation();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
+
+	MontageTask->OnCompleted.AddDynamic(this, &UMWSkillBase::OnMontageCompleted);
+	MontageTask->OnCancelled.AddDynamic(this, &UMWSkillBase::OnMontageCancelled);
+	MontageTask->OnInterrupted.AddDynamic(this, &UMWSkillBase::OnMontageInterrupted);
+	MontageTask->ReadyForActivation();
 }
 
 void UMWSkillBase::OnMontageCompleted()
@@ -135,36 +182,4 @@ void UMWSkillBase::OnMontageCancelled()
 void UMWSkillBase::OnMontageInterrupted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-}
-
-void UMWSkillBase::LoadSkillAssets(const FGameplayTag& InputTag)
-{
-	AbilityAnim = nullptr;
-
-	const AActor* SourceActor = GetAvatarActorFromActorInfo();
-	if (!SourceActor)
-	{
-		SourceActor = GetOwningActorFromActorInfo();
-	}
-
-	const UMWSkillComponent* SkillComponent = SourceActor ? SourceActor->FindComponentByClass<UMWSkillComponent>() : nullptr;
-	if (!SkillComponent)
-	{
-		return;
-	}
-
-	AbilityAnim = SkillComponent->GetSkillAnimationByInputTag(InputTag);
-	MontageSectionName = ResolveMontageSectionFromInputTag(InputTag);
-}
-
-FName UMWSkillBase::ResolveMontageSectionFromInputTag(const FGameplayTag& InputTag) const
-{
-	if (InputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot1_Charge)
-		|| InputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot2_Charge)
-		|| InputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot3_Charge))
-	{
-		return MontageChargeSectionName;
-	}
-
-	return NAME_None;
 }

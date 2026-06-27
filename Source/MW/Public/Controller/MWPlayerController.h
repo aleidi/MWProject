@@ -8,7 +8,9 @@
 class UAbilitySystemComponent;
 class UInputMappingContext;
 class UMWAbilitySystemComponent;
+class UMWChargeInputProcessor;
 class UMWInputConfig;
+
 struct FGameplayTag;
 struct FInputActionValue;
 
@@ -87,4 +89,8 @@ protected:
 	// カメラコンポーネントの設定.
 	void SetupCameraComponents();
 #pragma endregion
+
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<UMWChargeInputProcessor> ChargeInputProcessor = nullptr;
 };

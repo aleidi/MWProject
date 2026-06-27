@@ -63,10 +63,10 @@ void UMWChargeSkillInput::InputReleased(const FGameplayAbilitySpecHandle Handle,
 			if (Spec)
 			{
 				const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
-				debugMsg = FString::Printf(TEXT("Default Ability Tag: %s"), *SourceTags.First().ToString());
+				debugMsg = FString::Printf(TEXT("[UMWChargeSkillInput] Ability Source Tag: %s"), *SourceTags.First().ToString());
 			}
 
-			UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 5.f, FColor::Turquoise, TEXT("[%s] %s"), *GetName(), *debugMsg);
+			UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 5.f, FColor::Yellow, TEXT("[%s] %s"), *GetName(), *debugMsg);
 #endif
 
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);

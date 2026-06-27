@@ -1,5 +1,7 @@
 #include "SaveGame/MWSaveGameManager.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "MWLogChannels.h"
 #include "SaveGame/MWSaveGame.h"
 #include "System/MWGameInstanceSubsystem.h"
 

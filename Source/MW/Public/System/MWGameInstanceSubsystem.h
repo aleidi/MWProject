@@ -8,6 +8,7 @@
 class UMWCharacterDataManager;
 class UMWSaveGameManager;
 class UMWSkillDataManager;
+class UMWSkillInputService;
 class UMWUIManager;
 
 // Define
@@ -46,6 +47,11 @@ public:
 		return SkillDataManager;
 	}
 
+	UMWSkillInputService* GetSkillInputService()
+	{
+		return SkillInputService;
+	}
+
 	UMWUIManager* GetUIManager()
 	{
 		return UIManager;
@@ -60,6 +66,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMWSkillDataManager> SkillDataManager = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UMWSkillInputService> SkillInputService = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<UMWUIManager> UIManager = nullptr;

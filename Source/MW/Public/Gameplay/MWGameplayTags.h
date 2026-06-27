@@ -48,8 +48,8 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot1_Charge);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot2_Charge);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3_Charge);
-	// Tag for triggered charged skill
-	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_ChargeSkillTriggered);
+	// Tag for charged skill
+	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_ChargeSkill);
 
 #pragma endregion
 
@@ -131,10 +131,9 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_OverCharge);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActionUninterruptible);
 
-
 	// Skill
 	DECLARE_MW_GAMEPLAY_TAG(Ability_Skill_Chainable);
-
+	DECLARE_MW_GAMEPLAY_TAG(Ability_Skill_Cast);
 
 	// ==== RPG Battle Command ====
 #pragma region RPG Battle Command

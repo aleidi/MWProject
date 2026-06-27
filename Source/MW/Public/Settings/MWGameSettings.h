@@ -13,4 +13,7 @@ class MW_API UMWGameSettings : public UDeveloperSettings
 public:
     UPROPERTY(Config, EditAnywhere, Category="Data|Character")
     TSoftObjectPtr<UDataTable> CharacterTableAsset;
+
+    UPROPERTY(Config, EditAnywhere, Category="Data|Skill")
+    TSoftObjectPtr<UDataTable> SkillTableAsset;
 };

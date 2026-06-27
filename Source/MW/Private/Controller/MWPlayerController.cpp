@@ -2,6 +2,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Character/MWCharacter.h"
+#include "Character/MWSkillComponent.h"
 #include "Common3DCameraComponent.h"
 #include "Common3DCameraModeDataAsset.h"
 #include "Pawn/MWPawnExtensionComponent.h"
@@ -10,12 +11,37 @@
 #include "Gameplay/MWGameplayTags.h"
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "GameFramework/Character.h"
+#include "Input/MWChargeInputProcessor.h"
 #include "Input/MWInputComponent.h"
 #include "Input/MWInputUtility.h"
+#include "Input/MWSkillInputService.h"
 #include "MWGameSingleton.h"
 #include "System/MWConsoleVars.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "Util/UEDebugUtils.h"
+
+
+namespace
+{
+	bool IsSkillInputTag(const FGameplayTag& inputTag)
+	{
+		return inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot1)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot2)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot3)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot4)
+			//|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot1_Charge)
+			//|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot2_Charge)
+			//|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterSkillSlot3_Charge)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterExtraSkillSlot1)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterExtraSkillSlot2)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_CharacterExtraSkillSlot3)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_PartnerSkillSlot1)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_PartnerSkillSlot2)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_PartnerSkillSlot3)
+			|| inputTag.MatchesTagExact(MWGameplayTags::IATag_TPBattle_PartnerSkillSlot4);
+	}
+}
+
 
 AMWPlayerController::AMWPlayerController()
 {
@@ -25,6 +51,12 @@ AMWPlayerController::AMWPlayerController()
 void AMWPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (ChargeInputProcessor)
+	{
+		ChargeInputProcessor->Tick(DeltaSeconds);
+	}
+
 }
 
 AMWCharacter* AMWPlayerController::GetMWCharacter() const
@@ -129,7 +161,41 @@ void AMWPlayerController::SetupInputComponent()
 
 void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	const APawn* pawn = GetPawn<APawn>();
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("@@@Input_AbilityInputTagPressed: %s"), *InputTag.ToString()));
+	APawn* pawn = GetPawn<APawn>();
+	if (!pawn)
+	{
+		return;
+	}
+
+	UMWSkillInputService* skillInputService = UMWSkillInputService::Get(this);
+
+	// 1) charge input route
+	if (ChargeInputProcessor && ChargeInputProcessor->IsChargeInputTag(InputTag))
+	{
+		FMWChargeRuntimeConfig runtimeConfig;
+		if (skillInputService)
+		{
+			skillInputService->TryGetChargeRuntimeConfig(pawn, InputTag, runtimeConfig);
+		}
+
+		ChargeInputProcessor->HandlePressed(InputTag, runtimeConfig);
+
+		return;
+	}
+
+	// 2) skill input route
+	if (IsSkillInputTag(InputTag))
+	{
+		if (skillInputService)
+		{
+			skillInputService->RequestCastByInputTag(pawn, InputTag);
+		}
+
+		return;
+	}
+
+	// 3) non-skill route
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
 		mwasc->AbilityInputTagPressed(InputTag);
@@ -138,7 +204,33 @@ void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	const APawn* pawn = GetPawn<APawn>();
+	APawn* pawn = GetPawn<APawn>();
+	if (!pawn)
+	{
+		return;
+	}
+
+	// 1) charge input release route
+	if (ChargeInputProcessor && ChargeInputProcessor->IsChargeInputTag(InputTag))
+	{
+		FGameplayTag castInputTag;
+		if (ChargeInputProcessor->HandleReleased(InputTag, castInputTag) && castInputTag.IsValid())
+		{
+			if (UMWSkillInputService* skillInputService = UMWSkillInputService::Get(this))
+			{
+				skillInputService->RequestCastByInputTag(pawn, castInputTag);
+			}
+		}
+		return;
+	}
+
+	// 2) skill input release ignored (already handled on press)
+	if (IsSkillInputTag(InputTag))
+	{
+		return;
+	}
+
+	// 3) non-skill release route
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
 		mwasc->AbilityInputTagReleased(InputTag);
@@ -202,10 +294,18 @@ void AMWPlayerController::Input_AutoRun(const FInputActionValue& InputActionValu
 void AMWPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ChargeInputProcessor = NewObject<UMWChargeInputProcessor>(this);
 }
 
 void AMWPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (ChargeInputProcessor)
+	{
+		ChargeInputProcessor->Reset();
+		ChargeInputProcessor = nullptr;
+	}
+
 	Super::EndPlay(EndPlayReason);
 }
 

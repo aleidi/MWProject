@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameplayAbility/MWGameplayAbility.h"
+#include "GameplayAbility/Ability/Skill/MWSkillCastTypes.h"
 #include "MWSkillBase.generated.h"
 
 class UAbilityTask_PlayMontageAndWait;
@@ -29,7 +30,6 @@ protected:
 	 * 当角色没有任何 Montage 正在播放时，直接返回 true；
 	 * 若有 Montage 正在播放，则检查 AbilitySystemComponent 是否带有
 	 * Ability.Skill.Chainable 标签（连携窗口），有则允许播放，否则返回 false。
-	 * TODO:根据后续的实现可能会有所修改
 	 */
 	virtual bool CanPlayAbilityAnimation() const;
 
@@ -44,9 +44,8 @@ protected:
 	UFUNCTION()
 	virtual void OnMontageInterrupted();
 
-	virtual void LoadSkillAssets(const FGameplayTag& InputTag);
-
-	virtual FName ResolveMontageSectionFromInputTag(const FGameplayTag& InputTag) const;
+	bool TryResolveCastCommand(const FGameplayEventData* TriggerEventData, FMWSkillCastCommand& OutCommand) const;
+	bool TryResolveSkillPresentation(const FMWSkillCastCommand& InCommand);
 
 protected:
 	/** 技能动画 */
@@ -60,10 +59,6 @@ protected:
 	/** Montage 起始段名称，为 None 则从头播放 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
 	FName MontageSectionName = NAME_None;
-
-	/** Charge 触发时使用的 Montage Section 名称 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
-	FName MontageChargeSectionName = TEXT("Charge");
 
 private:
 	UPROPERTY()

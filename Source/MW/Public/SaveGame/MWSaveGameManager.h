@@ -2,6 +2,7 @@
 
 // Include Header
 #include "UObject/NoExportTypes.h"
+#include "Interface/MWManagerInterface.h"
 #include "MWSaveGameManager.generated.h"
 
 // Forward Declare
