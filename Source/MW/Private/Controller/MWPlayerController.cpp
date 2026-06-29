@@ -161,7 +161,6 @@ void AMWPlayerController::SetupInputComponent()
 
 void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("@@@Input_AbilityInputTagPressed: %s"), *InputTag.ToString()));
 	APawn* pawn = GetPawn<APawn>();
 	if (!pawn)
 	{

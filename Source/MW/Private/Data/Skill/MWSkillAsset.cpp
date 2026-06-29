@@ -25,9 +25,9 @@ FName UMWSkillAsset::GetMontageSectionByVariant(EMWSkillCastVariant Variant) con
 	{
 	case EMWSkillCastVariant::Charge:
 		return ChargeSection;
-	case EMWSkillCastVariant::Release:
-		return ReleaseSection;
+
 	case EMWSkillCastVariant::Normal:
+
 	default:
 		return NormalSection;
 	}

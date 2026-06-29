@@ -16,7 +16,6 @@ enum class EMWSkillCastVariant : uint8
 {
 	Normal,
 	Charge,
-	Release,
 };
 
 USTRUCT(BlueprintType)

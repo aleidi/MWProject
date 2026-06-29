@@ -210,10 +210,6 @@ bool UMWSkillComponent::TryResolveMontageData(const FMWSkillCastCommand& InComma
 		{
 			OutSection = TEXT("Charge");
 		}
-		else if (InCommand.Variant == EMWSkillCastVariant::Release)
-		{
-			OutSection = TEXT("Release");
-		}
 	}
 
 	return true;

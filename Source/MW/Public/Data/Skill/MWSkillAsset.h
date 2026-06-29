@@ -39,14 +39,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Cast"))
 	TSoftObjectPtr<UAnimMontage> Animation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	FName NormalSection = NAME_None;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	FName ChargeSection = TEXT("Charge");
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
-	FName ReleaseSection = TEXT("Release");
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI", meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> Icon;
