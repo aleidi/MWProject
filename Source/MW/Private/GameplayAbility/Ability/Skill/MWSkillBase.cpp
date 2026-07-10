@@ -6,43 +6,79 @@
 #include "Character/MWSkillComponent.h"
 #include "GameplayAbility/Ability/Skill/MWSkillCastPayload.h"
 #include "Gameplay/MWGameplayTags.h"
-
+UE_DISABLE_OPTIMIZATION
 void UMWSkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	FMWSkillCastCommand castCommand;
+	if (!TryResolveCastCommand(TriggerEventData, castCommand))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+
 		return;
 	}
 
-	if (!CanPlayAbilityAnimation())
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-		return;
-	}
-
-	FMWSkillCastCommand CastCommand;
-	if (!TryResolveCastCommand(TriggerEventData, CastCommand))
+	if (!TryCommitAndPlayFromCommand(Handle, ActorInfo, ActivationInfo, castCommand))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+
 		return;
 	}
-
-	if (!TryResolveSkillPresentation(CastCommand))
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-		return;
-	}
-
-	PlayAbilityAnimation();
 }
 
 void UMWSkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	PendingCommitSkillId = INDEX_NONE;
+
 	ClearMontageTask();
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+bool UMWSkillBase::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags /*= nullptr*/) const
+{
+	if (!Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags))
+	{
+		return false;
+	}
+
+	if (PendingCommitSkillId == INDEX_NONE)
+	{
+		return true;
+	}
+
+	AActor* sourceActor = GetAvatarActorFromActorInfo();
+	if (!sourceActor)
+	{
+		sourceActor = GetOwningActorFromActorInfo();
+	}
+
+	UMWSkillComponent* skillComponent = sourceActor ? sourceActor->FindComponentByClass<UMWSkillComponent>() : nullptr;
+
+	return skillComponent && skillComponent->CanConsumeSkillUse(PendingCommitSkillId, 1);
+}
+
+void UMWSkillBase::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
+
+	if (PendingCommitSkillId == INDEX_NONE)
+	{
+		return;
+	}
+
+	AActor* sourceActor = GetAvatarActorFromActorInfo();
+	if (!sourceActor)
+	{
+		sourceActor = GetOwningActorFromActorInfo();
+	}
+
+	UMWSkillComponent* skillComponent = sourceActor ? sourceActor->FindComponentByClass<UMWSkillComponent>() : nullptr;
+	if (skillComponent)
+	{
+		skillComponent->ConsumeSkillUse(PendingCommitSkillId, 1);
+	}
 }
 
 void UMWSkillBase::ClearMontageTask()
@@ -140,6 +176,35 @@ bool UMWSkillBase::TryResolveSkillPresentation(const FMWSkillCastCommand& InComm
 	return AbilityAnim != nullptr;
 }
 
+void UMWSkillBase::SetPendingCommitSkillId(int32 InSkillId)
+{
+	PendingCommitSkillId = InSkillId;
+}
+
+bool UMWSkillBase::TryCommitAndPlayFromCommand(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FMWSkillCastCommand& InCommand)
+{
+	if (!TryResolveSkillPresentation(InCommand))
+	{
+		return false;
+	}
+
+	if (!CanPlayAbilityAnimation())
+	{
+		return false;
+	}
+
+	SetPendingCommitSkillId(InCommand.SkillId);
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		return false;
+	}
+
+	PlayAbilityAnimation();
+
+	return true;
+}
+
 void UMWSkillBase::PlayAbilityAnimation()
 {
 	if (!AbilityAnim)
@@ -183,3 +248,4 @@ void UMWSkillBase::OnMontageInterrupted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
+UE_ENABLE_OPTIMIZATION

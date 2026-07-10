@@ -78,6 +78,28 @@ struct FMWSkillRangeAdaptiveConfig
 };
 
 USTRUCT(BlueprintType)
+struct FMWSkillStockConfig
+{
+	GENERATED_BODY()
+
+	/** Max usable charges for this skill. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "1"))
+	int32 MaxUses = 3;
+
+	/** Recover points gained per second. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "0.0"))
+	float RecoverAmount = 100.0f;
+
+	/** Points needed to recover one use. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "1.0"))
+	float RecoverPointThreshold = 100.0f;
+
+	/** Delay (seconds) after consume before recovery starts. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "0.0"))
+	float RecoverDelayAfterConsume = 0.0f;
+};
+
+USTRUCT(BlueprintType)
 struct FMWSkillTable : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -132,6 +154,10 @@ public:
 	/** Hidden when bIsRangeAdaptive is false. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive", meta = (EditCondition = "bIsRangeAdaptive", EditConditionHides))
 	FMWSkillRangeAdaptiveConfig RangeAdaptiveConfig;
+
+	/** Stock configuration for the skill. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock")
+	FMWSkillStockConfig StockConfig;
 
 	/** Minimal row validity check. */
 	bool IsValidRow() const;

@@ -21,11 +21,46 @@ struct FMWEquippedSkillSlot
 	TObjectPtr<UAnimMontage> Animation = nullptr;
 };
 
+USTRUCT(BlueprintType)
+struct FMWRuntimeSkillState
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	int32 SkillId = INDEX_NONE;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	int32 CurrentUses = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	int32 MaxUses = 0;
+
+	/** Recover points gained per second. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	float RecoverAmount = 100.0f;
+
+	/** Points needed to recover one use. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	float RecoverPointThreshold = 100.0f;
+
+	/** Runtime accumulated recover points. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	float RecoverPointAccumulated = 0.0f;
+
+	/** Delay after consume before recovery starts. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	float RecoverDelayAfterConsume = 0.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
+	float LastConsumeWorldTime = 0.0f;
+};
+
 UCLASS(ClassGroup = (MW), meta = (BlueprintSpawnableComponent))
 class MW_API UMWSkillComponent : public UMWPawnComponent
 {
 	GENERATED_BODY()
 
+#pragma region LearnSkill/Loudout
 public:
 	UMWSkillComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
@@ -75,6 +110,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void InitializeEquippedSkillSlots();
 	bool IsSlotValid(int32 SlotIndex) const;
@@ -92,4 +128,30 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Skill", meta = (AllowPrivateAccess = "true"))
 	TSet<int32> LearnedSkillIds;
+#pragma endregion
+
+#pragma region Runtime Skill State
+public:
+	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Runtime")
+	bool TryGetRuntimeSkillState(int32 SkillId, FMWRuntimeSkillState& OutState) const;
+
+	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Runtime")
+	bool ConsumeSkillUse(int32 SkillId, int32 ConsumeAmount = 1);
+
+	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Runtime")
+	bool RecoverSkillUse(int32 SkillId, int32 RecoverAmount = 1);
+
+	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Runtime")
+	bool CanConsumeSkillUse(int32 SkillId, int32 RequiredAmount = 1);
+
+private:
+	bool TryInitializeRuntimeSkillState(int32 SkillId);
+
+	void UpdateSkillUseRecovery(float DeltaTime);
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime", meta = (AllowPrivateAccess = "true"))
+	TMap<int32, FMWRuntimeSkillState> SkillRuntimeStates;
+#pragma endregion
+
 };

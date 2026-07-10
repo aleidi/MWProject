@@ -6,13 +6,15 @@
 #include "GameplayAbility/MWAbilitySystemComponent.h"
 #include "Gameplay/MWGameplayTags.h"
 #include "MWLogChannels.h"
+#include "System/MWConsoleVars.h"
+#include "Util/UEDebugUtils.h"
 
 #define Max_SKILL_SLOT_COUNT 11
 
 UMWSkillComponent::UMWSkillComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	EquippedSkillSlots.Reserve(Max_SKILL_SLOT_COUNT);
 	SkillCastEventTag = MWGameplayTags::Ability_Skill_Cast;
 }
@@ -313,6 +315,8 @@ void UMWSkillComponent::BeginPlay()
 	Super::BeginPlay();
 
 	//InitializeEquippedSkillSlots();
+
+	SetComponentTickEnabled(true);
 }
 
 void UMWSkillComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -320,6 +324,20 @@ void UMWSkillComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	UnequipAllSlots();
 
 	Super::EndPlay(EndPlayReason);
+}
+
+void UMWSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	//// Runtime state is authoritative on server.
+	//const AActor* ownerActor = GetOwner();
+	//if (!ownerActor || !ownerActor->HasAuthority())
+	//{
+	//	return;
+	//}
+
+	UpdateSkillUseRecovery(DeltaTime);
 }
 
 void UMWSkillComponent::InitializeEquippedSkillSlots()
@@ -374,6 +392,168 @@ UMWAbilitySystemComponent* UMWSkillComponent::GetMWAbilitySystemComponent() cons
 {
 	const AActor* ownerActor = GetOwner();
 	return ownerActor ? ownerActor->FindComponentByClass<UMWAbilitySystemComponent>() : nullptr;
+}
+
+bool UMWSkillComponent::TryGetRuntimeSkillState(int32 SkillId, FMWRuntimeSkillState& OutState) const
+{
+	const FMWRuntimeSkillState* runtimeState = SkillRuntimeStates.Find(SkillId);
+	if (!runtimeState)
+	{
+		return false;
+	}
+
+	OutState = *runtimeState;
+
+	return true;
+}
+
+bool UMWSkillComponent::ConsumeSkillUse(int32 SkillId, int32 ConsumeAmount)
+{
+	if (!TryInitializeRuntimeSkillState(SkillId))
+	{
+		return false;
+	}
+
+	FMWRuntimeSkillState* runtimeState = SkillRuntimeStates.Find(SkillId);
+	if (!runtimeState)
+	{
+		return false;
+	}
+
+	const int32 safeConsumeAmount = FMath::Max(1, ConsumeAmount);
+	if (runtimeState->CurrentUses < safeConsumeAmount)
+	{
+		return false;
+	}
+
+	runtimeState->CurrentUses -= safeConsumeAmount;
+
+	if (const UWorld* world = GetWorld())
+	{
+		runtimeState->LastConsumeWorldTime = world->GetTimeSeconds();
+	}
+	else
+	{
+		runtimeState->LastConsumeWorldTime = 0.0f;
+	}
+
+	return true;
+}
+
+bool UMWSkillComponent::RecoverSkillUse(int32 SkillId, int32 RecoverAmount)
+{
+	if (!TryInitializeRuntimeSkillState(SkillId))
+	{
+		return false;
+	}
+
+	FMWRuntimeSkillState* runtimeState = SkillRuntimeStates.Find(SkillId);
+	if (!runtimeState)
+	{
+		return false;
+	}
+
+	const int32 safeRecoverAmount = FMath::Max(1, RecoverAmount);
+	const int32 oldUses = runtimeState->CurrentUses;
+	runtimeState->CurrentUses = FMath::Min(runtimeState->CurrentUses + safeRecoverAmount, runtimeState->MaxUses);
+
+	return runtimeState->CurrentUses != oldUses;
+}
+
+bool UMWSkillComponent::CanConsumeSkillUse(int32 SkillId, int32 RequiredAmount /*= 1*/)
+{
+	if (!TryInitializeRuntimeSkillState(SkillId))
+	{
+		return false;
+	}
+
+	const FMWRuntimeSkillState* runtimeState = SkillRuntimeStates.Find(SkillId);
+	if (!runtimeState)
+	{
+		return false;
+	}
+
+	return runtimeState->CurrentUses >= FMath::Max(1, RequiredAmount);
+}
+
+bool UMWSkillComponent::TryInitializeRuntimeSkillState(int32 SkillId)
+{
+	if (SkillId == INDEX_NONE)
+	{
+		return false;
+	}
+
+	if (SkillRuntimeStates.Contains(SkillId))
+	{
+		return true;
+	}
+
+	const UMWSkillDataManager* skillDataMgr = GET_SKILLDATAMGR(this);
+	const FMWSkillTable* skillRow = skillDataMgr ? skillDataMgr->FindSkillRow(SkillId) : nullptr;
+	if (!skillRow)
+	{
+		return false;
+	}
+
+	const FMWSkillStockConfig& stockConfig = skillRow->StockConfig;
+
+	FMWRuntimeSkillState runtimeState;
+	runtimeState.SkillId = SkillId;
+	runtimeState.MaxUses = FMath::Max(1, stockConfig.MaxUses);
+	runtimeState.CurrentUses = runtimeState.MaxUses;
+	runtimeState.RecoverAmount = FMath::Max(0.0f, stockConfig.RecoverAmount);
+	runtimeState.RecoverPointThreshold = FMath::Max(1.0f, stockConfig.RecoverPointThreshold);
+	runtimeState.RecoverPointAccumulated = 0.0f;
+	runtimeState.RecoverDelayAfterConsume = FMath::Max(0.0f, stockConfig.RecoverDelayAfterConsume);
+	runtimeState.LastConsumeWorldTime = 0.0f;
+
+	SkillRuntimeStates.Add(SkillId, runtimeState);
+
+	return true;
+}
+
+void UMWSkillComponent::UpdateSkillUseRecovery(float DeltaTime)
+{
+	if (DeltaTime <= 0.0f)
+	{
+		return;
+	}
+
+	const UWorld* world = GetWorld();
+	const float nowTime = world ? world->GetTimeSeconds() : 0.0f;
+
+	for (auto& pair : SkillRuntimeStates)
+	{
+		FMWRuntimeSkillState& runtimeState = pair.Value;
+
+		if (runtimeState.CurrentUses >= runtimeState.MaxUses)
+		{
+			runtimeState.RecoverPointAccumulated = 0.0f;
+
+			continue;
+		}
+
+		if (runtimeState.RecoverAmount <= 0.0f || runtimeState.RecoverPointThreshold <= 0.0f)
+		{
+			continue;
+		}
+
+		if ((nowTime - runtimeState.LastConsumeWorldTime) < runtimeState.RecoverDelayAfterConsume)
+		{
+			continue;
+		}
+
+		runtimeState.RecoverPointAccumulated += runtimeState.RecoverAmount * DeltaTime;
+
+		if (runtimeState.RecoverPointAccumulated >= runtimeState.RecoverPointThreshold)
+		{
+			runtimeState.CurrentUses = FMath::Min(runtimeState.CurrentUses + 1, runtimeState.MaxUses);
+
+			runtimeState.RecoverPointAccumulated = 0.0f;
+
+			UE_SCREEN_PRINT_CVAR(MWConsoleVars::CVarShowSkillDebug, 0.f, FColor::Yellow, TEXT("Skill %d recovered one use. CurrentUses: %d"), runtimeState.SkillId, runtimeState.CurrentUses);
+		}
+	}
 }
 
 bool UMWSkillComponent::TryGetChargeParamsByInputTag( const FGameplayTag& InInputTag, float& OutMaxChargeValue, float& OutChargeRate, float& OutDischargeRate, float& OutChargeStartDelay) const

@@ -27,22 +27,7 @@ void UMWRangeAdaptiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	const FMWSkillRangeAdaptiveConfig* adaptiveConfig = ResolveRangeAdaptiveConfig(castCommand);
 	if (!adaptiveConfig)
 	{
-		// Fallback to base skill behavior when range-adaptive is not enabled for this skill.
 		Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-		return;
-	}
-
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-
-		return;
-	}
-
-	if (!CanPlayAbilityAnimation())
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 
 		return;
 	}
@@ -53,15 +38,15 @@ void UMWRangeAdaptiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	CachedTargetActor = ResolveBestTargetActor(*adaptiveConfig);
 	if (CachedTargetActor)
 	{
-		const AActor* sourceActor = GetAvatarActorFromActorInfo() ? GetAvatarActorFromActorInfo() : GetOwningActorFromActorInfo();
-		if (!sourceActor)
+		const AActor* sourceActorForDistance = GetAvatarActorFromActorInfo() ? GetAvatarActorFromActorInfo() : GetOwningActorFromActorInfo();
+		if (!sourceActorForDistance)
 		{
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 
 			return;
 		}
 
-		const float distance = FVector::Dist2D(sourceActor->GetActorLocation(), CachedTargetActor->GetActorLocation());
+		const float distance = FVector::Dist2D(sourceActorForDistance->GetActorLocation(), CachedTargetActor->GetActorLocation());
 		resolvedForm = DecideRangeForm(distance, *adaptiveConfig);
 	}
 	else
@@ -77,14 +62,12 @@ void UMWRangeAdaptiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	ApplyRangeFormToCommand(resolvedForm, *adaptiveConfig, castCommand);
 
-	if (!TryResolveSkillPresentation(castCommand))
+	if (!TryCommitAndPlayFromCommand(Handle, ActorInfo, ActivationInfo, castCommand))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 
 		return;
 	}
-
-	PlayAbilityAnimation();
 }
 
 void UMWRangeAdaptiveSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)

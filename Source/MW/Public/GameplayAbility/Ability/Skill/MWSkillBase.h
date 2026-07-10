@@ -21,6 +21,8 @@ protected:
 	//~UMWGameplayAbility interface
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	//~End of UMWGameplayAbility interface
 
 	void ClearMontageTask();
@@ -45,7 +47,12 @@ protected:
 	virtual void OnMontageInterrupted();
 
 	bool TryResolveCastCommand(const FGameplayEventData* TriggerEventData, FMWSkillCastCommand& OutCommand) const;
+
 	bool TryResolveSkillPresentation(const FMWSkillCastCommand& InCommand);
+
+	void SetPendingCommitSkillId(int32 InSkillId);
+
+	bool TryCommitAndPlayFromCommand(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FMWSkillCastCommand& InCommand);
 
 protected:
 	/** 技能动画 */
@@ -63,4 +70,7 @@ protected:
 private:
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> MontageTask = nullptr;
+
+	UPROPERTY(Transient)
+	int32 PendingCommitSkillId = INDEX_NONE;
 };

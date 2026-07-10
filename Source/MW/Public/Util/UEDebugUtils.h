@@ -6,16 +6,16 @@
  * UEDebugUtils
  *
  * Project-agnostic screen debug message macros for Unreal Engine.
- * No project-specific dependencies — safe to copy into any UE project.
+ * No project-specific dependencies â€” safe to copy into any UE project.
  *
  * All macros are stripped entirely in Shipping builds:
  *   - Arguments are NOT evaluated in Shipping (no side effects, no overhead).
  *
  * Macro families:
  *
- *   UE_SCREEN_PRINT          — Controlled by a plain bool expression
- *   UE_SCREEN_PRINT_CVAR     — Controlled by a TAutoConsoleVariable<bool>
- *   UE_SCREEN_PRINT_ALWAYS   — Always prints (no guard), Shipping stripped
+ *   UE_SCREEN_PRINT          â€” Controlled by a plain bool expression
+ *   UE_SCREEN_PRINT_CVAR     â€” Controlled by a TAutoConsoleVariable<bool>
+ *   UE_SCREEN_PRINT_ALWAYS   â€” Always prints (no guard), Shipping stripped
  *
  * Usage:
  *   // Bool guard
@@ -64,7 +64,7 @@
 
 	/**
 	 * Unconditionally prints a screen debug message.
-	 * Intended for temporary investigation only — remove before release.
+	 * Intended for temporary investigation only â€” remove before release.
 	 *
 	 * @param Time       Display duration in seconds; 0.f = one frame only
 	 * @param Color      Text color (FColor)
@@ -80,7 +80,7 @@
 			} \
 		} while (false)
 
-#else // UE_BUILD_SHIPPING — all macros expand to nothing
+#else // UE_BUILD_SHIPPING â€” all macros expand to nothing
 
 	#define UE_SCREEN_PRINT(bEnabled, Time, Color, Format, ...)
 	#define UE_SCREEN_PRINT_CVAR(CVar, Time, Color, Format, ...)
