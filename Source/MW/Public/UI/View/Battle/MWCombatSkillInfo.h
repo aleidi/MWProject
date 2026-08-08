@@ -2,7 +2,7 @@
 
 // Include Header
 #include "UI/MWUserWidget.h"
-#include "MWCharacterSkillInfo.generated.h"
+#include "MWCombatSkillInfo.generated.h"
 
 // Forward Declare
 class UCommonTextBlock;
@@ -11,21 +11,21 @@ class UImage;
 // Define
 
 /*
- * @class UMWCharacterSkillInfo
+ * @class UMWCombatSkillInfo
  * 
  * @brief
  *
  * @note
  */
 UCLASS()
-class UMWCharacterSkillInfo : public UMWUserWidget
+class UMWCombatSkillInfo : public UMWUserWidget
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CTB_SkillName;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UImage> IMG_SkillIcon;
 };

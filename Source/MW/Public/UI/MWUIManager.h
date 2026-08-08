@@ -25,7 +25,7 @@ class MW_API UMWUIManager : public UObject, public IMWManagerInterface
 
 public:
     virtual void Initialize() override;
-    virtual void Deinitialize() override {}
+    virtual void Deinitialize() override;
 
     UFUNCTION(BlueprintPure, Category = "Manager", meta = (WorldContext="WorldContext", DisplayName = "GetUIManager"))
 	static UMWUIManager* Get(const UObject* WorldContext);
@@ -70,4 +70,6 @@ private:
 
     /* Save the z-order info in types of ui. */
     TMap<EMWUILayer, int32> LayerConfig;
+
+	FDelegateHandle OnGameModeBeginPlayHandle;
 };

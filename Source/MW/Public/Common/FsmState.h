@@ -1,7 +1,7 @@
 #pragma once
 
 // Include
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Common/fsm.h"
 
 // Forward Declare

@@ -2,7 +2,7 @@
 //
 //#pragma once
 //
-//#include "CoreMinimal.h"
+//#include "MW.h"
 //#include "GameFramework/GameUserSettings.h"
 //#include "Player/MWLocalPlayer.h"
 //#include "Input/MWMappableConfigPair.h"

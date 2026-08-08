@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Define/MWDefineGameplay.h"
 
 namespace MWTargetSelector

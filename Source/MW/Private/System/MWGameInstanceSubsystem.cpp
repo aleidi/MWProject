@@ -6,6 +6,7 @@
 #include "MWGameInstance.h"
 #include "SaveGame/MWSaveGameManager.h"
 #include "UI/MWUIManager.h"
+#include "UI/ViewModel/MWViewModelManager.h"
 
 #define INIT_MANAGER(VarName, ClassType)\
 	VarName = NewObject<ClassType>(this);\
@@ -24,6 +25,7 @@ void UMWGameInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	INIT_MANAGER(SkillDataManager, UMWSkillDataManager);
 	INIT_MANAGER(SkillInputService, UMWSkillInputService);
 	INIT_MANAGER(UIManager, UMWUIManager);
+	INIT_MANAGER(ViewModelManager, UMWViewModelManager);
 }
 
 void UMWGameInstanceSubsystem::Deinitialize()
@@ -33,6 +35,7 @@ void UMWGameInstanceSubsystem::Deinitialize()
 	DEINIT_MANAGER(SkillDataManager);
 	DEINIT_MANAGER(SkillInputService);
 	DEINIT_MANAGER(UIManager);
+	DEINIT_MANAGER(ViewModelManager);
 }
 
 UMWGameInstanceSubsystem* UMWGameInstanceSubsystem::Get(const UObject* WorldContext)

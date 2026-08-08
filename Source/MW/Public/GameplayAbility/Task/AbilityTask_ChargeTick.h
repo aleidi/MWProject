@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AbilityTask_ChargeTick.generated.h"
 

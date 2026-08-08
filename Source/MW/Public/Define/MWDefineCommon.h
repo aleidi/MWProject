@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 //#include "MWDefineCommon.generated.h"
 
 template<typename T>

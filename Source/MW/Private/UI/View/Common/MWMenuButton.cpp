@@ -1,5 +1,5 @@
-#include "UI/Common/MWMenuButton.h"
-#include "UI/Common/MWButton.h"
+#include "UI/View/Common/MWMenuButton.h"
+#include "UI/View/Common/MWButton.h"
 #include "CommonTextBlock.h"
 #include "Components/Spacer.h"
 #include "Components/HorizontalBox.h"

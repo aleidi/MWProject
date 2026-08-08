@@ -1,6 +1,6 @@
-﻿#pragma once
+#pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Engine/Engine.h"
 #include "Subsystems/EngineSubsystem.h"
 #include "MWEngineSubsystem.generated.h"

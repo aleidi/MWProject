@@ -10,6 +10,7 @@ public class MWEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V6;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_7;
+		CppStandard = CppStandardVersion.Cpp20;
 		ExtraModuleNames.Add("MW");
 	}
 }

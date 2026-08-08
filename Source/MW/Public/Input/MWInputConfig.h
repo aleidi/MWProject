@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Engine/DataAsset.h"
 #include "EnhancedPlayerInput.h"
 #include "GameplayTagContainer.h"

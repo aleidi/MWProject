@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "MWDefineBattle.generated.h"
 
 UENUM(BlueprintType)

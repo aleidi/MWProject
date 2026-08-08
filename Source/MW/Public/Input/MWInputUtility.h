@@ -1,7 +1,7 @@
 #pragma once
 
 // Include
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Define/MWDefineCommon.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputDeveloperSettings.h"

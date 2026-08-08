@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Abilities/GameplayAbility.h"
 #include "MWGameplayAbility.generated.h"
 

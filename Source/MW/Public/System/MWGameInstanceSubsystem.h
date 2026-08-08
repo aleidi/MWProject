@@ -10,6 +10,7 @@ class UMWSaveGameManager;
 class UMWSkillDataManager;
 class UMWSkillInputService;
 class UMWUIManager;
+class UMWViewModelManager;
 
 // Define
 
@@ -57,6 +58,11 @@ public:
 		return UIManager;
 	}
 
+	UMWViewModelManager* GetViewModelManager()
+	{
+		return ViewModelManager;
+	}
+
 private:
 	UPROPERTY()
 	TObjectPtr<UMWCharacterDataManager> CharacterDataManager = nullptr;
@@ -72,4 +78,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMWUIManager> UIManager = nullptr;
+
+	UPROPERTY()
+	TObjectPtr< UMWViewModelManager> ViewModelManager = nullptr;
 };

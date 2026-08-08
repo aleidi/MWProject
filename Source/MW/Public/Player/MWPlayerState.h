@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "GameFramework/PlayerState.h"
 #include "MWPlayerState.generated.h"
 

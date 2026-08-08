@@ -9,7 +9,15 @@
 
 void UMWUIManager::Initialize()
 {
-	AMWGameModeBase::OnGameBeginPlay.AddUObject(this, &UMWUIManager::OnGameModeBeginPlay);
+	OnGameModeBeginPlayHandle = AMWGameModeBase::OnGameBeginPlay.AddUObject(this, &UMWUIManager::OnGameModeBeginPlay);
+}
+
+void UMWUIManager::Deinitialize()
+{
+	if (OnGameModeBeginPlayHandle.IsValid())
+	{
+		AMWGameModeBase::OnGameBeginPlay.Remove(OnGameModeBeginPlayHandle);
+	}
 }
 
 UMWUIManager* UMWUIManager::Get(const UObject* WorldContext)

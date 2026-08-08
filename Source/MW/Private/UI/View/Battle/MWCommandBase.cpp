@@ -1,4 +1,4 @@
-#include "UI/Battle/MWCommandBase.h"
+#include "UI/View/Battle/MWCommandBase.h"
 #include "Components/TextBlock.h"
 
 void UMWCommandBase::NativeOnInitialized()

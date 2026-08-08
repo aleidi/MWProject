@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "GameFramework/GameModeBase.h"
 #include "MWGameModeBase.generated.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "GameplayAbility/Ability/Skill/MWSkillCastTypes.h"
 #include "UObject/Object.h"
 #include "MWSkillCastPayload.generated.h"

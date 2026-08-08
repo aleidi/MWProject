@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "CommonActivatableWidget.h"
 #include "MWUIInterface.h"
 #include "MWActivatableWidget.generated.h"

@@ -50,7 +50,6 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3_Charge);
 	// Tag for charged skill
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_ChargeSkill);
-
 #pragma endregion
 
 	// ==== RPG Battle Command Input ====

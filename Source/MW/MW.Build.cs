@@ -30,7 +30,9 @@ public class MW : ModuleRules
 			"Paper2D",
 			"Niagara",
 			"ModularGameplay",
-            "ModularGameplayActors"
+			"ModularGameplayActors",
+			"ModelViewViewModel",
+			"GameplayMessageRuntime",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] 

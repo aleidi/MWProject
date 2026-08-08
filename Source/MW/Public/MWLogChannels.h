@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MW.h"
 #include "Engine/Engine.h"
 #include "Logging/LogMacros.h"
 
