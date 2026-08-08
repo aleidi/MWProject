@@ -8,11 +8,6 @@
 // Define
 namespace
 {
-	const int32 SkillSlotUp = 0;
-	const int32 SkillSlotLeft = 1;
-	const int32 SkillSlotDown = 2;
-	const int32 SkillSlotRight = 3;
-
 	void LayoutDiamond(UWidget* Up, UWidget* Left, UWidget* Down, UWidget* Right, float Radius)
 	{
 		auto setOffset = [&](UWidget* Widget, const FVector2D& Offset)
@@ -31,7 +26,7 @@ namespace
 		};
 
 		setOffset(Up, FVector2D(0.0f, -Radius));
-		setOffset(Left,FVector2D(-Radius, 0.0f));
+		setOffset(Left, FVector2D(-Radius, 0.0f));
 		setOffset(Down, FVector2D(0.0f, Radius));
 		setOffset(Right, FVector2D(Radius, 0.0f));
 	}
@@ -66,29 +61,29 @@ void UMWCombatSkillBar::RefreshSkillViewModelBindings()
 	}
 
 	auto bindSkill = [&](UMWCombatSkillInfo* skillWidget, int32 slotIndex)
+	{
+		if (!skillWidget)
 		{
-			if (!skillWidget)
-			{
-				return;
-			}
+			return;
+		}
 
-			UMWVMCharacterSkill* skillVM = VMSkillBar->GetSkillByIndex(slotIndex);
-			if (!skillVM)
-			{
-				return;
-			}
+		UMWVMCharacterSkill* skillVM = VMSkillBar->GetSkillByIndex(slotIndex);
+		if (!skillVM)
+		{
+			return;
+		}
 
-			const FName viewModelName = skillWidget->GetManualViewModelNameByClass(UMWVMCharacterSkill::StaticClass());
-			if (viewModelName.IsNone())
-			{
-				return;
-			}
+		const FName viewModelName = skillWidget->GetManualViewModelNameByClass(UMWVMCharacterSkill::StaticClass());
+		if (viewModelName.IsNone())
+		{
+			return;
+		}
 
-			skillWidget->SetViewModel(viewModelName, skillVM, true);
-		};
+		skillWidget->SetViewModel(viewModelName, skillVM, true);
+	};
 
-	bindSkill(WBP_SkillUp, SkillSlotUp);
-	bindSkill(WBP_SkillLeft, SkillSlotLeft);
-	bindSkill(WBP_SkillDown, SkillSlotDown);
-	bindSkill(WBP_SkillRight, SkillSlotRight);
+	bindSkill(WBP_SkillUp, MWSkillBarSlot::Up);
+	bindSkill(WBP_SkillLeft, MWSkillBarSlot::Left);
+	bindSkill(WBP_SkillDown, MWSkillBarSlot::Down);
+	bindSkill(WBP_SkillRight, MWSkillBarSlot::Right);
 }

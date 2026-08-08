@@ -10,6 +10,14 @@ class UMWVMCharacterSkill;
 struct FMWSkillChangedMessage;
 
 // Define
+namespace MWSkillBarSlot
+{
+	static constexpr int32 Up = 0;
+	static constexpr int32 Left = 1;
+	static constexpr int32 Down = 2;
+	static constexpr int32 Right = 3;
+	static constexpr int32 Count = 4;
+}
 
 /*
  * @class UMWVMSkillBar

@@ -4,15 +4,6 @@
 #include "MWLogChannels.h"
 #include "UI/ViewModel/Battle/MWVMCharacterSkill.h"
 
-// Define
-namespace
-{
-	const int32 SkillSlotUp = 0;
-	const int32 SkillSlotLeft = 1;
-	const int32 SkillSlotDown = 2;
-	const int32 SkillSlotRight = 3;
-}
-
 UMWVMSkillBar::UMWVMSkillBar()
 {
 }
@@ -21,16 +12,16 @@ UMWVMCharacterSkill* UMWVMSkillBar::GetSkillByIndex(int32 Index) const
 {
 	switch (Index)
 	{
-	case SkillSlotUp:
+	case MWSkillBarSlot::Up:
 		return VMSkillUp.Get();
-	case SkillSlotLeft:
+	case MWSkillBarSlot::Left:
 		return VMSkillLeft.Get();
-	case SkillSlotDown:
+	case MWSkillBarSlot::Down:
 		return VMSkillDown.Get();
-	case SkillSlotRight:
+	case MWSkillBarSlot::Right:
 		return VMSkillRight.Get();
 	default:
-		UE_LOG(LogMWUI, Warning, TEXT("GetSkillByIndex:  Index %d is over range [0-3]"), Index);
+		UE_LOG(LogMWUI, Warning, TEXT("GetSkillByIndex: Index %d is over range [0-%d]"), Index, MWSkillBarSlot::Count - 1);
 		break;
 	}
 
