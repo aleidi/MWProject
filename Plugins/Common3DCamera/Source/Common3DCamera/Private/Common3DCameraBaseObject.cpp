@@ -1,5 +1,3 @@
-// Copyright 2021 Alexander Shumeyko. All Rights Reserved.
-
 #include "Common3DCameraBaseObject.h"
 
 #include "Common3DCameraComponent.h"

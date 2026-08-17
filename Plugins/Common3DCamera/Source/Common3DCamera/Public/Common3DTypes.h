@@ -1,5 +1,3 @@
-// Copyright 2021 Alexander Shumeyko. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
