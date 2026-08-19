@@ -68,6 +68,8 @@ void UMWRangeAdaptiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 		return;
 	}
+
+	LastRangeForm = resolvedForm;
 }
 
 void UMWRangeAdaptiveSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -125,16 +127,25 @@ AActor* UMWRangeAdaptiveSkill::ResolveBestTargetActor(const FMWSkillRangeAdaptiv
 	return bestTarget;
 }
 
-EMWSkillRangeForm UMWRangeAdaptiveSkill::DecideRangeForm(float InDistance, const FMWSkillRangeAdaptiveConfig& InConfig) const
+EMWSkillRangeForm UMWRangeAdaptiveSkill::DecideRangeForm(float InDistance, const FMWSkillRangeAdaptiveConfig& InConfig)
 {
-	const float nearDistance = FMath::Max(0.0f, InConfig.NearEnterDistance);
+	const float nearEnterDistance = FMath::Max(0.0f, InConfig.NearEnterDistance);
+	const float nearExitDistance = FMath::Max(nearEnterDistance, InConfig.NearExitDistance);
 
-	if (InDistance <= nearDistance)
+	EMWSkillRangeForm resolvedForm = LastRangeForm;
+
+	if (LastRangeForm == EMWSkillRangeForm::Close)
 	{
-		return EMWSkillRangeForm::Close;
+		resolvedForm = (InDistance >= nearExitDistance) ? EMWSkillRangeForm::Far : EMWSkillRangeForm::Close;
+	}
+	else
+	{
+		resolvedForm = (InDistance <= nearEnterDistance) ? EMWSkillRangeForm::Close : EMWSkillRangeForm::Far;
 	}
 
-	return EMWSkillRangeForm::Far;
+	LastRangeForm = resolvedForm;
+
+	return resolvedForm;
 }
 
 EMWSkillRangeForm UMWRangeAdaptiveSkill::ResolveNoTargetForm(const FMWSkillRangeAdaptiveConfig& InConfig, bool& bOutShouldFailCast) const

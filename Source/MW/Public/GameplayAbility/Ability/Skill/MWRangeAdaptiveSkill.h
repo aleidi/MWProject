@@ -40,7 +40,7 @@ private:
 	AActor* ResolveBestTargetActor(const FMWSkillRangeAdaptiveConfig& InConfig) const;
 
 	/** Decides close/far form with hysteresis to avoid boundary jitter. */
-	EMWSkillRangeForm DecideRangeForm(float InDistance, const FMWSkillRangeAdaptiveConfig& InConfig) const;
+	EMWSkillRangeForm DecideRangeForm(float InDistance, const FMWSkillRangeAdaptiveConfig& InConfig);
 
 	/** Resolves form when no target is available. Can request cast failure via out flag. */
 	EMWSkillRangeForm ResolveNoTargetForm(const FMWSkillRangeAdaptiveConfig& InConfig, bool& bOutShouldFailCast) const;
