@@ -1,0 +1,411 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
+  <diagram name="ページ1" id="_lEywsp-Z0NPc6Y7qT1O">
+    <mxGraphModel dx="1181" dy="1535" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-151" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4 1 4;" value="" vertex="1">
+          <mxGeometry height="1210" width="1395" x="-325" y="1590" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-150" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4 1 4;" value="" vertex="1">
+          <mxGeometry height="680" width="1160" x="-260" y="2900" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-75" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-76" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-75" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="加速积累" vertex="1">
+          <mxGeometry relative="1" x="-0.1154" y="4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="普通攻击" vertex="1">
+          <mxGeometry height="60" width="120" x="400" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-74" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="技能-无蓄力" vertex="1">
+          <mxGeometry height="60" width="120" x="200" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-14" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="WRZn3BW8EwAHYKGEnsXo-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-15" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-14" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="可消耗/可不消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.181" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="技能-有蓄力" vertex="1">
+          <mxGeometry height="60" width="120" x="200" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-25" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-27" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-25" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="切换时一次性消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.0435" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-32" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WRZn3BW8EwAHYKGEnsXo-31" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="伙伴-强化服形态" vertex="1">
+          <mxGeometry height="60" width="120" x="650" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-55" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-54">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-56" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-55" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="积累提高" vertex="1">
+          <mxGeometry relative="1" x="0.0347" y="-1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="伙伴技" vertex="1">
+          <mxGeometry height="60" width="120" x="150" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="伙伴人类形态" vertex="1">
+          <mxGeometry height="120" width="80" x="-360" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-10" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="EP" vertex="1">
+          <mxGeometry height="80" width="80" x="420" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-23" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-26" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-23" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="持续大量消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.03" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-30" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="伙伴-机甲形态" vertex="1">
+          <mxGeometry height="60" width="120" x="650" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-29" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="各方面能力极强" vertex="1">
+          <mxGeometry height="60" width="180" x="850" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-31" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="能力少量提升&lt;br&gt;有时间限制" vertex="1">
+          <mxGeometry height="60" width="180" x="840" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-49" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="WRZn3BW8EwAHYKGEnsXo-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-46" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;rounded=0;dashed=1;" value="时间CD" vertex="1">
+          <mxGeometry height="30" width="60" x="60" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-51" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="强化服形态" vertex="1">
+          <mxGeometry height="120" width="80" x="-170" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-52" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="机甲形态" vertex="1">
+          <mxGeometry height="120" width="80" x="-180" y="1660" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-53" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="EP" vertex="1">
+          <mxGeometry height="80" width="80" x="440" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-58" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-57">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-54" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="羁绊等级" vertex="1">
+          <mxGeometry height="80" width="80" x="414" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-57" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="大招变化" vertex="1">
+          <mxGeometry height="60" width="120" x="620" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-64" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-59" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="羁绊等级" vertex="1">
+          <mxGeometry height="80" width="80" x="370" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-61" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-59">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-62" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-61" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="持续提高" vertex="1">
+          <mxGeometry relative="1" x="-0.0786" y="-2" as="geometry">
+            <mxPoint x="-1" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-60" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="变身中" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-68" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WRZn3BW8EwAHYKGEnsXo-67" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-63" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="大招变化" vertex="1">
+          <mxGeometry height="60" width="120" x="570" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-67" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="比人类形态和机甲形态&lt;br&gt;多一个特殊羁绊等级的大招" vertex="1">
+          <mxGeometry height="60" width="260" x="780" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-70" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-71" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-70" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="装填消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.3212" y="2" as="geometry">
+            <mxPoint x="-1" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-69" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="技能" vertex="1">
+          <mxGeometry height="60" width="120" x="100" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-73" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-69">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-72" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;rounded=0;dashed=1;" value="时间CD" vertex="1">
+          <mxGeometry height="30" width="60" x="-10" y="785" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-78" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-77" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-79" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-78" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="一次性消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.0643" y="-1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-77" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="变身" vertex="1">
+          <mxGeometry height="60" width="120" x="100" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-83" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-84" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-83" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="比人类形态变身消耗少" vertex="1">
+          <mxGeometry relative="1" x="-0.0676" y="4" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-80" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="变身伙伴-机甲形态" vertex="1">
+          <mxGeometry height="60" width="120" x="690" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-95" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-87" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-94">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-87" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="临界内主动解除" vertex="1">
+          <mxGeometry height="60" width="120" x="400" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-97" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-96">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-88" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="超过临界强制解除" vertex="1">
+          <mxGeometry height="60" width="120" x="400" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-110" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-87">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-111" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-88">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-89" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="变身时间限制" vertex="1">
+          <mxGeometry height="80" width="120" x="210" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-94" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="可切换回人类或是机甲形态" vertex="1">
+          <mxGeometry height="60" width="200" x="650" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-96" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="变回人类形态&lt;br&gt;且伙伴一段时间不可用" vertex="1">
+          <mxGeometry height="60" width="200" x="640" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-101" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-99" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-100">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-99" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="EP限制" vertex="1">
+          <mxGeometry height="80" width="120" x="210" y="1470" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-100" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="强制解除&lt;br&gt;恢复人类形态" vertex="1">
+          <mxGeometry height="60" width="120" x="430" y="1480" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-106" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-102" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-105">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-108" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-102" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-107">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-102" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="操作改变" vertex="1">
+          <mxGeometry height="80" width="120" x="70" y="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-105" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="取消普通攻击" vertex="1">
+          <mxGeometry height="60" width="120" x="310" y="1640" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-107" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="伙伴技转变为角色技" vertex="1">
+          <mxGeometry height="60" width="120" x="310" y="1724" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-119" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="EP" vertex="1">
+          <mxGeometry height="80" width="80" x="420" y="1960" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-120" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-122" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-119">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-121" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-120" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="装填消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.3212" y="2" as="geometry">
+            <mxPoint x="-1" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-122" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="技能" vertex="1">
+          <mxGeometry height="60" width="120" x="80" y="1860" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-123" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-124" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-122">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-124" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;rounded=0;dashed=1;" value="时间CD" vertex="1">
+          <mxGeometry height="30" width="60" x="-30" y="1875" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-125" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-127" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-119">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-126" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-125" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="一次性消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.0643" y="-1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-127" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="变身" vertex="1">
+          <mxGeometry height="60" width="120" x="80" y="1970" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-128" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-130" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-119">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-129" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-128" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="不消耗EP" vertex="1">
+          <mxGeometry relative="1" x="-0.0676" y="4" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-130" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="变身伙伴-强化服形态" vertex="1">
+          <mxGeometry height="60" width="120" x="670" y="1970" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-132" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-131" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-119">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-133" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-132" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="持续消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.4171" y="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-131" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="待机" vertex="1">
+          <mxGeometry height="60" width="120" x="80" y="2100" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-136" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-134" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-135">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-134" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="EP限制" vertex="1">
+          <mxGeometry height="80" width="120" x="80" y="2430" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-135" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="强制解除&lt;br&gt;恢复人类形态" vertex="1">
+          <mxGeometry height="60" width="120" x="370" y="2440" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-138" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="个人情绪" vertex="1">
+          <mxGeometry height="75" width="75" x="382.5" y="3020" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-139" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="团队情绪" vertex="1">
+          <mxGeometry height="75" width="75" x="372.5" y="3190" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-142" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-140" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-138">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-143" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-142" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="积累" vertex="1">
+          <mxGeometry relative="1" x="0.0219" y="-3" as="geometry">
+            <mxPoint x="-1" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-140" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="使用技能" vertex="1">
+          <mxGeometry height="60" width="120" x="80" y="3027.5" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-141" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="全形态共通" vertex="1">
+          <mxGeometry height="120" width="80" x="-160" y="3020" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-146" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-144" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-145">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-144" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="羁绊等级" vertex="1">
+          <mxGeometry height="80" width="80" x="96" y="2620" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-145" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="固定不变" vertex="1">
+          <mxGeometry height="60" width="120" x="340" y="2630" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-148" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-147" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-139">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-149" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-148" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="积累" vertex="1">
+          <mxGeometry relative="1" x="-0.0348" y="3" as="geometry">
+            <mxPoint x="-1" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-147" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="使用大招" vertex="1">
+          <mxGeometry height="60" width="120" x="80" y="3197.5" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-152" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4 1 4;" value="" vertex="1">
+          <mxGeometry height="870" width="1460" x="-390" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-153" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4 1 4;" value="" vertex="1">
+          <mxGeometry height="690" width="1500" x="-440" y="-30" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-155" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-154" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-139">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-156" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-155" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.0328" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-154" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="复活死亡队友" vertex="1">
+          <mxGeometry height="60" width="120" x="600" y="3197.5" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-177" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-159" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-167">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-159" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="强制解除机甲形态" vertex="1">
+          <mxGeometry height="60" width="120" x="457.5" y="2210" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-165" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-160" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-159">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-166" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-165" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="消耗完" vertex="1">
+          <mxGeometry relative="1" x="-0.1364" y="1" as="geometry">
+            <mxPoint x="-4" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-172" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-160" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-171">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-173" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-172" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="未消耗完" vertex="1">
+          <mxGeometry relative="1" x="0.0118" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-160" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="机甲HP" vertex="1">
+          <mxGeometry height="80" width="80" x="270" y="2260" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-162" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-161" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-160">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-163" connectable="0" parent="WRZn3BW8EwAHYKGEnsXo-162" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="消耗" vertex="1">
+          <mxGeometry relative="1" x="-0.1149" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-161" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="受到伤害" vertex="1">
+          <mxGeometry height="60" width="120" x="76" y="2270" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-170" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-167" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-169">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-176" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-167" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WRZn3BW8EwAHYKGEnsXo-175">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-167" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="战斗中通过攻击敌人掉落的道具会恢复" vertex="1">
+          <mxGeometry height="60" width="120" x="650" y="2290" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-169" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="恢复满HP前无法再使用" vertex="1">
+          <mxGeometry height="60" width="120" x="850" y="2240" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-174" edge="1" parent="1" source="WRZn3BW8EwAHYKGEnsXo-171" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="WRZn3BW8EwAHYKGEnsXo-167">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-171" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="主动解除机甲形态" vertex="1">
+          <mxGeometry height="60" width="120" x="457.5" y="2340" as="geometry" />
+        </mxCell>
+        <mxCell id="WRZn3BW8EwAHYKGEnsXo-175" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="只要EP足够随时可以再次使用" vertex="1">
+          <mxGeometry height="60" width="120" x="850" y="2360" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
