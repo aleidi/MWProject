@@ -60,7 +60,7 @@ public:
 	bool IsChargeInputTag(const FGameplayTag& InInputTag) const;
 	void HandlePressed(const FGameplayTag& InInputTag, const FMWChargeRuntimeConfig& InRuntimeConfig);
 
-	/** return true means this release belongs to charge flow; cast tag valid means should cast */
+	/** trueの場合はチャージ処理に属する入力解放です。有効なCastTagがある場合はキャストします。 */
 	bool HandleReleased(const FGameplayTag& InInputTag, FGameplayTag& OutCastInputTag);
 
 	void Tick(float InDeltaSeconds);

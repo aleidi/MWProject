@@ -15,11 +15,11 @@ public:
 	
 #pragma region GAS
 protected:
-	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
+	// ASCへの参照。PlayerStateが存在する場合はPlayerState、存在しない場合は本クラスが保持します。
 	UPROPERTY()
 	class UAbilitySystemComponent* AbilitySystemComponent;
 
-	// Reference to the AttributeSetBase. It will live on the PlayerState or here if the character doesn't have a PlayerState.
+	// AttributeSetBaseへの参照。PlayerStateが存在する場合はPlayerState、存在しない場合は本クラスが保持します。
 	//UPROPERTY()
 	//class UXXAttributeSetBase* AttributeSetBase;
 
@@ -29,7 +29,7 @@ public:
 	UAbilitySystemComponent* K2_GetAbilitySystemComponent() const;
 	void InitStartupAbilities();
 
-	// Only called on the Server. Calls before Server's AcknowledgePossession.
+	// サーバーでのみ、AcknowledgePossessionより前に呼び出されます。
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:

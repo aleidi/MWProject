@@ -56,7 +56,7 @@ APawn* AMWEntryGamemode::SpawnDefaultPawnAtTransform_Implementation(AController*
 {
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Instigator = GetInstigator();
-	SpawnInfo.ObjectFlags |= RF_Transient;	// Never save the default player pawns into a map.
+	SpawnInfo.ObjectFlags |= RF_Transient;	// デフォルトPlayer Pawnはマップへ保存しない
 	SpawnInfo.bDeferConstruction = true;
 
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))

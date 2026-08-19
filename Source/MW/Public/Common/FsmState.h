@@ -1,14 +1,14 @@
 #pragma once
 
-// Include
+// インクルード
 #include "MW.h"
 #include "Common/fsm.h"
 
-// Forward Declare
+// 前方宣言
 template<typename T>
 class FFsm;
 
-// Define
+// 定義
 
 class IFsmState
 {
@@ -21,9 +21,9 @@ class IFsmState
 /*
  * @class FFsmState
  * 
- * @brief The basic class of the fsm state.
+ * @brief FSM状態の基底クラスです。
  *
- * @note T is the type of the fsm owner.
+ * @note TはFSM所有者の型です。
  */
 template<typename T>
 class FFsmState : public TSharedFromThis<FFsmState<T>>, public IFsmState
@@ -95,10 +95,10 @@ private:
 	}
 
 protected:
-	/* The name of the Fsm state. */
+	/* FSM状態名。 */
 	FName Name;
 
-	/* The fsm the state runs on. */
+	/* この状態を実行するFSM。 */
 	FFsm<T>* Fsm = nullptr;
 
 	int32 Index = INDEX_NONE;

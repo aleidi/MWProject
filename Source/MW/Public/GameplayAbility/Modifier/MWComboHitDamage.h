@@ -4,8 +4,8 @@
 #include "MWComboHitDamage.generated.h"
 
 /**
- * A damage execution, which allows doing damage by combining a raw Damage number with AttackPower and DefensePower
- * Most games will want to implement multiple game-specific executions
+ * 基礎Damage、AttackPower、DefensePowerを組み合わせてダメージを算出するExecutionです。
+ * ゲーム固有の計算方式に応じて複数のExecutionを実装できます。
  */
 UCLASS()
 class MW_API UMWComboHitDamage : public UGameplayModMagnitudeCalculation
@@ -13,7 +13,7 @@ class MW_API UMWComboHitDamage : public UGameplayModMagnitudeCalculation
 	GENERATED_BODY()
 
 public:
-	// Constructor and overrides
+	// ConstructorとOverride
 	UMWComboHitDamage();
 
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;

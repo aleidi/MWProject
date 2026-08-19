@@ -8,7 +8,7 @@ class UAbilityTask_ChargeTick;
 /**
  * UMWChargeSkillInput
  * 
- * 实现按住蓄力、松开减少、再次按下继续蓄力的能力
+ * 長押しでチャージし、離すと減少、再度押すとチャージを再開するアビリティ。
  */
 UCLASS()
 class MW_API UMWChargeSkillInput : public UMWGameplayAbility
@@ -19,13 +19,13 @@ public:
 	UMWChargeSkillInput(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	//~UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-	//~End of UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース終了
 
 	UFUNCTION()
 	void OnChargeValueChanged(float NewValue, float Percent);
@@ -45,40 +45,40 @@ protected:
 	bool TryActivateSkill();
 
 public:
-	/** 获取当前蓄力值 */
+	/** 現在のチャージ値を取得します。 */
 	UFUNCTION(BlueprintPure, Category = "MW|Charge")
 	float GetCurrentChargeValue() const { return CurrentChargeValue; }
 
-	/** 获取当前蓄力百分比 */
+	/** 現在のチャージ率を取得します。 */
 	UFUNCTION(BlueprintPure, Category = "MW|Charge")
 	float GetChargePercent() const { return FMath::Clamp(CurrentChargeValue / MaxChargeValue, 0.f, 1.f); }
 
-	/** 是否蓄力已满 */
+	/** チャージが最大値に達しているかを返します。 */
 	UFUNCTION(BlueprintPure, Category = "MW|Charge")
 	bool IsFullyCharged() const { return CurrentChargeValue >= MaxChargeValue; }
 
 protected:
-	/** 最大蓄力值 */
+	/** 最大チャージ値。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge", meta = (ClampMin = "0.1"))
 	float MaxChargeValue = 100.f;
 
-	/** 蓄力速率（每秒增加的值） */
+	/** チャージ速度（1秒あたりの増加量）。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge", meta = (ClampMin = "0.1"))
 	float ChargeRate = 70.f;
 
-	/** 蓄力衰减速率（每秒减少的值） */
+	/** チャージ減衰速度（1秒あたりの減少量）。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge", meta = (ClampMin = "0.1"))
 	float DischargeRate = 90.f;
 
-	/** 是否在蓄力值归零后自动结束能力 */
+	/** チャージ値がゼロになった時点でアビリティを自動終了するか。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge")
 	bool bEndAbilityOnDepleted = true;
 
-	/** 蓄力Task启动前的延迟时间（秒），用于让同按键的Tap技能优先响应 */
+	/** チャージTask開始前の遅延時間（秒）。同じボタンのTapスキルを優先して反応させるために使用します。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge", meta = (ClampMin = "0.0"))
 	float ChargeStartDelay = 0.15f;
 
-    /** 蓄力完成后发出的事件 Tag，目标 Ability 需在 AbilityTriggers 中配置此 Tag */
+	/** チャージ完了時に送信するイベントTag。対象AbilityのAbilityTriggersに同じTagを設定する必要があります。 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Charge")
     FGameplayTag ChargeReleasedEventTag;
 
@@ -86,9 +86,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_ChargeTick> ChargeTask = nullptr;
 
-	/** 当前蓄力值 */
+	/** 現在のチャージ値。 */
 	float CurrentChargeValue = 0.0f;
 
-	/** 是否已经蓄满 */
+	/** チャージが最大値に達しているか。 */
 	bool bWasFullyCharged = false;
 };

@@ -13,10 +13,10 @@ class UTextBlock;
 
 /* UExcelImporter
  *  
- * This tool is used to load excel file into UE as a curve table.
- * The excel file must save data in the structure as follows:
+ * Excel ファイルを UE のカーブテーブルとして取り込むためのツール。
+ * Excel ファイルは次の構造でデータを保持する必要がある。
  *		col1	col2	col3	...		colx
- * row1 ---------------------------------- Do not put any data in this row since it will be skipped or you can put title here
+ * row1 ---------------------------------- この行は読み飛ばされるためデータは置かない（タイトル記載は可）
  * row2 KeyCol	Curve1	Curve2	...		Curvex
  * row3	Key1	data1	data1	...		data1
  * row4	Key2	data2	data2	...		data2
@@ -58,8 +58,8 @@ protected:
 	UFUNCTION()
 	void OnExcelPathChanged(const FText& Text);
 
-	/* Load sheets, max 99 sheets are supported
-	*  out LoadNum : the number of loaded sheets
+	/* シートを読み込む。最大 99 シートまで対応。
+	*  OutCurves: 読み込んだカーブ情報
 	*/
 	void LoadSheets(libxl::Book* Book, TArray<FCurveInfo>& OutCurves);
 

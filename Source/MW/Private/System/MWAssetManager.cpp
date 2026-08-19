@@ -36,7 +36,7 @@ UMWAssetManager& UMWAssetManager::Get()
 
 	UE_LOG(LogMW, Fatal, TEXT("Invalid AssetManagerClassName in DefaultEngine.ini.  It must be set to MWAssetManager!"));
 
-	// Fatal error above prevents this from being called.
+	// 上記のFatal Errorによりここには到達しない
 	return *NewObject<UMWAssetManager>();
 }
 
@@ -56,7 +56,7 @@ UObject* UMWAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetPath)
 			return UAssetManager::GetStreamableManager().LoadSynchronous(AssetPath, false);
 		}
 
-		// Use LoadObject if asset manager isn't ready yet.
+		// Asset Managerが未準備ならLoadObjectを使用
 		return AssetPath.TryLoad();
 	}
 
@@ -95,7 +95,7 @@ void UMWAssetManager::StartInitialLoading()
 {
 	SCOPED_BOOT_TIMING("UMWAssetManager::StartInitialLoading");
 
-	// This does all of the scanning, need to do this now even if loads are deferred
+	// 全スキャンを実行するため、ロードを遅延する場合もここで処理
 	Super::StartInitialLoading();
 }
 
@@ -115,7 +115,7 @@ UPrimaryDataAsset* UMWAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryData
 		UE_LOG(LogMW, Log, TEXT("Loading GameData: %s ..."), *DataClassPath.ToString());
 		SCOPE_LOG_TIME_IN_SECONDS(TEXT("    ... GameData loaded!"), nullptr);
 
-		// This can be called recursively in the editor because it is called on demand from PostLoad so force a sync load for primary asset and async load the rest in that case
+		// EditorではPostLoadから再帰呼び出しされ得るため、Primary Assetを同期ロードし、残りを非同期ロード
 		if (GIsEditor)
 		{
 			Asset = DataClassPath.LoadSynchronous();
@@ -128,7 +128,7 @@ UPrimaryDataAsset* UMWAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryData
 			{
 				Handle->WaitUntilComplete(0.0f, false);
 
-				// This should always work
+				// 常に成功する想定
 				Asset = Cast<UPrimaryDataAsset>(Handle->GetLoadedAsset());
 			}
 		}
@@ -140,7 +140,7 @@ UPrimaryDataAsset* UMWAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryData
 	}
 	else
 	{
-		// It is not acceptable to fail to load any GameData asset. It will result in soft failures that are hard to diagnose.
+		// GameDataのロード失敗は診断困難なサイレント障害を招くため許容しない
 		UE_LOG(LogMW, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
 	}
 
@@ -160,11 +160,11 @@ void UMWAssetManager::PreBeginPIE(bool bStartSimulate)
 
 		//const UMWGameData& LocalGameDataCommon = GetGameData();
 
-		// Intentionally after GetGameData to avoid counting GameData time in this timer
+		// GameDataの処理時間を計測対象外にするためGetGameData後に実行
 		SCOPE_LOG_TIME_IN_SECONDS(TEXT("PreBeginPIE asset preloading complete"), nullptr);
 
-		// You could add preloading of anything else needed for the experience we'll be using here
-		// (e.g., by grabbing the default experience from the world settings + the experience override in developer settings)
+		// 使用するExperienceに必要な追加アセットをここで事前読み込み可能
+		// 例: World SettingsのデフォルトExperienceとDeveloper SettingsのOverride
 	}
 }
 #endif

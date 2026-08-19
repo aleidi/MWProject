@@ -6,9 +6,9 @@ DECLARE_LOG_CATEGORY_EXTERN(LogCommonImporter, Log, All);
 
 namespace CommonImporter
 {
-	/* Change all the "\\" by "/" of string. */
+	/* 文字列中の "\\" をすべて "/" に変換する。 */
 	void FormatPathStr(FString& InOutStr);
 
-	/* Get a asset path from it's path in system. */
+	/* ファイルシステムパスからアセットパスを取得する。 */
 	FString ConvertToAssetPath(const FString& FileSystemPath);
 }

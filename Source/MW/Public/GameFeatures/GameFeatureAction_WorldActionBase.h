@@ -16,7 +16,7 @@ class UGameInstance;
 class UObject;
 
 /**
- * Base class for GameFeatureActions that wish to do something world specific.
+ * World固有の処理を行うGameFeatureActionの基底クラスです。
  */
 UCLASS(Abstract)
 class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
@@ -24,15 +24,15 @@ class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
 	GENERATED_BODY()
 
 public:
-	//~ Begin UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース開始
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
-	//~ End UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース終了
 
 private:
 	void HandleGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext ChangeContext);
 
-	/** Override with the action-specific logic */
+	/** Action固有の処理を実装します。 */
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) PURE_VIRTUAL(UGameFeatureAction_WorldActionBase::AddToWorld,);
 
 private:

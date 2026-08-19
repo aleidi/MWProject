@@ -15,7 +15,7 @@ class UObject;
 /**
  * UMWInputComponent
  *
- *	Component used to manage input mappings and bindings using an input config data asset.
+ *	入力設定データアセットを使用して入力マッピングとバインドを管理するコンポーネント。
  */
 UCLASS(Config = Input)
 class UMWInputComponent : public UEnhancedInputComponent
@@ -75,9 +75,9 @@ void UMWInputComponent::BindAbilityActions(const UMWInputConfig* InputConfig, Us
 			{
 				OutBindHandles.Add(BindAction(action.InputAction, action.ReleasedTriggerEvent, Object, ReleasedFunc, action.InputTag).GetHandle());
 
-				// Special process for gamepad input.
-				// The completed event of gamepad input may not be triggered in some special case when the chord action is used. 
-				// So we also bind the canceled event to make sure the released func can be called when the input is canceled.
+				// ゲームパッド入力用の特殊処理。
+				// Chordアクションを使用すると、特殊なケースでゲームパッド入力のCompletedイベントが発生しない場合があります。
+				// 入力がキャンセルされた場合にもReleasedFuncが呼び出されるよう、Canceledイベントもバインドします。
 				if (action.bBindCancelToReleasedEvent)
 				{
 					OutBindHandles.Add(BindAction(action.InputAction, ETriggerEvent::Canceled, Object, ReleasedFunc, action.InputTag).GetHandle());

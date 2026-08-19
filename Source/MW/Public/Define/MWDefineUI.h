@@ -3,18 +3,18 @@
 #include "Engine/DataAsset.h"
 #include "MWDefineUI.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWUserWidget;
 
 /*
- *  Background	: Scene info
- *  Base		: Persistent UI such as character's state, map
- *  Battle		: Damage numbers, combo indicators, skill cooldown, enemy health bars
- *  Interactive : Inventory, skill, task
- *  Popup		: Confirm window, rewards
- *  Notification: Instant message, prompt, achievement
- *  Topmost		: Very important ui
- *	Debug		: debug ui
+ *  Background	: シーン情報
+ *  Base		: キャラクター状態やMapなどの常設UI
+ *  Battle		: ダメージ値、コンボ表示、スキルクールダウン、敵HPバー
+ *  Interactive	: インベントリ、スキル、タスク
+ *  Popup		: 確認画面、報酬
+ *  Notification: メッセージ、プロンプト、実績通知
+ *  Topmost		: 最優先UI
+ *	Debug		: デバッグUI
  */
 UENUM(BlueprintType)
 enum class EMWUILayer : uint8
@@ -91,7 +91,7 @@ enum class EMWWindowUIType : uint8
 	RecipeProductionUI,
 	RecipeProductionMakingUI,
 
-	//////////  Debug Or Temp
+	//////////  デバッグ／一時利用
 	InventoryRecycleBinUI,
 };
 
@@ -114,7 +114,7 @@ struct FMWWidgetLayerInfo
 	UPROPERTY(EditDefaultsOnly)
 	EMWUILayer Layer = EMWUILayer::Base;
 
-	/* LayerOffset is added to z-order of Layer. */
+	/* LayerOffsetをLayerのZ-orderに加算します。 */
 	UPROPERTY(EditDefaultsOnly)
 	int32 LayerOffset = 0;
 };
@@ -124,7 +124,7 @@ struct FMWUIClassConfig : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	/* Used in open and close UI. */
+	/* UIの開閉に使用します。 */
 	UPROPERTY(EditDefaultsOnly)
 	FName Name;
 	

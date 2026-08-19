@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWCombatSkillInfo.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UCommonTextBlock;
 class UImage;
 
-// Define
+// 定義
 
 /*
  * @class UMWCombatSkillInfo

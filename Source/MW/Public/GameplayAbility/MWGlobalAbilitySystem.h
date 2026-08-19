@@ -18,62 +18,61 @@ struct FFrame;
 struct FGameplayAbilitySpecHandle;
 
 /**
- * Manages a collection of globally applied abilities across multiple Ability System Components (ASCs).
- * Tracks which abilities have been granted to which ASCs and provides operations to add/remove them.
+ * 複数のAbilitySystemComponent（ASC）へGlobal適用するAbilityを管理します。
+ * ASCごとの付与状況を追跡し、追加／削除処理を提供します。
  */
 USTRUCT()
 struct FGlobalAppliedAbilityList
 {
 	GENERATED_BODY()
 
-	/** Map of ASC to the ability spec handle granted to that ASC. Used to track and manage global abilities. */
+	/** ASCと付与済みAbilitySpecHandleのMap。GlobalAbilityの追跡と管理に使用します。 */
 	UPROPERTY()
 	TMap<TObjectPtr<UMWAbilitySystemComponent>, FGameplayAbilitySpecHandle> Handles;
 
-	/** Grants the specified ability to the given ASC and stores the handle for later removal. */
+	/** 指定したAbilityをASCへ付与し、後の削除に使用するHandleを保持します。 */
 	void AddToASC(TSubclassOf<UGameplayAbility> Ability, UMWAbilitySystemComponent* ASC);
 	
-	/** Removes the previously granted ability from the specified ASC. */
+	/** 指定したASCから付与済みAbilityを削除します。 */
 	void RemoveFromASC(UMWAbilitySystemComponent* ASC);
 	
-	/** Removes this ability from all ASCs that currently have it granted. */
+	/** このAbilityが付与されている全ASCから削除します。 */
 	void RemoveFromAll();
 };
 
 /**
- * Manages a collection of globally applied gameplay effects across multiple Ability System Components (ASCs).
- * Tracks which effects have been applied to which ASCs and provides operations to add/remove them.
+ * 複数のAbilitySystemComponent（ASC）へGlobal適用するGameplayEffectを管理します。
+ * ASCごとの適用状況を追跡し、追加／削除処理を提供します。
  */
 USTRUCT()
 struct FGlobalAppliedEffectList
 {
 	GENERATED_BODY()
 
-	/** Map of ASC to the active gameplay effect handle applied to that ASC. Used to track and manage global effects. */
+	/** ASCと適用済みActiveGameplayEffectHandleのMap。GlobalEffectの追跡と管理に使用します。 */
 	UPROPERTY()
 	TMap<TObjectPtr<UMWAbilitySystemComponent>, FActiveGameplayEffectHandle> Handles;
 
-	/** Applies the specified gameplay effect to the given ASC and stores the handle for later removal. */
+	/** 指定したGameplayEffectをASCへ適用し、後の削除に使用するHandleを保持します。 */
 	void AddToASC(TSubclassOf<UGameplayEffect> Effect, UMWAbilitySystemComponent* ASC);
 	
-	/** Removes the previously applied effect from the specified ASC. */
+	/** 指定したASCから適用済みEffectを削除します。 */
 	void RemoveFromASC(UMWAbilitySystemComponent* ASC);
 	
-	/** Removes this effect from all ASCs that currently have it applied. */
+	/** このEffectが適用されている全ASCから削除します。 */
 	void RemoveFromAll();
 };
 
 /**
- * World subsystem that manages global abilities and gameplay effects.
+ * GlobalAbilityとGameplayEffectを管理するWorldSubsystemです。
  * 
- * This system allows you to apply abilities and effects to all registered Ability System Components
- * in the world at once. When new ASCs register, they automatically receive any active global abilities/effects.
- * When ASCs unregister, their global abilities/effects are automatically cleaned up.
+ * World内の登録済みAbilitySystemComponentへAbilityとEffectを一括適用します。
+ * 新規登録されたASCには有効なGlobalAbility／Effectを自動適用し、登録解除時に自動削除します。
  * 
- * Common use cases:
- * - Game-wide buffs/debuffs that affect all players
- * - Environmental effects that should apply to everyone
- * - Server-authoritative abilities that all clients need
+ * 主な用途：
+ * - 全プレイヤーへ影響するゲーム全体のBuff／Debuff
+ * - 全対象へ適用する環境Effect
+ * - 全Clientに必要なServer Authority Ability
  */
 UCLASS()
 class UMWGlobalAbilitySystem : public UWorldSubsystem
@@ -84,75 +83,75 @@ public:
 	UMWGlobalAbilitySystem();
 
 	/**
-	 * Grants the specified ability to all currently registered ASCs and any ASCs that register in the future.
-	 * Server/Authority only - will not work on clients.
+	 * 現在および今後登録される全ASCへ指定Abilityを付与します。
+	 * Server／Authority専用であり、Clientでは動作しません。
 	 * 
-	 * @param Ability - The gameplay ability class to grant globally
+	 * @param Ability Globalに付与するGameplayAbilityクラス。
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="MW")
 	void ApplyAbilityToAll(TSubclassOf<UGameplayAbility> Ability);
 
 	/**
-	 * Applies the specified gameplay effect to all currently registered ASCs and any ASCs that register in the future.
-	 * Server/Authority only - will not work on clients.
+	 * 現在および今後登録される全ASCへ指定GameplayEffectを適用します。
+	 * Server／Authority専用であり、Clientでは動作しません。
 	 * 
-	 * @param Effect - The gameplay effect class to apply globally
+	 * @param Effect Globalに適用するGameplayEffectクラス。
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="MW")
 	void ApplyEffectToAll(TSubclassOf<UGameplayEffect> Effect);
 
 	/**
-	 * Removes the specified ability from all ASCs that currently have it granted.
-	 * Server/Authority only - will not work on clients.
+	 * 指定Abilityが付与されている全ASCから削除します。
+	 * Server／Authority専用であり、Clientでは動作しません。
 	 * 
-	 * @param Ability - The gameplay ability class to remove globally
+	 * @param Ability Globalから削除するGameplayAbilityクラス。
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "MW")
 	void RemoveAbilityFromAll(TSubclassOf<UGameplayAbility> Ability);
 
 	/**
-	 * Removes the specified gameplay effect from all ASCs that currently have it applied.
-	 * Server/Authority only - will not work on clients.
+	 * 指定GameplayEffectが適用されている全ASCから削除します。
+	 * Server／Authority専用であり、Clientでは動作しません。
 	 * 
-	 * @param Effect - The gameplay effect class to remove globally
+	 * @param Effect Globalから削除するGameplayEffectクラス。
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "MW")
 	void RemoveEffectFromAll(TSubclassOf<UGameplayEffect> Effect);
 
 	/**
-	 * Registers an ASC with the global system and automatically applies any currently active global effects/abilities.
-	 * Should be called when an ASC is created and ready to receive global abilities/effects.
+	 * ASCをGlobalSystemへ登録し、現在有効なGlobalEffect／Abilityを自動適用します。
+	 * ASCの生成後、GlobalAbility／Effectを受け取れる状態で呼び出します。
 	 * 
-	 * @param ASC - The Ability System Component to register
+	 * @param ASC 登録するAbilitySystemComponent。
 	 */
 	void RegisterASC(UMWAbilitySystemComponent* ASC);
 
 	/**
-	 * Unregisters an ASC from the global system and removes any active global effects/abilities from it.
-	 * Should be called when an ASC is being destroyed or no longer needs global abilities/effects.
+	 * ASCをGlobalSystemから登録解除し、有効なGlobalEffect／Abilityを削除します。
+	 * ASCの破棄時またはGlobalAbility／Effectが不要になった際に呼び出します。
 	 * 
-	 * @param ASC - The Ability System Component to unregister
+	 * @param ASC 登録解除するAbilitySystemComponent。
 	 */
 	void UnregisterASC(UMWAbilitySystemComponent* ASC);
 
 private:
 	/** 
-	 * Maps ability classes to their application lists.
-	 * Each entry tracks all ASCs that have been granted that particular global ability.
+	 * Abilityクラスと適用一覧のMapです。
+	 * 各要素で対象GlobalAbilityが付与された全ASCを追跡します。
 	 */
 	UPROPERTY()
 	TMap<TSubclassOf<UGameplayAbility>, FGlobalAppliedAbilityList> AppliedAbilities;
 
 	/** 
-	 * Maps gameplay effect classes to their application lists.
-	 * Each entry tracks all ASCs that have that particular global effect applied.
+	 * GameplayEffectクラスと適用一覧のMapです。
+	 * 各要素で対象GlobalEffectが適用された全ASCを追跡します。
 	 */
 	UPROPERTY()
 	TMap<TSubclassOf<UGameplayEffect>, FGlobalAppliedEffectList> AppliedEffects;
 
 	/** 
-	 * List of all ASCs currently registered with the global system.
-	 * Used to apply new global abilities/effects when they are added.
+	 * GlobalSystemへ現在登録されている全ASCの一覧です。
+	 * 新しいGlobalAbility／Effectの追加時に使用します。
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<UMWAbilitySystemComponent>> RegisteredASCs;

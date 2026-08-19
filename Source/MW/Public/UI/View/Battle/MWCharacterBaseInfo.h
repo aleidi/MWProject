@@ -1,15 +1,15 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWCharacterBaseInfo.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UImage;
 class UCommonTextBlock;
 class UProgressBar;
 
-// Define
+// 定義
 
 /*
  * @class UMWCharacterBaseInfo

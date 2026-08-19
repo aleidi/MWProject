@@ -5,7 +5,7 @@
 #include "UI/ViewModel/Battle/MWVMCharacterSkill.h"
 #include "UI/ViewModel/Battle/MWVMSkillBar.h"
 
-// Define
+// 定義
 namespace
 {
 	void LayoutDiamond(UWidget* Up, UWidget* Left, UWidget* Down, UWidget* Right, float Radius)

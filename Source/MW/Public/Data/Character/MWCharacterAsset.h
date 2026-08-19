@@ -8,7 +8,7 @@ class USkeletalMesh;
 class UMWAbilitySet;
 class UMWCharacterAnimInstance;
 
-/** Character appearance (mesh, etc.). Bundle is decided by the outer property. */
+/** キャラクターの外観（Meshなど）。Bundleは外側のプロパティで指定します。 */
 USTRUCT(BlueprintType)
 struct FMWCharacterAppearance
 {
@@ -18,7 +18,7 @@ struct FMWCharacterAppearance
 	TSoftObjectPtr<USkeletalMesh> Mesh_Body;
 };
 
-/** Character locomotion / reaction animations. Bundle is decided by the outer property. */
+/** キャラクターの移動／リアクションアニメーション。Bundleは外側のプロパティで指定します。 */
 USTRUCT(BlueprintType)
 struct FMWCharacterAnimSet
 {
@@ -50,17 +50,17 @@ struct FMWCharacterAnimSet
 };
 
 /**
- * Unified character configuration PDA.
+ * キャラクター設定を一元管理するPDAです。
  *
- * Naming convention:
- *   PrimaryAssetType : "Character"  (see PrimaryAssetTypeName below)
- *   PrimaryAssetName : Id (int32, from Excel)
- *   Asset file name  : DA_Character_<Id>_<Name>   e.g. DA_Character_1001_KOSMOS
- *   Asset directory  : /Game/Data/Characters/<Category>/
+ * 命名規則：
+ *   PrimaryAssetType : "Character"（下記のPrimaryAssetTypeNameを参照）
+ *   PrimaryAssetName : Id（int32、Excelから取得）
+ *   アセットファイル名：DA_Character_<Id>_<Name>（例：DA_Character_1001_KOSMOS）
+ *   アセットディレクトリ：/Game/Data/Characters/<Category>/
  *
- * Bundles:
- *   "Spawn" - required to spawn the character (default mesh/anim/ability)
- *   "Extra" - on-demand extras (alternate appearances, ...)
+ * Bundle：
+ *   "Spawn" - キャラクター生成に必要（デフォルトのMesh／Anim／Ability）
+ *   "Extra" - 必要に応じてロードする追加要素（別外観など）
  */
 UCLASS(BlueprintType, HideCategories = ("Asset"))
 class MW_API UMWCharacterAsset : public UMWPrimaryAsset
@@ -68,10 +68,10 @@ class MW_API UMWCharacterAsset : public UMWPrimaryAsset
 	GENERATED_BODY()
 
 public:
-	/** Canonical PrimaryAssetType for character PDAs. Use this everywhere instead of literals. */
+	/** キャラクターPDAの標準PrimaryAssetType。リテラルではなく本定数を使用します。 */
 	static const FName PrimaryAssetTypeName;
 
-	/** AssetBundle names used by character loading. */
+	/** キャラクターのロードに使用するAssetBundle名。 */
 	static const FName BundleName_Spawn;
 	static const FName BundleName_Extra;
 
@@ -83,22 +83,22 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AssetRegistrySearchable)
 	int32 Id = INDEX_NONE;
 
-	// ==================== Appearance ====================
+	// ==================== 外観 ====================
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Appearance", meta=(AssetBundles="Spawn"))
 	FMWCharacterAppearance DefaultAppearance;
 
-	/** Extra appearances keyed by user-defined index, loaded via "Extra" bundle. */
+	/** ユーザー定義Indexをキーとし、"Extra" Bundleでロードする追加外観。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Appearance", meta=(AssetBundles="Extra"))
 	TMap<int32, FMWCharacterAppearance> ExtraAppearance;
 
-	// ==================== Animation ====================
+	// ==================== アニメーション ====================
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AssetBundles="Spawn"))
 	TSoftClassPtr<UMWCharacterAnimInstance> AnimInstance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AssetBundles="Spawn"))
 	FMWCharacterAnimSet DefaultAnimation;
 
-	// ==================== Ability ====================
+	// ==================== アビリティ ====================
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability", meta=(AssetBundles="Spawn"))
 	TSoftObjectPtr<UMWAbilitySet> DefaultAbilitySet;
 };

@@ -5,7 +5,7 @@
 #include "UObject/Object.h"
 #include "MWSkillCastPayload.generated.h"
 
-/** 统一施法载荷（过渡/从零版本通用） */
+/** キャスト処理で共通して使用するペイロード（移行版／新規実装版の両方に対応）。 */
 UCLASS(BlueprintType)
 class MW_API UMWSkillCastPayload : public UObject
 {

@@ -17,7 +17,7 @@ public:
 
 public:
 	TWeakObjectPtr<AActor> Actor;
-	// bFadeOut is Disappear
+	// bFadeOutがtrueの場合は非表示化
 	bool bFadeOut;
 	float FadeOutTime;
 	float FadeValue;
@@ -50,7 +50,7 @@ public:
 protected:
 	virtual void SelfFade();
 
-	// Trace and find collided actors
+	// トレースで衝突アクターを検索
 	virtual TArray<FHitResult> FindCollidedActors() const;
 	virtual TArray<AActor*> FilterCollidedActors(const TArray<FHitResult>& HitResults);
 
@@ -66,44 +66,44 @@ protected:
 	TSet<TWeakObjectPtr<AActor>> ManualFadingActors;
 
 private:
-	/** fading setting property */
+	/** フェード設定プロパティ */
 	bool bEnableFade = true;
 
 	float FadeInTime = 0.8f;
 	float FadeOutTime = 0.8f;
 
-	/** Material param. During fade process this. Not support changing between different camera modes */
+	/** フェード処理用のマテリアルパラメータ。カメラモード間の変更には非対応 */
 
 	float MaterialFadeMinValue = 0.f;
 	float MaterialFadeMaxValue = 1.f;
 
 	/** 
-	* The set of material parameters that will be set to the minimum @MaterialFadeMinValue or maximum @MaterialFadeMaxValue value.
-	* These parameters (usually only 1 here) should hide or show the object.
+	* 最小値@MaterialFadeMinValueまたは最大値@MaterialFadeMaxValueを設定するマテリアルパラメータ群。
+	* これらのパラメータ（通常は1つ）でオブジェクトの表示・非表示を制御する。
 	*/
 	TArray<FName> MaterialFadeParamNames;
 
 	/** 
-	* This channel used in trace for find for objects are between camera and character.
-	* see @UC3DCameraFadingObject::FindCollidedActors
+	* カメラとキャラクター間のオブジェクトを検索するトレースで使用するチャンネル。
+	* @UC3DCameraFadingObject::FindCollidedActorsを参照。
 	*/
 	ECollisionChannel FadeChannel = ECC_Camera;
 
 	/** 
-	* Do need hide self character if he collided with camera.
-	* For camera check radius see @SelfFadeCheckRadius
+	* 自身のキャラクターがカメラと衝突した場合に非表示化するか。
+	* カメラの判定半径は@SelfFadeCheckRadiusを参照。
 	*/
 	bool bFadeSelfIfCollision = true;
 
-	/** If true, then custom fade time will be used @SelfFadeCustomFadeOutTime, otherwise will be used @FadeOutTime*/
+	/** trueの場合は@SelfFadeCustomFadeOutTime、それ以外は@FadeOutTimeを使用する */
 	bool bUseCustomFadeOutTimeForSelfFade = false;
 
-	/** Custom fade time if @bUseCustomFadeOutTimeForSelfFade is true. Overrides @FadeOutTime */
+	/** @bUseCustomFadeOutTimeForSelfFadeがtrueの場合のフェード時間。@FadeOutTimeを上書きする */
 	float SelfFadeCustomFadeOutTime = 1.f;
 
-	/** Radius sphere trace to determine camera collision with character*/
+	/** カメラとキャラクターの衝突判定に使用する球形トレースの半径 */
 	float SelfFadeCheckRadius = 18.f;
 
-	/** If true, and if bFadeSelfIfCollision true then all attached actors to character will be faded */
+	/** trueかつbFadeSelfIfCollisionがtrueの場合、キャラクターにアタッチされた全アクターをフェードする */
 	bool bSelfFadeAttachedActors = true;
 };

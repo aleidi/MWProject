@@ -14,8 +14,8 @@ struct FComponentRequestHandle;
 class UMWInputConfig;
 
 /**
- * Adds InputMappingContext to local players' EnhancedInput system. 
- * Expects that local players are set up to use the EnhancedInput system.
+ * LocalPlayerのEnhancedInputシステムへInputMappingContextを追加します。
+ * LocalPlayerでEnhancedInputシステムが設定済みであることを前提とします。
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Input Binds"))
 class UGameFeatureAction_AddInputBinding final : public UGameFeatureAction_WorldActionBase
@@ -23,16 +23,16 @@ class UGameFeatureAction_AddInputBinding final : public UGameFeatureAction_World
 	GENERATED_BODY()
 
 public:
-	//~ Begin UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース開始
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
-	//~ End UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース終了
 
-	//~ Begin UObject interface
+	//~ UObjectインターフェース開始
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
-	//~ End UObject interface
+	//~ UObjectインターフェース終了
 
 	UPROPERTY(EditAnywhere, Category="Input", meta=(AssetBundles="Client,Server"))
 	TArray<TSoftObjectPtr<const UMWInputConfig>> InputConfigs;
@@ -46,9 +46,9 @@ private:
 
 	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;
 
-	//~ Begin UGameFeatureAction_WorldActionBase interface
+	//~ UGameFeatureAction_WorldActionBaseインターフェース開始
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
-	//~ End UGameFeatureAction_WorldActionBase interface
+	//~ UGameFeatureAction_WorldActionBaseインターフェース終了
 
 	void Reset(FPerContextData& ActiveData);
 	void HandlePawnExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext);

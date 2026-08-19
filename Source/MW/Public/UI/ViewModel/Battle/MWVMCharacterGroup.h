@@ -1,20 +1,20 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "MW.h"
 #include "UI/ViewModel/MWViewModelBase.h"
 #include "MWVMCharacterGroup.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWVMCharacterStatus;
 
-// Define
+// 定義
 
 /*
  * @class UMWVMCharacterGroup
  * 
- * @brief This class is used only as an aggregation container for the ViewModels that are actually in use.
- *        It does not perform any binding
+ * @brief 使用中のViewModelを集約するContainerです。
+ *        Binding処理は行いません。
  *
  * @note
  */

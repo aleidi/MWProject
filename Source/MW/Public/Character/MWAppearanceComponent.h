@@ -1,16 +1,16 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Pawn/MWPawnComponent.h"
 #include "MWAppearanceComponent.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWCharacterAsset;
 
 /*
  * @class UMWAppearanceComponent
  *
- * @brief 在 character spawn 时根据 UMWCharacterPrimaryData 设置外观与 AnimInstance。
+ * @brief キャラクター生成時にUMWCharacterPrimaryDataに基づいて外観とAnimInstanceを設定します。
  */
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class MW_API UMWAppearanceComponent : public UMWPawnComponent

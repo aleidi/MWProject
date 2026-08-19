@@ -164,7 +164,7 @@ void UGameFeatureAction_AddInputBinding::RemoveInputMapping(APawn* Pawn, FPerCon
 		}
 	}
 
-	// Always remove the entry from the map to avoid Reset() spinning forever when no LocalPlayer/controller exists.
+	// LocalPlayerまたはControllerがない場合のReset()無限ループを防ぐため、必ずマップから削除
 	ActiveData.PawnInputBindHandles.Remove(Pawn);
 }
 

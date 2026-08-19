@@ -12,11 +12,11 @@ class FCommonImporterModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
+	/** IModuleInterface の実装 */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 	
-	/** This function will be bound to Command (by default it will bring up plugin window) */
+	/** コマンドにバインドされる処理（既定ではプラグインウィンドウを開く） */
 	void PluginButtonClicked();
 	
 private:
@@ -33,8 +33,8 @@ private:
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
 
-	TArray<TSharedPtr<FString>> ComboBoxOptions; // ComboBox的选项
-	TSharedPtr<FString> SelectedOption; // 当前选中的选项
+	TArray<TSharedPtr<FString>> ComboBoxOptions; // ComboBox の選択肢
+	TSharedPtr<FString> SelectedOption; // 現在選択中の項目
 
 	void* Handlelibxl;
 };

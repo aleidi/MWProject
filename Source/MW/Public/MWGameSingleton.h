@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UObject/NoExportTypes.h"
 #include "MWGameSingleton.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWGameplayData;
 
-// Define
+// 定義
 #define GET_MWSINGLETON() (UMWGameSingleton::Get())
 
 /*

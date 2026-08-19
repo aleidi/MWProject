@@ -28,7 +28,7 @@ UMWComboHitDamage::UMWComboHitDamage()
 
 float UMWComboHitDamage::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	// Gather the tags from the source and target as that can affect which buffs should be used
+	// 適用するバフの判定に使用するSourceとTargetのタグを取得
 	// ソースとターゲットからタグを収集します。これにより、使用するバフに影響を与える可能性があります.
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
@@ -42,7 +42,7 @@ float UMWComboHitDamage::CalculateBaseMagnitude_Implementation(const FGameplayEf
 
 	const float comboHitRatio = Spec.GetSetByCallerMagnitude(MWGameplayTags::GP_SetByCaller_ComboHitRatio, false, 1.0f);
 
-	// Use minus value to subtract damage from health for add op.
+	// 加算処理で体力からダメージを減算するため負値を使用
 	// 体力からダメージを引くためにマイナス値を使用します.
 	const float result = sourceComboTotalDamage * comboHitRatio * -1.f;
 

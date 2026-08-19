@@ -28,7 +28,7 @@ void UC3DCameraMoveObject::UpdateDesiredArmLocation(float DeltaTime)
 {
 	auto& camera = GetCamera();
 
-	// calculate rotation
+	// 回転を計算
 	FRotator desiredRot = GetTargetRotation();
 	if (bEnableRotLag)
 	{
@@ -36,7 +36,7 @@ void UC3DCameraMoveObject::UpdateDesiredArmLocation(float DeltaTime)
 	}
 	LastDesiredRot = desiredRot;
 
-	// calculate location
+	// 位置を計算
 	const FVector targetOrigin = camera.GetComponentLocation();
 	FVector desiredLoc = targetOrigin + TargetPivotOffset;
 
@@ -46,12 +46,12 @@ void UC3DCameraMoveObject::UpdateDesiredArmLocation(float DeltaTime)
 	}
 	LastDesiredLoc = desiredLoc;
 
-	// Now offset camera position back along our rotation
+	// 回転方向に沿ってカメラ位置を後方へオフセット
 	desiredLoc -= desiredRot.Vector() * TargetArmLength;
-	// Add socket offset in local space
+	// ローカル空間でソケットオフセットを加算
 	desiredLoc += FRotationMatrix(desiredRot).TransformVector(CameraOffset);
 
-	// subsequent step :  do sweep to ensure that camera does not penetrate other things
+	// カメラが他のオブジェクトを貫通しないようスイープを実行
 	FVector resultLoc;
 	if (bCollisionTest)
 	{
@@ -76,12 +76,12 @@ void UC3DCameraMoveObject::UpdateDesiredArmLocation(float DeltaTime)
 		UnfixedCameraPosition = resultLoc;
 	}
 
-	// Form a transform for new world transform for camera
+	// カメラの新しいワールドトランスフォームを生成
 	FTransform worldCamTM(desiredRot, resultLoc);
-	// Convert to relative to component
+	// コンポーネント相対へ変換
 	FTransform relCamTM = worldCamTM.GetRelativeTransform(camera.GetComponentTransform());
 
-	// Update socket location/rotation
+	// ソケットの位置と回転を更新
 	RelativeSocketLocation = relCamTM.GetLocation();
 	RelativeSocketRotation = relCamTM.GetRotation();
 
@@ -129,7 +129,7 @@ FRotator UC3DCameraMoveObject::GetTargetRotation() const
 	auto& camera = GetCamera();
 	FRotator desiredRot = bUsePawnControlRotation ? GetViewRotation() : GetDesiredRotation();
 
-	// If inheriting rotation, check options for which components to inherit
+	// 回転を継承する場合、各軸の継承設定を確認
 	if (!camera.IsUsingAbsoluteRotation())
 	{
 		const FRotator LocalRelativeRotation = camera.GetRelativeRotation();

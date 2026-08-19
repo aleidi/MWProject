@@ -54,7 +54,7 @@ enum class EBattleUnitCharacterType : uint8
 };
 
 /* FMWFoundActorInfo
-*  It's a data struct used in searching a selectable actor.
+*  選択可能なActorの検索に使用するデータ構造体です。
 */
 USTRUCT(BlueprintType)
 struct FMWFoundActorInfo
@@ -169,24 +169,24 @@ struct FMWCharacterBattleSkillData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TObjectPtr<UAnimMontage> Animation = nullptr;
 
-	// Whether it requires approaching the target before casting.
+	// キャスト前にターゲットへ接近する必要があるか。
 	// ターゲットに近づいてからキャストする必要があるか。
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	bool bRequiresApproach = false;
 
-	// The range within which the skill can be executed.
+	// スキルを実行できる範囲。
 	// スキルを実行できる範囲。
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (EditCondition = "bRequiresApproach"))
 	float CastRange = 100.f;
 
-	// Whether to use the special approach animation when approaching the target.
+	// ターゲット接近時に専用アニメーションを使用するか。
 	// ターゲットに接近する際に特別なアプローチアニメーションを使用するか。
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (EditCondition = "bRequiresApproach"))
 	bool bUseApproachAnimation = false;
 };
 
 /*
- *            Skill Table Diagram
+ *            スキルテーブル図
  *
  *        　〇   ーーー   〇   ーーー   〇  ーーー   〇
  *                 |           |           |

@@ -1,15 +1,15 @@
 #pragma once
 
-// Include
+// インクルード
 #include "MW.h"
 #include "Common/FsmState.h"
 #include "MWLogChannels.h"
 
-// Forward Declare
+// 前方宣言
 template<typename T>
 class FFsmState;
 
-// Define
+// 定義
 template<typename T>
 class IFsm
 {
@@ -23,25 +23,25 @@ public:
 	virtual FFsmState<T>* GetCurrentState() const = 0;
 	virtual FFsmState<T>* GetLastState() const = 0;
 	virtual FFsmState<T>* GetState(FName) const = 0;
-	// Start the fsm from the specified state. If a state is running, stop it first.
+	// 指定した状態からFSMを開始します。実行中の場合は先に停止します。
 	virtual void Start(FName) = 0;
 	virtual bool HasState(FName) = 0;
 	virtual void ChangeState(FName) = 0;
 	virtual void ChangeToLastState() = 0;
 	virtual void Update(float DeltaTime) = 0;
 	virtual void ShutDown() = 0;
-	// Temporarily stop the fsm at the current state. If bExitState is true, exit the current state.
+	// 現在の状態でFSMを一時停止します。bExitStateがtrueの場合は現在の状態を終了します。
 	virtual void Stop(bool bExitState) = 0;
-	// Resume the fsm from current state.
+	// 現在の状態からFSMを再開します。
 	virtual void Resume() = 0;
 };
 
 /*
  * @class FFsm
  * 
- * @brief The basic class of the fsm.
+ * @brief FSMの基底クラスです。
  *
- * @note T is the type of the fsm owner.
+ * @note TはFSM所有者の型です。
  */
 template<typename T>
 class FFsm : public TSharedFromThis<FFsm<T>>, public IFsm<T>
@@ -273,19 +273,19 @@ private:
 	}
 
 protected:
-	/* Name of the state machine. */
+	/* ステートマシン名。 */
 	FName Name;
 
-	/* Owner of the state machine. */
+	/* ステートマシンの所有者。 */
 	T* Owner = nullptr;
 
-	/* Is the state machine destroyed. */
+	/* ステートマシンが破棄済みか。 */
 	bool bDestroyed = false;
 
-	/* Is the state machine running. */
+	/* ステートマシンが実行中か。 */
 	bool bIsRunning = false;
 
-	/* How long current state is running. */
+	/* 現在の状態の経過時間。 */
 	float CurrentStateTime = 0.f;
 
 	FFsmState<T>* CurrentState = nullptr;

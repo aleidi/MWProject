@@ -35,7 +35,7 @@ UMWAbilitySystemComponent* UMWGameplayAbility::GetMWAbilitySystemComponentFromAc
 
 void UMWGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
 {
-	// Try to activate if activation policy is on spawn.
+	// Activation PolicyがOnSpawnなら発動を試行
 	if (ActorInfo && !Spec.IsActive() && (ActivationPolicy == EMWAbilityActivationPolicy::OnSpawn))
 	{
 		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
@@ -75,13 +75,13 @@ bool UMWGameplayAbility::CanChangeActivationGroup(EMWAbilityActivationGroup NewG
 
 	if ((ActivationGroup != EMWAbilityActivationGroup::Exclusive_Blocking) && mwASC->IsActivationGroupBlocked(NewGroup))
 	{
-		// This ability can't change groups if it's blocked (unless it is the one doing the blocking).
+		// 自身がブロック元でない限り、ブロック中はグループを変更不可
 		return false;
 	}
 
 	if ((NewGroup == EMWAbilityActivationGroup::Exclusive_Replaceable) && !CanBeCanceled())
 	{
-		// This ability can't become replaceable if it can't be canceled.
+		// キャンセル不可のAbilityはReplaceableへ変更不可
 		return false;
 	}
 
@@ -123,7 +123,7 @@ MW_API bool UMWGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHan
 		return false;
 	}
 
-	//@TODO Possibly remove after setting up tag relationships
+	//@TODO: タグ関係の設定後に削除を検討
 	UMWAbilitySystemComponent* MWASC = CastChecked<UMWAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 	if (MWASC->IsActivationGroupBlocked(ActivationGroup))
 	{
@@ -139,7 +139,7 @@ MW_API bool UMWGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHan
 
 void UMWGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 {
-	// The ability can not block canceling if it's replaceable.
+	// ReplaceableなAbilityはキャンセルをブロック不可
 	if (!bCanBeCanceled && (ActivationGroup == EMWAbilityActivationGroup::Exclusive_Replaceable))
 	{
 		UE_LOG(LogMWAbilitySystem, Error, TEXT("SetCanBeCanceled: Ability [%s] can not block canceling because its activation group is replaceable."), *GetName());

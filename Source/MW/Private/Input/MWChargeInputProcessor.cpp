@@ -72,7 +72,7 @@ bool UMWChargeInputProcessor::HandleReleased(const FGameplayTag& InInputTag, FGa
 				chargeState->bIsFullyCharged ? 1 : 0));
 	}
 
-	// full charge -> cast charge tag
+	// フルチャージ: チャージタグを送出
 	if (chargeState->bIsFullyCharged)
 	{
 		OutCastInputTag = InInputTag;
@@ -80,14 +80,14 @@ bool UMWChargeInputProcessor::HandleReleased(const FGameplayTag& InInputTag, FGa
 		return true;
 	}
 
-	// tap -> do nothing (consume this release in charge flow)
+	// タップ: チャージフロー内でReleaseを消費し、何もしない
 	if (chargeState->HoldTime < chargeState->RuntimeChargeStartDelay)
 	{
 		ChargeStates.Remove(InInputTag);
 		return true;
 	}
 
-	// not full and not tap -> enter decay
+	// フルチャージでもタップでもない場合: 減衰へ移行
 	chargeState->HoldTime = chargeState->RuntimeChargeStartDelay;
 	return true;
 }

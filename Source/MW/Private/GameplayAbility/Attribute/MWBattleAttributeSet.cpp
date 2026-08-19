@@ -42,11 +42,11 @@ void UMWBattleAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		// derive the damage and reset damage property 
+		// ダメージを取得し、Damageプロパティをリセット
 		const float damage = GetDamage();
 		SetDamage(0.f);
 
-		// apply the damage to health
+		// 体力へダメージを適用
 		const float curr_hp = GetHealth();
 		SetHealth(FMath::Clamp(curr_hp - damage, 0.f, GetMaxHealth()));
 	}
@@ -75,12 +75,12 @@ void UMWBattleAttributeSet::ClampAttribute(const FGameplayAttribute& Attribute, 
 {
 	if (Attribute == GetHealthAttribute())
 	{
-		// Do not allow health to go negative or above max health.
+		// 体力を0以上かつ最大体力以下に制限
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
 	else if (Attribute == GetMaxHealthAttribute())
 	{
-		// Do not allow max health to drop below 1.
+		// 最大体力の下限を1に制限
 		NewValue = FMath::Max(NewValue, 1.0f);
 	}
 }

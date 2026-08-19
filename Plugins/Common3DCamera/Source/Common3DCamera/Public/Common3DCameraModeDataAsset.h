@@ -12,9 +12,9 @@ class COMMON3DCAMERA_API UC3DCameraModeDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	//~ Begin UObject Interface
+	//~ UObjectインターフェース開始
 	//virtual void Serialize(FArchive& Ar) override;
-	//~ End UObject Interface
+	//~ UObjectインターフェース終了
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")

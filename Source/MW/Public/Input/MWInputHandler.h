@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "GameFramework/Actor.h"
 #include "MWInputComponent.h"
 #include "MWInputHandler.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class AMWInputHandler
@@ -50,7 +50,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	/* Cache the InputBindingHandle with the object and action. */
+	/* ObjectとActionに対応するInputBindingHandleをキャッシュします。 */
 	void BindActionhandleWithObject(const void* Object, const UInputAction* Action, uint32 Handle);
 	
 private:

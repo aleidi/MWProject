@@ -1,12 +1,12 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Engine/GameInstance.h"
 #include "MWGameInstance.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class UMWGameInstance

@@ -11,14 +11,14 @@ public class CommonImporter : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-				// ... add public include paths required here ...
+				// ... 必要な公開インクルードパスをここに追加 ...
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				// ... add other private include paths required here ...
+				// ... 必要な非公開インクルードパスをここに追加 ...
 			}
 			);
 			
@@ -27,7 +27,7 @@ public class CommonImporter : ModuleRules
 			new string[]
 			{
 				"Core",
-				// ... add other public dependencies that you statically link with here ...
+				// ... 静的リンクする公開依存モジュールをここに追加 ...
 			}
 			);
 			
@@ -49,7 +49,7 @@ public class CommonImporter : ModuleRules
 				"UMG",
                 "UMGEditor"
 
-				// ... add private dependencies that you statically link with here ...	
+				// ... 静的リンクする非公開依存モジュールをここに追加 ...
 			}
 			);
 		
@@ -57,20 +57,20 @@ public class CommonImporter : ModuleRules
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-				// ... add any modules that your module loads dynamically here ...
+				// ... モジュールが動的に読み込む依存をここに追加 ...
 			}
 			);
 
-		// include third party
+		// サードパーティライブラリを設定
 		if(Target.Platform == UnrealTargetPlatform.Win64)
 		{
-			// add include path
+			// インクルードパスを追加
 			PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "ThirdParty/libxl/include_cpp"));
 			
-			// add .lib path
+			// .lib パスを追加
 			PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory, "ThirdParty/libxl/lib64/libxl.lib"));
 
-			// add .dll path and set delay load
+			// .dll パスを追加し、遅延ロードを設定
 			RuntimeDependencies.Add(Path.Combine(ModuleDirectory, "ThirdParty/libxl/bin64/libxl.dll"));
             PublicDelayLoadDLLs.Add("libxl.dll");
 

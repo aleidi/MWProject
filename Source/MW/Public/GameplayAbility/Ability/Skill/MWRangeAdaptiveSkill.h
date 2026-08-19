@@ -9,17 +9,17 @@ class AActor;
 UENUM(BlueprintType)
 enum class EMWSkillRangeForm : uint8
 {
-	/** Close-range form (e.g. melee combo). */
+	/** 近距離形態（例：近接コンボ）。 */
 	Close,
 
-	/** Long-range form (e.g. projectile shot). */
+	/** 遠距離形態（例：飛び道具）。 */
 	Far,
 };
 
 /**
  * UMWRangeAdaptiveSkill
  *
- * Selects close/far skill form based on distance to the resolved target at cast time.
+ * キャスト時に選定したターゲットとの距離に応じて近距離／遠距離形態を選択します。
  */
 UCLASS()
 class MW_API UMWRangeAdaptiveSkill : public UMWSkillBase
@@ -27,32 +27,32 @@ class MW_API UMWRangeAdaptiveSkill : public UMWSkillBase
 	GENERATED_BODY()
 
 protected:
-	//~UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-	//~End of UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース終了
 
 private:
-	/** Resolves range-adaptive config by SkillId. Returns nullptr when this skill is not range-adaptive. */
+	/** SkillIdから距離適応設定を取得します。距離適応型でない場合はnullptrを返します。 */
 	const FMWSkillRangeAdaptiveConfig* ResolveRangeAdaptiveConfig(const FMWSkillCastCommand& InCommand) const;
 
-	/** Resolves the best target actor for distance decision (current implementation: nearest pawn in radius). */
+	/** 距離判定に使用する最適なTargetActorを選定します（現在は半径内で最も近いPawn）。 */
 	AActor* ResolveBestTargetActor(const FMWSkillRangeAdaptiveConfig& InConfig) const;
 
-	/** Decides close/far form with hysteresis to avoid boundary jitter. */
+	/** 境界付近の揺れを防ぐため、ヒステリシスを用いて近距離／遠距離形態を決定します。 */
 	EMWSkillRangeForm DecideRangeForm(float InDistance, const FMWSkillRangeAdaptiveConfig& InConfig);
 
-	/** Resolves form when no target is available. Can request cast failure via out flag. */
+	/** ターゲットがない場合の形態を決定します。出力Flagでキャスト失敗を要求できます。 */
 	EMWSkillRangeForm ResolveNoTargetForm(const FMWSkillRangeAdaptiveConfig& InConfig, bool& bOutShouldFailCast) const;
 
-	/** Writes resolved form back to cast command (mainly montage section override). */
+	/** 決定した形態をCastCommandへ反映します（主にMontageセクションの上書き）。 */
 	void ApplyRangeFormToCommand(EMWSkillRangeForm InForm, const FMWSkillRangeAdaptiveConfig& InConfig, FMWSkillCastCommand& InOutCommand) const;
 
 private:
-	/** Cached target for current ability lifecycle. */
+	/** 現在のAbilityライフサイクルで使用するTargetキャッシュ。 */
 	UPROPERTY(Transient)
 	TObjectPtr<AActor> CachedTargetActor = nullptr;
 
-	/** Last resolved form used by hysteresis logic. */
+	/** ヒステリシス判定で使用する直前の形態。 */
 	EMWSkillRangeForm LastRangeForm = EMWSkillRangeForm::Far;
 };

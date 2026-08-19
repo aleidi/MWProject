@@ -169,7 +169,7 @@ void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 
 	UMWSkillInputService* skillInputService = UMWSkillInputService::Get(this);
 
-	// 1) charge input route
+	// 1) チャージ入力経路
 	if (ChargeInputProcessor && ChargeInputProcessor->IsChargeInputTag(InputTag))
 	{
 		FMWChargeRuntimeConfig runtimeConfig;
@@ -183,7 +183,7 @@ void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 		return;
 	}
 
-	// 2) skill input route
+	// 2) スキル入力経路
 	if (IsSkillInputTag(InputTag))
 	{
 		if (skillInputService)
@@ -194,7 +194,7 @@ void AMWPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 		return;
 	}
 
-	// 3) non-skill route
+	// 3) スキル以外の入力経路
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
 		mwasc->AbilityInputTagPressed(InputTag);
@@ -209,7 +209,7 @@ void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 		return;
 	}
 
-	// 1) charge input release route
+	// 1) チャージ入力解除経路
 	if (ChargeInputProcessor && ChargeInputProcessor->IsChargeInputTag(InputTag))
 	{
 		FGameplayTag castInputTag;
@@ -223,13 +223,13 @@ void AMWPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 		return;
 	}
 
-	// 2) skill input release ignored (already handled on press)
+	// 2) スキル入力解除は無視（押下時に処理済み）
 	if (IsSkillInputTag(InputTag))
 	{
 		return;
 	}
 
-	// 3) non-skill release route
+	// 3) スキル以外の入力解除経路
 	if (UMWAbilitySystemComponent* mwasc = pawn->FindComponentByClass<UMWAbilitySystemComponent>())
 	{
 		mwasc->AbilityInputTagReleased(InputTag);
@@ -338,12 +338,12 @@ UMWAbilitySystemComponent* AMWPlayerController::GetMWAbilitySystemComponent() co
 
 void AMWPlayerController::SpawnPlayerCameraManager()
 {
-	// servers and owning clients get cameras
-	// If no archetype specified, spawn an Engine.PlayerCameraManager.  NOTE all games should specify an archetype.
+	// サーバーと所有クライアントにカメラを設定
+	// Archetype未指定時はEngine.PlayerCameraManagerを生成。通常はArchetypeを指定する
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = this;
 	SpawnInfo.Instigator = GetInstigator();
-	SpawnInfo.ObjectFlags |= RF_Transient;	// We never want to save camera managers into a map
+	SpawnInfo.ObjectFlags |= RF_Transient;	// Camera Managerはマップへ保存しない
 	if (PlayerCameraManagerClass != NULL)
 	{
 		PlayerCameraManager = GetWorld()->SpawnActor<APlayerCameraManager>(PlayerCameraManagerClass, SpawnInfo);
@@ -371,14 +371,14 @@ void AMWPlayerController::SetupCameraComponents()
 		return;
 	}
 
-	// Check if camera components already exist
+	// カメラコンポーネントが作成済みか確認
 	UC3DCameraComponent* existingC3DCamera = character->FindComponentByClass<UC3DCameraComponent>();
 	if (existingC3DCamera)
 	{
-		return; // Camera components already exist
+		return; // カメラコンポーネントは作成済み
 	}
 
-	// Create C3DCamera component
+	// C3DCameraコンポーネントを作成
 	UC3DCameraComponent* c3dCamera = NewObject<UC3DCameraComponent>(character, UC3DCameraComponent::StaticClass(), TEXT("C3DCamera"));
 	if (c3dCamera)
 	{
@@ -386,7 +386,7 @@ void AMWPlayerController::SetupCameraComponents()
 		c3dCamera->RegisterComponent();
 		c3dCamera->AttachToComponent(character->GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
 
-		// Create Camera component
+		// Cameraコンポーネントを作成
 		UCameraComponent* camera = NewObject<UCameraComponent>(character, UCameraComponent::StaticClass(), TEXT("Camera"));
 		if (camera)
 		{
@@ -395,7 +395,7 @@ void AMWPlayerController::SetupCameraComponents()
 			camera->AttachToComponent(c3dCamera, FAttachmentTransformRules::SnapToTargetIncludingScale);
 		}
 
-		// Setup default camera modes
+		// デフォルトのカメラモードを設定
 		if (const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData())
 		{
 			checkf(data->DefaultCameraModesAssets.Num() > 0, TEXT("No camera mode assets"));

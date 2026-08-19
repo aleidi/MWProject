@@ -38,7 +38,7 @@ bool UMWUIManager::OpenUI(const FName& WidgetName, bool bFocus)
 {
 	if (!HasRootCanvas())
 	{
-		// try create canvas if it's not created
+		// 未作成ならCanvasの作成を試行
 		if (!CreateCanvas())
 		{
 			return false;
@@ -70,7 +70,7 @@ bool UMWUIManager::OpenUI(const FName& WidgetName, bool bFocus)
 	{
 		widgetInfo->Widget.LoadSynchronous();
 
-		// try to create a new widget
+		// 新規Widgetの作成を試行
 		widgetInst = CreateWidget(GetWorld(), widgetInfo->Widget.Get());
 
 		check(widgetInst);
@@ -87,7 +87,7 @@ bool UMWUIManager::OpenUI(const FName& WidgetName, bool bFocus)
 		widgetInst = *foundWidget;
 	}
 
-	// Get Z Order
+	// Z Orderを取得
 	int32* layerCfg = LayerConfig.Find(widgetInfo->Layer);
 	if (!layerCfg)
 	{

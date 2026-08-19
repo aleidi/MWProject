@@ -22,7 +22,7 @@ static const FName CommonImporterTabName("CommonImporter");
 
 void FCommonImporterModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	// この処理はモジュール読み込み後に実行される（正確なタイミングは .uplugin のモジュール設定で定義）。
 	
 	FCommonImporterStyle::Initialize();
 	FCommonImporterStyle::ReloadTextures();
@@ -42,14 +42,14 @@ void FCommonImporterModule::StartupModule()
 		.SetDisplayName(LOCTEXT("CommonImporter.FCommonImporterTabTitle", "CommonImporter"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
 
-	// Third Party
+	// サードパーティライブラリを初期化
 	InitThirdParty();
 }
 
 void FCommonImporterModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	// シャットダウン時のクリーンアップ処理。
+	// 動的リロード対応モジュールでは、アンロード前に呼び出される。
 
 	UToolMenus::UnRegisterStartupCallback(this);
 
@@ -71,17 +71,17 @@ TSharedRef<SDockTab> FCommonImporterModule::OnSpawnPluginTab(const FSpawnTabArgs
 		FText::FromString(TEXT("CommonImporter.cpp"))
 		);
 
-	// ComboBox选项
+	// ComboBox の選択肢
 	ComboBoxOptions.AddUnique(MakeShared<FString>("Excel"));
 	ComboBoxOptions.AddUnique(MakeShared<FString>("JSON"));
 
-	// 绑定选择变化
-	SelectedOption = ComboBoxOptions[0]; // 默认选项
+	// 選択変更をバインド
+	SelectedOption = ComboBoxOptions[0]; // 既定の選択項目
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
-			// Put your tab content here!
+			// タブのコンテンツをここに配置
 			SNew(SVerticalBox)
 				+ SVerticalBox::Slot()
 				.Padding(5)
@@ -98,18 +98,18 @@ TSharedRef<SDockTab> FCommonImporterModule::OnSpawnPluginTab(const FSpawnTabArgs
 								.OnGenerateWidget_Lambda([this](TSharedPtr<FString> Item)
 								{
 									return SNew(STextBlock)
-										.Text(FText::FromString(*Item)); // 显示下拉项内容
+										.Text(FText::FromString(*Item)); // ドロップダウン項目を表示
 								})
 								.OnSelectionChanged_Lambda([this](TSharedPtr<FString> NewSelection, ESelectInfo::Type SelectInfo)
 								{
-									SelectedOption = NewSelection; // 更新选中的选项
+									SelectedOption = NewSelection; // 選択中の項目を更新
 								})
 								[
 									SNew(STextBlock)
 										.Text_Lambda([this]() 
 										{ 
 											return FText::FromString(*SelectedOption); 
-										}) // 显示当前选中的项
+										}) // 現在の選択項目を表示
 								]
 						]
 						+ SHorizontalBox::Slot()
@@ -127,7 +127,7 @@ TSharedRef<SDockTab> FCommonImporterModule::OnSpawnPluginTab(const FSpawnTabArgs
 									}
 									return FReply::Handled();
 								})
-								.Visibility_Lambda([this]() { return SelectedOption.IsValid() ? EVisibility::Visible : EVisibility::Hidden; }) // 控制按钮的可见性
+								.Visibility_Lambda([this]() { return SelectedOption.IsValid() ? EVisibility::Visible : EVisibility::Hidden; }) // ボタンの表示可否を制御
 						]
 				]
 		];
@@ -169,7 +169,7 @@ void FCommonImporterModule::DeinitThirdParty()
 
 void FCommonImporterModule::RegisterMenus()
 {
-	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
+	// Owner は UToolMenus::UnregisterOwner 実行時のクリーンアップ対象として使用される
 	FToolMenuOwnerScoped OwnerScoped(this);
 
 	//{
@@ -199,7 +199,7 @@ void FCommonImporterModule::RegisterMenus()
 
 void FCommonImporterModule::LoadExcelImporter()
 {
-	// get the  path of the asset by R.Clicking on the asset and 'Copy Reference'
+	// アセットを右クリックして「Copy Reference」を実行し、参照パスを取得する
 	const FSoftObjectPath widgetAssetPath("/CommonImporter/LoadExcel.LoadExcel");
 
 	UObject* widgetAssetLoaded = widgetAssetPath.TryLoad();

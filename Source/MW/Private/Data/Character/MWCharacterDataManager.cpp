@@ -68,7 +68,7 @@ FPrimaryAssetId UMWCharacterDataManager::GetPrimaryAssetIdForCharacter(int32 Cha
 		return FPrimaryAssetId();
 	}
 
-	// 先走表校验，避免非法 Id 参与后续加载。
+	// 不正なIDが後続のロード処理に渡らないよう、先にテーブルを検証します。
 	if (!FindCharacterRow(CharacterId))
 	{
 		return FPrimaryAssetId();

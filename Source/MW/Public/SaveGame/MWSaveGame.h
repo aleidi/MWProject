@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Define/MWDefineGameplay.h"
 #include "GameFramework/SaveGame.h"
 #include "MWSaveGame.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 USTRUCT(BlueprintType)
 struct FMWSaveMetaData
 {
@@ -46,7 +46,7 @@ struct FMWCharacterSaveData
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	TArray<int32> LearnedSkills;
 
-	// Equipped skills with their respective slot index
+	// 装備中スキルと対応するスロットIndex
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	TMap<int32, int32> EquippedSkills;
 };
@@ -75,7 +75,7 @@ class UMWSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
-	// Function to handle save data
+	// セーブデータ処理
 public:
 	UFUNCTION(BlueprintCallable, Category = "SaveGame")
 	void ChangeData();
@@ -87,7 +87,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "SaveGame")
 	FMWPartyData PartyData;
 
-	//QUEST
-	//Map-Region
-	//Inventory
+	// クエスト
+	// マップ地域
+	// インベントリ
 };

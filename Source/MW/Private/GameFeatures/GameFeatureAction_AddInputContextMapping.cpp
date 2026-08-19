@@ -95,13 +95,13 @@ void UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContextsForL
 			{
 				for (const FInputMappingContextAndPriority& entry : InputMappings)
 				{
-					// Skip entries that don't want to be registered
+					// 登録対象外のエントリをスキップ
 					if (!entry.bRegisterWithSettings)
 					{
 						continue;
 					}
 
-					// Register this IMC with the settings!
+					// このIMCを設定へ登録
 					if (UInputMappingContext* imc = assetManager.GetAsset(entry.InputMapping))
 					{
 						settings->RegisterInputMappingContext(imc);
@@ -148,13 +148,13 @@ void UGameFeatureAction_AddInputContextMapping::UnregisterInputMappingContextsFo
 			{
 				for (const FInputMappingContextAndPriority& entry : InputMappings)
 				{
-					// Skip entries that don't want to be registered
+					// 登録対象外のエントリをスキップ
 					if (!entry.bRegisterWithSettings)
 					{
 						continue;
 					}
 
-					// Register this IMC with the settings!
+					// このIMCを設定から登録解除
 					if (UInputMappingContext* imc = entry.InputMapping.Get())
 					{
 						settings->UnregisterInputMappingContext(imc);
@@ -230,7 +230,7 @@ void UGameFeatureAction_AddInputContextMapping::HandleControllerExtension(AActor
 	APlayerController* asController = CastChecked<APlayerController>(Actor);
 	FPerContextData& activeData = ContextData.FindOrAdd(ChangeContext);
 
-	// TODO Why does this code mix and match controllers and local players? ControllersAddedTo is never modified
+	// TODO: ControllerとLocalPlayerが混在する理由を確認。ControllersAddedToは更新されていない
 	if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved) || (EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved))
 	{
 		RemoveInputMapping(asController, activeData);

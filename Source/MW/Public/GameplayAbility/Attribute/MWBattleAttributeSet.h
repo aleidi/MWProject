@@ -23,7 +23,7 @@ struct FGameplayEffectModCallbackData;
 /**
  * @class UMWBattleAttributeSet
  *
- * @brief Attributes used for characters in battle.
+ * @brief 戦闘中のキャラクターが使用するAttributeです。
  *	      戦闘中のキャラクターに使用される属性.
  */
 UCLASS(BlueprintType)
@@ -35,13 +35,13 @@ public:
 
 	UMWBattleAttributeSet();
 
-	//// Delegate when Strength changes due to damage/Dexterity, some information may be missing on the client
+	//// ダメージ／DexterityによりStrengthが変化した際のDelegate。クライアントでは一部情報が欠ける場合があります。
 	//mutable FMWAttributeEvent OnStrengthChanged;
 
-	//// Delegate when max Strength changes
+	//// Strength最大値が変化した際のDelegate
 	//mutable FMWAttributeEvent OnEnduranceChanged;
 
-	//// Delegate to broadcast when the Strength attribute reaches zero
+	//// Strength Attributeが0になった際に通知するDelegate
 	//mutable FMWAttributeEvent OnOutOfStrength;
 
 protected:
@@ -84,7 +84,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, MaxHealth);
 
 	// -------------------------------------------------------------------
-	//	Temp Attribute
+	//	一時Attribute
 	// -------------------------------------------------------------------
 	UPROPERTY(BlueprintReadOnly, Category="MW", meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData HitRate;
@@ -99,7 +99,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UMWBattleAttributeSet, ComboTotalDamage);
 
 protected:
-	// These OnRep functions exist to make sure that the ability system internal representations are synchronized properly during replication
+	// Replication時にAbilitySystem内部表現を正しく同期するためのOnRep関数です。
 	UFUNCTION()
 	virtual void OnRep_Strength(const FGameplayAttributeData& OldValue);
 

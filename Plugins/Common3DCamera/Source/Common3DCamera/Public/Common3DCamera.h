@@ -11,7 +11,7 @@ class FCommon3DCameraModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
+	/** IModuleInterfaceの実装 */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 };

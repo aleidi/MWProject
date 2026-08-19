@@ -34,11 +34,11 @@
 //
 //	static UMWSettingsLocal* Get();
 //
-//	//~UObject interface
+//	//~UObjectインターフェース
 //	virtual void BeginDestroy() override;
-//	//~End of UObject interface
+//	//~UObjectインターフェース終了
 //
-//	//~UGameUserSettings interface
+//	//~UGameUserSettingsインターフェース
 //	virtual void SetToDefaults() override;
 //	virtual void LoadSettings(bool bForceReload) override;
 //	virtual void ConfirmVideoMode() override;
@@ -47,11 +47,11 @@
 //	virtual void ApplyNonResolutionSettings() override;
 //	virtual int32 GetOverallScalabilityLevel() const override;
 //	virtual void SetOverallScalabilityLevel(int32 Value) override;
-//	//~End of UGameUserSettings interface
+//	//~UGameUserSettingsインターフェース終了
 //
 //	
 //	//////////////////////////////////////////////////////////////////
-//	// Frontend state
+//	// フロントエンド状態
 //
 //public:
 //	void SetShouldUseFrontendPerformanceSettings(bool bInFrontEnd);
@@ -62,10 +62,10 @@
 //
 //	
 //	//////////////////////////////////////////////////////////////////
-//	// Keybindings
+//	// キーバインド
 //public:
-//	// Sets the controller representation to use, a single platform might support multiple kinds of controllers.  For
-//	// example, Win64 games could be played with both an XBox or Playstation controller.
+//	// 使用するController表現を設定します。単一Platformで複数種類のControllerをサポートできます。
+//	// 例えばWin64では、XboxとPlayStationの両Controllerを利用できます。
 //	UFUNCTION()
 //	void SetControllerPlatform(const FName InControllerPlatform);
 //	UFUNCTION()
@@ -73,43 +73,43 @@
 //
 //	DECLARE_EVENT_OneParam(UMWSettingsLocal, FInputConfigDelegate, const FLoadedMappableConfigPair& /*Config*/);
 //
-//	/** Delegate called when a new input config has been registered */
+//	/** 新しい入力設定が登録された際に呼び出すDelegate。 */
 //	FInputConfigDelegate OnInputConfigRegistered;
 //
-//	/** Delegate called when a registered input config has been activated */
+//	/** 登録済み入力設定が有効化された際に呼び出すDelegate。 */
 //	FInputConfigDelegate OnInputConfigActivated;
 //	
-//	/** Delegate called when a registered input config has been deactivate */
+//	/** 登録済み入力設定が無効化された際に呼び出すDelegate。 */
 //	FInputConfigDelegate OnInputConfigDeactivated;
 //	
-//	/** Register the given input config with the settings to make it available to the player. */
+//	/** 指定した入力設定を登録し、プレイヤーから利用可能にします。 */
 //	void RegisterInputConfig(ECommonInputType Type, const UEnhancedInputUserSettings* NewConfig, const bool bIsActive);
 //	
-//	/** Unregister the given input config. Returns the number of configs removed. */
+//	/** 指定した入力設定を登録解除し、削除した設定数を返します。 */
 //	int32 UnregisterInputConfig(const UEnhancedInputUserSettings* ConfigToRemove);
 //
-//	/** Set a registered input config as active */
+//	/** 登録済み入力設定を有効化します。 */
 //	void ActivateInputConfig(const UEnhancedInputUserSettings* Config);
 //
-//	/** Deactivate a registered config */
+//	/** 登録済み入力設定を無効化します。 */
 //	void DeactivateInputConfig(const UEnhancedInputUserSettings* Config);
 //
-//	/** Get all currently registered input configs */
+//	/** 現在登録されている全入力設定を取得します。 */
 //	const TArray<FLoadedMappableConfigPair>& GetAllRegisteredInputConfigs() const { return RegisteredInputConfigs; }
 //
 //	/**
-//	 * Get all registered input configs that match the input type.
+//	 * 入力種別に一致する登録済み入力設定をすべて取得します。
 //	 * 
-//	 * @param Type		The type of config to get, ECommonInputType::Count will include all configs.
-//	 * @param OutArray	Array to be populated with the current registered input configs that match the type
+//	 * @param Type 取得する設定種別。ECommonInputType::Countの場合は全設定を対象とします。
+//	 * @param OutArray 種別に一致した登録済み入力設定の出力先。
 //	 */
 //	void GetRegisteredInputConfigsOfType(ECommonInputType Type, OUT TArray<FLoadedMappableConfigPair>& OutArray) const;
 //	
 //	/**
-//	 * Maps the given keyboard setting to the 
+//	 * 指定したキーボード設定を割り当てます。
 //	 * 
-//	 * @param MappingName	The name of the FPlayerMappableKeyOptions that you would like to change
-//	 * @param NewKey		The new key to bind this option to
+//	 * @param MappingName 変更するFPlayerMappableKeyOptionsの名前。
+//	 * @param NewKey この項目に割り当てる新しいキー。
 //	 */
 //	void AddOrUpdateCustomKeyboardBindings(const FName MappingName, const FKey NewKey, UMWLocalPlayer* LocalPlayer);
 //
@@ -117,9 +117,8 @@
 //
 //private:
 //	/**
-//	 * The name of the controller the player is using.  This is maps to the name of a UCommonInputBaseControllerData
-//	 * that is available on this current platform.  The gamepad data are registered per platform, you'll find them
-//	 * in <Platform>Game.ini files listed under +ControllerData=...
+//	 * プレイヤーが使用中のController名。現在のPlatformで利用可能なUCommonInputBaseControllerData名に対応します。
+//	 * GamepadデータはPlatformごとに登録され、<Platform>Game.iniの+ControllerDataに記載されます。
 //	 */
 //	UPROPERTY(Config)
 //	FName ControllerPlatform;
@@ -127,19 +126,19 @@
 //	UPROPERTY(Config)
 //	FName ControllerPreset = TEXT("Default");
 //
-//	/** The name of the current input config that the user has selected. */
+//	/** ユーザーが選択中の入力設定名。 */
 //	UPROPERTY(Config)
 //	FName InputConfigName = TEXT("Default");
 //	
 //	/**
-//	 * Array of currently registered input configs. This is populated by game feature plugins
+//	 * 現在登録されている入力設定の配列。GameFeature Pluginにより設定されます。
 //	 * 
 //	 * @see UGameFeatureAction_AddInputConfig
 //	 */
 //	UPROPERTY(VisibleAnywhere)
 //	TArray<FLoadedMappableConfigPair> RegisteredInputConfigs;
 //	
-//	/** Array of custom key mappings that have been set by the player. Empty by default. */
+//	/** プレイヤーが設定したカスタムキーマッピングの配列。デフォルトは空です。 */
 //	UPROPERTY(Config)
 //	TMap<FName, FKey> CustomKeyboardConfig;
 //

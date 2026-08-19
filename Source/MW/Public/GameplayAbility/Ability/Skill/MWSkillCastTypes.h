@@ -29,11 +29,11 @@ struct FMWSkillCastCommand
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MW|Skill")
 	EMWSkillCastVariant Variant = EMWSkillCastVariant::Normal;
 
-	/** 核心：统一执行优先使用 SkillId */
+	/** 共通実行ではSkillIdを優先して使用します。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MW|Skill")
 	int32 SkillId = INDEX_NONE;
 
-	/** Player 输入路径兼容字段 */
+	/** プレイヤー入力経路との互換性を維持するフィールドです。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MW|Skill")
 	int32 SkillSlot = INDEX_NONE;
 

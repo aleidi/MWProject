@@ -4,7 +4,7 @@
 #include "UI/ViewModel/Battle/MWVMCharacterGroup.h"
 #include "UI/ViewModel/Battle/MWVMSkillBar.h"
 
-// Define
+// 定義
 #define MAX_CHARACTER_GROUP 6
 
 UMWVMCombatUI::UMWVMCombatUI()

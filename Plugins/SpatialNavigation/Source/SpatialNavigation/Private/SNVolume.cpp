@@ -6,16 +6,16 @@
 #include "ProceduralMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
-// Define
+// 定義
 #define GRID_MATERIAL_PATH TEXT("Material'/Navigation3D/M_Grid.M_Grid'")
 
-// Sets default values
+// デフォルト値を設定
 ASNVolume::ASNVolume()
 {
-	// Set this actor to call Tick() every frame. You can turn this off to improve performance if you don't need it.
+	// アクターのTickを毎フレーム呼び出す。不要な場合は無効化することでパフォーマンスを改善できる
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create the procedural mesh component
+	// プロシージャルメッシュコンポーネントを作成
 	ProceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>("ProceduralMesh");
 	ProceduralMesh->SetupAttachment(GetRootComponent());
 	ProceduralMesh->CastShadow = false;
@@ -26,10 +26,10 @@ ASNVolume::ASNVolume()
 	ProceduralMesh->SetCollisionProfileName("NoCollision");
 	ProceduralMesh->bHiddenInGame = false;
 
-	// By default, hide the volume while the game is running
+	// ゲーム実行中はデフォルトでボリュームを非表示にする
 	SetActorHiddenInGame(true);
 
-	// Find and save the grid material
+	// グリッドマテリアルを検索して保持
 	static ConstructorHelpers::FObjectFinder<UMaterial> materialFinder(GRID_MATERIAL_PATH);
 	GridMaterial = materialFinder.Object;
 }
@@ -38,19 +38,19 @@ void ASNVolume::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	// Create arrays to store the vertices and the triangles
+	// 頂点と三角形を格納する配列を作成
 	TArray<FVector> vertices;
 	TArray<int32> triangles;
 
-	// Grid local bounds (Volume-style centered space)
+	// グリッドのローカル境界（ボリューム形式の中央原点空間）
 	const FVector gridMin = GetGridMinLocal();
 	const FVector gridMax(gridMin.X + GetGridSizeX(), gridMin.Y + GetGridSizeY(), gridMin.Z + GetGridSizeZ());
 
-	// Define variables for the start and end of the line
+	// 線分の始点と終点を定義
 	FVector start = FVector::ZeroVector;
 	FVector end = FVector::ZeroVector;
 
-	// Create the X lines geometry (parallel to Y axis)
+	// X方向のグリッド線形状を作成（Y軸に平行）
 	for (int32 z = 0; z <= DivisionsZ; ++z)
 	{
 		start.Z = end.Z = gridMin.Z + (z * DivisionSize);
@@ -64,7 +64,7 @@ void ASNVolume::OnConstruction(const FTransform& Transform)
 		}
 	}
 
-	// Create the Y lines geometry (parallel to X axis)
+	// Y方向のグリッド線形状を作成（X軸に平行）
 	for (int32 z = 0; z <= DivisionsZ; ++z)
 	{
 		start.Z = end.Z = gridMin.Z + (z * DivisionSize);
@@ -78,7 +78,7 @@ void ASNVolume::OnConstruction(const FTransform& Transform)
 		}
 	}
 
-	// Create the Z lines geometry (parallel to Z axis)
+	// Z方向のグリッド線形状を作成（Z軸に平行）
 	for (int32 x = 0; x <= DivisionsX; ++x)
 	{
 		start.X = end.X = gridMin.X + (x * DivisionSize);
@@ -92,16 +92,16 @@ void ASNVolume::OnConstruction(const FTransform& Transform)
 		}
 	}
 
-	// Unused variables that are required to be passed to CreateMeshSection
+	// CreateMeshSectionへの引き渡しに必要な未使用変数
 	TArray<FVector> normals;
 	TArray<FVector2D> uvs;
 	TArray<FColor> colors;
 	TArray<FProcMeshTangent> tangents;
 
-	// Add the geometry to the procedural mesh so it will render
+	// 描画する形状をプロシージャルメッシュに追加
 	ProceduralMesh->CreateMeshSection(0, vertices, triangles, normals, uvs, colors, tangents, false);
 
-	// Set the material on the procedural mesh so its color/opacity can be configurable
+	// 色と不透明度を設定できるようプロシージャルメッシュにマテリアルを設定
 	if (GridMaterial != nullptr)
 	{
 		UMaterialInstanceDynamic* dynamicMaterialInstance = UMaterialInstanceDynamic::Create(GridMaterial, this);
@@ -111,12 +111,12 @@ void ASNVolume::OnConstruction(const FTransform& Transform)
 	}
 }
 
-// Called when the game starts or when spawned
+// ゲーム開始時またはスポーン時に呼び出される
 void ASNVolume::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Reallocate nodes used for pathfinding
+	// 経路探索用ノードを再確保
 	Nodes.Reset();
 	Nodes.SetNum(GetTotalDivisions());
 
@@ -126,10 +126,10 @@ void ASNVolume::BeginPlay()
 		node.Neighbors.Reset();
 	}
 
-	// Helper lambda for adding a neighbor
+	// 隣接ノード追加用ラムダ
 	auto addNeighborIfValid = [&](SNNode* node, const FIntVector& neighbor_coordinates)
 	{
-		// Make sure the neighboring coordinates are valid
+		// 隣接座標が有効であることを確認
 		if (AreCoordinatesValid(neighbor_coordinates))
 		{
 			int32 sharedAxes = 0;
@@ -140,7 +140,7 @@ void ASNVolume::BeginPlay()
 			if (node->Coordinates.Z == neighbor_coordinates.Z)
 				++sharedAxes;
 
-			// Only add the neighbor if we share more axes with it than the required min shared neighbor axes and it isn't the same node as us
+			// 共有軸数が最小値以上で、かつ同一ノードでない場合のみ追加
 			if (sharedAxes >= MinSharedNeighborAxes && sharedAxes < 3)
 			{
 				node->Neighbors.Add(GetNode(neighbor_coordinates));
@@ -148,7 +148,7 @@ void ASNVolume::BeginPlay()
 		}
 	};
 
-	// For each node, find its neighbors and assign its coordinates
+	// 各ノードの隣接ノードを検索し、座標を設定
 	for (int32 z = 0; z < DivisionsZ; ++z)
 	{
 		for (int32 y = 0; y < DivisionsY; ++y)
@@ -158,21 +158,21 @@ void ASNVolume::BeginPlay()
 				SNNode* node = GetNode(FIntVector(x, y, z));
 				node->Coordinates = FIntVector(x, y, z);
 
-				// Above neighbors
+				// 上段の隣接ノード
 				{
-					// front
+					// 前列
 					{
 						addNeighborIfValid(node, FIntVector(x + 1, y - 1, z + 1));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 0, z + 1));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 1, z + 1));
 					}
-					// middle
+					// 中列
 					{
 						addNeighborIfValid(node, FIntVector(x + 0, y - 1, z + 1));
 						addNeighborIfValid(node, FIntVector(x + 0, y + 0, z + 1));
 						addNeighborIfValid(node, FIntVector(x + 0, y + 1, z + 1));
 					}
-					// back
+					// 後列
 					{
 						addNeighborIfValid(node, FIntVector(x - 1, y - 1, z + 1));
 						addNeighborIfValid(node, FIntVector(x - 1, y + 0, z + 1));
@@ -180,20 +180,20 @@ void ASNVolume::BeginPlay()
 					}
 				}
 
-				// Middle neighbors
+				// 中段の隣接ノード
 				{
-					// front
+					// 前列
 					{
 						addNeighborIfValid(node, FIntVector(x + 1, y - 1, z + 0));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 0, z + 0));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 1, z + 0));
 					}
-					// middle
+					// 中列
 					{
 						addNeighborIfValid(node, FIntVector(x + 0, y - 1, z + 0));
 						addNeighborIfValid(node, FIntVector(x + 0, y + 1, z + 0));
 					}
-					// back
+					// 後列
 					{
 						addNeighborIfValid(node, FIntVector(x - 1, y - 1, z + 0));
 						addNeighborIfValid(node, FIntVector(x - 1, y + 0, z + 0));
@@ -201,21 +201,21 @@ void ASNVolume::BeginPlay()
 					}
 				}
 
-				// Below neighbors
+				// 下段の隣接ノード
 				{
-					// front
+					// 前列
 					{
 						addNeighborIfValid(node, FIntVector(x + 1, y - 1, z - 1));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 0, z - 1));
 						addNeighborIfValid(node, FIntVector(x + 1, y + 1, z - 1));
 					}
-					// middle
+					// 中列
 					{
 						addNeighborIfValid(node, FIntVector(x + 0, y - 1, z - 1));
 						addNeighborIfValid(node, FIntVector(x + 0, y + 0, z - 1));
 						addNeighborIfValid(node, FIntVector(x + 0, y + 1, z - 1));
 					}
-					// back
+					// 後列
 					{
 						addNeighborIfValid(node, FIntVector(x - 1, y - 1, z - 1));
 						addNeighborIfValid(node, FIntVector(x - 1, y + 0, z - 1));
@@ -234,7 +234,7 @@ void ASNVolume::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-// Called every frame
+// 毎フレーム呼び出される
 void ASNVolume::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -260,7 +260,7 @@ const SNNode* ASNVolume::GetNode(FIntVector Coordinates) const
 
 bool ASNVolume::FindPath(const FVector& Start, const FVector& Destination, const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, UClass* ActorClassFilter, TArray<FVector>& OutPath)
 {
-	// Clear the out path
+	// 出力経路をクリア
 	OutPath.Empty();
 
 	struct FOpenSetEntry
@@ -269,7 +269,7 @@ bool ASNVolume::FindPath(const FVector& Start, const FVector& Destination, const
 		float FScore = FLT_MAX;
 	};
 
-	// Prioritize the lowest FScore, matching the original NodeCompare ordering.
+	// 元のNodeCompareの順序に合わせ、FScoreが最小の要素を優先
 	auto openSetPredicate = [](const FOpenSetEntry& Lhs, const FOpenSetEntry& Rhs)
 	{
 		return Lhs.FScore < Rhs.FScore;
@@ -323,7 +323,7 @@ bool ASNVolume::FindPath(const FVector& Start, const FVector& Destination, const
 
 		if (current == endNode)
 		{
-			// Rebuild the path
+			// 経路を再構築
 			OutPath.Add(ConvertCoordinatesToLocation(current->Coordinates));
 
 			while (true)
@@ -383,11 +383,11 @@ FIntVector ASNVolume::ConvertLocationToCoordinates(const FVector& Location)
 {
 	FIntVector coordinates;
 
-	// Convert the location into grid space
+	// 位置をグリッド空間へ変換
 	const FVector gridSpaceLocation = UKismetMathLibrary::InverseTransformLocation(GetActorTransform(), Location);
 	const FVector gridMin = GetGridMinLocal();
 
-	// Convert the grid space location to a coordinate (x,y,z)
+	// グリッド空間の位置を座標（x、y、z）へ変換
 	const FVector relativeLocation = gridSpaceLocation - gridMin;
 	coordinates.X = FMath::FloorToInt(relativeLocation.X / DivisionSize);
 	coordinates.Y = FMath::FloorToInt(relativeLocation.Y / DivisionSize);
@@ -403,46 +403,46 @@ FVector ASNVolume::ConvertCoordinatesToLocation(const FIntVector& Coordinates)
 	FIntVector clampedCoordinates(Coordinates);
 	ClampCoordinates(clampedCoordinates);
 
-	// Convert the coordinates into a grid space location
+	// 座標をグリッド空間の位置へ変換
 	const FVector gridMin = GetGridMinLocal();
 	FVector gridSpaceLocation = FVector::ZeroVector;
 	gridSpaceLocation.X = gridMin.X + (clampedCoordinates.X * DivisionSize) + (DivisionSize * 0.5f);
 	gridSpaceLocation.Y = gridMin.Y + (clampedCoordinates.Y * DivisionSize) + (DivisionSize * 0.5f);
 	gridSpaceLocation.Z = gridMin.Z + (clampedCoordinates.Z * DivisionSize) + (DivisionSize * 0.5f);
 
-	// Convert the grid space location into world space
+	// グリッド空間の位置をワールド空間へ変換
 	return UKismetMathLibrary::TransformLocation(GetActorTransform(), gridSpaceLocation);
 }
 
 void ASNVolume::CreateLine(const FVector& Start, const FVector& End, const FVector& Normal, TArray<FVector>& Vertices, TArray<int32>& Triangles)
 {
-	// Calculate the half line thickness and the thickness direction
+	// 線幅の半分と幅方向を計算
 	const float halfLineThickness = LineThickness * 0.5f;
 	FVector line = End - Start;
 	line.Normalize();
 
 	// 0--------------------------1
-	// |          line           |
+	// |           線            |
 	// 2--------------------------3
 	auto createFlatLine = [&](const FVector& thicknessDirection)
 	{
-		// Top triangle
+		// 上側の三角形
 		Triangles.Add(Vertices.Num() + 2);
 		Triangles.Add(Vertices.Num() + 1);
 		Triangles.Add(Vertices.Num() + 0);
 
-		// Bottom triangle
+		// 下側の三角形
 		Triangles.Add(Vertices.Num() + 2);
 		Triangles.Add(Vertices.Num() + 3);
 		Triangles.Add(Vertices.Num() + 1);
 
-		// Vertex 0
+		// 頂点0
 		Vertices.Add(Start + (thicknessDirection * halfLineThickness));
-		// Vertex 1
+		// 頂点1
 		Vertices.Add(End + (thicknessDirection * halfLineThickness));
-		// Vertex 2
+		// 頂点2
 		Vertices.Add(Start - (thicknessDirection * halfLineThickness));
-		// Vertex 3
+		// 頂点3
 		Vertices.Add(End - (thicknessDirection * halfLineThickness));
 	};
 

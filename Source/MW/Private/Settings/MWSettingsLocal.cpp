@@ -93,7 +93,7 @@
 //	{
 //		ControllerPlatform = InControllerPlatform;
 //
-//		// Apply the change to the common input subsystem so that we refresh any input icons we're using.
+//		// 使用中の入力アイコンを更新するためCommon Input Subsystemへ変更を適用
 //		if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetTypedOuter<ULocalPlayer>()))
 //		{
 //			InputSubsystem->SetGamepadInputType(ControllerPlatform);
@@ -167,7 +167,7 @@
 //{
 //	OutArray.Empty();
 //
-//	// If "Count" is passed in then 
+//	// 「Count」が指定された場合
 //	if (Type == ECommonInputType::Count)
 //	{
 //		OutArray = RegisteredInputConfigs;
@@ -192,13 +192,13 @@
 //
 //	if (InputConfigName != TEXT("Custom"))
 //	{
-//		// Copy Presets.
+//		// Presetをコピー
 //		//if (const UEnhancedInputUserSettings* DefaultConfig = GetInputConfigByName(TEXT("Default")))
 //		//{
 //		//	for (const FEnhancedActionKeyMapping& Mapping : DefaultConfig->GetPlayerMappableKeys())
 //		//	{
-//		//		// Make sure that the mapping has a valid name, its possible to have an empty name
-//		//		// if someone has marked a mapping as "Player Mappabe" but deleted the default field value
+//		//		// Mapping名の有効性を確認
+//		//		// Player Mappable指定後にデフォルト値を削除すると空名になり得る
 //		//		if (Mapping.PlayerMappableOptions.Name != NAME_None)
 //		//		{
 //		//			CustomKeyboardConfig.Add(Mapping.PlayerMappableOptions.Name, Mapping.Key);
@@ -211,7 +211,7 @@
 //
 //	if (FKey* ExistingMapping = CustomKeyboardConfig.Find(MappingName))
 //	{
-//		// Change the key to the new one
+//		// 新しいKeyへ変更
 //		CustomKeyboardConfig[MappingName] = NewKey;
 //	}
 //	else
@@ -219,7 +219,7 @@
 //		CustomKeyboardConfig.Add(MappingName, NewKey);
 //	}
 //
-//	// Tell the enhanced input subsystem for this local player that we should remap some input! Woo
+//	// Local PlayerのEnhanced Input SubsystemへInput Remapを通知
 //	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 //	{
 //		Subsystem->GetUserSettings->(MappingName, NewKey);

@@ -6,5 +6,5 @@
 template<typename T>
 concept DerivedFromUObject = std::is_base_of_v<UObject, T>;
 
-//String Build
+// 文字列生成
 #define STRING_FORMAT(Text, ...) FString::Printf(Text, ##__VA_ARGS__)

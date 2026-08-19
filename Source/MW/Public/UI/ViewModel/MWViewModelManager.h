@@ -1,15 +1,15 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "MW.h"
 #include "Interface/MWManagerInterface.h"
 #include "MWViewModelManager.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMVVMViewModelBase;
 class UMVVMViewModelCollectionObject;
 
-// Define
+// 定義
 
 /*
  * @class UMWViewModelManager

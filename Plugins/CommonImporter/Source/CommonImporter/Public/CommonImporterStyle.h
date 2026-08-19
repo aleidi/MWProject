@@ -14,10 +14,10 @@ public:
 
 	static void Shutdown();
 
-	/** reloads textures used by slate renderer */
+	/** Slate レンダラーで使用中のテクスチャを再読み込みする */
 	static void ReloadTextures();
 
-	/** @return The Slate style set for the Shooter game */
+	/** @return CommonImporter 用の Slate スタイルセット */
 	static const ISlateStyle& Get();
 
 	static FName GetStyleSetName();

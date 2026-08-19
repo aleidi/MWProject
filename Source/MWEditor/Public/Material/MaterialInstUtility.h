@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダー
 #include "AssetActionUtility.h"
 #include "MaterialInstUtility.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMaterialInstanceConstant;
 class UMaterialInstance;
 
-// Define
+// 定義
 struct FMaterialInstanceCreateInfo
 {
 	FString MaterialName;
@@ -47,17 +47,17 @@ class UMaterialInstanceModifyData : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	// Scalar Parameters to modify in the MaterialInstance.
+    // MaterialInstance内で変更するスカラー（浮動小数点）パラメータ。
 	// MaterialInstance内で変更するスカラー（浮動小数点）パラメータ。
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FName, float> ScalarParams;
 
-	// Texture Parameters to modify in the MaterialInstance. Not passing a texture means to disable (set to null).
+    // MaterialInstance内で変更するテクスチャパラメータ。未指定の場合は無効化（nullを設定）。
 	// MaterialInstance内で変更するテクスチャパラメータ。テクスチャを渡さない場合は無効化（nullに設定）を意味します。
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FName, UTexture*> TextureParams;
 
-	// Vector Parameters to modify in the MaterialInstance.
+    // MaterialInstance内で変更するベクターパラメータ。
 	// MaterialInstance内で変更するベクターパラメータ。
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FName, FLinearColor> VectorParams;
@@ -68,7 +68,7 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "StaticSwitch")
 	bool bOverrideStaticSwitchParams = false;
 
-	// Static Switch Parameters to modify in the MaterialInstance. It's not influenced by ExcludeParams.
+    // MaterialInstance内で変更するStatic Switchパラメータ。ExcludeParamsの影響を受けない。
 	// MaterialInstance内で変更するStatic Switchパラメータ。ExcludeParamsの影響を受けません。
     UPROPERTY(EditDefaultsOnly, Category = "StaticSwitch")
 	TMap<FName, bool> StaticSwitchParams;
@@ -87,17 +87,17 @@ class UMaterialInstUtility : public UAssetActionUtility
 	GENERATED_BODY()
 
 public:
-	// Helper function to create MaterialInstance from XSP's material.
+    // XSPマテリアルからMaterialInstanceを作成するヘルパー関数。
 	// XSPのマテリアルからMaterialInstanceを作成するためのヘルパー関数
 	UFUNCTION(CallInEditor, Category = "MaterialInstanceUtility")
     void CreateMaterialInstaFromMaterialXSP(UMaterialInstance* TemplateMaterialInst);
 
-    // Helper function to create MaterialInstance from FSM's material.
+    // FSMマテリアルからMaterialInstanceを作成するヘルパー関数。
     // FSMのマテリアルからMaterialInstanceを作成するためのヘルパー関数
 	UFUNCTION(CallInEditor, Category = "MaterialInstanceUtility")
     void CreateMaterialInstaFromMaterialFSM(UMaterialInstance* TemplateMaterialInst);
 
-	// Helper function to modify parameters in the MaterialInstance.
+    // MaterialInstance内のパラメータを変更するヘルパー関数。
 	// MaterialInstance内のパラメータを変更するためのヘルパー関数
 	UFUNCTION(CallInEditor, Category = "MaterialInstanceUtility")
 	void ModifyMaterialInstanceParameters(UMaterialInstanceModifyData* ModifyData);
@@ -117,7 +117,7 @@ private:
         TFunctionRef<bool(const TParamType&, const FName&)> NameMatchFunc,
         TFunctionRef<void(TParamType&, const TValueType&)> SetValueFunc);
 
-	// The texture must be directly connected to the material property node.
+    // テクスチャはマテリアルプロパティノードへ直接接続する必要がある。
 	// テクスチャはマテリアルプロパティノードに直接接続されている必要があります。
     UTexture* GetTextureFromMaterialProperty(UMaterial* Material, EMaterialProperty Property);
 };
@@ -155,7 +155,7 @@ void UMaterialInstUtility::ModifyParameterValues(
 
     for (const auto& modifyParam : ModifyParams)
     {
-		// skip excluded params
+        // 除外対象パラメータをスキップ
         // 除外されたパラメータをスキップする
         if (ExcludeParams.Contains(modifyParam.Key))
         {

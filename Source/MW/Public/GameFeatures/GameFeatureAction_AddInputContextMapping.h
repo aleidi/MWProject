@@ -20,18 +20,18 @@ struct FInputMappingContextAndPriority
 	UPROPERTY(EditAnywhere, Category="Input", meta=(AssetBundles="Client,Server"))
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
-	// Higher priority input mappings will be prioritized over mappings with a lower priority.
+	// 優先度の高いInputMappingを優先します。
 	UPROPERTY(EditAnywhere, Category="Input")
 	int32 Priority = 0;
 	
-	/** If true, then this mapping context will be registered with the settings when this game feature action is registered. */
+	/** trueの場合、このGameFeatureActionの登録時にMappingContextを設定へ登録します。 */
 	UPROPERTY(EditAnywhere, Category="Input")
 	bool bRegisterWithSettings = true;
 };
 
 /**
- * Adds InputMappingContext to local players' EnhancedInput system. 
- * Expects that local players are set up to use the EnhancedInput system.
+ * LocalPlayerのEnhancedInputシステムへInputMappingContextを追加します。
+ * LocalPlayerでEnhancedInputシステムが設定済みであることを前提とします。
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Input Mapping"))
 class UGameFeatureAction_AddInputContextMapping final : public UGameFeatureAction_WorldActionBase
@@ -39,18 +39,18 @@ class UGameFeatureAction_AddInputContextMapping final : public UGameFeatureActio
 	GENERATED_BODY()
 
 public:
-	//~UGameFeatureAction interface
+	//~UGameFeatureActionインターフェース
 	virtual void OnGameFeatureRegistering() override;
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void OnGameFeatureUnregistering() override;
-	//~End of UGameFeatureAction interface
+	//~UGameFeatureActionインターフェース終了
 
-	//~UObject interface
+	//~UObjectインターフェース
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
-	//~End of UObject interface
+	//~UObjectインターフェース終了
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	TArray<FInputMappingContextAndPriority> InputMappings;
@@ -64,30 +64,30 @@ private:
 
 	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;
 	
-	/** Delegate for when the game instance is changed to register IMC's */
+	/** IMC登録のためGameInstance変更時に呼び出すDelegate。 */
 	FDelegateHandle RegisterInputContextMappingsForGameInstanceHandle;
 
-	/** Registers owned Input Mapping Contexts to the Input Registry Subsystem. Also binds onto the start of GameInstances and the adding/removal of Local Players. */
+	/** 所有するInputMappingContextをInputRegistrySubsystemへ登録し、GameInstance開始およびLocalPlayer追加／削除へバインドします。 */
 	void RegisterInputMappingContexts();
 	
-	/** Registers owned Input Mapping Contexts to the Input Registry Subsystem for a specified GameInstance. This also gets called by a GameInstance Start. */
+	/** 指定GameInstance向けにInputMappingContextをInputRegistrySubsystemへ登録します。GameInstance開始時にも呼び出されます。 */
 	void RegisterInputContextMappingsForGameInstance(UGameInstance* GameInstance);
 
-	/** Registers owned Input Mapping Contexts to the Input Registry Subsystem for a specified Local Player. This also gets called when a Local Player is added. */
+	/** 指定LocalPlayer向けにInputMappingContextをInputRegistrySubsystemへ登録します。LocalPlayer追加時にも呼び出されます。 */
 	void RegisterInputMappingContextsForLocalPlayer(ULocalPlayer* LocalPlayer);
 
-	/** Unregisters owned Input Mapping Contexts from the Input Registry Subsystem. Also unbinds from the start of GameInstances and the adding/removal of Local Players. */
+	/** InputMappingContextをInputRegistrySubsystemから登録解除し、GameInstance開始およびLocalPlayer追加／削除のバインドを解除します。 */
 	void UnregisterInputMappingContexts();
 
-	/** Unregisters owned Input Mapping Contexts from the Input Registry Subsystem for a specified GameInstance. */
+	/** 指定GameInstance向けのInputMappingContextをInputRegistrySubsystemから登録解除します。 */
 	void UnregisterInputContextMappingsForGameInstance(UGameInstance* GameInstance);
 
-	/** Unregisters owned Input Mapping Contexts from the Input Registry Subsystem for a specified Local Player. This also gets called when a Local Player is removed. */
+	/** 指定LocalPlayer向けのInputMappingContextをInputRegistrySubsystemから登録解除します。LocalPlayer削除時にも呼び出されます。 */
 	void UnregisterInputMappingContextsForLocalPlayer(ULocalPlayer* LocalPlayer);
 
-	//~UGameFeatureAction_WorldActionBase interface
+	//~UGameFeatureAction_WorldActionBaseインターフェース
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
-	//~End of UGameFeatureAction_WorldActionBase interface
+	//~UGameFeatureAction_WorldActionBaseインターフェース終了
 
 	void Reset(FPerContextData& ActiveData);
 	void HandleControllerExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext);

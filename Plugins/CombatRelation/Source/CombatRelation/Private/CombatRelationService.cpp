@@ -13,7 +13,7 @@ void UCombatRelationService::LoadMatrixFromSettings()
 {
     UFactionRelationDataAsset* LoadedAsset = nullptr;
 
-    // Priority 1: Load from Developer Settings
+    // 優先順位1：Developer Settingsから読み込み
     const UCombatRelationSettings* Settings = GetDefault<UCombatRelationSettings>();
     if (Settings)
     {
@@ -35,7 +35,7 @@ void UCombatRelationService::LoadMatrixFromSettings()
         }
     }
 
-    // Priority 2: Load from Config file (Fallback)
+    // 優先順位2：Configファイルから読み込み（フォールバック）
     if (!LoadedAsset && !FallbackMatrixPath.IsNull())
     {
         LoadedAsset = Cast<UFactionRelationDataAsset>(FallbackMatrixPath.TryLoad());
@@ -45,7 +45,7 @@ void UCombatRelationService::LoadMatrixFromSettings()
         }
     }
 
-    // Set loaded assets
+    // 読み込んだアセットを設定
     if (LoadedAsset)
     {
         SetActiveMatrix(LoadedAsset);
@@ -71,7 +71,7 @@ bool UCombatRelationService::IsRelationDataSet() const
 }
 
 #if !UE_BUILD_SHIPPING
-// Console command for debugging: reload combat relation matrix
+// デバッグ用コンソールコマンド：CombatRelationマトリックスを再読み込み
 static FAutoConsoleCommand CCmdReloadCombatRelation(
     TEXT("CombatRelation.Reload"),
     TEXT("Reloads the combat relation matrix from settings"),

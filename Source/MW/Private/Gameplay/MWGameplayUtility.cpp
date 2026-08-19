@@ -21,7 +21,7 @@ void UWMGameplayUtility::SearchSelectableTargets(const APlayerController* PC, TA
 	for (TActorIterator<APawn> It(PC->GetWorld()); It; ++It)
 	{
 		AActor* target = *It;
-		// filter non-selectable target and it's not on screen
+		// 選択不可または画面外のターゲットを除外
 		if (!target->GetClass()->ImplementsInterface(UMWSelectableInterface::StaticClass()) || !target->WasRecentlyRendered())
 		{
 			continue;
@@ -41,7 +41,7 @@ void UWMGameplayUtility::SearchSelectableTargets(const APlayerController* PC, TA
 
 		if (FMath::IsWithinInclusive(angleXY, 0.f, 80.f) && FMath::IsWithinInclusive(angleZ, 0.f, GetZRangeAccordingToXY(angleXY)))
 		{
-			// filter ignored actor
+			// 無視対象Actorを除外
 			if(ActorsToIgnore.Contains(target)) continue;
 
 			const bool bLeft = FVector::CrossProduct(PC->PlayerCameraManager->GetCameraRotation().Vector().GetUnsafeNormal2D(), angleVec.GetUnsafeNormal2D()).Z > 0;

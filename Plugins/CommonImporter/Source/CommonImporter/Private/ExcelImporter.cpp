@@ -67,7 +67,7 @@ void UExcelImporter::FindPath()
 
 	ExcelPath->SetText(text);
 
-	// manually broadcast the text change event since SetText would not trigger it.
+	// SetText では発火しないため、テキスト変更イベントを手動で通知する。
 	ExcelPath->OnTextChanged.Broadcast(text);
 }
 
@@ -84,7 +84,7 @@ void UExcelImporter::Execute()
 
 void UExcelImporter::LoadExcel()
 {
-	// check asset path
+	// アセットパスを確認
 	const FString assetName = FPaths::GetBaseFilename(ExcelPath->GetText().ToString());
 	FString assetPath = AssetSavePath->GetText().ToString();
 
@@ -94,7 +94,7 @@ void UExcelImporter::LoadExcel()
 
 	const bool bIsFileExist = FPaths::FileExists(assetPath);
 
-	//  load or create a curve table asset
+	// カーブテーブルアセットを読み込む、または新規作成する
 	UCurveTable* curveTable = nullptr;
 
 	if (bIsFileExist)
@@ -110,7 +110,7 @@ void UExcelImporter::LoadExcel()
 			return;
 		}
 
-		// try to load object
+		// 既存オブジェクトの読み込みを試行
 		const FString curveTablePath = CommonImporter::ConvertToAssetPath(assetPath);
 
 		curveTable = LoadObject<UCurveTable>(nullptr, *curveTablePath);
@@ -135,7 +135,7 @@ void UExcelImporter::LoadExcel()
 
 	TArray<FCurveInfo> curves;
 
-	// load excel file and parse data
+	// Excel ファイルを読み込み、データを解析
 	libxl::Book* book = xlCreateXMLBook();
 	book->setKey(LIBXL_NAME, LIBXL_KEY);
 	if (!book)
@@ -151,7 +151,7 @@ void UExcelImporter::LoadExcel()
 
 	book->release();
 
-	// update curve table data
+	// カーブテーブルのデータを更新
 	if (curves.Num() == 0)
 	{
 		ResultDisplay->SetText(LOCTEXT("CommonImporter.NoCurveTablePrompt", "No curve loaded."));
@@ -164,14 +164,14 @@ void UExcelImporter::LoadExcel()
 		tmp_curve = curve.Curve;
 	}
 
-	// mark dirty
+	// 変更状態をマーク
 	UPackage* Package = curveTable->GetOutermost();
 	if (Package) 
 	{
 		Package->MarkPackageDirty();
 	}
 
-	// reopen editor asset
+	// エディタでアセットを再オープン
 	if (UAssetEditorSubsystem* AssetEditorSubsystem = GEditor->GetEditorSubsystem<UAssetEditorSubsystem>())
 	{
 		if (AssetEditorSubsystem->FindEditorForAsset(curveTable, false))
@@ -192,7 +192,7 @@ void UExcelImporter::OnAssetPathChanged(const FText& Text)
 
 	if (!str.StartsWith(TEXT("/Game/")))
 	{
-		// fix the format and output prompt
+		// 形式を補正し、ガイダンスを表示
 		AssetSavePath->SetText(FText::FromString(ASSET_SAVE_PATH_PREFIX));
 		ResultDisplay->SetText(LOCTEXT("CommonImporter.AssetSavePathPrompt", "The asset path must start with /Game/. Please ensure your input begins with this prefix."));
 	}
@@ -263,9 +263,9 @@ float UExcelImporter::ReadNumData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 {
 	if (Sheet)
 	{
-		// this is a trail version of libxl, it's first row can not used.
-		// so reading data starts from second row.
-		// make sure that do not put data at the first row!
+		// libxl の試用版では先頭行を利用できない。
+		// そのためデータ読み込みは 2 行目から開始される。
+		// 1 行目にはデータを配置しないこと。
 		libxl::CellType cell_type = Sheet->cellType(Row, Col);
 		if (cell_type != libxl::CELLTYPE_NUMBER)
 		{
@@ -283,9 +283,9 @@ FString UExcelImporter::ReadStrData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 {
 	if (Sheet)
 	{
-		// this is a trail version of libxl, it's first row can not used.
-		// so reading data starts from second row.
-		// make sure that do not put data at the first row!
+		// libxl の試用版では先頭行を利用できない。
+		// そのためデータ読み込みは 2 行目から開始される。
+		// 1 行目にはデータを配置しないこと。
 		libxl::CellType cell_type = Sheet->cellType(Row, Col);
 		if (cell_type != libxl::CELLTYPE_STRING)
 		{
@@ -294,7 +294,7 @@ FString UExcelImporter::ReadStrData(libxl::Sheet* Sheet, int32 Row, int32 Col)
 		}
 
 		FString str = Sheet->readStr(Row, Col);
-		// if we can not read str, try to do again with rich str method.
+		// 文字列を取得できない場合は、Rich String 経由で再取得する。
 		if (str.IsEmpty())
 		{
 			str = Sheet->readRichStr(Row, Col)->getText(0);

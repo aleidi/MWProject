@@ -10,14 +10,14 @@ public class SpatialNavigation : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-				// ... add public include paths required here ...
+				// ... 必要なパブリックインクルードパスをここに追加 ...
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				// ... add other private include paths required here ...
+				// ... その他の必要なプライベートインクルードパスをここに追加 ...
 			}
 			);
 			
@@ -26,7 +26,7 @@ public class SpatialNavigation : ModuleRules
 			new string[]
 			{
 				"Core",
-				// ... add other public dependencies that you statically link with here ...
+				// ... 静的リンクするその他のパブリック依存関係をここに追加 ...
 			}
 			);
 			
@@ -40,7 +40,7 @@ public class SpatialNavigation : ModuleRules
 				"SlateCore",
 				"ProceduralMeshComponent",
 				"AIModule",
-				// ... add private dependencies that you statically link with here ...	
+				// ... 静的リンクするプライベート依存関係をここに追加 ...
 			}
 			);
 		
@@ -48,7 +48,7 @@ public class SpatialNavigation : ModuleRules
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-				// ... add any modules that your module loads dynamically here ...
+				// ... 動的にロードするモジュールをここに追加 ...
 			}
 			);
 	}

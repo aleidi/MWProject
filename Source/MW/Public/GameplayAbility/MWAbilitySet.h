@@ -19,7 +19,7 @@ class UGameplayEffect;
 /**
  * FMWAbilitySet_GameplayAbility
  *
- *	Data used by the ability set to grant gameplay abilities.
+ *	AbilitySetからGameplayAbilityを付与するためのデータです。
  */
 USTRUCT(BlueprintType)
 struct FMWAbilitySet_GameplayAbility
@@ -28,15 +28,15 @@ struct FMWAbilitySet_GameplayAbility
 
 public:
 
-	// Gameplay ability to grant.
+	// 付与するGameplayAbility。
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMWGameplayAbility> Ability = nullptr;
 
-	// Level of ability to grant.
+	// 付与するAbilityのLevel。
 	UPROPERTY(EditDefaultsOnly)
 	int32 AbilityLevel = 1;
 
-	// Tag used to process input for the ability.
+	// Abilityの入力処理に使用するTag。
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
 };
@@ -45,7 +45,7 @@ public:
 /**
  * FMWAbilitySet_GameplayEffect
  *
- *	Data used by the ability set to grant gameplay effects.
+ *	AbilitySetからGameplayEffectを付与するためのデータです。
  */
 USTRUCT(BlueprintType)
 struct FMWAbilitySet_GameplayEffect
@@ -54,11 +54,11 @@ struct FMWAbilitySet_GameplayEffect
 
 public:
 
-	// Gameplay effect to grant.
+	// 付与するGameplayEffect。
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> GameplayEffect = nullptr;
 
-	// Level of gameplay effect to grant.
+	// 付与するGameplayEffectのLevel。
 	UPROPERTY(EditDefaultsOnly)
 	float EffectLevel = 1.0f;
 };
@@ -66,7 +66,7 @@ public:
 /**
  * FMWAbilitySet_AttributeSet
  *
- *	Data used by the ability set to grant attribute sets.
+ *	AbilitySetからAttributeSetを付与するためのデータです。
  */
 USTRUCT(BlueprintType)
 struct FMWAbilitySet_AttributeSet
@@ -74,7 +74,7 @@ struct FMWAbilitySet_AttributeSet
 	GENERATED_BODY()
 
 public:
-	// Gameplay effect to grant.
+	// 付与するAttributeSet。
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UAttributeSet> AttributeSet;
 
@@ -83,7 +83,7 @@ public:
 /**
  * FMWAbilitySet_GrantedHandles
  *
- *	Data used to store handles to what has been granted by the ability set.
+ *	AbilitySetから付与した要素のHandleを保持するデータです。
  */
 USTRUCT()
 struct FMWAbilitySet_GrantedHandles
@@ -98,15 +98,15 @@ public:
 	void RemoveFromAbilitySystem(UMWAbilitySystemComponent* MWASC);
 
 protected:
-	// Handles to the granted abilities.
+	// 付与したAbilityのHandle。
 	UPROPERTY()
 	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
 
-	// Handles to the granted gameplay effects.
+	// 付与したGameplayEffectのHandle。
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GameplayEffectHandles;
 
-	// Pointers to the granted attribute sets
+	// 付与したAttributeSetへのPointer。
 	UPROPERTY()
 	TArray<TObjectPtr<UAttributeSet>> GrantedAttributeSets;
 };
@@ -115,7 +115,7 @@ protected:
 /**
  * UMWAbilitySet
  *
- *	Non-mutable data asset used to grant gameplay abilities and gameplay effects.
+ *	GameplayAbilityとGameplayEffectの付与に使用する変更不可のDataAssetです。
  */
 UCLASS(BlueprintType, Const)
 class UMWAbilitySet : public UPrimaryDataAsset
@@ -126,21 +126,21 @@ public:
 
 	UMWAbilitySet(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	// Grants the ability set to the specified ability system component.
-	// The returned handles can be used later to take away anything that was granted.
+	// 指定したAbilitySystemComponentへAbilitySetを付与します。
+	// 戻り値のHandleは、付与した要素を後から解除する際に使用できます。
 	void GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
 
 protected:
 
-	// Gameplay abilities to grant when this ability set is granted.
+	// AbilitySet付与時に付与するGameplayAbility。
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities", meta=(TitleProperty=Ability))
 	TArray<FMWAbilitySet_GameplayAbility> GrantedGameplayAbilities;
 
-	// Gameplay effects to grant when this ability set is granted.
+	// AbilitySet付与時に付与するGameplayEffect。
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects", meta=(TitleProperty=GameplayEffect))
 	TArray<FMWAbilitySet_GameplayEffect> GrantedGameplayEffects;
 
-	// Attribute sets to grant when this ability set is granted.
+	// AbilitySet付与時に付与するAttributeSet。
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Sets", meta=(TitleProperty=AttributeSet))
 	TArray<FMWAbilitySet_AttributeSet> GrantedAttributes;
 };

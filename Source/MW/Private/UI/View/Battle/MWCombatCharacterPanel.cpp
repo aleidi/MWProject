@@ -27,7 +27,7 @@ void UMWCombatCharacterPanel::NativeConstruct()
 
 
 	CharacterStatusListenerHandle = UGameplayMessageSubsystem::Get(this).RegisterListener<FMWCharacterStatusMessage>(
-		FGameplayTag(), // TODO : Use a specific tag for character status messages
+		FGameplayTag(), // TODO: キャラクターステータスメッセージ専用タグを使用
 		this,
 		&UMWCombatCharacterPanel::HandleCharacterStatusMessage);
 	

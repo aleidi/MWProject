@@ -11,15 +11,15 @@ class MW_API UWMGameplayUtility : public UGameplayStatics
 	GENERATED_BODY()
 
 public:
-	/* Find selectable targets in front of the center within distance. */
+	/* 中心前方の指定距離内から選択可能なターゲットを検索します。 */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	static void SearchSelectableTargets(const APlayerController* PC, TArray<FMWFoundActorInfo>& FindTargets, const TArray<AActor*>& ActorsToIgnore);
 
-	/* Access to save config in blueprint.*/
+	/* Blueprintから設定を保存します。 */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void SaveConfig(UObject* WorldContextObject);
 
-	/* Access to load config in blueprint.*/
+	/* Blueprintから設定をロードします。 */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay", meta = (WorldContext = "WorldContextObject"))
 	static void LoadConfig(UObject* WorldContextObject);
 

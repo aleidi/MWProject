@@ -36,7 +36,7 @@ bool AMWInputHandler::RemoveBindingInputAction(const void* Object, const UInputA
 
 	bool res = RemoveBindingInputAction(*handle);
 
-	// Clear ActionBindingMap and BindingHandles if no more bindings for the object
+	// ObjectへのBindingがなくなった場合はActionBindingMapとBindingHandlesをクリア
 	if (res)
 	{
 		value->Remove(Action);

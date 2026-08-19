@@ -77,7 +77,7 @@ void UAbilityTask_ChargeTick::TickTask(float DeltaTime)
 		OnValueChanged.Broadcast(CurrentCharge, Percent);
 	}
 
-	// 满值事件（只触发一次直到不再满）
+	// 最大値イベント（最大値を下回るまで一度だけ発火）
 	const bool bNowFull = FMath::IsNearlyEqual(CurrentCharge, MaxCharge);
 	if (bNowFull && !bWasFull)
 	{
@@ -90,7 +90,7 @@ void UAbilityTask_ChargeTick::TickTask(float DeltaTime)
 		bWasFull = false;
 	}
 
-	// 归零事件（只触发一次直到不再为零）
+	// ゼロ到達イベント（ゼロを上回るまで一度だけ発火）
 	const bool bNowZero = FMath::IsNearlyZero(CurrentCharge);
 	if (bNowZero && !bWasZero)
 	{

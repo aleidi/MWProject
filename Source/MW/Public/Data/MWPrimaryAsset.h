@@ -1,12 +1,12 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Engine/DataAsset.h"
 #include "MWPrimaryAsset.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class UMWPrimaryAsset
@@ -21,9 +21,9 @@ class UMWPrimaryAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 	
 public:
-	/** PrimaryAssetId =  PrimaryAssetType + FileName.
-	*   The name of the derived class asset should follow the convention: 
-	*   DA_NativeClassNameWithoutPrefixMW_ItemName, e.g. DA_CharacterData_KOSMOS, DA_JobClassData_Warrior, etc.
+	/** PrimaryAssetId = PrimaryAssetType + FileName。
+	*   派生クラスのアセット名は次の規則に従います：
+	*   DA_MW接頭辞を除いたNativeClassName_ItemName（例：DA_CharacterData_KOSMOS、DA_JobClassData_Warrior）。
 	*/
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 

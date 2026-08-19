@@ -16,15 +16,15 @@ class UPlaySkillAnimCallbackProxy : public UObject
 	GENERATED_UCLASS_BODY()
 
 public:
-	// Called when Montage finished playing and wasn't interrupted
+	// Montageが中断されずに再生を完了した際に呼び出されます。
 	UPROPERTY(BlueprintAssignable)
 	FOnMWMontagePlayDelegate OnCompleted;
 
-	// Called when Montage starts blending out and is not interrupted
+	// Montageが中断されずにブレンドアウトを開始した際に呼び出されます。
 	UPROPERTY(BlueprintAssignable)
 	FOnMWMontagePlayDelegate OnBlendOut;
 
-	// Called when Montage has been interrupted (or failed to play)
+	// Montageが中断された、または再生に失敗した際に呼び出されます。
 	UPROPERTY(BlueprintAssignable)
 	FOnMWMontagePlayDelegate OnInterrupted;
 
@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnMWMontagePlayDelegate OnNotifyEnd;
 
-	// Called to perform the query internally
+	// 内部処理を実行します。
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))
 	static MW_API UPlaySkillAnimCallbackProxy* CreateProxyObjectForPlaySkillAnim(
 		class USkeletalMeshComponent* InSkeletalMeshComponent, 
@@ -43,9 +43,9 @@ public:
 		bool bForce = false);
 
 public:
-	//~ Begin UObject Interface
+	//~ UObjectインターフェース開始
 	MW_API virtual void BeginDestroy() override;
-	//~ End UObject Interface
+	//~ UObjectインターフェース終了
 
 protected:
 	UFUNCTION()
@@ -72,7 +72,7 @@ private:
 	FOnMontageEnded MontageEndedDelegate;
 
 protected:
-	// Attempts to play a montage with the specified settings. Returns whether it started or not.
+	// 指定した設定でMontageの再生を試行し、開始できたかを返します。
 	MW_API bool PlayMontage(
 		class USkeletalMeshComponent* InSkeletalMeshComponent,
 		class UAnimMontage* MontageToPlay,

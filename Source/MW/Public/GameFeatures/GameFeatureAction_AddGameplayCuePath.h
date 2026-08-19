@@ -7,7 +7,7 @@
 //#include "GameFeatureAction_AddGameplayCuePath.generated.h"
 //
 ///**
-// * GameFeatureAction responsible for adding gameplay cue paths to the gameplay cue manager.
+// * GameplayCueManagerへGameplayCueパスを追加するGameFeatureActionです。
 // *
 // * @see UAbilitySystemGlobals::GameplayCueNotifyPaths
 // */
@@ -20,16 +20,16 @@
 //
 //	UGameFeatureAction_AddGameplayCuePath();
 //
-//	//~UObject interface
+//	//~UObjectインターフェース
 //#if WITH_EDITOR
 //	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 //#endif
-//	//~End of UObject interface
+//	//~UObjectインターフェース終了
 //
 //	const TArray<FDirectoryPath>& GetDirectoryPathsToAdd() const { return DirectoryPathsToAdd; }
 //
 //private:
-//	/** List of paths to register to the gameplay cue manager. These are relative tot he game content directory */
+//	/** GameplayCueManagerへ登録するパス一覧。Game Contentディレクトリからの相対パスです。 */
 //	UPROPERTY(EditAnywhere, Category = "Game Feature | Gameplay Cues", meta = (RelativeToGameContentDir, LongPackageName))
 //	TArray<FDirectoryPath> DirectoryPathsToAdd;
 //};

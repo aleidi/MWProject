@@ -12,8 +12,8 @@ class UGameFeatureData;
 struct FPrimaryAssetId;
 
 /**
- * Manager to keep track of the state machines that bring a game feature plugin into memory and active
- * This class discovers plugins either that are built-in and distributed with the game or are reported externally (i.e. by a web service or other endpoint)
+ * GameFeature Pluginをメモリへロードして有効化するステートマシンを管理します。
+ * ゲーム内蔵Pluginと、Web Serviceなど外部Endpointから通知されたPluginを検出します。
  */
 UCLASS(MinimalAPI, Config = Game)
 class UMWGameFeaturePolicy : public UDefaultGameFeaturesProjectPolicies
@@ -25,21 +25,21 @@ public:
 
 	UMWGameFeaturePolicy(const FObjectInitializer& ObjectInitializer);
 
-	//~UGameFeaturesProjectPolicies interface
+	//~UGameFeaturesProjectPoliciesインターフェース
 	virtual void InitGameFeatureManager() override;
 	virtual void ShutdownGameFeatureManager() override;
 	virtual TArray<FPrimaryAssetId> GetPreloadAssetListForGameFeature(const UGameFeatureData* GameFeatureToLoad, bool bIncludeLoadedAssets = false) const override;
 	virtual bool IsPluginAllowed(const FString& PluginURL, FString* OutReason) const override;
 	virtual const TArray<FName> GetPreloadBundleStateForGameFeature() const override;
 	virtual void GetGameFeatureLoadingMode(bool& bLoadClientData, bool& bLoadServerData) const override;
-	//~End of UGameFeaturesProjectPolicies interface
+	//~UGameFeaturesProjectPoliciesインターフェース終了
 
 private:
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UObject>> Observers;
 };
 
-// checked
+// 確認済み
 UCLASS()
 class UMWGameFeature_HotfixManager : public UObject, public IGameFeatureStateChangeObserver
 {
@@ -49,7 +49,7 @@ public:
 	virtual void OnGameFeatureLoading(const UGameFeatureData* GameFeatureData, const FString& PluginURL) override;
 };
 
-// checked
+// 確認済み
 UCLASS()
 class UMWGameFeature_AddGameplayCuePaths : public UObject, public IGameFeatureStateChangeObserver
 {

@@ -168,7 +168,7 @@
 //{
 //	AMWHUD* HUD = CastChecked<AMWHUD>(Actor);
 //
-//	// Only unregister if this is the same HUD actor that was registered, there can be multiple active at once on the client
+//	// 登録時と同じHUD Actorの場合のみ解除。クライアントでは複数が同時にアクティブになり得る
 //	FPerActorData* ActorData = ActiveData.ActorData.Find(HUD);
 //
 //	if (ActorData)

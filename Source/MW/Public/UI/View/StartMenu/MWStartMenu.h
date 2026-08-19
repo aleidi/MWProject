@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWStartMenu.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWMenuButton;
 
-// Define
+// 定義
 
 /*
  * @class UMWStartMenu

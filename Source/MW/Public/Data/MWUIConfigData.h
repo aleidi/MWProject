@@ -1,6 +1,6 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Engine/DataAsset.h"
 #include "Define/MWDefineUI.h"
 #include "MWUIConfigData.generated.h"

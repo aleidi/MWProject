@@ -1,6 +1,6 @@
 
 // ============================================================================
-//  UFactionRelationDataAsset : Faction 矩阵数据
+//  UFactionRelationDataAsset : 陣営関係マトリックスデータ
 //  - SelfFaction -> (OtherFaction -> Relation)
 // ============================================================================
 #pragma once

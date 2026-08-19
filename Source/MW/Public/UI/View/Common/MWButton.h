@@ -1,20 +1,20 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "CommonButtonBase.h"
 #include "MWButton.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UCommonTextBlock;
 class USpacer;
 class UHorizontalBox;
 
-// Define
+// 定義
 
 /*
  * @class UMWButton
  * 
- * @brief Implement playing focus/hover/selected animation.
+ * @brief Focus／Hover／Selectedアニメーションを再生します。
  *
  * @note
  */
@@ -45,10 +45,10 @@ protected:
 
 	virtual void NativePreConstruct() override;
 
-	/* Button style updated in this function. So it's a good place to set text style.*/
+	/* ButtonStyleの更新時に呼ばれるため、TextStyleの設定に適しています。 */
 	virtual void SynchronizeProperties() override;
 
-	/** Allows derived classes to take action when the current text style has changed */
+	/** 現在のTextStyle変更時に派生クラス固有の処理を行います。 */
 	void NativeOnCurrentTextStyleChanged() override;
 
 	void OnInputMethodChanged(ECommonInputType CurrentInputType) override;

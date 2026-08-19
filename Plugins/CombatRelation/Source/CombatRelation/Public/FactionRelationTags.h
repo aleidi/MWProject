@@ -8,9 +8,9 @@ namespace FactionRelationTags
 {
 	COMBATRELATION_API FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-	/** The actor in player's team. */
+	/** プレイヤーのチームに所属するアクター。 */
 	DECLARE_UE_GAMEPLAY_TAG(CombatRelation_Faction_Player);
-	/** The default tag of enemy such as field enemies, wandering monsters. */
+	/** フィールドの敵や徘徊モンスターなどに使用するデフォルトのタグ。 */
 	DECLARE_UE_GAMEPLAY_TAG(CombatRelation_Faction_Enemy);
 }
 

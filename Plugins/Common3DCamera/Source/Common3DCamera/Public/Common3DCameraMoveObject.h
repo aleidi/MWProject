@@ -29,21 +29,21 @@ public:
 
 private:
 	/**
-	 * Get the target rotation we inherit, used as the base target for the boom rotation.
-	 * This is derived from attachment to our parent and considering the UsePawnControlRotation and absolute rotation flags.
+	 * ブーム回転の基準となる、継承対象の回転を取得する。
+	 * 親へのアタッチ状態、UsePawnControlRotation、絶対回転フラグから算出する。
 	 */
 	FRotator GetTargetRotation() const;
 
-	/** Get the position where the camera should be without applying the Collision Test displacement */
+	/** コリジョンテストによる変位を適用しないカメラ位置を取得する */
 	FVector GetUnfixedCameraPosition() const;
 
-	/** Is the Collision Test displacement being applied? */
+	/** コリジョンテストによる変位が適用されているか */
 	bool IsCollisionFixApplied() const;
 
-	/** Returns the desired rotation for the spring arm, before the rotation constraints such as bInheritPitch etc are enforced. */
+	/** bInheritPitchなどの回転制約を適用する前のスプリングアームの目標回転を返す */
 	virtual FRotator GetDesiredRotation() const;
 
-	/** Get view rotation from pawn. */
+	/** Pawnからビュー回転を取得する。 */
 	FRotator GetViewRotation() const;
 
 protected:
@@ -57,7 +57,7 @@ protected:
 	void AddHitResultToDebug(const FHitResult& HitResult);
 
 protected:
-	/* Temporary variable for cache state. */
+	/* 状態キャッシュ用の一時変数。 */
 	FRotator LastDesiredRot = FRotator::ZeroRotator;
 	FVector LastDesiredLoc = FVector::ZeroVector;
 
@@ -67,7 +67,7 @@ protected:
 
 	uint8 bIsCameraFixed : 1 = false;
 
-	// Camera Setting Property
+	// カメラ設定プロパティ
 	uint8 bEnableMoveSettings : 1 = false;
 
 	uint8 bUsePawnControlRotation : 1 = true;
@@ -86,23 +86,23 @@ protected:
 
 	float TargetArmLength = 300.f;
 
-	/** location lag setting */
+	/** 位置遅延設定 */
 	bool bEnableLocLag = false;
 
 	float LocLagSpeed = 10.f;
 
-	/** rotation lag setting */
+	/** 回転遅延設定 */
 	bool bEnableRotLag = true;
 
 	float RotLagSpeed = 10.f;
 
-	/** collision test */
+	/** コリジョンテスト */
 	uint8 bCollisionTest : 1 = true;
 
 	ECollisionChannel ProbeChannel = ECollisionChannel::ECC_Camera;
 
 	float ProbeSize = 12.0f;
 
-	/** Debug Data */
+	/** デバッグデータ */
 	FDebugData DebugData;
 };

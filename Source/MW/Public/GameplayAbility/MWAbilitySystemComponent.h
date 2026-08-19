@@ -20,7 +20,7 @@ MW_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
 /**
  * UMWAbilitySystemComponent
  *
- *	Base ability system component class used by this project.
+ *	本プロジェクトで使用するAbilitySystemComponentの基底クラスです。
  */
 UCLASS(meta = (BlueprintSpawnableComponent))
 class MW_API UMWAbilitySystemComponent : public UAbilitySystemComponent
@@ -30,10 +30,10 @@ class MW_API UMWAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	UMWAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	//~UActorComponent interface
+	//~UActorComponentインターフェース
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	//~End of UActorComponent interface
+	//~UActorComponentインターフェース終了
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 
@@ -45,9 +45,9 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
-	/* Help function to call AbilityInputTagPressed of Actor. */
+	/* ActorのAbilityInputTagPressedを呼び出すHelper関数。 */
 	static bool ActorAbilityInputTagPressed(AActor* InActor, const FGameplayTag& InputTag);
-	/* Help function to call AbilityInputTagReleased of Actor. */
+	/* ActorのAbilityInputTagReleasedを呼び出すHelper関数。 */
 	static bool ActorAbilityInputTagReleased(AActor* InActor, const FGameplayTag& InputTag);
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
@@ -58,19 +58,19 @@ public:
 	void RemoveAbilityFromActivationGroup(EMWAbilityActivationGroup Group, UMWGameplayAbility* MWAbility);
 	void CancelActivationGroupAbilities(EMWAbilityActivationGroup Group, UMWGameplayAbility* IgnoreMWAbility, bool bReplicateCancelAbility);
 
-	// Uses a gameplay effect to add the specified dynamic granted tag.
+	// GameplayEffectを使用して指定したDynamicGrantedTagを追加します。
 	void AddDynamicTagGameplayEffect(const FGameplayTag& Tag);
 
-	// Removes all active instances of the gameplay effect that was used to add the specified dynamic granted tag.
+	// 指定したDynamicGrantedTagの追加に使用したGameplayEffectの有効なInstanceをすべて削除します。
 	void RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag);
 
-	/** Gets the ability target data associated with the given ability handle and activation info */
+	/** 指定したAbilityHandleとActivationInfoに対応するAbilityTargetDataを取得します。 */
 	void GetAbilityTargetData(const FGameplayAbilitySpecHandle AbilityHandle, FGameplayAbilityActivationInfo ActivationInfo, FGameplayAbilityTargetDataHandle& OutTargetDataHandle);
 
-	/** Sets the current tag relationship mapping, if null it will clear it out */
+	/** 現在のTagRelationshipMappingを設定します。nullの場合は解除します。 */
 	void SetTagRelationshipMapping(UMWAbilityTagRelationshipMapping* NewMapping);
 	
-	/** Looks at ability tags and gathers additional required and blocking tags */
+	/** AbilityTagから追加の必須TagとBlockTagを収集します。 */
 	void GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const;
 
 	void OnAbilityFailedToActivate(const FGameplayTagContainer& FailedReason) const;
@@ -87,23 +87,23 @@ protected:
 	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
 	virtual void HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled) override;
 
-	/** Notify client that an ability failed to activate */
+	/** Abilityの有効化失敗をClientへ通知します。 */
 	UFUNCTION(Client, Unreliable)
 	void ClientNotifyAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason);
 	
 	void HandleAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason);
 
 protected:
-	// Handles to abilities that had their input pressed this frame.
+	// このFrameで入力されたAbilityのHandle。
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 
-	// Handles to abilities that had their input released this frame.
+	// このFrameで入力が解放されたAbilityのHandle。
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 
-	// Handles to abilities that have their input held.
+	// 入力が継続中のAbilityのHandle。
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
-	// Number of abilities running in each activation group.
+	// ActivationGroupごとに実行中のAbility数。
 	int32 ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::MAX];
 
 public:
@@ -113,10 +113,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	void FindInstancedAbilityByClass(TArray<UMWGameplayAbility*>& OutAbilities, TSubclassOf<UMWGameplayAbility> InClass);
 
-//****Interface for Actor****//
+//****Actor向けインターフェース****//
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay Abilities")
 	static bool ClearAllAbilitiesByActor(AActor* InActor);
-//****Interface for Actor****//
+//****Actor向けインターフェース****//
 
 };

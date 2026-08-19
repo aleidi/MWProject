@@ -10,15 +10,14 @@ struct MWDamageStatics
 
 	MWDamageStatics()
 	{
-		// Capture the Target's Endurance attribute. Do not snapshot it, because we want to use the health value at the moment we apply the execution.
+		// 実行適用時の値を使用するため、TargetのEndurance属性をスナップショットせずにキャプチャ
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, Endurance, Target, false);
 
-		// Capture the Source's Strength. We do want to snapshot this at the moment we create the GameplayEffectSpec that will execute the damage.
-		// (imagine we fire a projectile: we create the GE Spec when the projectile is fired. When it hits the target, we want to use the Strength at the moment
-		// the projectile was launched, not when it hits).
+		// ダメージ実行用GameplayEffectSpecの作成時点でSourceのStrengthをスナップショット
+		// これにより、命中時ではなく発射時のStrengthを基準にダメージを計算する。
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, Strength, Source, true);
 
-		// Also capture the source's raw Damage, which is normally passed in directly via the execution
+		// 通常はExecution経由で直接渡されるSourceの基礎Damageもキャプチャ
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, Damage, Source, true);
 	}
 };
@@ -31,7 +30,7 @@ static const MWDamageStatics& DamageStatics()
 
 UMWDamageExecution::UMWDamageExecution()
 {
-	// Capture attribute here
+	// 属性をキャプチャ
 	RelevantAttributesToCapture.Add(DamageStatics().EnduranceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().StrengthDef);
 	RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
@@ -41,7 +40,7 @@ void UMWDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
-	// Gather the tags from the source and target as that can affect which buffs should be used
+	// 適用するバフの判定に使用するSourceとTargetのタグを取得
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 

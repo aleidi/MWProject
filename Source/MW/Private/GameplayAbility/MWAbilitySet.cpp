@@ -32,7 +32,7 @@ void FMWAbilitySet_GrantedHandles::RemoveFromAbilitySystem(UMWAbilitySystemCompo
 
 	if (!MWASC->IsOwnerActorAuthoritative())
 	{
-		// Must be authoritative to give or take ability sets.
+		// Ability Setの付与・削除にはAuthorityが必要
 		return;
 	}
 
@@ -73,11 +73,11 @@ void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbi
 
 	if (!MWASC->IsOwnerActorAuthoritative())
 	{
-		// Must be authoritative to give or take ability sets.
+		// Ability Setの付与・削除にはAuthorityが必要
 		return;
 	}
 
-	// Grant the gameplay abilities.
+	// Gameplay Abilityを付与
 	for (int32 AbilityIndex = 0; AbilityIndex < GrantedGameplayAbilities.Num(); ++AbilityIndex)
 	{
 		const FMWAbilitySet_GameplayAbility& AbilityToGrant = GrantedGameplayAbilities[AbilityIndex];
@@ -102,7 +102,7 @@ void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbi
 		}
 	}
 
-	// Grant the attribute sets.
+	// Attribute Setを付与
 	for (int32 SetIndex = 0; SetIndex < GrantedAttributes.Num(); ++SetIndex)
 	{
 		const FMWAbilitySet_AttributeSet& SetToGrant = GrantedAttributes[SetIndex];
@@ -122,7 +122,7 @@ void UMWAbilitySet::GiveToAbilitySystem(UMWAbilitySystemComponent* MWASC, FMWAbi
 		}
 	}
 
-	// Grant the gameplay effects.
+	// Gameplay Effectを付与
 	for (int32 EffectIndex = 0; EffectIndex < GrantedGameplayEffects.Num(); ++EffectIndex)
 	{
 		const FMWAbilitySet_GameplayEffect& EffectToGrant = GrantedGameplayEffects[EffectIndex];

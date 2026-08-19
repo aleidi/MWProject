@@ -24,12 +24,12 @@ public class MWEditor : ModuleRules
             "Blutility",
 		});
 
-		// Uncomment if you are using Slate UI
+		// Slate UIを使用する場合はコメントを解除
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
-		// Uncomment if you are using online features
+		// オンライン機能を使用する場合はコメントを解除
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+		// OnlineSubsystemSteamを使用する場合はuprojectのPluginsへ追加し、Enabledをtrueに設定
 	}
 }

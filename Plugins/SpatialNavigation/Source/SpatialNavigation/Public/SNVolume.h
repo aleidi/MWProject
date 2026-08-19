@@ -1,12 +1,12 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "CoreMinimal.h"
 #include "GameFramework/Volume.h"
 #include "SNNode.h"
 #include "SNVolume.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMaterial;
 class UProceduralMeshComponent;
 
@@ -23,135 +23,133 @@ class SPATIALNAVIGATION_API ASNVolume : public AVolume
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
+	// アクターのプロパティにデフォルト値を設定
 	ASNVolume();
 
 	/**
-	* Called when an instance of this class is placed (in editor) or spawned.
-	* @param	Transform			The transform the actor was constructed at.
+	* このクラスのインスタンスがエディタに配置またはスポーンされた際に呼び出される。
+	* @param	Transform			アクター構築時のトランスフォーム。
 	*/
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	// Called every frame
+	// 毎フレーム呼び出される
 	virtual void Tick(float DeltaTime) override;
 
-	// Gets the node at the specified coordinates
+	// 指定座標のノードを取得
 	SNNode* GetNode(FIntVector Coordinates);
 
 	const SNNode* GetNode(FIntVector Coordinates) const;
 
-	// Finds a path from the starting location to the destination
+	// 開始位置から目的地までの経路を探索
 	UFUNCTION(BlueprintCallable, Category = "SNVolume")
 	bool FindPath(const FVector& Start, const FVector& Destination, const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, UClass* ActorClassFilter, TArray<FVector>& OutPath);
 
 	/**
-	* Converts a world space location to a coordinate in the grid. If the location is not located within the grid,
-	* the coordinate will be clamped to the closest coordinate.
-	* @param	Location			The location to convert
-	* @return	The converted coordinates
+	* ワールド空間の位置をグリッド座標へ変換する。位置がグリッド外の場合は、最も近い座標にクランプする。
+	* @param	Location			変換対象の位置
+	* @return	変換後の座標
 	*/
 	UFUNCTION(BlueprintCallable, Category = "SNVolume")
 	UPARAM(DisplayName = "Coordinates") FIntVector ConvertLocationToCoordinates(const FVector& Location);
 
 	/**
-	* Converts a coordinate into a world space location. If the coordinate is not within the bounds of the grid,
-	* the coordinate will be clamped to the closest coordinate.
-	* @param	Coordinates			The coordinates to convert into world space
-	* @return	The converted location in world space
+	* 座標をワールド空間の位置へ変換する。座標がグリッド範囲外の場合は、最も近い座標にクランプする。
+	* @param	Coordinates			ワールド空間へ変換する座標
+	* @return	変換後のワールド空間位置
 	*/
 	UFUNCTION(BlueprintCallable, Category = "SNVolume")
 	UPARAM(DisplayName = "World Location") FVector ConvertCoordinatesToLocation(const FIntVector& Coordinates);
 
-	// Gets the total number of divisions in the grid
+	// グリッドの総分割数を取得
 	UFUNCTION(BlueprintPure, Category = "SNVolume")
 	FORCEINLINE int32 GetTotalDivisions() const { return DivisionsX * DivisionsY * DivisionsZ; }
 
-	// Gets the number of x divisions in the grid
+	// グリッドのX軸方向の分割数を取得
 	UFUNCTION(BlueprintPure, Category = "SNVolume")
 	FORCEINLINE int32 GetDivisionsX() const { return DivisionsX; }
 
-	// Gets the number of y divisions in the grid
+	// グリッドのY軸方向の分割数を取得
 	UFUNCTION(BlueprintPure, Category = "SNVolume")
 	FORCEINLINE int32 GetDivisionsY() const { return DivisionsY; }
 
-	// Gets the number of z divisions in the grid
+	// グリッドのZ軸方向の分割数を取得
 	UFUNCTION(BlueprintPure, Category = "SNVolume")
 	FORCEINLINE int32 GetDivisionsZ() const { return DivisionsZ; }
 
-	// Gets the size of each division in the grid
+	// グリッドの1区画あたりのサイズを取得
 	UFUNCTION(BlueprintPure, Category = "SNVolume")
 	FORCEINLINE float GetDivisionSize() const { return DivisionSize; }
 
 protected:
-	// Called when the game starts or when spawned
+	// ゲーム開始時またはスポーン時に呼び出される
 	virtual void BeginPlay() override;
 
-	// Overridable function called whenever this actor is being removed from a level
+	// アクターがレベルから除去される際に呼び出されるオーバーライド可能な関数
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	// Gets the size of the grid along the X axis
+	// グリッドのX軸方向のサイズを取得
 	inline float GetGridSizeX() const { return DivisionsX * DivisionSize; }
 
-	// Gets the size of the grid along the Y axis
+	// グリッドのY軸方向のサイズを取得
 	inline float GetGridSizeY() const { return DivisionsY * DivisionSize; }
 
-	// Gets the size of the grid along the Z axis
+	// グリッドのZ軸方向のサイズを取得
 	inline float GetGridSizeZ() const { return DivisionsZ * DivisionSize; }
 
-	// Gets min local position of the grid box
+	// グリッドボックスのローカル最小位置を取得
 	inline FVector GetGridMinLocal() const
 	{
 		return FVector(-GetGridSizeX() * 0.5f, -GetGridSizeY() * 0.5f, -GetGridSizeZ() * 0.5f);
 	}
 
 private:
-	// Helper function for creating the geometry for a single line of the grid
+	// グリッド線1本分の形状を作成する補助関数
 	void CreateLine(const FVector& Start, const FVector& End, const FVector& Normal, TArray<FVector>& Vertices, TArray<int32>& Triangles);
 
-	// Helper function to check if a coordinate is valid
+	// 座標の有効性を確認する補助関数
 	bool AreCoordinatesValid(const FIntVector& Coordinates) const;
 
-	// Helper function to clamp the coordinate to a valid one inside the grid
+	// 座標をグリッド内の有効範囲にクランプする補助関数
 	void ClampCoordinates(FIntVector& Coordinates) const;
 
 private:
-	// The procedural mesh responsbile for rendering the grid
+	// グリッド描画用プロシージャルメッシュ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SNVolume", meta = (AllowPrivateAccess = "true"))
 	UProceduralMeshComponent* ProceduralMesh = nullptr;
 
-	// The number of divisions in the grid along the X axis
+	// グリッドのX軸方向の分割数
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Pathfinding", meta = (AllowPrivateAccess = "true", ClampMin = 1))
 	int32 DivisionsX = 10;
 
-	// The number of divisions in the grid along the Y axis
+	// グリッドのY軸方向の分割数
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Pathfinding", meta = (AllowPrivateAccess = "true", ClampMin = 1))
 	int32 DivisionsY = 10;
 
-	// The number of divisions in the grid along the Z axis
+	// グリッドのZ軸方向の分割数
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Pathfinding", meta = (AllowPrivateAccess = "true", ClampMin = 1))
 	int32 DivisionsZ = 10;
 
-	// The size of each division
+	// 1区画あたりのサイズ
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Pathfinding", meta = (AllowPrivateAccess = "true", ClampMin = 1))
 	float DivisionSize = 100.0f;
 
-	// The minimum number of axes that must be shared with a neighboring node for it to be counted a neighbor
+	// 隣接ノードとして扱うために必要な共有軸数の最小値
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Pathfinding", meta = (AllowPrivateAccess = "true", ClampMin = 0, ClampMax = 2))
 	int32 MinSharedNeighborAxes = 0;
 
-	// The thickness of the grid lines
+	// グリッド線の太さ
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Aesthetics", meta = (AllowPrivateAccess = "true", ClampMin = 0))
 	float LineThickness = 2.0f;
 
-	// The color of the grid
+	// グリッドの色
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SNVolume|Aesthetics", meta = (AllowPrivateAccess = "true"))
 	FLinearColor Color = FLinearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
 private:
-	// The grid material used by the procedural mesh
+	// プロシージャルメッシュで使用するグリッドマテリアル
 	UPROPERTY(Transient)
 	TObjectPtr<UMaterial> GridMaterial = nullptr;
 
-	// The nodes used for pathfinding
+	// 経路探索用ノード
 	TArray<SNNode> Nodes;
 };

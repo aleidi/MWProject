@@ -21,29 +21,29 @@ class APawn;
 class APlayerController;
 class APlayerCameraManager;
 
-/** Main component in plugin*/
+/** プラグインのメインコンポーネント */
 UCLASS(Blueprintable, classGroup = "C3DCamera", meta = (BlueprintSpawnableComponent))
 class COMMON3DCAMERA_API UC3DCameraComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
-	/** Called when camera mode is changed(set new camera mode, set override camera mode, reset override camera mode) */
+	/** カメラモードの変更時に呼び出される（新規設定、オーバーライド設定、オーバーライド解除） */
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraModeChangedDelegate);
 
 public:
 	UC3DCameraComponent();
 
-	//~Begin USceneComponent Interface
+	//~ USceneComponentインターフェース開始
 	virtual FTransform GetSocketTransform(FName InSocketName, ERelativeTransformSpace TransformSpace = RTS_World) const override;
-	//~End USceneComponent Interface
+	//~ USceneComponentインターフェース終了
 
-	//~ Begin UActorComponent Interface
+	//~ UActorComponentインターフェース開始
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
 	virtual void PostInitProperties() override;
 	virtual void InitializeComponent() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	//~ End UActorComponent Interface
+	//~ UActorComponentインターフェース終了
 
 	UFUNCTION(BlueprintCallable, Category = "C3D")
 	virtual void ValidateComponents(bool bWithInterpolation);
@@ -51,35 +51,35 @@ public:
 	virtual void OnBeginOverlapCameraVolume(AC3DCameraVolume* CameraVolume);
 	virtual void OnEndOverlapCameraVolume(AC3DCameraVolume* CameraVolume);
 
-	//~ Begin Zoom Func
+	//~ ズーム関数開始
 	UFUNCTION(BlueprintCallable, Category = "C3D|Zoom")
 	void ZoomIn();
 	UFUNCTION(BlueprintCallable, Category = "C3D|Zoom")
 	void ZoomOut();
 	UFUNCTION(BlueprintCallable, Category = "C3D|Zoom")
 	void SetCameraDistance(float NewDistance, bool bInterpolate);
-	//~ End Zoom Func
+	//~ ズーム関数終了
 
 	/** 
-	* Set camera mode with @CameraModeTag from CameraModesAssets
-	* @param bForceSet - if set true, ignores CanSetCameraMode
+	* CameraModesAssetsから@CameraModeTagに対応するカメラモードを設定する
+	* @param bForceSet trueの場合、CanSetCameraModeを無視する
 	*/
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
 	virtual void SetCameraMode(FGameplayTag CameraModeTag, bool bWithInterpolation, bool bForceSet = false);
 
-	/** This function for override */
+	/** オーバーライド用関数 */
 	UFUNCTION(BlueprintPure, BlueprintNativeEvent, Category = "C3D|CameraMode")
 	bool CanSetCameraMode(FGameplayTag CameraModeTag) const;
 
-	/** Find cameraVolume and return tag if volume is valid, otherwise return @DefaultCameraModeTag */
+	/** CameraVolumeを検索し、有効な場合はそのタグ、それ以外は@DefaultCameraModeTagを返す */
 	UFUNCTION(BlueprintPure, BlueprintNativeEvent, Category = "C3D|CameraMode")
 	FGameplayTag GetInitialCameraModeTag() const;
 
-	/** Find overlap camera volume via @FindOverlapCameraVolume and if volume and tag is valid return tag. Otherwise return invalid tag */
+	/** @FindOverlapCameraVolumeで重複中のCameraVolumeを検索し、ボリュームとタグが有効な場合はタグ、それ以外は無効なタグを返す */
 	UFUNCTION(BlueprintPure, Category = "C3D|CameraMode")
 	FGameplayTag GetCameraModeTagFromOverlapCameraVolume() const;
 
-	/** This function for override. By default return current tag if it is valid, otherwise return @DefaultCameraModeTag */
+	/** オーバーライド用関数。デフォルトでは現在のタグが有効な場合はそのタグ、それ以外は@DefaultCameraModeTagを返す */
 	UFUNCTION(BlueprintPure, BlueprintNativeEvent, Category = "C3D|CameraMode")
 	FGameplayTag GetDesiredCameraModeTag() const;
 
@@ -90,7 +90,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "C3D|CameraMode")
 	UC3DCameraModeDataAsset* GetCurrentCameraMode();
 
-	/** Override current camera mode(don't change current camera mode. For override used other variable) */
+	/** 現在のカメラモードを変更せず、別の変数でオーバーライドする */
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
 	virtual void SetCustomCameraMode(UC3DCameraModeDataAsset* CameraMode, bool bWithInterpolation);
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
@@ -98,7 +98,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
 	bool IsSetCustomCameraMode() const;
 
-	//~ Begin functions for managing camera modes
+	//~ カメラモード管理関数開始
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
 	void AddCameraMode(UC3DCameraModeDataAsset* CameraMode);
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
@@ -110,7 +110,7 @@ public:
 	UC3DCameraModeDataAsset* GetCameraMode(FGameplayTag CameraModeName);
 	UFUNCTION(BlueprintCallable, Category = "C3D|CameraMode")
 	void ClearAllCameraModes();
-	//~ End functions for managing camera modes
+	//~ カメラモード管理関数終了
 
 	UFUNCTION(BlueprintPure, Category = "C3D")
 	virtual AC3DCameraVolume* FindOverlapCameraVolume() const;
@@ -139,7 +139,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "C3D")
 	virtual bool IsCineCameraActive() const;
 
-	/** Return true if initial camera mode is sets now(need for correct initialization some camera objects)*/
+	/** 初期カメラモードの設定中はtrueを返す（一部のカメラオブジェクトを正しく初期化するために必要） */
 	bool IsSettingInitialCameraMode() const;
 
 	template<typename T>
@@ -165,7 +165,7 @@ public:
 	FC3DCameraDebugRules DebugRules;
 
 protected:
-	/* Create camera modes from CameraModeAssets */
+	/* CameraModeAssetsからカメラモードを生成 */
 	virtual void CreateCameraModesFromAssets();
 
 	virtual void SetInitialCameraMode();
@@ -191,11 +191,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "C3D|Settings")
 	FGameplayTag DefaultCameraModeTag;
 
-	/** Data assets with camera modes */
+	/** カメラモードを保持するデータアセット */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "C3D|Settings")
 	TArray<UC3DCameraModeDataAsset*> CameraModesAssets;
 
-	/** Storage for instanced camera modes sorted by FGameplayTag */
+	/** FGameplayTagで分類したカメラモードインスタンスの格納先 */
 	UPROPERTY()
 	TMap<FGameplayTag, UC3DCameraModeDataAsset*> SortedCameraModes;
 
@@ -233,13 +233,13 @@ protected:
 	UPROPERTY(Transient)
 	TArray<UC3DCameraBaseObject*> CameraObjList;
 
-	//Handled cine camera after switch target view?
+	// ビューターゲット切り替え後のシネカメラを処理済みか
 	bool bHandledCineCamera = false;
 
 private:
 	UPROPERTY()
 	UC3DCameraModeDataAsset* EmptyCameraMode;
-	/* For correct view FATPCCameraMode in Blueprints Details panel */
+	/* Blueprintの詳細パネルにFATPCCameraModeを正しく表示するために使用 */
 	UPROPERTY()
 	FC3DCameraMode CameraModeDEV;
 };

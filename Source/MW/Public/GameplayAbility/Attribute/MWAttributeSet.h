@@ -12,11 +12,11 @@ class UWorld;
 struct FGameplayEffectSpec;
 
 /**
- * This macro defines a set of helper functions for accessing and initializing attributes.
+ * Attributeの参照と初期化に使用するHelper関数群を定義するMacroです。
  *
- * The following example of the macro:
+ * 次のMacro呼び出しにより、
  *		ATTRIBUTE_ACCESSORS(UMWHealthSet, Health)
- * will create the following functions:
+ * 以下の関数を生成します：
  *		static FGameplayAttribute GetHealthAttribute();
  *		float GetHealth() const;
  *		void SetHealth(float NewVal);
@@ -29,20 +29,20 @@ struct FGameplayEffectSpec;
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 /** 
- * Delegate used to broadcast attribute events, some of these parameters may be null on clients: 
- * @param EffectInstigator	The original instigating actor for this event
- * @param EffectCauser		The physical actor that caused the change
- * @param EffectSpec		The full effect spec for this change
- * @param EffectMagnitude	The raw magnitude, this is before clamping
- * @param OldValue			The value of the attribute before it was changed
- * @param NewValue			The value after it was changed
+ * Attributeイベントを通知するDelegateです。クライアントでは一部の引数がnullの場合があります。
+ * @param EffectInstigator イベントを最初に発生させたActor。
+ * @param EffectCauser 変更を直接発生させたActor。
+ * @param EffectSpec 変更に使用した完全なEffectSpec。
+ * @param EffectMagnitude Clamp前の値。
+ * @param OldValue 変更前のAttribute値。
+ * @param NewValue 変更後のAttribute値。
 */
 DECLARE_MULTICAST_DELEGATE_SixParams(FMWAttributeEvent, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/, const FGameplayEffectSpec* /*EffectSpec*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
 
 /**
  * UMWAttributeSet
  *
- *	Base attribute set class for the project.
+ *	本プロジェクトで使用するAttributeSetの基底クラスです。
  */
 UCLASS()
 class MW_API UMWAttributeSet : public UAttributeSet

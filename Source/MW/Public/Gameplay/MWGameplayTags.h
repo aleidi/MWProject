@@ -10,7 +10,7 @@ namespace MWGameplayTags
 {
 	MW_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-	// ==== Basic Input ====
+	// ==== 基本入力 ====
 #pragma region Basic Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_Basic);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Direction);
@@ -18,7 +18,7 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_Basic_Cancel);
 #pragma endregion
 
-	// ==== TPDefault Input ====
+	// ==== TPDefault入力 ====
 #pragma region TPDefault Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_TPDefault);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_Debug);
@@ -27,35 +27,35 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPDefault_AutoRun);
 #pragma endregion
 
-// ==== Battle Input ====
+// ==== バトル入力 ====
 #pragma region Battle Input
 	DECLARE_MW_GAMEPLAY_TAG(IMC_TPBattle);
-	// Used for skill of character
+	// キャラクタースキル用
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot1);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot2);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot4);
-	// Used for skill of partner
+	// パートナースキル用
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot1);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot2);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot3);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_PartnerSkillSlot4);
-	// Used for extra skill of character
+	// キャラクターの追加スキル用
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot1);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot2);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterExtraSkillSlot3);
-	// Used for charge skill of character
+	// キャラクターのチャージスキル用
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot1_Charge);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot2_Charge);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_CharacterSkillSlot3_Charge);
-	// Tag for charged skill
+	// チャージ済みスキル用Tag
 	DECLARE_MW_GAMEPLAY_TAG(IATag_TPBattle_ChargeSkill);
 #pragma endregion
 
-	// ==== RPG Battle Command Input ====
+	// ==== RPGバトルコマンド入力 ====
 #pragma region RPG Battle Command Input
 
-	// == General ==
+	// == 共通 ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand);
 
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack);
@@ -64,29 +64,29 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseSpirit);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Escape);
 
-	// == Attack ==
+	// == 攻撃 ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand_Attack);
 
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_SelectTarget);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_Cancel);
 
-	// Character 1 control.
+	// キャラクター1操作。
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C1);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C1UD);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C1LR);
-	// Character 2 control.
+	// キャラクター2操作。
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C2);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C2UD);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C2LR);
-	// Character 3 control.
+	// キャラクター3操作。
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C3);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C3UD);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_Attack_C3LR);
 
-	// Character action tags container.
+	// キャラクターActionTagコンテナ。
 	extern TArray<FGameplayTag> BattleCharacterAttack;
 
-	// == ChangeAvatar ==
+	// == Avatar切替 ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand_ChangeAvatar);
 
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_ChangeAvatar_Confirm);
@@ -95,7 +95,7 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_ChangeAvatar_SelectTarget);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_ChangeAvatar_ChangeAvatar);
 
-	// == UseItem ==
+	// == Item使用 ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand_UseItem);
 
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseItem_Confirm);
@@ -104,7 +104,7 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseItem_SelectItem);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseItem_SelectTarget);
 
-	// == UseSprit ==
+	// == Spirit使用 ==
 	DECLARE_MW_GAMEPLAY_TAG(IMC_BattleCommand_UseSpirit);
 
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseSpirit_Confirm);
@@ -113,16 +113,16 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseSpirit_SelectSpirit);
 	DECLARE_MW_GAMEPLAY_TAG(IATag_BC_UseSpirit_SelectTarget);
 
-	// Battle Command tags container.
+	// バトルCommandTagコンテナ。
 	extern TArray<FGameplayTag> BattleCommands;
 #pragma endregion
 
-	// ==== Gameplay Tag ====
+	// ==== GameplayTag ====
 #pragma region Gameplay Tag
-	// Gameplay Ability
+	// GameplayAbility
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActivateFail_ActivationGroup);
 
-	// Input Charge State
+	// 入力チャージ状態
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Charging);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_NoCharge);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_Light);
@@ -130,33 +130,33 @@ namespace MWGameplayTags
 	DECLARE_MW_GAMEPLAY_TAG(Ability_InputCharge_OverCharge);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_ActionUninterruptible);
 
-	// Skill
+	// スキル
 	DECLARE_MW_GAMEPLAY_TAG(Ability_Skill_Chainable);
 	DECLARE_MW_GAMEPLAY_TAG(Ability_Skill_Cast);
 
-	// ==== RPG Battle Command ====
+	// ==== RPGバトルコマンド ====
 #pragma region RPG Battle Command
 	DECLARE_MW_GAMEPLAY_TAG(Battle_Ability_UnitAttack);
-	// Attack command
+	// 攻撃コマンド
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P1);
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P2);
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboAttack_P3);
-	// Combo
+	// コンボ
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboCentral);
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboUpDown);
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboLeftRight);
-	// Combo Hit
+	// コンボヒット
 	DECLARE_MW_GAMEPLAY_TAG(Battle_ComboHit);
 	DECLARE_MW_GAMEPLAY_TAG(Battle_AvatarChanged);
 
-	// Character
+	// キャラクター
 	DECLARE_MW_GAMEPLAY_TAG(Character_CombatState);
 #pragma endregion
 
 
 #pragma endregion
 
-	// ==== SetByCaller Tag ====
+	// ==== SetByCallerタグ ====
 #pragma region SetByCaller Tag
 	DECLARE_MW_GAMEPLAY_TAG(GP_SetByCaller_ComboHitRatio);
 #pragma endregion

@@ -28,11 +28,11 @@ struct COMMON3DCAMERA_API FC3DMoveSettings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	float TargetArmLength = 300.f;
 
-	/* The offset from start of spring arm to the target pivot location. */
+	/* スプリングアームの始点からターゲットピボット位置までのオフセット。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	FVector TargetPivotOffset = FVector::ZeroVector;
 
-	/* The offset from end of spring arm to the camera location. */
+	/* スプリングアームの終点からカメラ位置までのオフセット。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm")
 	FVector CameraOffset = FVector::ZeroVector;
 
@@ -51,15 +51,15 @@ struct COMMON3DCAMERA_API FC3DMoveSettings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|SpringArm", meta = (EditCondition = "bEnableLocLag"))
 	float LocLagSpeed = 10.f;
 
-	/** If true, do a collision test using ProbeChannel and ProbeSize to prevent camera clipping into level. */
+	/** trueの場合、ProbeChannelとProbeSizeを使用してコリジョンテストを行い、カメラのレベルへのめり込みを防ぐ。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Move|Collision")
 	uint8 bCollisionTest : 1 = true;
 
-	/** Collision channel of the query probe (defaults to ECC_Camera) */
+	/** クエリプローブのコリジョンチャンネル（デフォルトはECC_Camera） */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move|Collision", meta = (editcondition = "bCollisionTest"))
 	TEnumAsByte<ECollisionChannel> ProbeChannel = ECollisionChannel::ECC_Camera;
 
-	/** How big should the query probe sphere be (in unreal units) */
+	/** クエリプローブ球の半径（Unreal Unit） */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Move|Collision", meta=(editcondition = "bCollisionTest"))
 	float ProbeSize = 12.0f;
 };
@@ -70,7 +70,7 @@ struct COMMON3DCAMERA_API FC3DFadeSettings
 	GENERATED_BODY()
 
 	/**
-	* Time to completely show the object (if the material parameter = MaterialFadeMaxValue)
+	* オブジェクトを完全に表示するまでの時間（マテリアルパラメータ = MaterialFadeMaxValueの場合）
 	*
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (ClampMin = "0.0", UIMin = "0.0"))
@@ -78,46 +78,46 @@ struct COMMON3DCAMERA_API FC3DFadeSettings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float FadeOutTime = 0.8f;
 
-	/** Material param. During fade process this. Not support changing between different camera modes */
+	/** フェード処理用のマテリアルパラメータ。カメラモード間の変更には非対応 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade")
 	float MaterialFadeMinValue = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade")
 	float MaterialFadeMaxValue = 1.f;
 
 	/** 
-	* The set of material parameters that will be set to the minimum @MaterialFadeMinValue or maximum @MaterialFadeMaxValue value.
-	* These parameters (usually only 1 here) should hide or show the object.
+	* 最小値@MaterialFadeMinValueまたは最大値@MaterialFadeMaxValueを設定するマテリアルパラメータ群。
+	* これらのパラメータ（通常は1つ）でオブジェクトの表示・非表示を制御する。
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade")
 	TArray<FName> MaterialFadeParamNames;
 
 	/** 
-	* This channel used in trace for find for objects are between camera and character.
-	* see @UC3DCameraFadingObject::FindCollidedActors
+	* カメラとキャラクター間のオブジェクトを検索するトレースで使用するチャンネル。
+	* @UC3DCameraFadingObject::FindCollidedActorsを参照。
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade")
 	TEnumAsByte<ECollisionChannel> FadeChannel = ECC_Camera;
 
 	/** 
-	* Do need hide self character if he collided with camera.
-	* For camera check radius see @SelfFadeCheckRadius
+	* 自身のキャラクターがカメラと衝突した場合に非表示化するか。
+	* カメラの判定半径は@SelfFadeCheckRadiusを参照。
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade")
 	bool bFadeSelfIfCollision = true;
 
-	/** If true, then custom fade time will be used @SelfFadeCustomFadeOutTime, otherwise will be used @FadeOutTime*/
+	/** trueの場合は@SelfFadeCustomFadeOutTime、それ以外は@FadeOutTimeを使用する */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (InlineEditConditionToggle))
 	bool bUseCustomFadeOutTimeForSelfFade = false;
 
-	/** Custom fade time if @bUseCustomFadeOutTimeForSelfFade is true. Overrides @FadeOutTime */
+	/** @bUseCustomFadeOutTimeForSelfFadeがtrueの場合のフェード時間。@FadeOutTimeを上書きする */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (EditCondition = "bUseCustomFadeOutTimeForSelfFade", ClampMin = "0.0", UIMin = "0.0"))
 	float SelfFadeCustomFadeOutTime = 1.f;
 
-	/** Radius sphere trace to determine camera collision with character*/
+	/** カメラとキャラクターの衝突判定に使用する球形トレースの半径 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (EditCondition = "bFadeSelfIfCollision", ClampMin = "1.0", UIMin = "1.0"))
 	float SelfFadeCheckRadius = 18.f;
 
-	/** If true, and if bFadeSelfIfCollision true then all attached actors to character will be faded */
+	/** trueかつbFadeSelfIfCollisionがtrueの場合、キャラクターにアタッチされた全アクターをフェードする */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade", meta = (EditCondition = "bFadeSelfIfCollision"))
 	bool bSelfFadeAttachedActors = true;
 };
@@ -143,20 +143,20 @@ struct COMMON3DCAMERA_API FC3DCameraDebugRules
 {
 	GENERATED_BODY()
 
-	/** Put errors to log and screen, otherwise put only to log */
+	/** エラーをログと画面に出力する。falseの場合はログのみに出力する */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Logs")
 	bool bPrintErrorsToScreen = true;
 
 	/**
-	* Debug object - CameraLocationObject
-	* Show debug information about location object
+	* デバッグ対象：CameraLocationObject
+	* 位置オブジェクトのデバッグ情報を表示する
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
 	bool bEnableMoveObjectDebug = false;
 
 	/**
-	* Debug object - CameraFadingObject
-	* Show debug trace for find objects between camera and character
+	* デバッグ対象：CameraFadingObject
+	* カメラとキャラクター間のオブジェクトを検索するデバッグトレースを表示する
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
 	bool bEnableDrawFadeShapeDebug = false;

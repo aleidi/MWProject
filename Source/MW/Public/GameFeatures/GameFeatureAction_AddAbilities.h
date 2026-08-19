@@ -18,11 +18,11 @@ struct FMWAbilityGrant
 {
 	GENERATED_BODY()
 
-	// Type of ability to grant
+	// 付与するAbilityの型
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AssetBundles="Client,Server"))
 	TSoftClassPtr<UGameplayAbility> AbilityType;
 
-	// Input action to bind the ability to, if any (can be left unset)
+	// AbilityにバインドするInputAction（任意）
  	UPROPERTY(EditAnywhere, BlueprintReadOnly)
  	TSoftObjectPtr<UInputAction> InputAction;
 };
@@ -32,11 +32,11 @@ struct FMWAttributeSetGrant
 {
 	GENERATED_BODY()
 
-	// Ability set to grant
+	// 付与するAbilitySet
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AssetBundles="Client,Server"))
 	TSoftClassPtr<UAttributeSet> AttributeSetType;
 
-	// Data table referent to initialize the attributes with, if any (can be left unset)
+	// Attributeの初期化に使用するDataTable（任意）
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AssetBundles="Client,Server"))
 	TSoftObjectPtr<UDataTable> InitializationData;
 };
@@ -46,20 +46,20 @@ struct FGameFeatureAbilitiesEntry
 {
 	GENERATED_BODY()
 
-	// The base actor class to add to
+	// 追加対象のActor基底クラス
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSoftClassPtr<AActor> ActorClass;
 
-	// List of abilities to grant to actors of the specified class
+	// 指定クラスのActorへ付与するAbility一覧
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<FMWAbilityGrant> GrantedAbilities;
 
-	// List of attribute sets to grant to actors of the specified class 
+	// 指定クラスのActorへ付与するAttributeSet一覧
 	UPROPERTY(EditAnywhere, Category="Attributes")
 	TArray<FMWAttributeSetGrant> GrantedAttributes;
 
-	// List of ability sets to grant to actors of the specified class.
-	// Abilities granted through ability sets will be bound to input actions.
+	// 指定クラスのActorへ付与するAbilitySet一覧。
+	// AbilitySet経由で付与したAbilityはInputActionにバインドされます。
 	UPROPERTY(EditAnywhere, Category="Attributes", meta=(AssetBundles="Client,Server"))
 	TArray<TSoftObjectPtr<const UMWAbilitySet>> GrantedAbilitySets;
 };
@@ -68,7 +68,7 @@ struct FGameFeatureAbilitiesEntry
 // UGameFeatureAction_AddAbilities
 
 /**
- * GameFeatureAction responsible for granting abilities (and attributes) to actors of a specified type.
+ * 指定型のActorへAbilityとAttributeを付与するGameFeatureActionです。
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Abilities"))
 class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldActionBase
@@ -76,23 +76,23 @@ class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldAct
 	GENERATED_BODY()
 
 public:
-	//~ Begin UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース開始
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
-	//~ End UGameFeatureAction interface
+	//~ UGameFeatureActionインターフェース終了
 
-	//~ Begin UObject interface
+	//~ UObjectインターフェース開始
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
-	//~ End UObject interface
+	//~ UObjectインターフェース終了
 
-	/** Abilities that need to be added to target actor class. */
+	/** 対象Actorクラスへ追加するAbility。 */
 	UPROPERTY(EditAnywhere, Category="Abilities", meta=(TitleProperty="ActorClass", ShowOnlyInnerProperties))
 	TArray<FGameFeatureAbilitiesEntry> AbilitiesList;
 
 private:
-	/** Struct of ability contents added to actor. */
+	/** Actorへ追加するAbility内容の構造体。 */
 	struct FActorExtensions
 	{
 		TArray<FGameplayAbilitySpecHandle> Abilities;
@@ -100,7 +100,7 @@ private:
 		TArray<FMWAbilitySet_GrantedHandles> AbilitySetHandles;
 	};
 
-	/* Struct of cache of temp extension information. */
+	/* 一時的な拡張情報をキャッシュする構造体。 */
 	struct FPerContextData
 	{
 		TMap<AActor*, FActorExtensions> ActiveExtensions;
@@ -109,9 +109,9 @@ private:
 	
 	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;	
 
-	//~ Begin UGameFeatureAction_WorldActionBase interface
+	//~ UGameFeatureAction_WorldActionBaseインターフェース開始
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
-	//~ End UGameFeatureAction_WorldActionBase interface
+	//~ UGameFeatureAction_WorldActionBaseインターフェース終了
 
 	void Reset(FPerContextData& ActiveData);
 	void HandleActorExtension(AActor* Actor, FName EventName, int32 EntryIndex, FGameFeatureStateChangeContext ChangeContext);
@@ -121,7 +121,7 @@ private:
 	template<class ComponentType>
 	ComponentType* FindOrAddComponentForActor(AActor* Actor, const FGameFeatureAbilitiesEntry& AbilitiesEntry, FPerContextData& ActiveData)
 	{
-		//@TODO: Just find, no add?
+		//@TODO: 検索のみで追加は不要か？
 		return Cast<ComponentType>(FindOrAddComponentForActor(ComponentType::StaticClass(), Actor, AbilitiesEntry, ActiveData));
 	}
 	UActorComponent* FindOrAddComponentForActor(UClass* ComponentType, AActor* Actor, const FGameFeatureAbilitiesEntry& AbilitiesEntry, FPerContextData& ActiveData);

@@ -8,12 +8,12 @@
 #include "MWActivatableWidget.generated.h"
 
 /**
- * The base for widgets that are capable of being "activated" and "deactivated" during their lifetime without being otherwise modified or destroyed.
+ * 変更や破棄を伴わず、ライフサイクル中に有効化／無効化できるWidgetの基底クラスです。
  *
- * This is generally desired for one or more of the following purposes:
- *	- This widget can turn on/off without being removed from the hierarchy (or otherwise reconstructing the underlying SWidgets), so Construct/Destruct are insufficient
- *	- You'd like to be able to "go back" from this widget, whether that means back a breadcrumb, closing a modal, or something else. This is built-in here.
- *	- This widget's place in the hierarchy is such that it defines a meaningful node-point in the tree of activatable widgets through which input is routed to all widgets.
+ * 主に次の用途で使用します：
+ *	- Hierarchyから削除せずに表示状態を切り替えるため、Construct／Destructでは不十分な場合
+ *	- Breadcrumbの戻る操作やModalを閉じる操作など、Widgetから戻る処理を共通化する場合
+ *	- 有効化可能なWidget Tree上で入力経路を定義するNodeとして扱う場合
  */
 UCLASS()
 class UMWActivatableWidget : public UCommonActivatableWidget

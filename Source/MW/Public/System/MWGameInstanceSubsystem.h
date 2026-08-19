@@ -1,10 +1,10 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MWGameInstanceSubsystem.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWCharacterDataManager;
 class UMWSaveGameManager;
 class UMWSkillDataManager;
@@ -12,7 +12,7 @@ class UMWSkillInputService;
 class UMWUIManager;
 class UMWViewModelManager;
 
-// Define
+// 定義
 
 /*
  * @class UMWGameInstanceSubsystem

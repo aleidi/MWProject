@@ -169,8 +169,8 @@ bool UMWSkillComponent::TryResolveMontageData(const FMWSkillCastCommand& InComma
 	OutSection = NAME_None;
 
 	int32 skillId = InCommand.SkillId;
-	// The method to get skill id should be different based on the type of source.
-	// If the source is from player input, we should get the skill id from the slot index.
+	// スキルIDの取得方法は入力元の種別に応じて切り替える。
+	// プレイヤー入力の場合はスロットインデックスからスキルIDを取得する。
 	// If the source is from AI, we should get the skill id from the skill id in the command.
 	if (skillId == INDEX_NONE && IsSlotValid(InCommand.SkillSlot))
 	{
@@ -330,7 +330,7 @@ void UMWSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//// Runtime state is authoritative on server.
+	//// ランタイム状態はサーバーを正とする。
 	//const AActor* ownerActor = GetOwner();
 	//if (!ownerActor || !ownerActor->HasAuthority())
 	//{

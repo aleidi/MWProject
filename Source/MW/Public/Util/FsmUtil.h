@@ -19,12 +19,12 @@ class FsmState : public FFsmState<OwnerClass> \
 
 #define DECLARE_FSM_STATE_END() };
 
-/*** Use Template ***
-Recommend to use the macro DECLARE_FSM_STATE_START and DECLARE_FSM_STATE_END to declare a Fsm State class.
-For example, if you want to declare a class named "ExampleState", you can do like follow:
+/*** 使用テンプレート ***
+FSM Stateクラスの宣言にはDECLARE_FSM_STATE_STARTとDECLARE_FSM_STATE_ENDの使用を推奨します。
+例として"ExampleState"クラスは次のように宣言します：
 DECLARE_FSM_STATE_START(ExampleState)
-// Don't declare any constructor function again.
-// Put class Bod Here
+// Constructorは追加で宣言しません。
+// クラス本体をここに記述します。
 public:
 	void TestFunc();
 	...
@@ -32,11 +32,11 @@ public:
 	...
 DECLARE_FSM_STATE_END
 
-With the declaration above, you can use "new ExampleState<T>()" to define a Fsm State instance.
+上記の宣言後、"new ExampleState<T>()"でFSM State Instanceを生成できます。
 
-*** Notice ***
-If you want to declare a Fsm State by yourself, it's recommended to override GetName() function
-and return the class name since the GetName() will be used for ChangeState().
+*** 注意 ***
+FSM Stateを個別に宣言する場合は、ChangeState()で使用するためGetName()をOverrideし、
+クラス名を返すことを推奨します。
 */
 
 class IStandaloneFsm

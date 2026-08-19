@@ -3,10 +3,10 @@
 
 UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFactory* AssetFactory, bool& bOutSuccess)
 {
-	// Get the asset tools module
+	// AssetTools モジュールを取得
 	IAssetTools& asset_tools = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools").Get();
 
-	// Find right factory
+	// 適切なファクトリを探索
 	UFactory* factory = AssetFactory;
 	if (factory == nullptr)
 	{
@@ -34,7 +34,7 @@ UObject* UAssetCreator::CreateAsset(FString AssetPath, UClass* AssetClass, UFact
 		return nullptr;
 	}
 
-	// Create asset
+	// アセットを生成
 	UObject* asset = asset_tools.CreateAsset(FPaths::GetBaseFilename(AssetPath), FPaths::GetPath(AssetPath), AssetClass, factory);
 
 	if (asset == nullptr)

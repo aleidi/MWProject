@@ -9,7 +9,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMWOnChargeFull);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMWOnChargeZero);
 
 /**
- * 每帧更新蓄力/衰减的任务。
+ * チャージ／減衰をフレームごとに更新するTask。
  */
 UCLASS()
 class MW_API UAbilityTask_ChargeTick : public UAbilityTask
@@ -19,7 +19,7 @@ class MW_API UAbilityTask_ChargeTick : public UAbilityTask
 public:
 	UAbilityTask_ChargeTick();
 
-	/** 创建并启动充能任务 */
+	/** チャージTaskを生成して開始します。 */
 	UFUNCTION(BlueprintCallable, Category="MW|Charge", meta=(DefaultToSelf="OwningAbility", HidePin="OwningAbility", BlueprintInternalUseOnly="true"))
 	static UAbilityTask_ChargeTick* StartChargeTask(
 		UGameplayAbility* OwningAbility,
@@ -27,11 +27,11 @@ public:
 		float InChargePerSec = 30.f,
 		float InDecayPerSec = 50.f);
 
-	/** 切换为充能（true）或衰减（false） */
+	/** チャージ（true）または減衰（false）へ切り替えます。 */
 	UFUNCTION(BlueprintCallable, Category="MW|Charge")
 	void SetCharging(bool bCharging);
 
-	/** 当前蓄力值 */
+	/** 現在のチャージ値。 */
 	UFUNCTION(BlueprintPure, Category="MW|Charge")
 	float GetCurrentCharge() const { return CurrentCharge; }
 

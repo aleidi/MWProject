@@ -1,6 +1,6 @@
 #pragma once
 
-// Forward Declare
+// 前方宣言
 class UMVVMViewModelBase;
 
 namespace MWMVVMContextNames
@@ -11,7 +11,7 @@ namespace MWMVVMContextNames
 		TSubclassOf<UMVVMViewModelBase> ViewModelClass = nullptr;
 	};
 
-	// ==== Global ViewModel Context ====
+	// ==== グローバルViewModelコンテキスト ====
 	extern const FName CombatUI;
 
 	const TArray<FGlobalViewModelDefinition>& GetGlobalDefinitions();

@@ -1,23 +1,23 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWMenuButton.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UBorder;
 class USpacer;
 class UHorizontalBox;
 class UMWButton;
 class USizeBox;
 
-// Define
+// 定義
 enum class ECommonInputType : uint8;
 
 /*
  * @class UMWMenuButton
  * 
- * @brief Implement playing focus/hover animation. Focus and Hover share the same animation.
+ * @brief Focus／Hoverアニメーションを再生します。両状態で同じアニメーションを使用します。
  *
  * @note
  */
@@ -43,7 +43,7 @@ protected:
 	TObjectPtr<UMWButton> WBP_Button;
 
 public:
-	/* If true, the Text will be indented according to IndentRate. */
+	/* trueの場合、IndentRateに応じてTextをインデントします。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MenuButton|Content|Indent")
 	bool bUseIndent = false;
 

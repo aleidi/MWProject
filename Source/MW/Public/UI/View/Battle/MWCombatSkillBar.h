@@ -1,15 +1,15 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWCombatSkillBar.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWCombatSkillInfo;
 class UMWVMCharacterSkill;
 class UMWVMSkillBar;
 
-// Define
+// 定義
 
 /*
  * @class UMWCombatSkillBar

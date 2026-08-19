@@ -16,6 +16,6 @@ class IMWAbilityInputInterface
 	GENERATED_BODY()
 
 public:
-	// Called before AbilitySpecInputReleased to pass extra input data.
+	// 追加の入力データを渡すため、AbilitySpecInputReleasedより前に呼び出されます。
 	virtual void OnAbilityInputReleasedDataPassed(const FMWAbilityInputActionPayload& Payload) = 0;
 };

@@ -10,18 +10,18 @@ ETriggerState UMWInputTriggerNotAction::UpdateState_Implementation(const UEnhanc
 		return ETriggerState::None;
 	}
 
-	// Use trigger event from ActionInstance (link-safe across module boundary)
+	// モジュール境界を安全に越えるためActionInstanceのTrigger Eventを使用
 	if (const FInputActionInstance* otherInstance = PlayerInput->FindActionInstanceData(OtherAction))
 	{
 		const ETriggerEvent otherEvent = otherInstance->GetTriggerEvent();
 
-		// Triggered frame
+		// Trigger発生フレーム
 		if (EnumHasAnyFlags(otherEvent, ETriggerEvent::Triggered))
 		{
 			return ETriggerState::Triggered;
 		}
 
-		// Any non-none event means the other action is active/evaluating this frame
+		// None以外のEventなら、対象Actionはこのフレームでアクティブまたは評価中
 		if (otherEvent != ETriggerEvent::None)
 		{
 			return ETriggerState::Ongoing;

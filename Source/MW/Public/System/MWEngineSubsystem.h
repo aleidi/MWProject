@@ -5,7 +5,7 @@
 #include "Subsystems/EngineSubsystem.h"
 #include "MWEngineSubsystem.generated.h"
 
-//Forward Declare
+// 前方宣言
  class UMWGameSingleton;
 
 UCLASS()

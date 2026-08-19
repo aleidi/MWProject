@@ -25,10 +25,10 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance*
 		{
 			FMaterialInstanceCreateInfo tmpreateInfo;
 
-			// 1. Set new asset name and path
+			// 1. 新規アセット名とパスを設定
 			FString assetName = iMaterial->GetName();
 
-			// Change the prefix "M_" to "MI_"
+			// Prefixを「M_」から「MI_」へ変更
 			if (assetName.StartsWith(TEXT("M_")))
 			{
 				assetName = assetName.Replace(TEXT("M_"), TEXT("MI_"));
@@ -42,10 +42,10 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance*
 			
 			FString assetPath = iMaterial->GetPackage()->GetName();
 
-			// Remove the asset name from the path
+			// パスからアセット名を削除
 			assetPath = FPaths::GetPath(assetPath);
 
-			// 2. Create new material instance
+			// 2. Material Instanceを新規作成
 			UMaterialInstanceConstant* newMaterialInst = CreateMaterialInstance(assetName, assetPath, TemplateMaterialInst);
 
 			if (!newMaterialInst)
@@ -55,12 +55,12 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance*
 				continue;
 			}
 
-			// 3. Copy Parameter Values
+			// 3. パラメータ値をコピー
 			newMaterialInst->CopyMaterialUniformParametersEditorOnly(TemplateMaterialInst);
 			newMaterialInst->PostEditChange();
 			newMaterialInst->MarkPackageDirty();
 
-			// 4. Get textures and set to new material instance
+			// 4. テクスチャを取得して新規Material Instanceへ設定
 			{
 				UTexture* baseColorTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_BaseColor);
 				if (baseColorTex)
@@ -68,7 +68,7 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance*
 					tmpreateInfo.bAlbedoTexSet = SetTextureParameter(newMaterialInst, TEXT("Albedo"), baseColorTex);
 				}
 
-				// Roughness texture here is actually a specular texture in blender shader.
+				// Blenderシェーダーでは、このRoughnessテクスチャは実際にはSpecularテクスチャ。
 				// blenderのシェーダーでは、ここでいうroughnessテクスチャは実際にはスペキュラテクスチャです。
 				UTexture* roughnessTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Roughness);
 				if (roughnessTex)
@@ -95,7 +95,7 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialXSP(UMaterialInstance*
 		}
 	}
 
-	// 5. Show result dialog
+	// 5. 結果ダイアログを表示
 	TArray<FString> logInfos;
 
 	int32 instSucceedCount = 0;
@@ -133,10 +133,10 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance*
 		{
 			FMaterialInstanceCreateInfo tmpreateInfo;
 
-			// 1. Set new asset name and path
+			// 1. 新規アセット名とパスを設定
 			FString assetName = iMaterial->GetName();
 
-			// Change the prefix "M_" to "MI_"
+			// Prefixを「M_」から「MI_」へ変更
 			if (assetName.StartsWith(TEXT("M_")))
 			{
 				assetName = assetName.Replace(TEXT("M_"), TEXT("MI_"));
@@ -150,10 +150,10 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance*
 
 			FString assetPath = iMaterial->GetPackage()->GetName();
 
-			// Remove the asset name from the path
+			// パスからアセット名を削除
 			assetPath = FPaths::GetPath(assetPath);
 
-			// 2. Create new material instance
+			// 2. Material Instanceを新規作成
 			UMaterialInstanceConstant* newMaterialInst = CreateMaterialInstance(assetName, assetPath, TemplateMaterialInst);
 
 			if (!newMaterialInst)
@@ -163,12 +163,12 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance*
 				continue;
 			}
 
-			// 3. Copy Parameter Values
+			// 3. パラメータ値をコピー
 			newMaterialInst->CopyMaterialUniformParametersEditorOnly(TemplateMaterialInst);
 			newMaterialInst->PostEditChange();
 			newMaterialInst->MarkPackageDirty();
 
-			// 4. Get textures and set to new material instance
+			// 4. テクスチャを取得して新規Material Instanceへ設定
 			{
 				UTexture* baseColorTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_BaseColor);
 				if (baseColorTex)
@@ -176,7 +176,7 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance*
 					tmpreateInfo.bAlbedoTexSet = SetTextureParameter(newMaterialInst, TEXT("Albedo"), baseColorTex);
 				}
 
-				// metallic and roughness share the same texture in FSM's shader.
+				// FSMシェーダーではMetallicとRoughnessで同じテクスチャを共有。
 				UTexture* metallicTex = GetTextureFromMaterialProperty(iMaterial->GetMaterial(), MP_Metallic);
 				if (metallicTex)
 				{
@@ -198,7 +198,7 @@ void UMaterialInstUtility::CreateMaterialInstaFromMaterialFSM(UMaterialInstance*
 		}
 	}
 
-	// 5. Show result dialog
+	// 5. 結果ダイアログを表示
 	TArray<FString> logInfos;
 
 	int32 instSucceedCount = 0;

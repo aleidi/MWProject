@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "MW.h"
 #include "UI/ViewModel/MWViewModelBase.h"
 #include "MWVMCharacterStatus.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UTexture2D;
 
-// Define
+// 定義
 
 /*
  * @class UMWVMCharacterStatus

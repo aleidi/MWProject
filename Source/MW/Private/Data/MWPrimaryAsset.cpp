@@ -8,8 +8,8 @@ FPrimaryAssetId UMWPrimaryAsset::GetPrimaryAssetId() const
 	{
 		FString assetName = GetFName().ToString();
 
-		// Asset naming convention: DA_NativeClassNameWithoutPrefixMW_ItemName
-		// Extract the ItemName part after the last '_'
+		// アセット命名規則: DA_NativeClassNameWithoutPrefixMW_ItemName
+		// 最後の「_」以降をItemNameとして抽出
 		int32 lastUnderscoreIndex;
 		if (assetName.FindLastChar(TEXT('_'), lastUnderscoreIndex))
 		{

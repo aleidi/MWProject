@@ -1,6 +1,6 @@
 // ============================================================================
 //  UCombatRelationSettings : UDeveloperSettings
-//  - Provides editor-friendly faction relation configuration interface
+//  - エディターで扱いやすい陣営関係設定インターフェースを提供
 // ============================================================================
 #pragma once
 
@@ -15,17 +15,17 @@ class COMBATRELATION_API UCombatRelationSettings : public UDeveloperSettings
     GENERATED_BODY()
 
 public:
-    // Default faction relation data asset
+    // デフォルトの陣営関係データアセット
     UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Default", meta = (AllowedClasses = "/Script/CombatRelation.FactionRelationDataAsset"))
     TSoftObjectPtr<UFactionRelationDataAsset> DefaultFactionRelationAsset;
 
     virtual FName GetCategoryName() const override { return TEXT("Plugins"); }
 
 #if WITH_EDITOR
-    // Listen for property changes in the editor
+    // エディターでのプロパティ変更を監視
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
-    // Add PostInitProperties to ensure the asset is properly referenced
+    // アセットが正しく参照されるようPostInitPropertiesを追加
     virtual void PostInitProperties() override;
 };

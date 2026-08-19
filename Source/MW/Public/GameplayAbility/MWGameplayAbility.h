@@ -9,36 +9,36 @@ class UMWAbilitySystemComponent;
 /**
  * EMWAbilityActivationPolicy
  *
- *	Defines how an ability is meant to activate.
+ *	Abilityの有効化方針を定義します。
  */
 UENUM(BlueprintType)
 enum class EMWAbilityActivationPolicy : uint8
 {
-	// Try to activate the ability when the input is triggered.
+	// 入力発生時にAbilityの有効化を試行します。
 	OnInputTriggered,
 
-	// Continually try to activate the ability while the input is active.
+	// 入力中は継続してAbilityの有効化を試行します。
 	WhileInputActive,
 
-	// Try to activate the ability when an avatar is assigned.
+	// Avatar割当時にAbilityの有効化を試行します。
 	OnSpawn
 };
 
 /**
  * EMWAbilityActivationGroup
  *
- *	Defines how an ability activates in relation to other abilities.
+ *	他のAbilityとの関係に基づく有効化方式を定義します。
  */
 UENUM(BlueprintType)
 enum class EMWAbilityActivationGroup : uint8
 {
-	// Ability runs independently of all other abilities.
+	// 他のAbilityから独立して実行します。
 	Independent,
 
-	// Ability is canceled and replaced by other exclusive abilities.
+	// 他の排他的AbilityによりCancelされ、置き換えられます。
 	Exclusive_Replaceable,
 
-	// Ability blocks all other exclusive abilities from activating.
+	// 他の排他的Abilityの有効化をすべてBlockします。
 	Exclusive_Blocking,
 
 	MAX	UMETA(Hidden)
@@ -59,11 +59,11 @@ public:
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
-	// Returns true if the requested activation group is a valid transition.
+	// 指定したActivationGroupへ遷移可能な場合はtrueを返します。
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "MW|Ability", Meta = (ExpandBoolAsExecs = "ReturnValue"))
 	bool CanChangeActivationGroup(EMWAbilityActivationGroup NewGroup) const;
 
-	// Tries to change the activation group.  Returns true if it successfully changed.
+	// ActivationGroupの変更を試行し、成功した場合はtrueを返します。
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "MW|Ability", Meta = (ExpandBoolAsExecs = "ReturnValue"))
 	bool ChangeActivationGroup(EMWAbilityActivationGroup NewGroup);
 
@@ -71,15 +71,15 @@ public:
 
 	EMWAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
 
-	/* Allow blueprint to receive input event. */
+	/* Blueprintで入力イベントを受信できるようにします。 */
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	
-	/* Allow blueprint to receive release event. */
+	/* Blueprintで入力解放イベントを受信できるようにします。 */
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 
 protected:
-	//~UGameplayAbility interface
+	//~UGameplayAbilityインターフェース
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void SetCanBeCanceled(bool bCanBeCanceled) override;
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -91,34 +91,34 @@ protected:
 	// virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 	// virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	// virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-	//~End of UGameplayAbility interface
+	//~UGameplayAbilityインターフェース終了
 
-	/* Called when the pawn avatar is set on the ability system component. */
+	/* AbilitySystemComponentへPawn Avatarが設定された際に呼び出されます。 */
 	virtual void OnPawnAvatarSet();
 
-	/** Called when this ability is granted to the ability system component. */
+	/** このAbilityがAbilitySystemComponentへ付与された際に呼び出されます。 */
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityAdded")
 	void K2_OnAbilityAdded();
 
-	/** Called when this ability is removed from the ability system component. */
+	/** このAbilityがAbilitySystemComponentから削除された際に呼び出されます。 */
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityRemoved")
 	void K2_OnAbilityRemoved();
 
-	/** Called when the ability system is initialized with a pawn avatar. */
+	/** AbilitySystemがPawn Avatarで初期化された際に呼び出されます。 */
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnPawnAvatarSet")
 	void K2_OnPawnAvatarSet();
 
-	/* ActorInfo maybe null. */
+	/* ActorInfoはnullの場合があります。 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void K2_InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInf);
 
-	/* ActorInfo maybe null. */
+	/* ActorInfoはnullの場合があります。 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void K2_InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInf);
 
 
 protected:
-	/* Defines how this ability is meant to activate. */
+	/* このAbilityの有効化方針を定義します。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Ability Activation")
 	EMWAbilityActivationPolicy ActivationPolicy;
 

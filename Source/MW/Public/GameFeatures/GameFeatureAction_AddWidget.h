@@ -16,11 +16,11 @@
 //{
 //	GENERATED_BODY()
 //
-//	// The layout widget to spawn
+//	// 生成するLayoutWidget
 //	UPROPERTY(EditAnywhere, Category=UI, meta=(AssetBundles="Client"))
 //	TSoftClassPtr<UCommonActivatableWidget> LayoutClass;
 //
-//	// The layer to insert the widget in
+//	// Widgetを挿入するLayer
 //	UPROPERTY(EditAnywhere, Category=UI, meta=(Categories="UI.Layer"))
 //	FGameplayTag LayerID;
 //};
@@ -31,11 +31,11 @@
 //{
 //	GENERATED_BODY()
 //
-//	// The widget to spawn
+//	// 生成するWidget
 //	UPROPERTY(EditAnywhere, Category=UI, meta=(AssetBundles="Client"))
 //	TSoftClassPtr<UUserWidget> WidgetClass;
 //
-//	// The slot ID where we should place this widget
+//	// Widgetを配置するSlot ID
 //	UPROPERTY(EditAnywhere, Category = UI)
 //	FGameplayTag SlotID;
 //};
@@ -44,7 +44,7 @@
 //// UGameFeatureAction_AddWidget
 //
 ///**
-// * GameFeatureAction responsible for adding widgets.
+// * Widgetを追加するGameFeatureActionです。
 // */
 //UCLASS(MinimalAPI, meta = (DisplayName = "Add Widgets"))
 //class UGameFeatureAction_AddWidgets final : public UGameFeatureAction_WorldActionBase
@@ -52,25 +52,25 @@
 //	GENERATED_BODY()
 //
 //public:
-//	//~ Begin UGameFeatureAction interface
+//	//~ UGameFeatureActionインターフェース開始
 //	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 //#if WITH_EDITORONLY_DATA
 //	virtual void AddAdditionalAssetBundleData(FAssetBundleData& AssetBundleData) override;
 //#endif
-//	//~ End UGameFeatureAction interface
+//	//~ UGameFeatureActionインターフェース終了
 //
-//	//~ Begin UObject interface
+//	//~ UObjectインターフェース開始
 //#if WITH_EDITOR
 //	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 //#endif
-//	//~ End UObject interface
+//	//~ UObjectインターフェース終了
 //
 //private:
-//	// Layout to add to the HUD
+//	// HUDへ追加するLayout
 //	UPROPERTY(EditAnywhere, Category=UI, meta=(TitleProperty="{LayerID} -> {LayoutClass}"))
 //	TArray<FMWHUDLayoutRequest> Layout;
 //
-//	// Widgets to add to the HUD
+//	// HUDへ追加するWidget
 //	UPROPERTY(EditAnywhere, Category=UI, meta=(TitleProperty="{SlotID} -> {WidgetClass}"))
 //	TArray<FMWHUDElementEntry> Widgets;
 //
@@ -90,9 +90,9 @@
 //
 //	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;
 //
-//	//~ Begin UGameFeatureAction_WorldActionBase interface
+//	//~ UGameFeatureAction_WorldActionBaseインターフェース開始
 //	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
-//	//~ End UGameFeatureAction_WorldActionBase interface
+//	//~ UGameFeatureAction_WorldActionBaseインターフェース終了
 //
 //	void Reset(FPerContextData& ActiveData);
 //

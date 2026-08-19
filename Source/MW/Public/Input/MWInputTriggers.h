@@ -1,12 +1,12 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "InputTriggers.h"
 #include "MWInputTriggers.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class UMWInputTriggerNotAction
@@ -30,7 +30,7 @@ protected:
 
 	virtual bool IsBlocking(const ETriggerState State) const override
 	{
-		// 只要 OtherAction 有状态，就阻断当前 Action
+		// OtherActionに状態がある場合は、現在のアクションをブロックします。
 		return State != ETriggerState::None;
 	}
 

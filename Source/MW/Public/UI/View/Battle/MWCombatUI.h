@@ -1,16 +1,16 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWCombatUI.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWCombatSkillBar;
 class UMWVMCombatUI;
 class UUserWidget;
 class UVerticalBox;
 
-// Define
+// 定義
 
 /*
  * @class UMWCombatUI

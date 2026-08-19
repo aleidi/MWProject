@@ -1,15 +1,15 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "MW.h"
 #include "UI/ViewModel/MWViewModelBase.h"
 #include "MWVMSkillBar.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWVMCharacterSkill;
 struct FMWSkillChangedMessage;
 
-// Define
+// 定義
 namespace MWSkillBarSlot
 {
 	static constexpr int32 Up = 0;
@@ -22,8 +22,8 @@ namespace MWSkillBarSlot
 /*
  * @class UMWVMSkillBar
  * 
- * @brief This class is used only as an aggregation container for the ViewModels that are actually in use.
- *        It does not perform any binding
+ * @brief 使用中のViewModelを集約するContainerです。
+ *        Binding処理は行いません。
  *
  * @note
  */

@@ -73,7 +73,7 @@ struct FMWSkillEquippedMessage
 {
 	GENERATED_BODY()
 
-	// 0=Up, 1=Left, 2=Down, 3=Right
+	// 0=上、1=左、2=下、3=右
 	UPROPERTY(BlueprintReadWrite)
 	int32 SlotIndex = 0;
 
@@ -86,11 +86,11 @@ struct FMWSkillUsedMessage
 {
 	GENERATED_BODY()
 
-	// 0=Up, 1=Left, 2=Down, 3=Right
+	// 0=上、1=左、2=下、3=右
 	UPROPERTY(BlueprintReadWrite)
 	int32 SlotIndex = 0;
 
-	// Optional: if valid, can be used to verify slot binding
+	// 任意。有効な場合はスロットのバインド確認に使用できます。
 	UPROPERTY(BlueprintReadWrite)
 	int32 SkillId = INDEX_NONE;
 

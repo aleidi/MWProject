@@ -6,13 +6,13 @@
 
 void FSpatialNavigationModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	// モジュールがメモリにロードされた後に実行される。正確なタイミングは.upluginファイルでモジュールごとに指定される
 }
 
 void FSpatialNavigationModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	// モジュールをクリーンアップするため、シャットダウン時に呼び出される場合がある。動的リロード対応モジュールでは、
+	// モジュールをアンロードする前に呼び出される。
 }
 
 #undef LOCTEXT_NAMESPACE

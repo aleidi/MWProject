@@ -8,7 +8,7 @@
 
 namespace MWGameplayTags
 {
-	// Input Mapping Context Tag
+	// Input Mapping Contextタグ
 	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString)
 	{
 		const UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
@@ -33,7 +33,7 @@ namespace MWGameplayTags
 		return Tag;
 	}
 
-	// ==== Basic ====
+	// ==== 基本入力 ====
 #pragma region Basic
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_Basic,							"InputTag.MappingContext.Basic",						"Input Mapping Context Basic.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Direction,				"InputTag.Basic.Direction",								"Basic Input Direction.");
@@ -41,7 +41,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_Basic_Cancel,					"InputTag.Basic.Cancel",								"Basic Input Cancel.");
 #pragma endregion
 
-	// ==== TPDefault Input ====
+	// ==== 三人称デフォルト入力 ====
 #pragma region TPDefault
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPDefault,						"InputTag.MappingContext.TPDefault",					"Input Mapping Context Third-Person-Default.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_Debug,				"InputTag.TPDefault.Debug",								"Third-Person default action Move Debug.");
@@ -50,7 +50,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPDefault_AutoRun,				"InputTag.TPDefault.AutoRun",							"Third-Person default action Auto-run.");
 #pragma endregion
 
-	// ==== Battle Input ====
+	// ==== バトル入力 ====
 #pragma region Battle Input
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_TPBattle,									"InputTag.MappingContext.TPBattle",							"Input Mapping Context Third-Person-Battle.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_CharacterSkillSlot1,				"InputTag.TPBattle.CharacterSkillSlot1",					"Third-Person Battle Input Character Skill Slot 1.");
@@ -71,10 +71,10 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_TPBattle_ChargeSkill,						"InputTag.TPBattle.ChargeSkill",							"Third-Person Battle Input Charge Skill	.");
 #pragma endregion
 
-	// ==== Battle Command ====
+	// ==== バトルコマンド ====
 #pragma region Battle Command
 
-	// == General ==
+	// == 共通 ==
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand,					"InputTag.MappingContext.BattleCommand",				"Input Mapping Context Battle Command.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack,						"InputTag.BC.Attack",									"Input Battle Command Attack.");
@@ -83,26 +83,26 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit,					"InputTag.BC.UseSpirit",								"Input Battle Command Use Spirit.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Escape,						"InputTag.BC.Escape",									"Input Battle Command Escape.");
 
-	// == Attack ==
+	// == 攻撃 ==
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand_Attack,			"InputTag.MappingContext.BattleCommand.Attack",			"Input Mapping Context Battle Command Attack.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_SelectTarget,		"InputTag.BC.Attack.SelectTarget",						"Battle Command Attack SelectTarget.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_Cancel,				"InputTag.BC.Attack.Cancel",							"Battle Command Attack Cancel.");
 
-	// Character 1 control.
+	// キャラクター1操作
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C1,					"InputTag.BC.Attack.C1",								"Input Battle Command Attack Character1 Action.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C1UD,				"InputTag.BC.Attack.C1UD",								"Input Battle Command Attack Character1 Action Combo Up Down.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C1LR,				"InputTag.BC.Attack.C1LR",								"Input Battle Command Attack Character1 Action Combo Left Right.");
-	// Character 2 control.
+	// キャラクター2操作
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C2,					"InputTag.BC.Attack.C2",								"Input Battle Command Attack Character2 Action.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C2UD,				"InputTag.BC.Attack.C2UD",								"Input Battle Command Attack Character2 Action Combo Up Down.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C2LR,				"InputTag.BC.Attack.C2LR",								"Input Battle Command Attack Character2 Action Combo Left Right.");
-	// Character 3 control.
+	// キャラクター3操作
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C3,					"InputTag.BC.Attack.C3",								"Input Battle Command Attack Character3 Action.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C3UD,				"InputTag.BC.Attack.C3UD",								"Input Battle Command Attack Character3 Action Combo Up Down.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_Attack_C3LR,				"InputTag.BC.Attack.C3LR",								"Input Battle Command Attack Character3 Action Combo Left Right.");
 
-	// Character action tags container.
+	// キャラクターアクションタグコンテナ
 	TArray<FGameplayTag> BattleCharacterAttack =
 	{
 		MWGameplayTags::IATag_BC_Attack_C1,
@@ -116,7 +116,7 @@ namespace MWGameplayTags
 		MWGameplayTags::IATag_BC_Attack_C3LR
 	};
 
-	// == ChangeAvatar ==
+	// == 操作キャラクター変更 ==
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand_ChangeAvatar,		"InputTag.MappingContext.BattleCommand.ChangeAvatar",	"Input Mapping Context Battle Command Change Avatar.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeAvatar_Confirm,		"InputTag.BC.ChangeAvatar.Confirm",						"Battle Command ChangeAvatar Confirm.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeAvatar_Cancel,		"InputTag.BC.ChangeAvatar.Cancel",						"Battle Command ChangeAvatar Cancel.");
@@ -124,7 +124,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeAvatar_SelectTarget,	"InputTag.BC.ChangeAvatar.SelectTarget",				"Battle Command ChangeAvatar SelectTarget.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_ChangeAvatar_ChangeAvatar,	"InputTag.BC.ChangeAvatar.ChangeAvatar",				"Battle Command ChangeAvatar ChangeAvatar.");
 
-	// == UseItem ==
+	// == アイテム使用 ==
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand_UseItem,			"InputTag.MappingContext.BattleCommand.UseItem",		"Input Mapping Context Battle Command Use Item.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem_Confirm,			"InputTag.BC.UseItem.Confirm",							"Battle Command UseItem Confirm.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem_Cancel,				"InputTag.BC.UseItem.Cancel",							"Battle Command UseItem Cancel.");
@@ -132,7 +132,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem_SelectItem,			"InputTag.BC.UseItem.SelectItem",						"Battle Command UseItem SelectItem.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseItem_SelectTarget,		"InputTag.BC.UseItem.SelectTarget",						"Battle Command UseItem SelectTarget.");
 
-	// == UseSprit ==
+	// == スピリット使用 ==
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IMC_BattleCommand_UseSpirit,			"InputTag.MappingContext.BattleCommand.UseSpirit",		"Input Mapping Context Battle Command Use Spirit.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit_Confirm,			"InputTag.BC.UseSpirit.Confirm",						"Battle Command UseSpirit Confirm.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit_Cancel,			"InputTag.BC.UseSpirit.Cancel",							"Battle Command UseSpirit Cancel.");
@@ -140,7 +140,7 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit_SelectSpirit,		"InputTag.BC.UseSpirit.SelectSpirit",					"Battle Command UseSpirit SelectSpirit.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(IATag_BC_UseSpirit_SelectTarget,		"InputTag.BC.UseSpirit.SelectTarget",					"Battle Command UseSpirit SelectTarget.");
 
-	// Battle Command tags container.
+	// バトルコマンドタグコンテナ
 	TArray<FGameplayTag> BattleCommands =
 	{
 		MWGameplayTags::IATag_BC_Attack,
@@ -151,9 +151,9 @@ namespace MWGameplayTags
 	};
 #pragma endregion
 
-	// ==== Gameplay Tag ====
+	// ==== Gameplayタグ ====
 #pragma region Gameplay Tag
-	// Gameplay Ability
+	// Gameplay Ability関連
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup,	"Ability.ActivateFail.ActivationGroup",					"Ability failed to activate because of its activation group.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_Charging,			"Ability.Input.Charging",								"Ability's Input Charging.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_NoCharge,			"Ability.Input.NoCharge",								"Ability's Input No Charge.");
@@ -162,28 +162,28 @@ namespace MWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_InputCharge_OverCharge,			"Ability.Input.OverCharge",								"Ability's Input Over Charge.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActionUninterruptible,			"Ability.ActionUninterruptible",						"Another action can't be performed while this tag is active.");
 	
-	// Skill
+	// スキル
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Skill_Chainable,					"Ability.Skill.Chainable",								"Ability's Skill Chainable.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Skill_Cast,						"Ability.Skill.Cast",									"Ability's Skill Cast.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_Ability_UnitAttack,				"Battle.Ability.UnitAttack",							"Activate UMWBattleUnitAttack ability.");
-	// Attack command
+	// 攻撃コマンド
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P1,					"Battle.ComboAttack.P1",								"Player 1 Battle Combo Attack.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P2,					"Battle.ComboAttack.P2",								"Player 2 Battle Combo Attack.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboAttack_P3,					"Battle.ComboAttack.P3",								"Player 3 Battle Combo Attack.");
-	// Combo
+	// コンボ
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboCentral,						"Battle.ComboCentral",									"Battle Combo Central.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboUpDown,						"Battle.ComboUpDown",									"Battle Combo ComboUpDown.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboLeftRight,					"Battle.ComboLeftRight",								"Battle Combo ComboLeftRight.");
-	// Combo Hit
+	// コンボヒット
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_ComboHit,							"Battle.ComboHit",										"Battle Combo Hit.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Battle_AvatarChanged,					"Battle.AvatarChanged",									"Battle Avatar changed / swapped event.");
 	
-	// Character
+	// キャラクター
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Character_CombatState,					"Character.CombatState",								"Character combat state.");
 #pragma endregion
 
-	// ==== SetByCaller Tag ====
+	// ==== SetByCallerタグ ====
 #pragma region SetByCaller Tag
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GP_SetByCaller_ComboHitRatio,			"GameplayTag.SetByCaller.ComboHitRatio",				"SetByCaller : Combo Hit Ratio.");
 #pragma endregion

@@ -54,16 +54,16 @@ void FMWTargetSelector::LockTarget()
 		}
 		else
 		{
-			// TODO : when owner is npc, how to search target
+			// TODO: 所有者がNPCの場合のターゲット検索方法を検討
 		}
 
-		// if no targets found, then do nothing
+		// ターゲットが見つからなければ終了
 		if (FindTargets.Num() == 0)
 		{
 			return;
 		}
 
-		// try to find a nearest target
+		// 最寄りのターゲットを検索
 		SelectedTarget = GetNearestTarget(FindTargets);
 
 		if (!SelectedTarget.IsValid())
@@ -74,7 +74,7 @@ void FMWTargetSelector::LockTarget()
 
 	LockedTarget = SelectedTarget;
 
-	// broadcast lock target event
+	// ターゲットロックイベントを通知
 }
 
 void FMWTargetSelector::UnlockTarget()
@@ -88,7 +88,7 @@ void FMWTargetSelector::UnlockTarget()
 	{
 		LockedTarget.Reset();
 		
-		// broadcast unlock target event
+		// ターゲットロック解除イベントを通知
 	}
 }
 
@@ -107,26 +107,25 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 	}
 	else
 	{
-		// TODO : when owner is npc, how to search target
+		// TODO: 所有者がNPCの場合のターゲット検索方法を検討
 	}
 
-	// if no targets found, then do nothing
+	// ターゲットが見つからなければ終了
 	if (FindTargets.Num() == 0)
 	{
 		return;
 	}
 	
-	// check if there is a current target
+	// 現在のターゲットの有無を確認
 	if (!SelectedTarget.IsValid())
 	{
-		// if current target is not existed, then get the nearest target
+		// 現在のターゲットがなければ最寄りを選択
 		SelectedTarget = GetNearestTarget(FindTargets);
 	}
 	else
 	{
-		// there is a current target,
-		// if it's in the found targets, get the object next to the current target
-		// if it's not in the found targets, get the nearest object in the container
+		// 現在のターゲットが検索結果に含まれる場合は隣接ターゲットを取得
+		// 含まれない場合はコンテナ内の最寄りターゲットを取得
 		if (FindTargets.Contains(SelectedTarget))
 		{
 			SelectedTarget = GetTargetNextToSelectedTarget(FindTargets, bLeft);
@@ -137,7 +136,7 @@ void FMWTargetSelector::TryFindSelectableTarget(bool bLeft)
 		}	
 	}
 
-	// double check if target is found
+	// ターゲットの取得結果を再確認
 	if (!SelectedTarget.IsValid())
 	{
 		return;
@@ -162,7 +161,7 @@ FMWFoundActorInfo FMWTargetSelector::GetTargetNextToSelectedTarget(TArray<FMWFou
 
 	if (bLeft)
 	{
-		// if current target is the leftmost, then switch to rightmost 
+		// 現在のターゲットが左端なら右端へ切り替え
 		if (id == 0)
 		{
 			id = Targets.Num() - 1;
@@ -174,7 +173,7 @@ FMWFoundActorInfo FMWTargetSelector::GetTargetNextToSelectedTarget(TArray<FMWFou
 	}
 	else
 	{
-		// if current target is the rightmost, then switch to leftmost
+		// 現在のターゲットが右端なら左端へ切り替え
 		if (id == Targets.Num() - 1)
 		{
 			id = 0;
@@ -195,7 +194,7 @@ void FMWTargetSelector::ForceLockIfNoTarget(const FMWFoundActorInfo& Target)
 	}
 
 	LockedTarget = Target;
-	// broadcast lock target event
+	// ターゲットロックイベントを通知
 }
 
 void FMWTargetSelector::OnTargetNotExisted(const FMWFoundActorInfo& Target)

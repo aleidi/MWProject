@@ -12,15 +12,14 @@ struct MWComboTotalDamageStatics
 
 	MWComboTotalDamageStatics()
 	{
-		// Capture the Target's Endurance attribute. Do not snapshot it, because we want to use the health value at the moment we apply the execution.
+		// 実行適用時の値を使用するため、TargetのEndurance属性をスナップショットせずにキャプチャ
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, Endurance, Target, false);
 
-		// Capture the Source's Strength. We do want to snapshot this at the moment we create the GameplayEffectSpec that will execute the damage.
-		// (imagine we fire a projectile: we create the GE Spec when the projectile is fired. When it hits the target, we want to use the Strength at the moment
-		// the projectile was launched, not when it hits).
+		// ダメージ実行用GameplayEffectSpecの作成時点でSourceのStrengthをスナップショット
+		// これにより、命中時ではなく発射時のStrengthを基準にダメージを計算する。
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, Strength, Source, true);
 
-		// Also capture the source's raw ComboTotalDamage, which is normally passed in directly via the execution
+		// 通常はExecution経由で直接渡されるSourceの基礎ComboTotalDamageもキャプチャ
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMWBattleAttributeSet, ComboTotalDamage, Source, true);
 	}
 };
@@ -33,7 +32,7 @@ static const MWComboTotalDamageStatics& ComboTotalDamageStatics()
 
 UMWComboTotalDamage::UMWComboTotalDamage()
 {
-	// Capture attribute here
+	// 属性をキャプチャ
 	RelevantAttributesToCapture.Add(ComboTotalDamageStatics().EnduranceDef);
 	RelevantAttributesToCapture.Add(ComboTotalDamageStatics().StrengthDef);
 	RelevantAttributesToCapture.Add(ComboTotalDamageStatics().ComboTotalDamageDef);

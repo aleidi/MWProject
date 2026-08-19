@@ -6,26 +6,26 @@
 
 class UC3DCameraComponent;
 
-/** 
-* Base object for all camera objects in this plugin 
-* All K2(blueprint) functions are called from native functions(example: K2Tick from Tick)
+/**
+* 本プラグインの全カメラオブジェクトの基底クラス
+* すべてのK2（Blueprint）関数はネイティブ関数から呼び出される（例：TickからK2Tick）
 */
 UCLASS(classGroup = "C3DCamera", Blueprintable, BlueprintType)
 class COMMON3DCAMERA_API UC3DCameraBaseObject : public UObject
 {
 	GENERATED_BODY()
 public:
-	//~ Begin UObject Interface
+	//~ UObjectインターフェース開始
 #if WITH_ENGINE
 	virtual class UWorld* GetWorld() const override;
 #endif //WITH_ENGINE
-	//~ End UObject Interface
+	//~ UObjectインターフェース終了
 
 	virtual void Tick(float DeltaTime);
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Tick"))
 	void K2_Tick(float DeltaTime);
 
-	/** Validate params in object */
+	/** オブジェクトのパラメータを検証 */
 	UFUNCTION(BlueprintCallable, Category = "C3D")
 	virtual void Validate(bool bWithInterpolation);
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Validate"))
@@ -58,7 +58,7 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "C3D")
 	class APlayerCameraManager* GetPlayerCameraManager() const;
 
-	/** Initialize the data from data asset. */
+	/** データアセットからデータを初期化する。 */
 	virtual void InitPropertyFromDataAsset() {}
 private:
 	UPROPERTY()

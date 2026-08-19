@@ -49,7 +49,7 @@ void UMWAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActo
 
 	if (bHasNewPawnAvatar)
 	{
-		// Notify all abilities that a new pawn avatar has been set
+		// 全Abilityへ新しいPawn Avatarの設定を通知
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
@@ -62,13 +62,13 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				UMWGameplayAbility* wmAbilityInstance = Cast<UMWGameplayAbility>(abilityInstance);
 				if (wmAbilityInstance)
 				{
-					// Ability instances may be missing for replays
+					// リプレイではAbilityインスタンスが存在しない場合がある
 					wmAbilityInstance->OnPawnAvatarSet();
 				}
 			}
 		}
 
-		// Register with the global system once we actually have a pawn avatar. We wait until this time since some globally-applied effects may require an avatar.
+		// Pawn Avatarを必要とするグローバルEffectに備え、Avatar確定後にグローバルシステムへ登録
 		if (UMWGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UMWGlobalAbilitySystem>(GetWorld()))
 		{
 			GlobalAbilitySystem->RegisterASC(this);
@@ -118,7 +118,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		ensureMsgf(abilitySpec.Ability->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced, TEXT("CancelAbilitiesByFunc: All Abilities should be Instanced (NonInstanced is being deprecated due to usability issues)."));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
-		// Cancel all the spawned instances.
+		// 生成済みの全インスタンスをキャンセル
 		TArray<UGameplayAbility*> instances = abilitySpec.GetAbilityInstances();
 		for (UGameplayAbility* abilityInstance : instances)
 		{
@@ -154,8 +154,7 @@ void UMWAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Sp
 {
 	Super::AbilitySpecInputPressed(Spec);
 
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputPress ability task works.
+	// UGameplayAbility::bReplicateInputDirectlyは使用せず、WaitInputPress用の複製イベントを利用
 	if (Spec.IsActive())
 	{
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
@@ -163,7 +162,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		FPredictionKey originalPredictionKey = instance ? instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
-		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
+		// InputPressedイベントを実行。必要に応じてリスナー側でサーバーへ複製する
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, originalPredictionKey);
 	}
 }
@@ -172,8 +171,7 @@ void UMWAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& S
 {
 	Super::AbilitySpecInputReleased(Spec);
 
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputRelease ability task works.
+	// UGameplayAbility::bReplicateInputDirectlyは使用せず、WaitInputRelease用の複製イベントを利用
 	if (Spec.IsActive())
 	{
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
@@ -181,7 +179,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		FPredictionKey originalPredictionKey = instance ? instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
-		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
+		// InputReleasedイベントを実行。必要に応じてリスナー側でサーバーへ複製する
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, originalPredictionKey);
 	}
 }
@@ -251,10 +249,10 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
 
-	//@TODO: See if we can use FScopedServerAbilityRPCBatcher ScopedRPCBatcher in some of these loops
+	//@TODO: 一部のループでFScopedServerAbilityRPCBatcher ScopedRPCBatcherを利用可能か確認
 
 	//
-	// Process all abilities that activate when the input is held.
+	// 入力保持中に発動する全Abilityを処理
 	//
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)
 	{
@@ -273,7 +271,7 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	}
 
 	//
-	// Process all abilities that had their input pressed this frame.
+	// このフレームで入力された全Abilityを処理
 	//
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
@@ -285,7 +283,7 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 				if (AbilitySpec->IsActive())
 				{
-					// Ability is active so pass along the input event.
+					// Abilityがアクティブなため入力イベントを伝達
 					AbilitySpecInputPressed(*AbilitySpec);
 				}
 				else
@@ -302,9 +300,8 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	}
 
 	//
-	// Try to activate all the abilities that are from presses and holds.
-	// We do it all at once so that held inputs don't activate the ability
-	// and then also send a input event to the ability because of the press.
+	// 押下・保持入力によるAbilityをまとめて発動
+	// 保持入力で発動したAbilityへ押下イベントが重複送信されることを防ぐ。
 	//
 	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
@@ -312,7 +309,7 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	}
 
 	//
-	// Process all abilities that had their input released this frame.
+	// このフレームで入力解除された全Abilityを処理
 	//
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputReleasedSpecHandles)
 	{
@@ -324,7 +321,7 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 				if (AbilitySpec->IsActive())
 				{
-					// Ability is active so pass along the input event.
+					// Abilityがアクティブなため入力イベントを伝達
 					AbilitySpecInputReleased(*AbilitySpec);
 				}
 			}
@@ -332,7 +329,7 @@ void UMWAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	}
 
 	//
-	// Clear the cached ability handles.
+	// キャッシュ済みAbility Handleをクリア
 	//
 	InputPressedSpecHandles.Reset();
 	InputReleasedSpecHandles.Reset();
@@ -388,20 +385,20 @@ void UMWAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTa
 
 	//if (TagRelationshipMapping)
 	//{
-	//	// Use the mapping to expand the ability tags into block and cancel tag
+	//	// Mappingを使用してAbilityタグをBlockタグとCancelタグへ展開
 	//	//TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
 	//}
 
 	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, ModifiedBlockTags, bExecuteCancelTags, ModifiedCancelTags);
 
-	//@TODO: Apply any special logic like blocking input or movement
+	//@TODO: 入力や移動のブロックなど、固有ロジックを適用
 }
 
 void UMWAbilitySystemComponent::HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled)
 {
 	Super::HandleChangeAbilityCanBeCanceled(AbilityTags, RequestingAbility, bCanBeCanceled);
 
-	//@TODO: Apply any special logic like blocking input or movement
+	//@TODO: 入力や移動のブロックなど、固有ロジックを適用
 }
 
 void UMWAbilitySystemComponent::ClientNotifyAbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason)
@@ -434,30 +431,30 @@ void UMWAbilitySystemComponent::HandleAbilityFailed(const UGameplayAbility* Abil
 
 void UMWAbilitySystemComponent::FindInstancedAbilityByTag(TArray<UMWGameplayAbility*>& OutAbilities, const FGameplayTagContainer& Tags)
 {
-	// ensure the output array is empty
+	// 出力配列を空にする
 	OutAbilities.Empty();
 
-	// iterate through all Ability Specs
+	// 全Ability Specを走査
 	for (const FGameplayAbilitySpec& currentSpec : ActivatableAbilities.Items)
 	{
-		// try to get the ability instance
+		// Abilityインスタンスの取得を試行
 		UGameplayAbility* abilityInstance = currentSpec.GetPrimaryInstance();
 
-		// default to the CDO if we can't
+		// 取得できなければCDOを使用
 		if (!abilityInstance)
 		{
 			abilityInstance = currentSpec.Ability;
 		}
 
-		// ensure the ability instance is valid
+		// Abilityインスタンスの有効性を確認
 		if (IsValid(abilityInstance))
 		{
 			if(UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(abilityInstance))
 			{
-				// check if we match all tags
+				// 全タグとの一致を確認
 				if (mwAbility->GetAssetTags().HasAll(Tags))
 				{
-					// add the matching handle
+					// 一致したHandleを追加
 					OutAbilities.Add(mwAbility);
 				}
 			}
@@ -467,30 +464,30 @@ void UMWAbilitySystemComponent::FindInstancedAbilityByTag(TArray<UMWGameplayAbil
 
 void UMWAbilitySystemComponent::FindInstancedAbilityByClass(TArray<UMWGameplayAbility*>& OutAbilities, TSubclassOf<UMWGameplayAbility> InClass)
 {
-	// ensure the output array is empty
+	// 出力配列を空にする
 	OutAbilities.Empty();
 
-	// iterate through all Ability Specs
+	// 全Ability Specを走査
 	for (const FGameplayAbilitySpec& currentSpec : ActivatableAbilities.Items)
 	{
-		// try to get the ability instance
+		// Abilityインスタンスの取得を試行
 		UGameplayAbility* abilityInstance = currentSpec.GetPrimaryInstance();
 
-		// default to the CDO if we can't
+		// 取得できなければCDOを使用
 		if (!abilityInstance)
 		{
 			abilityInstance = currentSpec.Ability;
 		}
 
-		// ensure the ability instance is valid
+		// Abilityインスタンスの有効性を確認
 		if (IsValid(abilityInstance))
 		{
 			if (UMWGameplayAbility* mwAbility = Cast<UMWGameplayAbility>(abilityInstance))
 			{
-				// check if we match all tags
+				// 全タグとの一致を確認
 				if (mwAbility->GetClass() == InClass)
 				{
-					// add the matching handle
+					// 一致したHandleを追加
 					OutAbilities.Add(mwAbility);
 				}
 			}
@@ -520,13 +517,13 @@ bool UMWAbilitySystemComponent::IsActivationGroupBlocked(EMWAbilityActivationGro
 	switch (Group)
 	{
 	case EMWAbilityActivationGroup::Independent:
-		// Independent abilities are never blocked.
+		// Independent Abilityはブロックされない
 		bBlocked = false;
 		break;
 
 	case EMWAbilityActivationGroup::Exclusive_Replaceable:
 	case EMWAbilityActivationGroup::Exclusive_Blocking:
-		// Exclusive abilities can activate if nothing is blocking.
+		// ブロック要因がなければExclusive Abilityを発動可能
 		bBlocked = (ActivationGroupCounts[(uint8)EMWAbilityActivationGroup::Exclusive_Blocking] > 0);
 		break;
 
@@ -550,7 +547,7 @@ void UMWAbilitySystemComponent::AddAbilityToActivationGroup(EMWAbilityActivation
 	switch (Group)
 	{
 	case EMWAbilityActivationGroup::Independent:
-		// Independent abilities do not cancel any other abilities.
+		// Independent Abilityは他のAbilityをキャンセルしない
 		break;
 
 	case EMWAbilityActivationGroup::Exclusive_Replaceable:

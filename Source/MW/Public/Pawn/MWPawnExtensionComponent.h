@@ -33,10 +33,10 @@ public:
 	void UninitializeAbilitySystem();
 
 public:
-	/** Delegate fired when our pawn becomes the ability system's avatar actor */
+	/** PawnがAbilitySystemのAvatarActorになった際に通知するDelegate。 */
 	FSimpleMulticastDelegate OnAbilitySystemInitialized;
 
-	/** Delegate fired when our pawn is removed as the ability system's avatar actor */
+	/** PawnがAbilitySystemのAvatarActorから解除された際に通知するDelegate。 */
 	FSimpleMulticastDelegate OnAbilitySystemUninitialized;
 
 protected:

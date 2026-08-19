@@ -1,13 +1,13 @@
 // ============================================================================
-//  UCombatRelationComponent : UPawnComponent (Tick Cleanup)
+//  UCombatRelationComponent : UPawnComponent（Tickによるクリーンアップ）
 //
-//  Overview
-//  - Stores identity: TeamId / Faction / PartyId
-//  - Manages instance-level overrides (Actor/Faction)
-//  - Unified interface: GetRelationTo / IsValidTarget
-//  - Relation priority: ActorOverride > Party > Team > FactionOverride > Service.Matrix
-//  - Expiration cleanup: Tick (configurable interval CleanupTickInterval, default 0.5s)
-//    * Avoids per-frame O(N) waste; batch cleanup once interval is reached
+//  概要
+//  - 識別情報を保持：TeamId / Faction / PartyId
+//  - インスタンス単位のオーバーライドを管理（アクター／陣営）
+//  - 統一インターフェース：GetRelationTo / IsValidTarget
+//  - 関係の優先順位：ActorOverride > Party > Team > FactionOverride > Service.Matrix
+//  - 期限切れのクリーンアップ：Tick（設定可能な間隔 CleanupTickInterval、デフォルト0.5秒）
+//    * フレームごとのO(N)処理を避け、間隔到達時にまとめてクリーンアップ
 // ============================================================================
 #pragma once
 
@@ -31,7 +31,7 @@ struct FRelationOverrideEntry
 	ECombatRelation Relation = ECombatRelation::Neutral;
 
 	UPROPERTY()
-	float ExpireTime = -1.f; // <0: never
+	float ExpireTime = -1.f; // <0: 無期限
 };
 
 USTRUCT()
@@ -43,7 +43,7 @@ struct FFactionOverrideEntry
 	ECombatRelation Relation = ECombatRelation::Neutral;
 
 	UPROPERTY()
-	float ExpireTime = -1.f; // <0: never
+	float ExpireTime = -1.f; // <0: 無期限
 };
 
 UCLASS(ClassGroup=(Combat), meta=(BlueprintSpawnableComponent))
@@ -54,7 +54,7 @@ class COMBATRELATION_API UCombatRelationComponent : public UPawnComponent
 public:
 	UCombatRelationComponent(const FObjectInitializer& ObjectInitializer);
 
-	// == Identity ==
+	// == 識別情報 ==
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Relation|Base")
 	uint8 TeamId = 0;
 
@@ -64,11 +64,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Relation|Base")
 	int32 PartyId = 0;
 
-	// == Performance ==
+	// == パフォーマンス ==
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Relation|Performance")
 	float CleanupTickInterval = 0.5f;
 
-	// == Overrides API ==
+	// == オーバーライドAPI ==
 	UFUNCTION(BlueprintCallable, Category = "Relation|Override")
 	void SetActorOverride(AActor* Target, ECombatRelation Relation, float DurationSeconds = -1.f);
 
@@ -84,7 +84,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Relation|Override")
 	void ClearAllOverrides();
 
-	// == Query API ==
+	// == 問い合わせAPI ==
 	UFUNCTION(BlueprintCallable, Category = "Relation")
 	ECombatRelation GetRelationTo(const AActor* Other) const;
 
@@ -96,14 +96,14 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	// Storage
+	// 格納
 	UPROPERTY()
 	TArray<FRelationOverrideEntry> ActorOverrides;
 
 	UPROPERTY()
 	TMap<FGameplayTag, FFactionOverrideEntry> FactionOverrides;
 
-	// Tick self-throttle
+	// Tickの自己抑制
 	float LastCleanupTime = -1.f;
 
 private:

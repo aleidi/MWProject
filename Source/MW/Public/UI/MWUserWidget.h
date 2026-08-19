@@ -33,22 +33,22 @@ protected:
 
 public:
 	/**
-	 * Binds an existing ViewModel instance to this widget's MVVMView extension.
+	 * 既存のViewModel InstanceをこのWidgetのMVVMView拡張へBindingします。
 	 *
-	 * @param ViewModelName Name used to register the ViewModel (must match MVVM binding name).
-	 * @param ViewModel Existing ViewModel instance to bind.
-	 * @param bForce If true, replaces an existing ViewModel with the same name; if false, sets only when missing.
-	 * @return The bound ViewModel instance when successful, otherwise nullptr.
+	 * @param ViewModelName ViewModelの登録名。MVVMのBinding名と一致する必要があります。
+	 * @param ViewModel Bindingする既存のViewModel Instance。
+	 * @param bForce trueの場合は同名のViewModelを置換し、falseの場合は未設定時のみ設定します。
+	 * @return 成功時はBindingしたViewModel Instance、失敗時はnullptr。
 	 */
 	UMVVMViewModelBase* SetViewModel(FName ViewModelName, UMVVMViewModelBase* ViewModel, bool bForce = false);
 
 	/**
-	 * Creates and binds a ViewModel instance to this widget's MVVMView extension.
+	 * ViewModel Instanceを生成し、このWidgetのMVVMView拡張へBindingします。
 	 *
-	 * @param ViewModelName Name used to register the ViewModel (must match MVVM binding name).
-	 * @param ViewModelClass ViewModel class type to instantiate.
-	 * @param bForce If true, replaces an existing ViewModel with the same name; if false, sets only when missing.
-	 * @return The created ViewModel instance when successful, otherwise nullptr.
+	 * @param ViewModelName ViewModelの登録名。MVVMのBinding名と一致する必要があります。
+	 * @param ViewModelClass 生成するViewModelクラス。
+	 * @param bForce trueの場合は同名のViewModelを置換し、falseの場合は未設定時のみ設定します。
+	 * @return 成功時は生成したViewModel Instance、失敗時はnullptr。
 	 */
 	UMVVMViewModelBase* CreateAndSetViewModel(FName ViewModelName, TSubclassOf<UMVVMViewModelBase> ViewModelClass, bool bForce = false);
 
@@ -59,20 +59,20 @@ public:
 	}
 
 	/**
-	 * Blueprint-callable wrapper for SetViewModel.
+	 * Blueprintから呼び出せるSetViewModelのWrapperです。
 	 */
 	UFUNCTION(BlueprintCallable, Category = "MW|MVVM", meta = (DisplayName = "Set Manual ViewModel"))
 	UMVVMViewModelBase* K2_SetViewModel(FName ViewModelName, UMVVMViewModelBase* ViewModel, bool bForce = false);
 
 	/**
-	 * Blueprint-callable wrapper for CreateAndSetViewModel.
+	 * Blueprintから呼び出せるCreateAndSetViewModelのWrapperです。
 	 */
 	UFUNCTION(BlueprintCallable, Category = "MW|MVVM", meta = (DisplayName = "Create And Set Manual ViewModel"))
 	UMVVMViewModelBase* K2_CreateAndSetViewModel(FName ViewModelName, TSubclassOf<UMVVMViewModelBase> ViewModelClass, bool bForce = false);
 
 	/**
-	 * Creates and binds a ViewModel instance by class match against MVVM slots in the widget.
-	 * Returns nullptr on failure or when match is not unique.
+	 * Widget内のMVVM Slotとクラスを照合し、ViewModel Instanceを生成してBindingします。
+	 * 失敗時または一致候補が一意でない場合はnullptrを返します。
 	 */
 	UMVVMViewModelBase* CreateAndSetViewModelByClass(UClass* ViewModelClass, bool bForce = false);
 

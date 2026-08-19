@@ -1,15 +1,15 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Define/MWDefineUI.h"
 #include "Interface/MWManagerInterface.h"
 #include "UObject/NoExportTypes.h"
 #include "MWUIManager.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWRootCanvas;
 
-// Define
+// 定義
 
 /*
  * @class UMWUIManager
@@ -34,17 +34,17 @@ public:
 
 public:
     /*
-     *  Open A widget with the given name.
+     * 指定した名前のWidgetを開きます。
      * 
-     *  @param bFocus : if true, give the focus to the widget.
+     * @param bFocus trueの場合はWidgetへFocusを設定します。
      */
  	UFUNCTION(BlueprintCallable, Category = "UI")
  	bool OpenUI(const FName& WidgetName, bool bFocus = false);
  
     /*
-     * Close a widget that is already display on screen.
+     * 画面に表示中のWidgetを閉じます。
      * 
-     * @param bForceImmediatedly : set to true to ignore close animation
+     * @param bForceImmediatedly trueの場合はCloseAnimationを省略します。
      */
  	UFUNCTION(BlueprintCallable, Category = "UI")
  	bool CloseUI(const FName& WidgetName, bool bForceImmediately = false);
@@ -68,7 +68,7 @@ private:
     UPROPERTY()
     TObjectPtr<UMWRootCanvas> RootCanvas;
 
-    /* Save the z-order info in types of ui. */
+    /* UI種別ごとのZ-order情報を保持します。 */
     TMap<EMWUILayer, int32> LayerConfig;
 
 	FDelegateHandle OnGameModeBeginPlayHandle;

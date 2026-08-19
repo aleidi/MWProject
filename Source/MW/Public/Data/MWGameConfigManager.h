@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Interface/MWManagerInterface.h"
 #include "UObject/NoExportTypes.h"
 #include "MWGameConfigManager.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class UMWGameConfigManager

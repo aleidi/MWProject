@@ -31,10 +31,10 @@ void UC3DCameraFadingObject::Tick(float DeltaTime)
 	static FName fade = FName("Fade");
 	if (!MaterialFadeParamNames.Contains(fade))	MaterialFadeParamNames.Emplace(FName("Fade"));
 	
-	//获取当前的cameramode
+	// 現在のカメラモードを取得
 	if (bEnableFade)
 	{
-		//自我Fade
+		//自身をフェード
 		if (bFadeSelfIfCollision)
 		{
 			SelfFade();
@@ -47,7 +47,7 @@ void UC3DCameraFadingObject::Tick(float DeltaTime)
 			ApplyFade(DeltaTime);
 		}
 	}
-	//If after disable fading left proccessed actors
+	// フェード無効化後も処理中のアクターが残っている場合
 	else if (!bEnableFade)
 	{
 		UpdateFadingActorsList({});
@@ -76,7 +76,7 @@ void UC3DCameraFadingObject::OnEnterCameraMode(bool bWithInterpolation)
 		}
 	}
 
-	// 将owner上附加的actor从ManualFadeActor中移除
+	// OwnerにアタッチされたアクターをManualFadeActorから削除
 	if (!bSelfFadeAttachedActors)
 	{
 		TArray<AActor*> attachedToOwnerActors;
@@ -163,7 +163,7 @@ void UC3DCameraFadingObject::SelfFade()
 	auto& camera = GetCamera();
 
 	TArray<FOverlapResult> overlapResults;
-    //通过球形碰撞检测自身actor和其依附的对象
+	// 球形コリジョンで自身のアクターとアタッチされたオブジェクトを検出
 	FCollisionShape collisionShape;
 	collisionShape.SetSphere(SelfFadeCheckRadius);
 
@@ -256,7 +256,7 @@ void UC3DCameraFadingObject::UpdateFadingActorsList(TArray<AActor*> RelevantActo
 		RelevantActors.AddUnique(actor.Get());
 	}
 
-	// find already fading actors
+	// フェード処理中のアクターを検索
 	for (auto& fadingActor : FadingActors)
 	{
 		AActor** findedActor = RelevantActors.FindByPredicate([fadingActor](const AActor* actor) {
@@ -273,7 +273,7 @@ void UC3DCameraFadingObject::UpdateFadingActorsList(TArray<AActor*> RelevantActo
 		}
 	}
 
-	// add new actors
+	// 新規アクターを追加
 	for (auto& actor : RelevantActors)
 	{
 		FadingActors.AddUnique(FC3DFadingActorInfo(actor, true, FadeOutTime));
@@ -287,7 +287,7 @@ void UC3DCameraFadingObject::ApplyFade(float DeltaTime)
 		if (fadedActor.Actor.IsValid())
 		{
 			float fadeSpeed = fadedActor.bFadeOut ? -1.f * fadedActor.FadeOutTime : FadeInTime;
-			fadedActor.FadeValue += 1.f / fadeSpeed * DeltaTime; // fade time
+			fadedActor.FadeValue += 1.f / fadeSpeed * DeltaTime; // フェード時間
 
 			fadedActor.FadeValue = FMath::Clamp(fadedActor.FadeValue, MaterialFadeMinValue, MaterialFadeMaxValue);
 
@@ -296,7 +296,7 @@ void UC3DCameraFadingObject::ApplyFade(float DeltaTime)
 		
 			for (auto& mesh : meshes)
 			{
-				// get all the materials of the mesh
+				// メッシュの全マテリアルを取得
 				const TArray<UMaterialInterface*> materialInterfaces = mesh->GetMaterials(); 
 				for (auto& materialInterface : materialInterfaces)
 				{

@@ -16,7 +16,7 @@ void UMWInputComponent::AddInputMappings(const UMWInputConfig* InputConfig, UEnh
 	check(InputConfig);
 	check(InputSubsystem);
 
-	// Here you can handle any custom logic to add something from your input config if required
+	// 必要に応じてInput Config追加時のカスタム処理を実装
 }
 
 void UMWInputComponent::RemoveInputMappings(const UMWInputConfig* InputConfig, UEnhancedInputLocalPlayerSubsystem* InputSubsystem) const
@@ -24,7 +24,7 @@ void UMWInputComponent::RemoveInputMappings(const UMWInputConfig* InputConfig, U
 	check(InputConfig);
 	check(InputSubsystem);
 
-	// Here you can handle any custom logic to remove input mappings that you may have added above
+	// 必要に応じて追加済みInput Mappingの削除処理を実装
 }
 
 void UMWInputComponent::RemoveBinds(TArray<uint32>& BindHandles)

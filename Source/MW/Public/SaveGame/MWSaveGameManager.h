@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UObject/NoExportTypes.h"
 #include "Interface/MWManagerInterface.h"
 #include "MWSaveGameManager.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWSaveGame;
 
-// Define
+// 定義
 #define GET_SAVEGAMEMGR(WorldContext) (UMWSaveGameManager::Get(WorldContext))
 
 /*

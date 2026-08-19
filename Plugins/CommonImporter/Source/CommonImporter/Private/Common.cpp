@@ -17,7 +17,7 @@ FString CommonImporter::ConvertToAssetPath(const FString& FileSystemPath)
     {
         const FString baseFileName = FPaths::GetBaseFilename(FileSystemPath);
 
-        // asset format : /Game/.../filename.filename
+        // アセット形式: /Game/.../filename.filename
         FString relativePath = FPaths::GetPath(FileSystemPath) / FString::Printf(TEXT("%s.%s"), *baseFileName, *baseFileName);
         relativePath = relativePath.RightChop(projContDir.Len());
         return FString::Printf(TEXT("/Game/%s"), *relativePath);

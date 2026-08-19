@@ -10,7 +10,7 @@ class UAnimMontage;
 /**
  * UMWSkillBase
  * 
- * 按键释放能力技能
+ * ボタンを離したときに発動するアビリティスキル。
  */
 UCLASS()
 class MW_API UMWSkillBase : public UMWGameplayAbility
@@ -18,20 +18,20 @@ class MW_API UMWSkillBase : public UMWGameplayAbility
 	GENERATED_BODY()
 
 protected:
-	//~UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-	//~End of UMWGameplayAbility interface
+	//~UMWGameplayAbilityインターフェース終了
 
 	void ClearMontageTask();
 
 	/**
-	 * 检查当前是否可以播放技能动画。
-	 * 当角色没有任何 Montage 正在播放时，直接返回 true；
-	 * 若有 Montage 正在播放，则检查 AbilitySystemComponent 是否带有
-	 * Ability.Skill.Chainable 标签（连携窗口），有则允许播放，否则返回 false。
+	 * 現在スキルアニメーションを再生できるか確認します。
+	 * キャラクターがMontageを再生していない場合はtrueを返します。
+	 * Montageの再生中は、AbilitySystemComponentがAbility.Skill.Chainableタグ
+	 * （連携可能期間）を持つ場合のみ再生を許可します。
 	 */
 	virtual bool CanPlayAbilityAnimation() const;
 
@@ -55,15 +55,15 @@ protected:
 	bool TryCommitAndPlayFromCommand(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FMWSkillCastCommand& InCommand);
 
 protected:
-	/** 技能动画 */
+	/** スキルアニメーション。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
 	TObjectPtr<UAnimMontage> AbilityAnim = nullptr;
 
-	/** Montage 播放速率 */
+	/** Montageの再生速度。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation", meta = (ClampMin = "0.1"))
 	float MontagePlayRate = 1.0f;
 
-	/** Montage 起始段名称，为 None 则从头播放 */
+	/** Montageの開始セクション名。Noneの場合は先頭から再生します。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MW|Animation")
 	FName MontageSectionName = NAME_None;
 

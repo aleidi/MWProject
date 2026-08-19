@@ -16,7 +16,7 @@ class UMWLocalPlayer;
 /**
  * FMWInputAction
  *
- *	Struct used to map a input action to a gameplay input tag.
+ *	入力アクションをゲームプレイ入力タグに対応付ける構造体。
  */
 USTRUCT(BlueprintType)
 struct FMWInputAction
@@ -35,8 +35,8 @@ struct FMWInputAction
 	UPROPERTY(EditDefaultsOnly)
 	ETriggerEvent ReleasedTriggerEvent = ETriggerEvent::Completed;
 
-	/* This is used for gamepad and you don't need it in most case.
-	   Chord action will prevent the completed event of gamepad input from being triggered in some special case. */
+	/* ゲームパッド入力用の設定であり、通常は必要ありません。
+	   特殊なケースでは、Chordアクションによりゲームパッド入力のCompletedイベントが発生しない場合があります。 */
 	UPROPERTY(EditDefaultsOnly)
 	bool bBindCancelToReleasedEvent = false;
 };
@@ -49,7 +49,7 @@ struct FMWInputMappingContextWithPriority
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UInputMappingContext> Mapping;
 
-	/* High priority mapping would override low priority. */
+	/* 優先度の高いマッピングは、優先度の低いマッピングを上書きします。 */
 	UPROPERTY(EditDefaultsOnly)
 	int32 Priority = 0;
 
@@ -64,11 +64,11 @@ struct FMWInputActionContainer
 {
 	GENERATED_BODY()
 
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and must be manually bound.
+	// 所有者が使用する入力アクションの一覧。これらはゲームプレイタグに対応付けられ、手動でバインドする必要があります。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
 	TArray<FMWInputAction> NativeInputActions;
 
-	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and are automatically bound to abilities with matching input tags.
+	// 所有者が使用する入力アクションの一覧。これらは一致する入力タグを持つアビリティに自動的にバインドされます。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
 	TArray<FMWInputAction> AbilityInputActions;
 };
@@ -76,8 +76,8 @@ struct FMWInputActionContainer
  /**
   * UMWInputConfig
   *
-  *	Non-mutable data asset that contains input configuration properties.
-  *	Each UMWInputConfig instance is responsible for exactly one IMC and its associated input actions.
+	*	入力設定プロパティを保持する変更不可のデータアセット。
+	*	各UMWInputConfigインスタンスは、1つのIMCとそれに関連付けられた入力アクションを管理します。
   */
  UCLASS(BlueprintType, Const)
  class UMWInputConfig : public UDataAsset
@@ -90,11 +90,11 @@ struct FMWInputActionContainer
  	bool GetAbilityInputActions(TArray<FMWInputAction>& OutActions) const;
 
  public:
- 	/* The input mapping context owned by this config. */
+	/* この設定が所有する入力マッピングコンテキスト。 */
  	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
  	FMWInputMappingContextWithPriority InputMappingContext;
 
- 	/* The input actions owned by this config. */
+	/* この設定が所有する入力アクション。 */
  	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
  	FMWInputActionContainer InputActionsContainer;
  };

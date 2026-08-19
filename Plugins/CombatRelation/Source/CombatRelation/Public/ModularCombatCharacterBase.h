@@ -5,13 +5,13 @@
 #include "GenericTeamAgentInterface.h"
 #include "ModularCombatCharacterBase.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UCombatRelationComponent;
 
  /*
  * @class AModularCombatCharacterBase
  *
- * @brief This is an example character class that demonstrates the use of the combat relation system.
+ * @brief CombatRelationシステムの使用例を示すキャラクタークラス。
  *
  * @note
  */

@@ -8,13 +8,13 @@ void UCombatRelationSettings::PostEditChangeProperty(FPropertyChangedEvent& Prop
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
-    // Check if DefaultFactionRelationAsset was modified
+    // DefaultFactionRelationAssetが変更されたか確認
     if (PropertyChangedEvent.Property && 
         PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(UCombatRelationSettings, DefaultFactionRelationAsset))
     {
         UE_LOG(LogTemp, Log, TEXT("Combat Relation Settings: DefaultFactionRelationAsset changed to: %s"), *DefaultFactionRelationAsset.ToString());
 
-        // Force load the asset to validate it
+        // アセットを強制読み込みして検証
         if (!DefaultFactionRelationAsset.IsNull())
         {
             UFactionRelationDataAsset* LoadedAsset = DefaultFactionRelationAsset.LoadSynchronous();
@@ -35,8 +35,8 @@ void UCombatRelationSettings::PostInitProperties()
 {
     Super::PostInitProperties();
 
-    // Preload asset in both editor and runtime
-    // This ensures the asset is properly loaded and included in package builds
+    // エディターとランタイムの両方でアセットを事前読み込み
+    // これによりアセットが正しく読み込まれ、パッケージビルドに含まれることを保証
     if (!DefaultFactionRelationAsset.IsNull())
     {
         UFactionRelationDataAsset* LoadedAsset = DefaultFactionRelationAsset.LoadSynchronous();

@@ -15,7 +15,7 @@ void UAN_DamageCheck::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase
 
 	AActor* ownerActor = MeshComp->GetOwner();
 
-	// Get Ability System Component from the owner actor
+	// 所有ActorからAbility System Componentを取得
 	UAbilitySystemComponent* asc = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ownerActor);
 	if (!asc)
 	{
@@ -23,26 +23,26 @@ void UAN_DamageCheck::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase
 		return;
 	}
 
-	// Find active MWChargeableSkill ability instance
+	// アクティブなMWChargeableSkillインスタンスを検索
 	TArray<FGameplayAbilitySpec>& activatableAbilities = asc->GetActivatableAbilities();
 	for (FGameplayAbilitySpec& spec : activatableAbilities)
 	{
 		if (spec.IsActive())
 		{
-			// Try to cast to MWChargeableSkill
+			// MWChargeableSkillへのキャストを試行
 			//UMWChargeableSkill* chargeableSkill = Cast<UMWChargeableSkill>(spec.GetPrimaryInstance());
 			//if (chargeableSkill)
 			//{
-			//	// Trigger damage calculation with configured parameters
+			//	// 設定済みパラメータでダメージ計算を実行
 			//	chargeableSkill->OnDamageNotify(DamageEventTag, DamageMultiplier, HitIndex);
 			//	
-			//	// Found and triggered the skill, no need to continue
+			//	// 対象スキルを実行済みのため探索を終了
 			//	return;
 			//}
 		}
 	}
 
-	// Log warning if no active chargeable skill was found
+	// アクティブなチャージスキルが見つからない場合は警告を出力
 	UE_LOG(LogMWAnimNotify, Warning, TEXT("[AN_DamageCheck] No active MWChargeableSkill found on actor: %s"), *ownerActor->GetName());
 }
 

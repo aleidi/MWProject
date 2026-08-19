@@ -40,7 +40,7 @@ void UMWPawnExtensionComponent::InitializeAbilitySystem(UMWAbilitySystemComponen
 
     if (AbilitySystemComponent)
     {
-        // Clean up the old ability system component.
+        // 旧Ability System Componentをクリーンアップ
         UninitializeAbilitySystem();
     }
 
@@ -49,8 +49,8 @@ void UMWPawnExtensionComponent::InitializeAbilitySystem(UMWAbilitySystemComponen
 
     if (exist_avatar != nullptr && exist_avatar != pawn)
     {
-        // There is already a pawn acting as the ASC's avatar, so we need to kick it out
-        // This can happen on clients if they're lagged: their new pawn is spawned + possessed before the dead one is removed
+        // ASCのAvatarとして設定済みのPawnを解除
+        // クライアント遅延時、死亡Pawnの削除前に新Pawnが生成・Possessされると発生し得る
         if (UMWPawnExtensionComponent* OtherExtensionComponent = FindPawnExtensionComponent(exist_avatar))
         {
             OtherExtensionComponent->UninitializeAbilitySystem();
@@ -73,14 +73,14 @@ void UMWPawnExtensionComponent::UninitializeAbilitySystem()
         return;
     }
 
-    // Uninitialize the ASC if we're still the avatar actor (otherwise another pawn already did it when they became the avatar actor)
+    // 自身がAvatar ActorのままならASCを初期化解除（別PawnがAvatarなら処理済み）
     if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
     {
         FGameplayTagContainer AbilityTypesToIgnore;
         AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
         AbilitySystemComponent->ClearAllAbilities();
         AbilitySystemComponent->ClearAbilityInput();
-        // remove cue
+        // Cueを削除
         AbilitySystemComponent->RemoveAllGameplayCues();
 
         if (AbilitySystemComponent->GetOwnerActor() != nullptr)

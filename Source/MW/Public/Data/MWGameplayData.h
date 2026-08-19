@@ -4,7 +4,7 @@
 #include "GameplayTagContainer.h"
 #include "MWGameplayData.generated.h"
 
-// Forward Declare
+// 前方宣言
 class AMWCharacter;
 class UC3DCameraComponent;
 class UC3DCameraModeDataAsset;
@@ -15,7 +15,7 @@ class UMWUIConfigData;
 /*
  * @class UMWGameplayData
  *
- * @brief Gameplay related const data.
+ * @brief ゲームプレイ関連の定数データです。
  *        ゲームプレイに関連する定数データ。
  *
  */
@@ -38,10 +38,10 @@ public:
 	TObjectPtr<USkeletalMesh> DummyMesh;
 
 	/**
-	 * Map of all input configurations, keyed by IMC GameplayTag.
-	 * Use FindInputConfig() to retrieve a specific config at runtime.
+	 * IMCのGameplayTagをキーとする全入力設定のMapです。
+	 * 実行時の設定取得にはFindInputConfig()を使用します。
 	 *
-	 * Recommended tag naming convention:
+	 * 推奨するタグ命名規則：
 	 *   IMC.TPDefault, IMC.Basic, IMC.BattleCommand, IMC.BattleCommand.Attack, etc.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
@@ -55,14 +55,14 @@ public:
 
 public:
 	/**
-	 * Find an InputConfig by its IMC GameplayTag.
-	 * @return nullptr if not found.
+	 * IMCのGameplayTagからInputConfigを検索します。
+	 * @return 見つからない場合はnullptr。
 	 */
 	UFUNCTION(BlueprintPure, Category = "Input")
 	UMWInputConfig* FindInputConfig(const FGameplayTag& IMCTag) const;
 
 public:
-	// Gameplay effect used to add and remove dynamic tags.
+	// 動的タグの追加と削除に使用するGameplayEffect。
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|Default Gameplay Effects")
 	TSubclassOf<UGameplayEffect> GE_DynamicTag;
 

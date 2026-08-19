@@ -27,7 +27,7 @@ void AMWGameModeBase::InitGame(const FString& MapName, const FString& Options, F
 
 UClass* AMWGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	// Avoid to spawn default pawn
+	// デフォルトPawnの生成を抑止
 	return nullptr;
 }
 
@@ -40,7 +40,7 @@ void AMWGameModeBase::BeginPlay()
 		OnGameBeginPlay.Broadcast(this);
 	}
 
-	// Enable Basic Input Mapping Context
+	// 基本Input Mapping Contextを有効化
 	const UMWGameplayData* data = GET_MWSINGLETON()->GetGameplayData();
 	UMWInputUtility::EnableMappingContext(UGameplayStatics::GetPlayerController(this, 0), data->FindInputConfig(MWGameplayTags::IMC_Basic));
 }

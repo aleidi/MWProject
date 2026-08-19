@@ -11,7 +11,7 @@
 //
 //UGameFeatureAction_AddGameplayCuePath::UGameFeatureAction_AddGameplayCuePath()
 //{
-//	// Add a default path that is commonly used
+//	// 一般的に使用するデフォルトパスを追加
 //	DirectoryPathsToAdd.Add(FDirectoryPath{ TEXT("/GameplayCues") });
 //}
 //

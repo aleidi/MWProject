@@ -123,7 +123,7 @@ ECombatRelation UCombatRelationComponent::GetRelationTo(const AActor* Other) con
 		return ECombatRelation::Ignore;
 	}
 
-	// 1) Actor override
+	// 1) アクターオーバーライド
 	for (const FRelationOverrideEntry& entry : ActorOverrides)
 	{
 		if (!entry.Target.IsValid())
@@ -137,32 +137,32 @@ ECombatRelation UCombatRelationComponent::GetRelationTo(const AActor* Other) con
 		}
 	}
 
-	// 2) Other identity
+	// 2) 相手の識別情報
 	const UCombatRelationComponent* CRComp = UCombatRelationLibrary::FindRelationComponent(Other);
 	if (!CRComp)
 	{
 		return ECombatRelation::Neutral;
 	}
 
-	// 3) Party quick path
+	// 3) パーティーの高速判定
 	if (PartyId != 0 && PartyId == CRComp->PartyId)
 	{
 		return ECombatRelation::Friendly;
 	}
 
-	// 4) Team quick path
+	// 4) チームの高速判定
 	if (TeamId != 0 && TeamId == CRComp->TeamId)
 	{
 		return ECombatRelation::Friendly;
 	}
 
-	// 5) Faction override
+	// 5) 陣営オーバーライド
 	if (const FFactionOverrideEntry* entry = FactionOverrides.Find(CRComp->Faction))
 	{
 		return entry->Relation;
 	}
 
-	// 6) Centralized matrix
+	// 6) 集中管理されたマトリックス
 	if (UCombatRelationService* svc = GetService())
 	{
 		return svc->Query(Faction, CRComp->Faction);
@@ -233,18 +233,18 @@ void UCombatRelationComponent::CleanupExpiredOverrides_Internal()
 {
 	const float now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.f;
 
-	// Actor overrides
+	// アクターオーバーライド
 	ActorOverrides.RemoveAll([now](const FRelationOverrideEntry& entry)
 	{
 		if (!entry.Target.IsValid())
 		{
-			return true; // target destroyed
+			return true; // ターゲットが破棄済み
 		}
 
 		return (entry.ExpireTime > 0.f && now >= entry.ExpireTime);
 	});
 
-	// Faction overrides
+	// 陣営オーバーライド
 	TArray<FGameplayTag> toRemove;
 	for (const auto& kvp : FactionOverrides)
 	{

@@ -54,7 +54,7 @@ const TArray<FName> UMWGameFeaturePolicy::GetPreloadBundleStateForGameFeature() 
 
 void UMWGameFeaturePolicy::GetGameFeatureLoadingMode(bool& bLoadClientData, bool& bLoadServerData) const
 {
-	// Editor will load both, this can cause hitching as the bundles are set to not preload in editor
+	// Editorでは両方を読み込む。バンドルが事前読み込み対象外のためヒッチが発生し得る
 	bLoadClientData = !IsRunningDedicatedServer();
 	bLoadServerData = !IsRunningClientOnly();
 }
@@ -111,7 +111,7 @@ void UMWGameFeature_AddGameplayCuePaths::OnGameFeatureRegistering(const UGameFea
 		//			GCM->AddGameplayCueNotifyPath(MutablePath, /** bShouldRescanCueAssets = */ false);	
 		//		}
 		//		
-		//		// Rebuild the runtime library with these new paths
+		//		// 追加したパスでRuntime Libraryを再構築
 		//		if (!DirsToAdd.IsEmpty())
 		//		{
 		//			GCM->InitializeRuntimeObjectLibrary();	
@@ -148,7 +148,7 @@ void UMWGameFeature_AddGameplayCuePaths::OnGameFeatureUnregistering(const UGameF
 
 		//		ensure(NumRemoved == DirsToAdd.Num());
 		//		
-		//		// Rebuild the runtime library only if there is a need to
+		//		// 必要な場合のみRuntime Libraryを再構築
 		//		if (NumRemoved > 0)
 		//		{
 		//			GCM->InitializeRuntimeObjectLibrary();	

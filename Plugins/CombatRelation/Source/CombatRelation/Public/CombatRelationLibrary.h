@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "GenericTeamAgentInterface.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CombatRelationLibrary.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UCombatRelationComponent;
 
-// Define
+// 定義
 
 /*
  * @class UCombatRelationLibrary

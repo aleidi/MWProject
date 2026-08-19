@@ -1,20 +1,20 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Animation/Notify/MWAnimNotify.h"
 #include "GameplayTagContainer.h"
 #include "AN_DamageCheck.generated.h"
 
-// Forward Declare
+// 前方宣言
 
-// Define
+// 定義
 
 /*
  * @class UAN_DamageCheck
  * 
- * @brief Animation Notify for triggering damage calculation at specific timestamps in skill animations
+ * @brief スキルアニメーションの指定時点でダメージ計算を実行するAnimNotifyです。
  *
- * @note Used in chargeable skill system to apply damage to previously captured targets
+ * @note チャージスキルで事前に取得したターゲットへダメージを適用します。
  */
 UCLASS()
 class UAN_DamageCheck : public UMWAnimNotify
@@ -27,15 +27,15 @@ public:
 	virtual FString GetNotifyName_Implementation() const override;
 
 protected:
-	/** Damage event identifier tag (e.g., "Damage.Skill.Slash.First") */
+	/** ダメージイベント識別タグ（例："Damage.Skill.Slash.First"）。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage", meta = (Categories = "Damage"))
 	FGameplayTag DamageEventTag;
 
-	/** Damage multiplier for this specific hit timing */
+	/** このヒットタイミングに適用するダメージ倍率。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float DamageMultiplier = 1.0f;
 
-	/** Hit index for multi-hit combo sequences (0 = first hit, 1 = second hit, etc.) */
+	/** 多段コンボ内のヒット番号（0：初段、1：2段目など）。 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage", meta = (ClampMin = "0", UIMin = "0"))
 	int32 HitIndex = 0;
 };

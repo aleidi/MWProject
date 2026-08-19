@@ -23,7 +23,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (InlineEditConditionToggle))
 	bool bCheckFilterActorClassWithCamera = false;
-	//Exmp: Character or PlayerActor
+	// 例：CharacterまたはPlayerActor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (EditCondition = "bCheckFilterActorClassWithCamera"))
 	TArray<TSubclassOf<AActor>> FilterActorClassesWithCamera;
 

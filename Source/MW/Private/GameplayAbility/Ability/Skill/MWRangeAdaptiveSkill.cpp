@@ -16,7 +16,7 @@ void UMWRangeAdaptiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 
-	// Charge casts must keep base skill flow and must not be converted to close/far.
+	// チャージ発動は基本スキルフローを維持し、近距離・遠距離へ変換しない。
 	if (castCommand.Variant == EMWSkillCastVariant::Charge)
 	{
 		Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

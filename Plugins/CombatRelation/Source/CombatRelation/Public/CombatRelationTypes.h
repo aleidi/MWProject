@@ -1,5 +1,5 @@
 // ============================================================================
-//  CombatRelation Types
+//  CombatRelationの型
 // ============================================================================
 #pragma once
 
@@ -8,20 +8,20 @@
 
 /**
  * ECombatRelation
- * Enemy/Friendly relation enum (from "self" perspective).
+ * 敵対／友好関係の列挙型（「自分」の視点）。
  */
 UENUM(BlueprintType)
 enum class ECombatRelation : uint8
 {
-    Friendly UMETA(DisplayName="Friendly"),   // Friendly
-    Hostile  UMETA(DisplayName="Hostile"),    // Hostile
-    Neutral  UMETA(DisplayName="Neutral"),    // Neutral
-    Ignore   UMETA(DisplayName="Ignore")      // Ignore (Self/Invalid)
+    Friendly UMETA(DisplayName="Friendly"),   // 味方
+    Hostile  UMETA(DisplayName="Hostile"),    // 敵対
+    Neutral  UMETA(DisplayName="Neutral"),    // 中立
+    Ignore   UMETA(DisplayName="Ignore")      // 無視（自分／無効）
 };
 
 /**
  * ETargetPolicy
- * High-level target policy (used for skill/query filtering).
+ * 高レベルのターゲットポリシー（スキル／問い合わせのフィルタリングに使用）。
  */
 UENUM(BlueprintType)
 enum class ETargetPolicy : uint8

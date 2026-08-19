@@ -12,7 +12,7 @@ class AMWPlayerController;
 /**
  * AMWPlayerState
  *
- *	Base player state class used by this project.
+ *	本プロジェクトで使用するPlayerStateの基底クラスです。
  */
 UCLASS(Config = Game)
 class MW_API AMWPlayerState : public APlayerState
@@ -25,13 +25,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "MW|PlayerState")
 	AMWPlayerController* GetMWPlayerController() const;
 
-	//~AActor interface
+	//~AActorインターフェース
 	virtual void PreInitializeComponents() override;
 	virtual void PostInitializeComponents() override;
-	//~End of AActor interface
+	//~AActorインターフェース終了
 
-	//~APlayerState interface
+	//~APlayerStateインターフェース
 	virtual void Reset() override;
 	virtual void CopyProperties(APlayerState* PlayerState) override;
-	//~End of APlayerState interface
+	//~APlayerStateインターフェース終了
 };

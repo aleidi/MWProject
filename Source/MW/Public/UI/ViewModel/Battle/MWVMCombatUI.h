@@ -1,24 +1,24 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "MW.h"
 #include "UI/ViewModel/MWViewModelBase.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "GameplayTagContainer.h"
 #include "MWVMCombatUI.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWVMCharacterGroup;
 class UMWVMSkillBar;
 struct FMWSkillChangedMessage;
 
-// Define
+// 定義
 
 /*
  * @class UMWVMCombatUI
  * 
- * @brief This class is used only as an aggregation container for the ViewModels that are actually in use.
- *        It does not perform any binding
+ * @brief 使用中のViewModelを集約するContainerです。
+ *        Binding処理は行いません。
  *
  * @note
  */
@@ -55,15 +55,15 @@ private:
 	void HandleSkillChangedMessage(FGameplayTag Channel, const FMWSkillChangedMessage& Message);
 
 private:
-	//==== Left Skill Bar ====
+	//==== 左スキルバー ====
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TObjectPtr<UMWVMSkillBar> VMLeftSkillBar;
 
-	//==== Right Skill Bar ====
+	//==== 右スキルバー ====
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TObjectPtr<UMWVMSkillBar> VMRightSkillBar;
 
-	//==== Character Info ====
+	//==== キャラクター情報 ====
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TArray<TObjectPtr<UMWVMCharacterGroup>> VMCharacterStatusList;
 

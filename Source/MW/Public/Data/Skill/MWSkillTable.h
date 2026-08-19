@@ -11,23 +11,23 @@ struct FMWSkillChargeConfig
 {
 	GENERATED_BODY()
 
-	/** Maximum charge value. */
+	/** 最大チャージ値。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Charge", meta = (ClampMin = "0.1"))
 	float MaxValue = 100.0f;
 
-	/** Time (seconds) required to reach full charge. */
+	/** 最大チャージまでの所要時間（秒）。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Charge", meta = (ClampMin = "0.01"))
 	float FullTime = 1.0f;
 
-	/** Charge decay speed after release. */
+	/** 入力を離した後のチャージ減衰速度。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Charge", meta = (ClampMin = "0.1"))
 	float DischargeRate = 90.0f;
 
-	/** Tap window before charge starts. */
+	/** チャージ開始前のTap受付時間。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Charge", meta = (ClampMin = "0.0"))
 	float StartDelay = 0.15f;
 
-	/** Runtime charge gain per second. */
+	/** 実行時の1秒あたりのチャージ増加量。 */
 	float GetChargeRate() const
 	{
 		return MaxValue / FMath::Max(FullTime, 0.01f);
@@ -37,13 +37,13 @@ struct FMWSkillChargeConfig
 UENUM(BlueprintType)
 enum class EMWSkillNoTargetPolicy : uint8
 {
-	/** Cancel cast when no valid target is found. */
+	/** 有効なターゲットがない場合はキャストを中止します。 */
 	FailCast	UMETA(DisplayName = "Fail Cast"),
 
-	/** Force close form when no valid target is found. */
+	/** 有効なターゲットがない場合は近距離形態を使用します。 */
 	UseClose	UMETA(DisplayName = "Use Close"),
 
-	/** Force far form when no valid target is found. */
+	/** 有効なターゲットがない場合は遠距離形態を使用します。 */
 	UseFar		UMETA(DisplayName = "Use Far"),
 };
 
@@ -52,27 +52,27 @@ struct FMWSkillRangeAdaptiveConfig
 {
 	GENERATED_BODY()
 
-	/** Enter close form when distance <= this value. */
+	/** 距離がこの値以下の場合に近距離形態へ移行します。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive", meta = (ClampMin = "0.0"))
 	float NearEnterDistance = 350.0f;
 
-	/** Exit close form when distance >= this value. */
+	/** 距離がこの値以上の場合に近距離形態を解除します。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive", meta = (ClampMin = "0.0"))
 	float NearExitDistance = 450.0f;
 
-	/** Search radius used when resolving a fallback target. */
+	/** 代替ターゲットの選定に使用する検索半径。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive", meta = (ClampMin = "0.0"))
 	float TargetSearchRadius = 2000.0f;
 
-	/** Behavior when no valid target is available. */
+	/** 有効なターゲットがない場合の動作。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive")
 	EMWSkillNoTargetPolicy NoTargetPolicy = EMWSkillNoTargetPolicy::FailCast;
 
-	/** Montage section used by close form. */
+	/** 近距離形態で使用するMontageセクション。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive")
 	FName CloseSectionName = TEXT("Close");
 
-	/** Montage section used by far form. */
+	/** 遠距離形態で使用するMontageセクション。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive")
 	FName FarSectionName = TEXT("Far");
 };
@@ -82,19 +82,19 @@ struct FMWSkillStockConfig
 {
 	GENERATED_BODY()
 
-	/** Max usable charges for this skill. */
+	/** このスキルの最大使用回数。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "1"))
 	int32 MaxUses = 3;
 
-	/** Recover points gained per second. */
+	/** 1秒あたりに獲得する回復ポイント。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "0.0"))
 	float RecoverAmount = 100.0f;
 
-	/** Points needed to recover one use. */
+	/** 使用回数を1回復するために必要なポイント。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "1.0"))
 	float RecoverPointThreshold = 100.0f;
 
-	/** Delay (seconds) after consume before recovery starts. */
+	/** 消費後、回復開始までの遅延時間（秒）。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock", meta = (ClampMin = "0.0"))
 	float RecoverDelayAfterConsume = 0.0f;
 };
@@ -107,58 +107,58 @@ struct FMWSkillTable : public FTableRowBase
 public:
 	FMWSkillTable();
 
-	/** Unique skill id. */
+	/** スキル固有ID。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AssetRegistrySearchable)
 	int32 Id = INDEX_NONE;
 
-	/** Internal row name. */
+	/** 内部行名。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName Name = NAME_None;
 
-	/** Localized display name. */
+	/** ローカライズ済み表示名。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText DisplayName = FText::GetEmpty();
 
-	/** Localized description text. */
+	/** ローカライズ済み説明文。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (MultiLine = "true"))
 	FText Description = FText::GetEmpty();
 
-	/** Skill type classification. */
+	/** スキル種別。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Classification")
 	EMWSkillType Type = EMWSkillType::Active;
 
-	/** Optional business tag used for filtering/grouping. */
+	/** フィルタリングやグループ化に使用する任意の管理タグ。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Classification")
 	FGameplayTag SkillTag;
 
-	/** Slot cost in loadout. */
+	/** ロードアウトで消費するスロット数。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout", meta = (ClampMin = "1"))
 	int32 SlotCost = 1;
 
-	/** Maximum upgrade level. */
+	/** 最大強化レベル。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Progression", meta = (ClampMin = "1"))
 	int32 MaxLevel = 1;
 
-	/** Soft reference to skill primary asset data. */
+	/** スキルPrimaryAssetDataへのソフト参照。 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill")
 	TSoftObjectPtr<UMWSkillAsset> Asset;
 
-	/** Charge tuning config. */
+	/** チャージ調整設定。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Charge")
 	FMWSkillChargeConfig ChargeConfig;
 
-	/** Whether this skill uses range-adaptive close/far forms. */
+	/** 距離適応型の近距離／遠距離形態を使用するか。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive")
 	bool bIsRangeAdaptive = false;
 
-	/** Hidden when bIsRangeAdaptive is false. */
+	/** bIsRangeAdaptiveがfalseの場合は非表示になります。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RangeAdaptive", meta = (EditCondition = "bIsRangeAdaptive", EditConditionHides))
 	FMWSkillRangeAdaptiveConfig RangeAdaptiveConfig;
 
-	/** Stock configuration for the skill. */
+	/** スキルの使用回数設定。 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stock")
 	FMWSkillStockConfig StockConfig;
 
-	/** Minimal row validity check. */
+	/** 行データの最低限の妥当性を確認します。 */
 	bool IsValidRow() const;
 };

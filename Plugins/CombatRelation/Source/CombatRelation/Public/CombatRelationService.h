@@ -1,6 +1,6 @@
 // ============================================================================
 //  UCombatRelationService : UGameInstanceSubsystem
-//  - Centralized faction matrix service; holds the currently active UFactionRelationDataAsset
+//  - 陣営関係マトリックスを集中管理するサービス。現在アクティブなUFactionRelationDataAssetを保持
 // ============================================================================
 #pragma once
 
@@ -27,7 +27,7 @@ public:
     UFUNCTION(BlueprintPure)
     bool IsRelationDataSet() const;
 
-    // Reload matrix from settings (useful for debugging in editor)
+    // 設定からマトリックスを再読み込み（エディターでのデバッグに有用）
     UFUNCTION(BlueprintCallable, Category = "Combat Relation")
     void LoadMatrixFromSettings();
 
@@ -35,7 +35,7 @@ private:
     UPROPERTY()
     TObjectPtr<UFactionRelationDataAsset> ActiveMatrix = nullptr;
 
-    // Fallback configuration: used when Developer Settings is not set
+    // フォールバック設定：Developer Settingsが未設定の場合に使用
     UPROPERTY(Config, EditAnywhere, Category = "Combat Relation", meta = (AllowedClasses = "/Script/CombatRelation.FactionRelationDataAsset"))
     FSoftObjectPath FallbackMatrixPath;
 };

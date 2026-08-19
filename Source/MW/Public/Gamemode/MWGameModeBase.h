@@ -9,7 +9,7 @@
 /**
  * AMWGameModeBase
  *
- *	The base game mode class used by this project.
+ *	本プロジェクトで使用するGameModeの基底クラスです。
  */
 UCLASS(Abstract,Config = Game, Meta = (ShortTooltip = "The base game mode class used by this project."))
 class AMWGameModeBase : public AGameModeBase
@@ -19,12 +19,12 @@ class AMWGameModeBase : public AGameModeBase
 public:
 	AMWGameModeBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	//~AGameModeBase interface
+	//~AGameModeBaseインターフェース
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
-	/* This method is used for spawning default pawn which may ignore default pawn class. */
+	/* DefaultPawnClassを使用せずにDefaultPawnを生成できる処理です。 */
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
-	//~End of AGameModeBase interface
+	//~AGameModeBaseインターフェース終了
 
 protected:
 	virtual void BeginPlay() override;

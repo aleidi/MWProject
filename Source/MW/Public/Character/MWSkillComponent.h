@@ -35,19 +35,19 @@ struct FMWRuntimeSkillState
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
 	int32 MaxUses = 0;
 
-	/** Recover points gained per second. */
+	/** 1秒あたりに獲得する回復ポイント。 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
 	float RecoverAmount = 100.0f;
 
-	/** Points needed to recover one use. */
+	/** 1回分を回復するために必要なポイント。 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
 	float RecoverPointThreshold = 100.0f;
 
-	/** Runtime accumulated recover points. */
+	/** 実行時に蓄積された回復ポイント。 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
 	float RecoverPointAccumulated = 0.0f;
 
-	/** Delay after consume before recovery starts. */
+	/** 消費後、回復を開始するまでの遅延時間。 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MW|Skill|Runtime")
 	float RecoverDelayAfterConsume = 0.0f;
 
@@ -64,7 +64,7 @@ class MW_API UMWSkillComponent : public UMWPawnComponent
 public:
 	UMWSkillComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	// ===== SkillBook（Learned） =====
+	// ===== スキルブック（習得済み） =====
 	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Book")
 	bool LearnSkill(int32 SkillId);
 
@@ -74,7 +74,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "MW|Skill|Book")
 	bool HasLearnedSkill(int32 SkillId) const;
 
-	// ===== Loadout（Equipped） =====
+	// ===== ロードアウト（装備済み） =====
 	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Loadout")
 	bool EquipSkillToSlot(int32 SkillId, int32 SlotIndex);
 
@@ -90,11 +90,11 @@ public:
 	UAnimMontage* GetEquippedSkillAnimation(int32 SlotIndex) const;
 	UAnimMontage* GetSkillAnimationByInputTag(const FGameplayTag& InputTag) const;
 
-	// ===== Command =====
+	// ===== コマンド =====
 	bool TryBuildCastCommandFromInputTag(const FGameplayTag& InputTag, FMWSkillCastCommand& OutCommand) const;
 	bool TryResolveMontageData(const FMWSkillCastCommand& InCommand, UAnimMontage*& OutMontage, FName& OutSection) const;
 
-	// ===== Cast Entry =====
+	// ===== キャストエントリ =====
 	UFUNCTION(BlueprintCallable, Category = "MW|Skill|Cast")
 	bool RequestCastByInputTag(const FGameplayTag& InputTag);
 

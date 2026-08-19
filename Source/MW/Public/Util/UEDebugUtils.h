@@ -5,40 +5,40 @@
 /**
  * UEDebugUtils
  *
- * Project-agnostic screen debug message macros for Unreal Engine.
- * No project-specific dependencies — safe to copy into any UE project.
+ * Unreal Engine向けのプロジェクト非依存な画面DebugMessage Macroです。
+ * プロジェクト固有の依存関係がなく、任意のUEプロジェクトで利用できます。
  *
- * All macros are stripped entirely in Shipping builds:
- *   - Arguments are NOT evaluated in Shipping (no side effects, no overhead).
+ * Shipping Buildでは全Macroを完全に除去します：
+ *   - 引数も評価されないため、副作用と実行Costは発生しません。
  *
- * Macro families:
+ * Macro一覧：
  *
- *   UE_SCREEN_PRINT          — Controlled by a plain bool expression
- *   UE_SCREEN_PRINT_CVAR     — Controlled by a TAutoConsoleVariable<bool>
- *   UE_SCREEN_PRINT_ALWAYS   — Always prints (no guard), Shipping stripped
+ *   UE_SCREEN_PRINT          - bool式で表示を制御
+ *   UE_SCREEN_PRINT_CVAR     - TAutoConsoleVariable<bool>で表示を制御
+ *   UE_SCREEN_PRINT_ALWAYS   - 条件なしで常時表示（Shippingでは除去）
  *
- * Usage:
- *   // Bool guard
+ * 使用例：
+ *   // bool条件
  *   UE_SCREEN_PRINT(bMyFlag, 5.f, FColor::Green, TEXT("Val: %d"), MyInt);
  *
- *   // CVar guard
+ *   // CVar条件
  *   UE_SCREEN_PRINT_CVAR(MyCVar, 0.f, FColor::Yellow, TEXT("Tick: %.2f"), Delta);
  *
- *   // Always (temporary investigation, remove before shipping)
+ *   // 常時表示（一時調査用。Shipping前に削除）
  *   UE_SCREEN_PRINT_ALWAYS(5.f, FColor::Red, TEXT("Reached here"));
  */
 
 #if !UE_BUILD_SHIPPING
 
 	/**
-	 * Prints a screen debug message controlled by a plain bool expression.
-	 * No-op if GEngine is null or bEnabled evaluates to false.
+	 * bool式で制御する画面DebugMessageを表示します。
+	 * GEngineがnull、またはbEnabledがfalseの場合は何もしません。
 	 *
-	 * @param bEnabled   bool expression evaluated at runtime
-	 * @param Time       Display duration in seconds; 0.f = one frame only
-	 * @param Color      Text color (FColor)
-	 * @param Format     Format string, must be a const TCHAR literal (TEXT(...))
-	 * @param ...        Format arguments
+	 * @param bEnabled 実行時に評価するbool式。
+	 * @param Time 表示時間（秒）。0.fの場合は1Frameのみ。
+	 * @param Color Text色（FColor）。
+	 * @param Format Format文字列。const TCHAR Literal（TEXT(...)）を指定します。
+	 * @param ... Format引数。
 	 */
 	#define UE_SCREEN_PRINT(bEnabled, Time, Color, Format, ...) \
 		do \
@@ -50,26 +50,26 @@
 		} while (false)
 
 	/**
-	 * Prints a screen debug message controlled by a TAutoConsoleVariable<bool>.
-	 * No-op if GEngine is null or the CVar value is false.
+	 * TAutoConsoleVariable<bool>で制御する画面DebugMessageを表示します。
+	 * GEngineがnull、またはCVar値がfalseの場合は何もしません。
 	 *
-	 * @param CVar       TAutoConsoleVariable<bool> instance (not a pointer)
-	 * @param Time       Display duration in seconds; 0.f = one frame only
-	 * @param Color      Text color (FColor)
-	 * @param Format     Format string, must be a const TCHAR literal (TEXT(...))
-	 * @param ...        Format arguments
+	 * @param CVar TAutoConsoleVariable<bool> Instance（Pointerではありません）。
+	 * @param Time 表示時間（秒）。0.fの場合は1Frameのみ。
+	 * @param Color Text色（FColor）。
+	 * @param Format Format文字列。const TCHAR Literal（TEXT(...)）を指定します。
+	 * @param ... Format引数。
 	 */
 	#define UE_SCREEN_PRINT_CVAR(CVar, Time, Color, Format, ...) \
 		UE_SCREEN_PRINT((CVar).GetValueOnGameThread(), Time, Color, Format, ##__VA_ARGS__)
 
 	/**
-	 * Unconditionally prints a screen debug message.
-	 * Intended for temporary investigation only — remove before release.
+	 * 条件なしで画面DebugMessageを表示します。
+	 * 一時調査専用のため、Release前に削除します。
 	 *
-	 * @param Time       Display duration in seconds; 0.f = one frame only
-	 * @param Color      Text color (FColor)
-	 * @param Format     Format string, must be a const TCHAR literal (TEXT(...))
-	 * @param ...        Format arguments
+	 * @param Time 表示時間（秒）。0.fの場合は1Frameのみ。
+	 * @param Color Text色（FColor）。
+	 * @param Format Format文字列。const TCHAR Literal（TEXT(...)）を指定します。
+	 * @param ... Format引数。
 	 */
 	#define UE_SCREEN_PRINT_ALWAYS(Time, Color, Format, ...) \
 		do \
@@ -80,7 +80,7 @@
 			} \
 		} while (false)
 
-#else // UE_BUILD_SHIPPING — all macros expand to nothing
+#else // UE_BUILD_SHIPPINGでは全Macroを空に展開します。
 
 	#define UE_SCREEN_PRINT(bEnabled, Time, Color, Format, ...)
 	#define UE_SCREEN_PRINT_CVAR(CVar, Time, Color, Format, ...)

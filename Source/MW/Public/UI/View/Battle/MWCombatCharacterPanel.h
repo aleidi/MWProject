@@ -1,19 +1,19 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "Messaging/UI/MWUIMessages.h"
 #include "UI/MWUserWidget.h"
 #include "MWCombatCharacterPanel.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UMWCharacterBaseInfo;
 class UMWCharacterSkillInfo;
 class UMWVMCharacterStatus;
 class UMWVMCharacterGroup;
 class UUniformGridPanel;
 
-// Define
+// 定義
 
 /*
  * @class UMWCombatCharacterPanel
@@ -60,7 +60,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UMWVMCharacterStatus> VMSubCharacter;
 
-	//==== Gameplay Message ====
+	//==== ゲームプレイメッセージ ====
 	UPROPERTY(BlueprintReadWrite)
 	int32 CharacterId = INDEX_NONE;
 

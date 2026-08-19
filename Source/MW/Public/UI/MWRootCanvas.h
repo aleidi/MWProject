@@ -1,13 +1,13 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "UI/MWUserWidget.h"
 #include "MWRootCanvas.generated.h"
 
-// Forward Declare
+// 前方宣言
 class UCanvasPanel;
 
-// Define
+// 定義
 
 /*
  * @class UMWRootCanvas
@@ -29,10 +29,10 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	/* Add a new user widget to canvas. */
+	/* 新しいUserWidgetをCanvasへ追加します。 */
 	bool AddWidget(UUserWidget* Widget, int32 ZOrder = 0);
 
-	/* Remove a user widget from the canvas.*/
+	/* UserWidgetをCanvasから削除します。 */
 	bool RemoveWidget(UUserWidget* Widget);
 
 private:

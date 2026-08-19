@@ -2,7 +2,7 @@
 
 namespace MWConsoleVars
 {
-	// ==== Ability / Skill ====
+	// ==== Ability／スキル ====
 #pragma region Ability Skill
 
 	TAutoConsoleVariable<bool> CVarShowSkillDebug(
@@ -16,7 +16,7 @@ namespace MWConsoleVars
 
 #pragma endregion
 
-	// ==== Input ====
+	// ==== 入力 ====
 #pragma region Input
 	TAutoConsoleVariable<bool> CVarShowInputDebug(
 		TEXT("mw.ShowDebug.Input"),

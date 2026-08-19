@@ -5,27 +5,27 @@
 /**
  * MWConsoleVars
  *
- * Centralized management of all Console Variables
- * How to use：
+ * 全ConsoleVariableを一元管理します。
+ * 使用例：
  *   #include "Common/MWConsoleVars.h"
  *   if (MWConsoleVars::bShowSkillDebug->GetValueOnGameThread()) { ... }
  */
 namespace MWConsoleVars
 {
-	// ==== Ability / Skill ====
+	// ==== アビリティ／スキル ====
 #pragma region Ability Skill
 
-	/** 是否在屏幕上显示 Skill Ability 的调试信息 */
+	/** Skill Abilityのデバッグ情報を画面に表示するか。 */
 	extern MW_API TAutoConsoleVariable<bool> CVarShowSkillDebug;
 
 #pragma endregion
 
-	// ==== Input ====
+	// ==== 入力 ====
 #pragma region Input
-	/** 是否在屏幕上显示 Input 的调试信息 */
+	/** Inputのデバッグ情報を画面に表示するか。 */
 	extern MW_API TAutoConsoleVariable<bool> CVarShowInputDebug;
 
-	/** 是否在屏幕上显示 PlayerControlller 的调试信息 */
+	/** PlayerControllerのデバッグ情報を画面に表示するか。 */
 	extern MW_API TAutoConsoleVariable<bool> CVarShowPlayerControllerDebug;
 #pragma endregion
 }

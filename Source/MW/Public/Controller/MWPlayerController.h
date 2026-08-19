@@ -29,9 +29,9 @@ protected:
 
 #pragma region Input
 public:
-	/** Bind Additional input config.
-	 *  @param InputConfig The input config to bind.
-	 *  @param OutBindHandles The handles of the binds that were added. These handles can be used to remove the binds later.
+	/** 追加の入力設定をバインドします。
+	 *  @param InputConfig バインドする入力設定。
+	 *  @param OutBindHandles 追加したバインドのハンドル。後からバインド解除に使用できます。
 	 */
 	void AddInputConfig(const UMWInputConfig* InputConfig, TArray<uint32>& OutBindHandles);
 
@@ -49,7 +49,7 @@ protected:
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
-	// Default Input
+	// デフォルト入力
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookAt(const FInputActionValue& InputActionValue);
 	void Input_LookStick(const FInputActionValue& InputActionValue);
@@ -61,7 +61,7 @@ private:
 
 	FModifyContextOptions MappingOption;
 
-	/** Cache of bind handles for each input config. */
+	/** 入力設定ごとのバインドハンドルキャッシュ。 */
 	TMap<AActor*, TArray<uint32>> BindHandlesCache;
 
 #pragma endregion
@@ -81,11 +81,11 @@ public:
 
 #pragma region Camera
 public:
-	// set AMWPlayerCameraManager to PlayerCameraManager.
+	// PlayerCameraManagerにAMWPlayerCameraManagerを設定します。
 	virtual void SpawnPlayerCameraManager() override;
 
 protected:
-	// Setup camera components dynamically.
+	// カメラコンポーネントを動的に設定します。
 	// カメラコンポーネントの設定.
 	void SetupCameraComponents();
 #pragma endregion

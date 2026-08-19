@@ -32,7 +32,7 @@ public:
 	bool HasLockedTarget() const;
 
 private:
-	/* Left - if true, the new target is left-next to current target, otherwise the new target is right-next to current target. */
+	/* Leftがtrueの場合は現在のターゲットの左隣、falseの場合は右隣を新たなターゲットにします。 */
 	void TryFindSelectableTarget(bool bLeft);
 	FMWFoundActorInfo GetNearestTarget(TArray<FMWFoundActorInfo>& Targets);
 	FMWFoundActorInfo GetTargetNextToSelectedTarget(TArray<FMWFoundActorInfo>& Targets, bool bLeft);
@@ -42,6 +42,6 @@ private:
 	TArray<FMWFoundActorInfo> FindTargets;
 	FMWFoundActorInfo SelectedTarget;
 	FMWFoundActorInfo LockedTarget;
-	/* Using different search method for different owner. */
+	/* 所有者に応じて検索方式を切り替えます。 */
 	MWTargetSelector::OwnerType OwnerType;
 };

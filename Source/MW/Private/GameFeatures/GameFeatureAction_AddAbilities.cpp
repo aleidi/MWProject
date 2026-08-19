@@ -165,7 +165,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities(AActor* Actor, const FGa
 		return;
 	}
 
-	// early out if Actor already has ability extensions applied
+	// ActorにAbility拡張が適用済みなら終了
 	if (ActiveData.ActiveExtensions.Find(Actor) != nullptr)
 	{
 		return;	
@@ -268,11 +268,11 @@ UActorComponent* UGameFeatureAction_AddAbilities::FindOrAddComponentForActor(UCl
 	bool bMakeComponentRequest = (component == nullptr);
 	if (component)
 	{
-		// Check to see if this component was created from a different `UGameFrameworkComponentManager` request.
-		// `Native` is what `CreationMethod` defaults to for dynamically added components.
+		// 別のUGameFrameworkComponentManagerリクエストで作成されたコンポーネントか確認
+		// 動的追加コンポーネントのCreationMethodはデフォルトでNativeとなる
 		if (component->CreationMethod == EComponentCreationMethod::Native)
 		{
-			// Attempt to tell the difference between a true native component and one created by the GameFrameworkComponent system.
+			// ネイティブコンポーネントとGameFrameworkComponent生成コンポーネントを判別
 			// If it is from the UGameFrameworkComponentManager, then we need to make another request (requests are ref counted).
 			UObject* componentArchetype = component->GetArchetype();
 			bMakeComponentRequest = componentArchetype->HasAnyFlags(RF_ClassDefaultObject);

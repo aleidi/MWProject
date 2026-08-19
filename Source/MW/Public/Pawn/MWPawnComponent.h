@@ -12,7 +12,7 @@ class MW_API UMWPawnComponent : public UGameFrameworkComponent
     GENERATED_BODY()
 
 public:
-	/** Gets the pawn that owns the component, this will always be valid during gameplay but can return null in the editor */
+	/** このコンポーネントを所有するPawnを取得します。ゲームプレイ中は常に有効ですが、エディタではnullの場合があります。 */
 	template <class T>
 	T* GetPawn() const
 	{
@@ -28,10 +28,10 @@ public:
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
-	// Pawn accessors, only valid if called during gameplay
+	// Pawnアクセサー。ゲームプレイ中の呼び出しでのみ有効です。
 	//////////////////////////////////////////////////////////////////////////////
 
-	/** Gets the player state that owns the component, this can return null on clients for player pawns that are still being replicated */
+	/** このコンポーネントを所有するPlayerStateを取得します。複製中のPlayerPawnでは、クライアントでnullの場合があります。 */
 	template <class T>
 	T* GetPlayerState() const
 	{
@@ -39,7 +39,7 @@ public:
 		return GetPawnChecked<APawn>()->GetPlayerState<T>();
 	}
 
-	/** Gets the controller that owns the component, this will usually be null on clients */
+	/** このコンポーネントを所有するControllerを取得します。通常、クライアントではnullです。 */
 	template <class T>
 	T* GetController() const
 	{

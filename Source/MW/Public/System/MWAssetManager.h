@@ -19,9 +19,9 @@ struct FMWBundles
 /**
  * UMWAssetManager
  *
- *	Game implementation of the asset manager that overrides functionality and stores game-specific types.
- *	It is expected that most games will want to override AssetManager as it provides a good place for game-specific loading logic.
- *	This class is used by setting 'AssetManagerClassName' in DefaultEngine.ini.
+ * 機能を拡張し、ゲーム固有型を保持するAssetManager実装です。
+ * ゲーム固有のロード処理を集約するため、AssetManagerを継承して使用します。
+ * DefaultEngine.iniの'AssetManagerClassName'で本クラスを指定します。
  */
 UCLASS(Config = Game)
 class UMWAssetManager : public UAssetManager
@@ -32,18 +32,18 @@ public:
 
 	UMWAssetManager();
 
-	// Returns the AssetManager singleton object.
+	// AssetManagerのSingletonを返します。
 	static UMWAssetManager& Get();
 
-	// Returns the asset referenced by a TSoftObjectPtr.  This will synchronously load the asset if it's not already loaded.
+	// TSoftObjectPtrが参照するAssetを返します。未ロードの場合は同期ロードします。
 	template<typename AssetType>
 	static AssetType* GetAsset(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	// Returns the subclass referenced by a TSoftClassPtr.  This will synchronously load the asset if it's not already loaded.
+	// TSoftClassPtrが参照する派生クラスを返します。未ロードの場合は同期ロードします。
 	template<typename AssetType>
 	static TSubclassOf<AssetType> GetSubclass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	// Logs all assets currently loaded and tracked by the asset manager.
+	// AssetManagerがロードおよび追跡中の全AssetをLogへ出力します。
 	static void DumpLoadedAssets();
 
 protected:
@@ -55,14 +55,14 @@ protected:
 			return *CastChecked<GameDataClass>(*pResult);
 		}
 
-		// Does a blocking load if needed
+		// 必要に応じてBlocking Loadします。
 		return *CastChecked<const GameDataClass>(LoadGameDataOfClass(GameDataClass::StaticClass(), DataPath, GameDataClass::StaticClass()->GetFName()));
 	}
 
 	static UObject* SynchronousLoadAsset(const FSoftObjectPath& AssetPath);
 	static bool ShouldLogAssetLoads();
 
-	// Thread safe way of adding a loaded asset to keep in memory.
+	// ロード済みAssetをメモリに保持する一覧へThread Safeに追加します。
 	void AddLoadedAsset(const UObject* Asset);
 
 	UPrimaryDataAsset* LoadGameDataOfClass(TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType PrimaryAssetType);
@@ -73,19 +73,19 @@ protected:
 #endif
 
 protected:
-	// Loaded version of the game data
+	// ロード済みGameData
 	UPROPERTY(Transient)
 	TMap<TObjectPtr<UClass>, TObjectPtr<UPrimaryDataAsset>> GameDataMap;
 
-	// master data of the game, should be loaded at game start
+	// ゲームのMasterData。ゲーム開始時にロードします。
 	TSharedPtr<FStreamableHandle> GameplayDataHandle = nullptr;
 
 private:
-	// Assets loaded and tracked by the asset manager.
+	// AssetManagerがロードおよび追跡中のAsset。
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;
 
-	// Used for a scope lock when modifying the list of load assets.
+	// ロード済みAsset一覧の変更時に使用するScopeLock。
 	FCriticalSection LoadedAssetsCritical;
 };
 
@@ -108,7 +108,7 @@ AssetType* UMWAssetManager::GetAsset(const TSoftObjectPtr<AssetType>& AssetPoint
 
 		if (LoadedAsset && bKeepInMemory)
 		{
-			// Added to loaded asset list.
+			// ロード済みAsset一覧へ追加します。
 			Get().AddLoadedAsset(Cast<UObject>(LoadedAsset));
 		}
 	}
@@ -134,7 +134,7 @@ TSubclassOf<AssetType> UMWAssetManager::GetSubclass(const TSoftClassPtr<AssetTyp
 
 		if (LoadedSubclass && bKeepInMemory)
 		{
-			// Added to loaded asset list.
+			// ロード済みAsset一覧へ追加します。
 			Get().AddLoadedAsset(Cast<UObject>(LoadedSubclass));
 		}
 	}

@@ -6,12 +6,12 @@
 class UMWCharacterAsset;
 
 /**
- * Character row data loaded from DataTable.
+ * DataTableからロードするキャラクター行データです。
  *
- * Rule:
- * - Character static/basic data is stored in this table.
- * - Character detailed asset data is stored in UMWCharacterAsset (PrimaryData).
- * - This row keeps a soft reference to the PrimaryData asset.
+ * 方針：
+ * - キャラクターの静的な基本データは本テーブルに保持します。
+ * - 詳細なアセットデータはUMWCharacterAsset（PrimaryData）に保持します。
+ * - 本行はPrimaryDataアセットへのソフト参照を保持します。
  */
 USTRUCT(BlueprintType)
 struct FMWCharacterTable : public FTableRowBase
@@ -21,22 +21,22 @@ struct FMWCharacterTable : public FTableRowBase
 public:
 	FMWCharacterTable();
 
-	/** Character unique id (usually from Excel). */
+	/** キャラクター固有ID（通常はExcelから取得）。 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character")
 	int32 Id = INDEX_NONE;
 
-	/** Internal name key. */
+	/** 内部名キー。 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character")
 	FName Name = NAME_None;
 
-	/** Localized display name. */
+	/** ローカライズ済み表示名。 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character")
 	FText DisplayName = FText::GetEmpty();
 
-	/** Soft reference to character primary asset data. */
+	/** キャラクターPrimaryAssetDataへのソフト参照。 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character")
 	TSoftObjectPtr<UMWCharacterAsset> Asset;
 
-	/** Minimal row validity check. */
+	/** 行データの最低限の妥当性を確認します。 */
 	bool IsValidRow() const;
 };

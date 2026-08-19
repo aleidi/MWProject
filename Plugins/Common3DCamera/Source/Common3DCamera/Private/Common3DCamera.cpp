@@ -8,13 +8,13 @@ DEFINE_LOG_CATEGORY(LogC3D);
 
 void FCommon3DCameraModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	// モジュールがメモリにロードされた後に実行される。正確なタイミングは.upluginのモジュール設定で指定される
 }
 
 void FCommon3DCameraModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	// シャットダウン時のモジュール解放処理として呼び出される場合がある。動的リロードをサポートするモジュールでは、
+	// モジュールをアンロードする前に呼び出される。
 }
 
 #undef LOCTEXT_NAMESPACE

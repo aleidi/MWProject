@@ -21,18 +21,18 @@
 //
 //	UMWLocalPlayer();
 //
-//	//~UObject interface
+//	//~UObjectインターフェース
 //	virtual void PostInitProperties() override;
-//	//~End of UObject interface
+//	//~UObjectインターフェース終了
 //
-//	//~UPlayer interface
+//	//~UPlayerインターフェース
 //	virtual void SwitchController(class APlayerController* PC) override;
-//	//~End of UPlayer interface
+//	//~UPlayerインターフェース終了
 //
-//	//~ULocalPlayer interface
+//	//~ULocalPlayerインターフェース
 //	virtual bool SpawnPlayActor(const FString& URL, FString& OutError, UWorld* InWorld) override;
 //	virtual void InitOnlineSession() override;
-//	//~End of ULocalPlayer interface
+//	//~ULocalPlayerインターフェース終了
 //
 //public:
 //	UFUNCTION()

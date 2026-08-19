@@ -1,14 +1,14 @@
 #pragma once
 
-// Include Header
+// ヘッダーをインクルード
 #include "Subsystems/WorldSubsystem.h"
 #include "InputActionValue.h"
 #include "MWWorldSubsystem.generated.h"
 
-// Forward Declare
+// 前方宣言
 class AMWInputHandler;
 
-// Define
+// 定義
 
 /*
  * @class UMWWorldSubsystem

@@ -7,7 +7,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameplayAbility/MWAbilitySet.h"
 
-//@TODO: Would like to isolate this a bit better to get the pawn data in here without this having to know about other stuff
+//@TODO: 他要素へ依存せずPawn Dataを取得できるよう責務を分離
 #include "Gamemode/MWGameMode.h"
 
 AMWPlayerState::AMWPlayerState(const FObjectInitializer& ObjectInitializer)
@@ -24,7 +24,7 @@ void AMWPlayerState::CopyProperties(APlayerState* PlayerState)
 {
 	Super::CopyProperties(PlayerState);
 
-	//@TODO: Copy stats
+	//@TODO: ステータスをコピー
 }
 
 AMWPlayerController* AMWPlayerState::GetMWPlayerController() const
