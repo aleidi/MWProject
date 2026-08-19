@@ -28,7 +28,7 @@ public:
 	int32 GetCharacterId() const { return CharacterId; }
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Character", meta=(AllowPrivateAccess = "True"))
+	UPROPERTY(EditAnywhere, Category = "Character", meta=(AllowPrivateAccess = "True"))
 	int32 CharacterId = INDEX_NONE;
 };
 
